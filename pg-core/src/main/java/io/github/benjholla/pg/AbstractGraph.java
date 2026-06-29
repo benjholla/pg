@@ -17,8 +17,8 @@ public abstract class AbstractGraph implements Graph {
 
 	protected NodeSet nodes;
 	protected EdgeSet edges;
-	protected Map<Node, EdgeSet> inEdgesMap;
-	protected Map<Node, EdgeSet> outEdgesMap;
+	private Map<Node, EdgeSet> inEdgesMap;
+	private Map<Node, EdgeSet> outEdgesMap;
 	
 	/**
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
@@ -254,9 +254,8 @@ public abstract class AbstractGraph implements Graph {
 	 * @param node
 	 * @return The set of incoming edges to the given node
 	 */
-	protected EdgeSet getInEdgesToNode(Node node){
-		EdgeSet inEdges = inEdgesMap.get(node);
-		return inEdges != null ? new EdgeSet(inEdges) : new EdgeSet();
+	protected Optional<EdgeSet> getInEdgesToNode(Node node){
+		return Optional.ofNullable(inEdgesMap.get(node));
 	}
 	
 	/**
@@ -265,9 +264,8 @@ public abstract class AbstractGraph implements Graph {
 	 * @param node
 	 * @return The set of out-coming edges from the given node
 	 */
-	protected EdgeSet getOutEdgesFromNode(Node node){
-		EdgeSet outEdges = outEdgesMap.get(node);
-		return outEdges != null ? new EdgeSet(outEdges) : new EdgeSet();
+	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
+		return Optional.ofNullable(outEdgesMap.get(node));
 	}
 	
 	@Override
@@ -338,15 +336,21 @@ public abstract class AbstractGraph implements Graph {
 			boolean result = false;
 			Node node = (Node) graphElement;
 			result |= nodes().remove(node);
-			EdgeSet inEdges = getInEdgesToNode(node);
-			for (Edge edge : inEdges) {
-				edges().remove(edge);
-				result = true;
+			Optional<EdgeSet> inEdgesOpt = getInEdgesToNode(node);
+			if (inEdgesOpt.isPresent()) {
+				EdgeSet inEdges = new EdgeSet(inEdgesOpt.get());
+				for (Edge edge : inEdges) {
+					edges().remove(edge);
+					result = true;
+				}
 			}
-			EdgeSet outEdges = getOutEdgesFromNode(node);
-			for (Edge edge : outEdges) {
-				edges().remove(edge);
-				result = true;
+			Optional<EdgeSet> outEdgesOpt = getOutEdgesFromNode(node);
+			if (outEdgesOpt.isPresent()) {
+				EdgeSet outEdges = new EdgeSet(outEdgesOpt.get());
+				for (Edge edge : outEdges) {
+					edges().remove(edge);
+					result = true;
+				}
 			}
 			return result;
 		}
@@ -370,9 +374,9 @@ public abstract class AbstractGraph implements Graph {
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
 		if(direction == NodeDirection.IN){
-			return getInEdgesToNode(node);
+			return getInEdgesToNode(node).orElseGet(EdgeSet::new);
 		} else {
-			return getOutEdgesFromNode(node);
+			return getOutEdgesFromNode(node).orElseGet(EdgeSet::new);
 		}
 	}
 	
@@ -412,12 +416,11 @@ public abstract class AbstractGraph implements Graph {
 	public NodeSet predecessors(NodeSet origin){
 		NodeSet result = new NodeSet();
 		for(Node node : origin){
-			EdgeSet inEdges = inEdgesMap.get(node);
-			if (inEdges != null) {
+			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
 					result.add(edge.from());
 				}
-			}
+			});
 		}
 		return result;
 	}
@@ -436,12 +439,11 @@ public abstract class AbstractGraph implements Graph {
 	public NodeSet successors(NodeSet origin){
 		NodeSet result = new NodeSet();
 		for(Node node : origin){
-			EdgeSet outEdges = outEdgesMap.get(node);
-			if (outEdges != null) {
+			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
 					result.add(edge.to());
 				}
-			}
+			});
 		}
 		return result;
 	}
@@ -455,14 +457,13 @@ public abstract class AbstractGraph implements Graph {
 	public Graph forwardStep(Graph origin){
 		Graph result = newGraph(origin);
 		for(Node node : origin.nodes()){
-			EdgeSet outEdges = outEdgesMap.get(node);
-			if (outEdges != null) {
+			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
 					result.nodes().add(edge.from());
 					result.nodes().add(edge.to());
 					result.edges().add(edge);
 				}
-			}
+			});
 		}
 		return result;
 	}
@@ -481,14 +482,13 @@ public abstract class AbstractGraph implements Graph {
 	public Graph reverseStep(Graph origin){
 		Graph result = newGraph(origin);
 		for(Node node : origin.nodes()){
-			EdgeSet inEdges = inEdgesMap.get(node);
-			if (inEdges != null) {
+			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
 					result.nodes().add(edge.from());
 					result.nodes().add(edge.to());
 					result.edges().add(edge);
 				}
-			}
+			});
 		}
 		return result;
 	}
@@ -684,15 +684,14 @@ public abstract class AbstractGraph implements Graph {
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
-			EdgeSet outEdges = outEdgesMap.get(next);
-			if (outEdges != null) {
+			getOutEdgesFromNode(next).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
 					if(result.nodes().add(edge.to())){
 						frontier.add(edge.to());
 					}
 					result.edges().add(edge);
 				}
-			}
+			});
 		}
 		return result;
 	}
@@ -714,15 +713,14 @@ public abstract class AbstractGraph implements Graph {
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
-			EdgeSet inEdges = inEdgesMap.get(next);
-			if (inEdges != null) {
+			getInEdgesToNode(next).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
 					if(result.nodes().add(edge.from())){
 						frontier.add(edge.from());
 					}
 					result.edges().add(edge);
 				}
-			}
+			});
 		}
 		return result;
 	}
