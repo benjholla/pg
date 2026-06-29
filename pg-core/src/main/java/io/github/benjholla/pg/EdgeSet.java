@@ -125,15 +125,13 @@ public class EdgeSet implements Collection<Edge> {
        EdgeSet result = new EdgeSet();
        if(attribute != null && values != null){
            for(Edge edge : this){
-               if(edge.hasAttr(attribute)) {
-                   Object attributeValue = edge.attributes().get(attribute);
-                   if(attributeValue != null) {
-                       for(Object value : values) {
-                           if(value != null) {
-                               if(Objects.equals(attributeValue, value)) {
-                                   result.add(edge);
-                                   break;
-                               }
+               Object attributeValue = edge.getAttr(attribute);
+               if(attributeValue != null) {
+                   for(Object value : values) {
+                       if(value != null) {
+                           if(Objects.equals(attributeValue, value)) {
+                               result.add(edge);
+                               break;
                            }
                        }
                    }
