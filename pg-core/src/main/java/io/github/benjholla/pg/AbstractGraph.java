@@ -21,129 +21,121 @@ public abstract class AbstractGraph implements Graph {
 	protected Map<Node, EdgeSet> outEdgesMap;
 	
 	/**
+	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
+	 */
+	protected class AdjacencyMaintainingEdgeSet extends EdgeSet {
+		private void addEdgeToMaps(Edge e) {
+			inEdgesMap.computeIfAbsent(e.to(), k -> new EdgeSet()).add(e);
+			outEdgesMap.computeIfAbsent(e.from(), k -> new EdgeSet()).add(e);
+		}
+
+		private void removeEdgeFromMaps(Edge e) {
+			EdgeSet inSet = inEdgesMap.get(e.to());
+			if (inSet != null) {
+				inSet.remove(e);
+				if (inSet.isEmpty()) inEdgesMap.remove(e.to());
+			}
+			EdgeSet outSet = outEdgesMap.get(e.from());
+			if (outSet != null) {
+				outSet.remove(e);
+				if (outSet.isEmpty()) outEdgesMap.remove(e.from());
+			}
+		}
+
+		@Override
+		public boolean add(Edge e) {
+			boolean added = super.add(e);
+			if (added) {
+				addEdgeToMaps(e);
+			}
+			return added;
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			boolean removed = super.remove(o);
+			if (removed && o instanceof Edge) {
+				removeEdgeFromMaps((Edge) o);
+			}
+			return removed;
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends Edge> c) {
+			boolean modified = false;
+			for (Edge e : c) {
+				if (add(e)) modified = true;
+			}
+			return modified;
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			boolean modified = false;
+			for (Object e : c) {
+				if (remove(e)) modified = true;
+			}
+			return modified;
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			boolean modified = false;
+			Iterator<Edge> it = super.iterator();
+			while (it.hasNext()) {
+				Edge e = it.next();
+				if (!c.contains(e)) {
+					it.remove();
+					removeEdgeFromMaps(e);
+					modified = true;
+				}
+			}
+			return modified;
+		}
+
+		@Override
+		public void clear() {
+			super.clear();
+			inEdgesMap.clear();
+			outEdgesMap.clear();
+		}
+
+		@Override
+		public Iterator<Edge> iterator() {
+			Iterator<Edge> superIt = super.iterator();
+			return new Iterator<Edge>() {
+				private Edge current = null;
+
+				@Override
+				public boolean hasNext() {
+					return superIt.hasNext();
+				}
+
+				@Override
+				public Edge next() {
+					current = superIt.next();
+					return current;
+				}
+
+				@Override
+				public void remove() {
+					superIt.remove();
+					if (current != null) {
+						removeEdgeFromMaps(current);
+					}
+				}
+			};
+		}
+	}
+
+	/**
 	 * Constructs a new empty graph
 	 */
 	protected AbstractGraph() {
 		this.nodes = new NodeSet();
 		this.inEdgesMap = new HashMap<>();
 		this.outEdgesMap = new HashMap<>();
-		this.edges = new EdgeSet() {
-			@Override
-			public boolean add(Edge e) {
-				boolean added = super.add(e);
-				if (added) {
-					inEdgesMap.computeIfAbsent(e.to(), k -> new EdgeSet()).add(e);
-					outEdgesMap.computeIfAbsent(e.from(), k -> new EdgeSet()).add(e);
-				}
-				return added;
-			}
-
-			@Override
-			public boolean remove(Object o) {
-				boolean removed = super.remove(o);
-				if (removed && o instanceof Edge) {
-					Edge e = (Edge) o;
-					EdgeSet inSet = inEdgesMap.get(e.to());
-					if (inSet != null) {
-						inSet.remove(e);
-						if (inSet.isEmpty()) inEdgesMap.remove(e.to());
-					}
-					EdgeSet outSet = outEdgesMap.get(e.from());
-					if (outSet != null) {
-						outSet.remove(e);
-						if (outSet.isEmpty()) outEdgesMap.remove(e.from());
-					}
-				}
-				return removed;
-			}
-
-			@Override
-			public boolean addAll(Collection<? extends Edge> c) {
-				boolean modified = false;
-				for (Edge e : c) {
-					if (add(e)) modified = true;
-				}
-				return modified;
-			}
-
-			@Override
-			public boolean removeAll(Collection<?> c) {
-				boolean modified = false;
-				for (Object e : c) {
-					if (remove(e)) modified = true;
-				}
-				return modified;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> c) {
-				boolean modified = false;
-				Iterator<Edge> it = super.iterator();
-				while (it.hasNext()) {
-					Edge e = it.next();
-					if (!c.contains(e)) {
-						it.remove();
-
-						EdgeSet inSet = inEdgesMap.get(e.to());
-						if (inSet != null) {
-							inSet.remove(e);
-							if (inSet.isEmpty()) inEdgesMap.remove(e.to());
-						}
-						EdgeSet outSet = outEdgesMap.get(e.from());
-						if (outSet != null) {
-							outSet.remove(e);
-							if (outSet.isEmpty()) outEdgesMap.remove(e.from());
-						}
-
-						modified = true;
-					}
-				}
-				return modified;
-			}
-
-			@Override
-			public void clear() {
-				super.clear();
-				inEdgesMap.clear();
-				outEdgesMap.clear();
-			}
-
-			@Override
-			public Iterator<Edge> iterator() {
-				Iterator<Edge> superIt = super.iterator();
-				return new Iterator<Edge>() {
-					private Edge current = null;
-
-					@Override
-					public boolean hasNext() {
-						return superIt.hasNext();
-					}
-
-					@Override
-					public Edge next() {
-						current = superIt.next();
-						return current;
-					}
-
-					@Override
-					public void remove() {
-						superIt.remove();
-						if (current != null) {
-							EdgeSet inSet = inEdgesMap.get(current.to());
-							if (inSet != null) {
-								inSet.remove(current);
-								if (inSet.isEmpty()) inEdgesMap.remove(current.to());
-							}
-							EdgeSet outSet = outEdgesMap.get(current.from());
-							if (outSet != null) {
-								outSet.remove(current);
-								if (outSet.isEmpty()) outEdgesMap.remove(current.from());
-							}
-						}
-					}
-				};
-			}
-		};
+		this.edges = new AdjacencyMaintainingEdgeSet();
 	}
 	
 	/**
