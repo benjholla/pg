@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,13 +17,125 @@ public abstract class AbstractGraph implements Graph {
 
 	protected NodeSet nodes;
 	protected EdgeSet edges;
+	protected Map<Node, EdgeSet> inEdgesMap;
+	protected Map<Node, EdgeSet> outEdgesMap;
 	
+	/**
+	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
+	 */
+	protected class AdjacencyMaintainingEdgeSet extends EdgeSet {
+		private void addEdgeToMaps(Edge e) {
+			inEdgesMap.computeIfAbsent(e.to(), k -> new EdgeSet()).add(e);
+			outEdgesMap.computeIfAbsent(e.from(), k -> new EdgeSet()).add(e);
+		}
+
+		private void removeEdgeFromMaps(Edge e) {
+			EdgeSet inSet = inEdgesMap.get(e.to());
+			if (inSet != null) {
+				inSet.remove(e);
+				if (inSet.isEmpty()) inEdgesMap.remove(e.to());
+			}
+			EdgeSet outSet = outEdgesMap.get(e.from());
+			if (outSet != null) {
+				outSet.remove(e);
+				if (outSet.isEmpty()) outEdgesMap.remove(e.from());
+			}
+		}
+
+		@Override
+		public boolean add(Edge e) {
+			boolean added = super.add(e);
+			if (added) {
+				addEdgeToMaps(e);
+			}
+			return added;
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			boolean removed = super.remove(o);
+			if (removed && o instanceof Edge) {
+				removeEdgeFromMaps((Edge) o);
+			}
+			return removed;
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends Edge> c) {
+			boolean modified = false;
+			for (Edge e : c) {
+				if (add(e)) modified = true;
+			}
+			return modified;
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			boolean modified = false;
+			for (Object e : c) {
+				if (remove(e)) modified = true;
+			}
+			return modified;
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			boolean modified = false;
+			Iterator<Edge> it = super.iterator();
+			while (it.hasNext()) {
+				Edge e = it.next();
+				if (!c.contains(e)) {
+					it.remove();
+					removeEdgeFromMaps(e);
+					modified = true;
+				}
+			}
+			return modified;
+		}
+
+		@Override
+		public void clear() {
+			super.clear();
+			inEdgesMap.clear();
+			outEdgesMap.clear();
+		}
+
+		@Override
+		public Iterator<Edge> iterator() {
+			Iterator<Edge> superIt = super.iterator();
+			return new Iterator<Edge>() {
+				private Edge current = null;
+
+				@Override
+				public boolean hasNext() {
+					return superIt.hasNext();
+				}
+
+				@Override
+				public Edge next() {
+					current = superIt.next();
+					return current;
+				}
+
+				@Override
+				public void remove() {
+					superIt.remove();
+					if (current != null) {
+						removeEdgeFromMaps(current);
+					}
+				}
+			};
+		}
+	}
+
 	/**
 	 * Constructs a new empty graph
 	 */
 	protected AbstractGraph() {
 		this.nodes = new NodeSet();
-		this.edges = new EdgeSet();
+		this.inEdgesMap = new HashMap<>();
+		this.outEdgesMap = new HashMap<>();
+		this.edges = new AdjacencyMaintainingEdgeSet();
 	}
 	
 	/**
@@ -141,13 +255,8 @@ public abstract class AbstractGraph implements Graph {
 	 * @return The set of incoming edges to the given node
 	 */
 	protected EdgeSet getInEdgesToNode(Node node){
-		EdgeSet inEdges = new EdgeSet();
-		for(Edge edge : edges()){
-			if(edge.to().equals(node)){
-				inEdges.add(edge);
-			}
-		}
-		return inEdges;
+		EdgeSet inEdges = inEdgesMap.get(node);
+		return inEdges != null ? new EdgeSet(inEdges) : new EdgeSet();
 	}
 	
 	/**
@@ -157,13 +266,8 @@ public abstract class AbstractGraph implements Graph {
 	 * @return The set of out-coming edges from the given node
 	 */
 	protected EdgeSet getOutEdgesFromNode(Node node){
-		EdgeSet outEdges = new EdgeSet();
-		for(Edge edge : edges()){
-			if(edge.from().equals(node)){
-				outEdges.add(edge);
-			}
-		}
-		return outEdges;
+		EdgeSet outEdges = outEdgesMap.get(node);
+		return outEdges != null ? new EdgeSet(outEdges) : new EdgeSet();
 	}
 	
 	@Override
@@ -234,13 +338,15 @@ public abstract class AbstractGraph implements Graph {
 			boolean result = false;
 			Node node = (Node) graphElement;
 			result |= nodes().remove(node);
-			Iterator<Edge> edgeIterator = edges().iterator();
-			while(edgeIterator.hasNext()) {
-				Edge edge = edgeIterator.next();
-				if(edge.from().equals(node) || edge.to().equals(node)) {
-					edgeIterator.remove();
-					result = true;
-				}
+			EdgeSet inEdges = getInEdgesToNode(node);
+			for (Edge edge : inEdges) {
+				edges().remove(edge);
+				result = true;
+			}
+			EdgeSet outEdges = getOutEdgesFromNode(node);
+			for (Edge edge : outEdges) {
+				edges().remove(edge);
+				result = true;
 			}
 			return result;
 		}
@@ -263,19 +369,11 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
-		EdgeSet result = new EdgeSet();
-		for(Edge edge : edges()){
-			if(direction == NodeDirection.IN){
-				if(edge.to().equals(node)){
-					result.add(edge);
-				}
-			} else {
-				if(edge.from().equals(node)){
-					result.add(edge);
-				}
-			}
+		if(direction == NodeDirection.IN){
+			return getInEdgesToNode(node);
+		} else {
+			return getOutEdgesFromNode(node);
 		}
-		return result;
 	}
 	
 	@Override
