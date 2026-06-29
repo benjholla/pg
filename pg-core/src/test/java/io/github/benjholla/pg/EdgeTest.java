@@ -24,6 +24,13 @@ public class EdgeTest {
     }
 
     @Test
+    public void testNullEndpoints() {
+        assertThrows(IllegalArgumentException.class, () -> new Edge(null, toNode));
+        assertThrows(IllegalArgumentException.class, () -> new Edge(fromNode, null));
+        assertThrows(IllegalArgumentException.class, () -> new Edge(null, null));
+    }
+
+    @Test
     public void testToString() {
         edge.putAttr("weight", 10);
         edge.tags().add("connection");

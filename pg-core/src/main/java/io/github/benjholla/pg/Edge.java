@@ -7,6 +7,9 @@ public class Edge extends GraphElement {
 	
 	public Edge(Node from, Node to) {
 		super();
+		if (from == null || to == null) {
+			throw new IllegalArgumentException("Edge endpoints cannot be null.");
+		}
 		this.from = from;
 		this.to = to;
 	}

@@ -86,6 +86,11 @@ public class PropertyGraphTest {
     }
 
     @Test
+    public void testAddNull() {
+        assertFalse(graph.add((GraphElement) null));
+    }
+
+    @Test
     public void testConstructors() {
         PropertyGraph empty = new PropertyGraph();
         assertTrue(empty.isEmpty());
