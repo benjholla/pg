@@ -15,8 +15,8 @@ import io.github.benjholla.pg.Node.NodeDirection;
 
 public abstract class AbstractGraph implements Graph {
 
-	protected NodeSet nodes;
-	protected EdgeSet edges;
+	private NodeSet nodes;
+	private EdgeSet edges;
 	private Map<Node, EdgeSet> inEdgesMap;
 	private Map<Node, EdgeSet> outEdgesMap;
 	
@@ -374,9 +374,9 @@ public abstract class AbstractGraph implements Graph {
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
 		if(direction == NodeDirection.IN){
-			return getInEdgesToNode(node).orElseGet(EdgeSet::new);
+			return getInEdgesToNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
 		} else {
-			return getOutEdgesFromNode(node).orElseGet(EdgeSet::new);
+			return getOutEdgesFromNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
 		}
 	}
 	
