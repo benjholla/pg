@@ -15,10 +15,10 @@ import io.github.benjholla.pg.Node.NodeDirection;
 
 public abstract class AbstractGraph implements Graph {
 
-	protected NodeSet nodes;
-	protected EdgeSet edges;
-	protected Map<Node, EdgeSet> inEdgesMap;
-	protected Map<Node, EdgeSet> outEdgesMap;
+	private NodeSet nodes;
+	private EdgeSet edges;
+	private Map<Node, EdgeSet> inEdgesMap;
+	private Map<Node, EdgeSet> outEdgesMap;
 	
 	/**
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
@@ -254,9 +254,8 @@ public abstract class AbstractGraph implements Graph {
 	 * @param node
 	 * @return The set of incoming edges to the given node
 	 */
-	protected EdgeSet getInEdgesToNode(Node node){
-		EdgeSet inEdges = inEdgesMap.get(node);
-		return inEdges != null ? new EdgeSet(inEdges) : new EdgeSet();
+	protected Optional<EdgeSet> getInEdgesToNode(Node node){
+		return Optional.ofNullable(inEdgesMap.get(node));
 	}
 	
 	/**
@@ -265,16 +264,15 @@ public abstract class AbstractGraph implements Graph {
 	 * @param node
 	 * @return The set of out-coming edges from the given node
 	 */
-	protected EdgeSet getOutEdgesFromNode(Node node){
-		EdgeSet outEdges = outEdgesMap.get(node);
-		return outEdges != null ? new EdgeSet(outEdges) : new EdgeSet();
+	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
+		return Optional.ofNullable(outEdgesMap.get(node));
 	}
 	
 	@Override
 	public Optional<GraphElement> getGraphElementById(ElementId id) {
 		for(Node node : nodes()) {
 			if(node.getId().equals(id)) {
-			    Optional.of(node);
+			    return Optional.of(node);
 			}
 		}
 		for(Edge edge : edges()) {
@@ -338,15 +336,21 @@ public abstract class AbstractGraph implements Graph {
 			boolean result = false;
 			Node node = (Node) graphElement;
 			result |= nodes().remove(node);
-			EdgeSet inEdges = getInEdgesToNode(node);
-			for (Edge edge : inEdges) {
-				edges().remove(edge);
-				result = true;
+			Optional<EdgeSet> inEdgesOpt = getInEdgesToNode(node);
+			if (inEdgesOpt.isPresent()) {
+				EdgeSet inEdges = new EdgeSet(inEdgesOpt.get());
+				for (Edge edge : inEdges) {
+					edges().remove(edge);
+					result = true;
+				}
 			}
-			EdgeSet outEdges = getOutEdgesFromNode(node);
-			for (Edge edge : outEdges) {
-				edges().remove(edge);
-				result = true;
+			Optional<EdgeSet> outEdgesOpt = getOutEdgesFromNode(node);
+			if (outEdgesOpt.isPresent()) {
+				EdgeSet outEdges = new EdgeSet(outEdgesOpt.get());
+				for (Edge edge : outEdges) {
+					edges().remove(edge);
+					result = true;
+				}
 			}
 			return result;
 		}
@@ -370,9 +374,9 @@ public abstract class AbstractGraph implements Graph {
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
 		if(direction == NodeDirection.IN){
-			return getInEdgesToNode(node);
+			return getInEdgesToNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
 		} else {
-			return getOutEdgesFromNode(node);
+			return getOutEdgesFromNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
 		}
 	}
 	
@@ -412,10 +416,11 @@ public abstract class AbstractGraph implements Graph {
 	public NodeSet predecessors(NodeSet origin){
 		NodeSet result = new NodeSet();
 		for(Node node : origin){
-			EdgeSet inEdges = getInEdgesToNode(node);
-			for(Edge edge : inEdges){
-				result.add(edge.from());
-			}
+			getInEdgesToNode(node).ifPresent(inEdges -> {
+				for(Edge edge : inEdges){
+					result.add(edge.from());
+				}
+			});
 		}
 		return result;
 	}
@@ -434,10 +439,11 @@ public abstract class AbstractGraph implements Graph {
 	public NodeSet successors(NodeSet origin){
 		NodeSet result = new NodeSet();
 		for(Node node : origin){
-			EdgeSet outEdges = getOutEdgesFromNode(node);
-			for(Edge edge : outEdges){
-				result.add(edge.to());
-			}
+			getOutEdgesFromNode(node).ifPresent(outEdges -> {
+				for(Edge edge : outEdges){
+					result.add(edge.to());
+				}
+			});
 		}
 		return result;
 	}
@@ -449,17 +455,17 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public Graph forwardStep(Graph origin){
-		Graph result = newGraph();
-		result.addAll(origin.nodes());
+		Graph result = newGraph(origin);
 		for(Node node : origin.nodes()){
-			EdgeSet outEdges = getOutEdgesFromNode(node);
-			for(Edge edge : outEdges){
-				result.nodes().add(edge.from());
-				result.nodes().add(edge.to());
-				result.edges().add(edge);
-			}
+			getOutEdgesFromNode(node).ifPresent(outEdges -> {
+				for(Edge edge : outEdges){
+					result.nodes().add(edge.from());
+					result.nodes().add(edge.to());
+					result.edges().add(edge);
+				}
+			});
 		}
-		return result.union(origin);
+		return result;
 	}
 	
 	@Override
@@ -474,17 +480,17 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public Graph reverseStep(Graph origin){
-		Graph result = newGraph();
-		result.addAll(origin.nodes());
+		Graph result = newGraph(origin);
 		for(Node node : origin.nodes()){
-			EdgeSet inEdges = getInEdgesToNode(node);
-			for(Edge edge : inEdges){
-				result.nodes().add(edge.from());
-				result.nodes().add(edge.to());
-				result.edges().add(edge);
-			}
+			getInEdgesToNode(node).ifPresent(inEdges -> {
+				for(Edge edge : inEdges){
+					result.nodes().add(edge.from());
+					result.nodes().add(edge.to());
+					result.edges().add(edge);
+				}
+			});
 		}
-		return result.union(origin);
+		return result;
 	}
 	
 	@Override
@@ -673,20 +679,21 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public Graph forward(Graph origin){
-		Graph result = newGraph();
-		result.nodes().addAll(origin.nodes());
+		Graph result = newGraph(origin);
 		NodeSet frontier = new NodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
-			for(Edge edge : forwardStep(next).edges()){
-				if(result.nodes().add(edge.to())){
-					frontier.add(edge.to());
+			getOutEdgesFromNode(next).ifPresent(outEdges -> {
+				for(Edge edge : outEdges){
+					if(result.nodes().add(edge.to())){
+						frontier.add(edge.to());
+					}
+					result.edges().add(edge);
 				}
-				result.edges().add(edge);
-			}
+			});
 		}
-		return result.union(origin);
+		return result;
 	}
 	
 	@Override
@@ -701,20 +708,21 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public Graph reverse(Graph origin){
-		Graph result = newGraph();
-		result.nodes().addAll(origin.nodes());
+		Graph result = newGraph(origin);
 		NodeSet frontier = new NodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
-			for(Edge edge : reverseStep(next).edges()){
-				if(result.nodes().add(edge.from())){
-					frontier.add(edge.from());
+			getInEdgesToNode(next).ifPresent(inEdges -> {
+				for(Edge edge : inEdges){
+					if(result.nodes().add(edge.from())){
+						frontier.add(edge.from());
+					}
+					result.edges().add(edge);
 				}
-				result.edges().add(edge);
-			}
+			});
 		}
-		return result.union(origin);
+		return result;
 	}
 	
 	@Override
@@ -774,10 +782,9 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet nodesTaggedWithAny(String... tags){
-	    Set<String> tagSet = Arrays.stream(tags).collect(Collectors.toSet());
         NodeSet result = new NodeSet();
         for(Node node : nodes()){
-            for(String tag : tagSet){
+            for(String tag : tags){
                 if(node.tags().contains(tag)){
                     result.add(node);
                     break;
@@ -789,11 +796,10 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet nodesTaggedWithAll(String... tags){
-	    Set<String> tagSet = Arrays.stream(tags).collect(Collectors.toSet());
         NodeSet result = new NodeSet();
         for(Node node : nodes()){
             boolean add = true;
-            for(String tag : tagSet){
+            for(String tag : tags){
                 if(!node.tags().contains(tag)){
                     add = false;
                     break;
@@ -813,10 +819,9 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public EdgeSet edgesTaggedWithAny(String... tags){
-	    Set<String> tagSet = Arrays.stream(tags).collect(Collectors.toSet());
         EdgeSet result = new EdgeSet();
         for(Edge edge : edges){
-            for(String tag : tagSet){
+            for(String tag : tags){
                 if(edge.tags().contains(tag)){
                     result.add(edge);
                     break;
@@ -828,11 +833,10 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public EdgeSet edgesTaggedWithAll(String... tags){
-	    Set<String> tagSet = Arrays.stream(tags).collect(Collectors.toSet());
         EdgeSet result = new EdgeSet();
         for(Edge edge : edges){
             boolean add = true;
-            for(String tag : tagSet){
+            for(String tag : tags){
                 if(!edge.tags().contains(tag)){
                     add = false;
                     break;

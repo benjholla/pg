@@ -125,15 +125,13 @@ public class NodeSet implements Collection<Node> {
         NodeSet result = new NodeSet();
         if(attribute != null && values != null){
             for(Node node : this){
-                if(node.hasAttr(attribute)) {
-                    Object attributeValue = node.attributes().get(attribute);
-                    if(attributeValue != null) {
-                        for(Object value : values) {
-                            if(value != null) {
-                                if(Objects.equals(attributeValue, value)) {
-                                    result.add(node);
-                                    break;
-                                }
+                Object attributeValue = node.getAttr(attribute);
+                if(attributeValue != null) {
+                    for(Object value : values) {
+                        if(value != null) {
+                            if(Objects.equals(attributeValue, value)) {
+                                result.add(node);
+                                break;
                             }
                         }
                     }
