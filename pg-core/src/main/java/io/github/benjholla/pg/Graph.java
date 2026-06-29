@@ -248,21 +248,17 @@ public interface Graph {
 	public Graph reverseStep(NodeSet origin);
 	
 	/**
-	 * Yields the union of this graph and the given graphs. That is, the
-	 * resulting graph's nodes are the union of all nodes, and likewise for
-	 * edges.
+	 * Yields the union of this graph and a new graph formed by the given nodes.
 	 * 
-	 * @param graphs
+	 * @param nodes
 	 * @return
 	 */
 	public Graph union(Node... nodes);
 	
 	/**
-	 * Yields the union of this graph and the given graphs. That is, the
-	 * resulting graph's nodes are the union of all nodes, and likewise for
-	 * edges.
+	 * Yields the union of this graph and a new graph formed by the given edges.
 	 * 
-	 * @param graphs
+	 * @param edges
 	 * @return
 	 */
 	public Graph union(Edge... edges);
@@ -278,25 +274,17 @@ public interface Graph {
 	public Graph union(Graph... graphs);
 	
 	/**
-	 * Select this graph, excluding the graphs g. Note that, because
-	 * an edge is only in a graph if it's nodes are in a graph, removing an edge
-	 * will necessarily remove the nodes it connects as well. Removing either
-	 * node would remove the edge as well.
+	 * Select this graph, excluding the given nodes. Note that, because
+	 * an edge is only in a graph if it's nodes are in a graph, removing a node
+	 * will necessarily remove the edges it connects as well.
 	 * 
-	 * This behavior may seem counter-intuitive if one is thinking in terms of
-	 * removing a single edge from a graph. Consider the graphs: - g1: a -> b ->
-	 * c - g2: a -> b g1.remove(g2) yields the graph containing only node c:
-	 * because b is removed, so b -> c is also removed. In general, this
-	 * operation is useful for removing nodes from a graph, but may not be as
-	 * useful for operating on edges.
-	 * 
-	 * @param graphs
+	 * @param nodes
 	 * @return
 	 */
 	public Graph difference(Node... nodes);
 	
 	/**
-	 * Select this graph, excluding the graphs g. Note that, because
+	 * Select this graph, excluding the given edges. Note that, because
 	 * an edge is only in a graph if it's nodes are in a graph, removing an edge
 	 * will necessarily remove the nodes it connects as well. Removing either
 	 * node would remove the edge as well.
@@ -308,7 +296,7 @@ public interface Graph {
 	 * operation is useful for removing nodes from a graph, but may not be as
 	 * useful for operating on edges.
 	 * 
-	 * @param graphs
+	 * @param edges
 	 * @return
 	 */
 	public Graph difference(Edge... edges);
@@ -332,9 +320,9 @@ public interface Graph {
 	public Graph difference(Graph... graphs);
 	
 	/**
-	 * Select this graph, excluding the edges from the given graphs. 
+	 * Select this graph, excluding the given edges.
 	 * 
-	 * @param graphs
+	 * @param edges
 	 * @return
 	 */
 	public Graph differenceEdges(Edge... edges);
@@ -348,21 +336,21 @@ public interface Graph {
 	public Graph differenceEdges(Graph... graphs);
 	
 	/**
-	 * Yields the intersection of this graph and the given graphs. That is, the
-	 * resulting graph's nodes are the intersection of all node sets, and
-	 * likewise for edges.
+	 * Yields the intersection of this graph and a new graph formed by the given nodes.
+	 * That is, the resulting graph's nodes are the intersection of all node sets,
+	 * and likewise for edges.
 	 * 
-	 * @param graphs
+	 * @param nodes
 	 * @return
 	 */
 	public Graph intersection(Node... nodes);
 	
 	/**
-	 * Yields the intersection of this graph and the given graphs. That is, the
-	 * resulting graph's nodes are the intersection of all node sets, and
-	 * likewise for edges.
+	 * Yields the intersection of this graph and a new graph formed by the given edges.
+	 * That is, the resulting graph's nodes are the intersection of all node sets,
+	 * and likewise for edges.
 	 * 
-	 * @param graphs
+	 * @param edges
 	 * @return
 	 */
 	public Graph intersection(Edge... edges);
