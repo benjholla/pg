@@ -28,6 +28,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a graph new of the given nodes
      */
 	protected AbstractGraph(Node... nodes) {
+		this();
         for(Node node : nodes) {
             add(node);
         }
@@ -37,6 +38,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a graph new of the given nodes
      */
 	protected AbstractGraph(NodeSet nodes) {
+		this();
         addAll(nodes);
     }
 	
@@ -44,6 +46,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a new graph of the given edges and respective edge nodes
      */
 	protected AbstractGraph(Edge... edges) {
+		this();
         for(Edge edge : edges) {
             add(edge);
         }
@@ -53,6 +56,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a new graph of the given edges and respective edge nodes
      */
 	protected AbstractGraph(EdgeSet edges) {
+		this();
         for(Edge edge : edges) {
             add(edge);
         }
@@ -62,6 +66,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a new graph of the given edges and respective edge nodes
      */
 	protected AbstractGraph(NodeSet nodes, EdgeSet edges) {
+		this();
         addAll(nodes);
         addAll(edges);
     }
@@ -70,6 +75,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
 	protected AbstractGraph(Graph... graphs) {
+		this();
         for(Graph graph : graphs) {
             addAll(graph.nodes());
             addAll(graph.edges());
@@ -80,6 +86,7 @@ public abstract class AbstractGraph implements Graph {
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
 	protected AbstractGraph(Collection<Graph> graphs) {
+		this();
         for(Graph graph : graphs) {
             addAll(graph.nodes());
             addAll(graph.edges());
