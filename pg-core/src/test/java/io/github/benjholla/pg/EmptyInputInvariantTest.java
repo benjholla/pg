@@ -1,0 +1,33 @@
+package io.github.benjholla.pg;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EmptyInputInvariantTest {
+    private PropertyGraph graph;
+
+    @BeforeEach
+    public void setUp() {
+        graph = new PropertyGraph();
+        Node a = new Node(); Node b = new Node();
+        graph.add(new Edge(a, b));
+    }
+
+    @Test
+    public void testEmptyInputsToTraversals() {
+        Graph empty = new PropertyGraph();
+
+        Graph result1 = graph.forward(empty);
+        assertTrue(result1.isEmpty(), "forward(empty) should be empty");
+
+        Graph result2 = graph.reverse(empty);
+        assertTrue(result2.isEmpty(), "reverse(empty) should be empty");
+
+        Graph result3 = graph.forwardStep(empty);
+        assertTrue(result3.isEmpty(), "forwardStep(empty) should be empty");
+
+        Graph result4 = graph.reverseStep(empty);
+        assertTrue(result4.isEmpty(), "reverseStep(empty) should be empty");
+    }
+}

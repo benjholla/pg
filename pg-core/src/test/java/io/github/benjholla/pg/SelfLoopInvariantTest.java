@@ -1,0 +1,24 @@
+package io.github.benjholla.pg;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SelfLoopInvariantTest {
+    @Test
+    public void testSelfLoop() {
+        Node a = new Node();
+        Edge loop = new Edge(a, a);
+
+        PropertyGraph graph = new PropertyGraph(a);
+        graph.add(loop);
+
+        Graph result = graph.forward(a);
+        assertEquals(1, result.nodes().size());
+        assertEquals(1, result.edges().size());
+
+        Graph step = graph.forwardStep(a);
+        assertEquals(1, step.nodes().size());
+        assertEquals(1, step.edges().size());
+    }
+}
