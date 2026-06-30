@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
  */
 public class TagSet extends HashSet<String> {
 
+    private static final long serialVersionUID = 1L;
+
     public TagSet() {
         super();
     }

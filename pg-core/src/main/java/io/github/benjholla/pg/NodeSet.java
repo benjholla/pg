@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public class NodeSet extends HashSet<Node> {
     
+    private static final long serialVersionUID = 1L;
+
     public NodeSet() {
         super();
     }

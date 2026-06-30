@@ -22,7 +22,9 @@ public abstract class AbstractGraph implements Graph {
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
 	 */
 	protected class AdjacencyMaintainingEdgeSet extends EdgeSet {
-		private void addEdgeToMaps(Edge e) {
+        private static final long serialVersionUID = 1L;
+
+        private void addEdgeToMaps(Edge e) {
 			inEdgesMap.computeIfAbsent(e.to(), k -> new EdgeSet()).add(e);
 			outEdgesMap.computeIfAbsent(e.from(), k -> new EdgeSet()).add(e);
 		}

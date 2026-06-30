@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public class EdgeSet extends HashSet<Edge> {
     
+    private static final long serialVersionUID = 1L;
+
     public EdgeSet() {
         super();
     }
