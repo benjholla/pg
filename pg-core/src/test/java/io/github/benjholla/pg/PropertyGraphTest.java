@@ -87,7 +87,7 @@ public class PropertyGraphTest {
 
     @Test
     public void testAddNull() {
-        assertFalse(graph.add((GraphElement) null));
+        assertThrows(NullPointerException.class, () -> graph.add((GraphElement) null));
     }
 
     @Test

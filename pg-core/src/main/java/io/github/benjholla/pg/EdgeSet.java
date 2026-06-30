@@ -14,16 +14,19 @@ public class EdgeSet extends HashSet<Edge> {
     
     public EdgeSet(Edge initialEdge) {
         super();
-        add(initialEdge);
+        add(Objects.requireNonNull(initialEdge, "Edge cannot be null"));
     }
     
     public EdgeSet(Edge... initialEdges) {
         super();
-        Collections.addAll(this, initialEdges);
+        Objects.requireNonNull(initialEdges, "Edge array cannot be null");
+        for (Edge e : initialEdges) add(Objects.requireNonNull(e, "Edge cannot be null"));
     }
     
     public EdgeSet(Collection<Edge> initialEdges) {
-        super(initialEdges);
+        super();
+        Objects.requireNonNull(initialEdges, "Edge collection cannot be null");
+        for (Edge e : initialEdges) add(Objects.requireNonNull(e, "Edge cannot be null"));
     }
     
     /**
@@ -75,6 +78,22 @@ public class EdgeSet extends HashSet<Edge> {
        }
        return result;
    }
+
+
+    @Override
+    public boolean add(Edge e) {
+        return super.add(Objects.requireNonNull(e, "Edge cannot be null"));
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Edge> c) {
+        Objects.requireNonNull(c, "Edge collection cannot be null");
+        boolean modified = false;
+        for (Edge e : c) {
+            if (super.add(Objects.requireNonNull(e, "Edge cannot be null"))) modified = true;
+        }
+        return modified;
+    }
 
     @Override
     public String toString() {

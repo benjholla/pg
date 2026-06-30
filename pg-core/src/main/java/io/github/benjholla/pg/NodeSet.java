@@ -14,16 +14,19 @@ public class NodeSet extends HashSet<Node> {
     
     public NodeSet(Node initialNode) {
         super();
-        add(initialNode);
+        add(Objects.requireNonNull(initialNode, "Node cannot be null"));
     }
     
     public NodeSet(Node... initialNodes) {
         super();
-        Collections.addAll(this, initialNodes);
+        Objects.requireNonNull(initialNodes, "Node array cannot be null");
+        for (Node n : initialNodes) add(Objects.requireNonNull(n, "Node cannot be null"));
     }
     
     public NodeSet(Collection<Node> initialNodes) {
-        super(initialNodes);
+        super();
+        Objects.requireNonNull(initialNodes, "Node collection cannot be null");
+        for (Node n : initialNodes) add(Objects.requireNonNull(n, "Node cannot be null"));
     }
     
     /**
@@ -74,6 +77,22 @@ public class NodeSet extends HashSet<Node> {
             }
         }
         return result;
+    }
+
+
+    @Override
+    public boolean add(Node e) {
+        return super.add(Objects.requireNonNull(e, "Node cannot be null"));
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Node> c) {
+        Objects.requireNonNull(c, "Node collection cannot be null");
+        boolean modified = false;
+        for (Node e : c) {
+            if (super.add(Objects.requireNonNull(e, "Node cannot be null"))) modified = true;
+        }
+        return modified;
     }
 
     @Override
