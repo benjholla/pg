@@ -76,3 +76,6 @@ The foundation of this project relies on key interfaces located in the following
 - pg-core\src\main\java\io\github\benjholla\pg\Graph.java
 
 **CRITICAL RULE:** The public interfaces in these classes are considered STRICTLY STABLE. You must preserve them. Do not modify, refactor, or deprecate these public interfaces unless there is an exceptional architectural necessity. If you determine a change is absolutely required, you MUST explicitly raise it for discussion and provide a strong justification before proceeding with any modifications.
+
+# Repository Hygiene
+Clean up after yourself! Before opening a PR/MR, ensure no temporary or incidental development artifacts remain. Remove patch files, diff files, scratch notes, generated temporary outputs, debugging helpers, backup files, and other one-off artifacts unless they provide clear long-term value to the project. Leave the repository in a state that is clean, intentional, and easy for future contributors to navigate. Every committed file should justify its continued existence.
