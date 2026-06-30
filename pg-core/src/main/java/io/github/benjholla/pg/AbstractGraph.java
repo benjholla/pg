@@ -140,7 +140,7 @@ public abstract class AbstractGraph implements Graph {
 	}
 	
 	/**
-     * Constructs a graph new of the given nodes
+     * Constructs a new graph of the given nodes
      */
 	protected AbstractGraph(Node... nodes) {
 		this();
@@ -152,7 +152,7 @@ public abstract class AbstractGraph implements Graph {
     }
     
     /**
-     * Constructs a graph new of the given nodes
+     * Constructs a new graph of the given nodes
      */
 	protected AbstractGraph(NodeSet nodes) {
 		this();
@@ -222,17 +222,16 @@ public abstract class AbstractGraph implements Graph {
     
     /**
      * Creates an empty graph of this graph kind
-     * @return
      */
     protected abstract Graph newGraph();
     
     /**
-     * Constructs a graph new of the given nodes of this graph kind
+     * Constructs a new graph of the given nodes of this graph kind
      */
     protected abstract Graph newGraph(Node... nodes);
     
     /**
-     * Constructs a graph new of the given nodes of this graph kind
+     * Constructs a new graph of the given nodes of this graph kind
      */
     protected abstract Graph newGraph(NodeSet nodes);
     
@@ -264,7 +263,6 @@ public abstract class AbstractGraph implements Graph {
 	/**
 	 * Gets incoming edges to node
 	 * 
-	 * @param node
 	 * @return The set of incoming edges to the given node
 	 */
 	protected Optional<EdgeSet> getInEdgesToNode(Node node){
@@ -274,7 +272,6 @@ public abstract class AbstractGraph implements Graph {
 	/**
 	 * Gets out-coming edges from node
 	 * 
-	 * @param node
 	 * @return The set of out-coming edges from the given node
 	 */
 	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){

@@ -12,14 +12,14 @@ public class PropertyGraph extends AbstractGraph {
     }
     
     /**
-     * Constructs a graph new of the given nodes
+     * Constructs a new graph of the given nodes
      */
     public PropertyGraph(Node... nodes) {
         super(nodes);
     }
     
     /**
-     * Constructs a graph new of the given nodes
+     * Constructs a new graph of the given nodes
      */
     public PropertyGraph(NodeSet nodes) {
         super(nodes);
