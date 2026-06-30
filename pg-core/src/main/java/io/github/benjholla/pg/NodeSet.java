@@ -1,7 +1,6 @@
 package io.github.benjholla.pg;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +32,6 @@ public class NodeSet extends HashSet<Node> {
     
     /**
      * Return any node in the set or empty if none exist
-     * @return
      */
     public Optional<Node> one() {
         return stream().findAny();
@@ -41,9 +39,6 @@ public class NodeSet extends HashSet<Node> {
     
     /**
      * Returns a node set filtered to nodes with the attribute key and value
-     * @param attribute
-     * @param value
-     * @return
      */
     public NodeSet filter(String attribute){
         NodeSet result = new NodeSet();
@@ -57,9 +52,6 @@ public class NodeSet extends HashSet<Node> {
     
     /**
      * Returns a node set filtered to nodes with the attribute key and value
-     * @param attribute
-     * @param value
-     * @return
      */
     public NodeSet filter(String attribute, Object... values){
         NodeSet result = new NodeSet();

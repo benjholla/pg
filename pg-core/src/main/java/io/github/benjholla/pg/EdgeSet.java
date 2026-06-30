@@ -1,7 +1,6 @@
 package io.github.benjholla.pg;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +32,6 @@ public class EdgeSet extends HashSet<Edge> {
     
     /**
      * Return any edge in the set or empty if none exist
-     * @return
      */
     public Optional<Edge> one() {
         return stream().findAny();
@@ -41,9 +39,6 @@ public class EdgeSet extends HashSet<Edge> {
     
    /**
     * Returns a edge set filtered to edges with the attribute key and value
-    * @param attribute
-    * @param value
-    * @return
     */
    public EdgeSet filter(String attribute){
        EdgeSet result = new EdgeSet();
@@ -57,9 +52,6 @@ public class EdgeSet extends HashSet<Edge> {
    
    /**
     * Returns a edge set filtered to edges with the attribute key and value
-    * @param attribute
-    * @param value
-    * @return
     */
    public EdgeSet filter(String attribute, Object... values){
        EdgeSet result = new EdgeSet();
