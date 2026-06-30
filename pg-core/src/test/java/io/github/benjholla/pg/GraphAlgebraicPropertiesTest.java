@@ -117,4 +117,17 @@ public class GraphAlgebraicPropertiesTest {
         // ∅ \ A == ∅
         assertGraphsEqual(empty, empty.difference(gA));
     }
+
+    @Test
+    public void testDistributiveProperties() {
+        // A ∩ (B U C) == (A ∩ B) U (A ∩ C)
+        Graph aIntersect_BUnionC = gA.intersection(gB.union(gC));
+        Graph aIntersectB_Union_aIntersectC = gA.intersection(gB).union(gA.intersection(gC));
+        assertGraphsEqual(aIntersect_BUnionC, aIntersectB_Union_aIntersectC);
+
+        // A U (B ∩ C) == (A U B) ∩ (A U C)
+        Graph aUnion_BIntersectC = gA.union(gB.intersection(gC));
+        Graph aUnionB_Intersect_aUnionC = gA.union(gB).intersection(gA.union(gC));
+        assertGraphsEqual(aUnion_BIntersectC, aUnionB_Intersect_aUnionC);
+    }
 }
