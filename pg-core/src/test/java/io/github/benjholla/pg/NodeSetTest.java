@@ -90,6 +90,12 @@ public class NodeSetTest {
 
         NodeSet nullVals = nodeSet.filter("type", (Object[]) null);
         assertTrue(nullVals.isEmpty());
+
+        NodeSet nullAttrOnly = nodeSet.filter((String) null);
+        assertTrue(nullAttrOnly.isEmpty());
+
+        NodeSet nullAttrAndNullVals = nodeSet.filter(null, (Object[]) null);
+        assertTrue(nullAttrAndNullVals.isEmpty());
     }
 
     @Test
