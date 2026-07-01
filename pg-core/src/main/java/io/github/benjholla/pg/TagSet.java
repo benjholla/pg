@@ -3,7 +3,6 @@ package io.github.benjholla.pg;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Tags denote set membership
@@ -34,11 +33,6 @@ public class TagSet extends HashSet<String> {
             if (super.add(Objects.requireNonNull(e, "Tag cannot be null"))) modified = true;
         }
         return modified;
-    }
-
-    @Override
-    public String toString() {
-        return "TagSet [tags=" + stream().collect(Collectors.joining(", ")) + "]";
     }
 
 }

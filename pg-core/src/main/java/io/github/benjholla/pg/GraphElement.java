@@ -1,7 +1,7 @@
 package io.github.benjholla.pg;
 
-import java.util.HashMap;
-import java.util.Map;
+
+
 import java.util.Objects;
 
 public abstract class GraphElement {
@@ -11,12 +11,12 @@ public abstract class GraphElement {
 	private TagSet tags;
 	
 	// attributes define specialized graph properties
-	private Map<String,Object> attributes;
+	private AttributeMap attributes;
 	
 	protected GraphElement() {
 		this.id = ElementIdFactory.INSTANCE.create();
 		this.tags = new TagSet();
-		this.attributes = new HashMap<String,Object>();
+		this.attributes = new AttributeMap();
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public abstract class GraphElement {
 	 *
 	 * @return the attribute map
 	 */
-	public Map<String,Object> attributes(){
+	public AttributeMap attributes(){
 		return attributes;
 	}
 	
