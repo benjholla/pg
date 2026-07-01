@@ -19,8 +19,9 @@ import io.github.benjholla.pg.Node.NodeDirection;
  * "single-use" base class. In the long-term CHPG vision, this library supports
  * two primary graph modes:
  * <ul>
- *   <li>{@link PropertyGraph} (Write-Optimized / EphemeralGraph)</li>
+ *   <li>{@link HeavyGraph} (Write-Optimized / Standalone (Heavy) Graph</li>
  *   <li>UniverseGraph (Read-Optimized, backed by a central registry/universe)</li>
+ *   <li>EphemeralGraph (Write-Optimized, promotable to registry/universe)</li>
  * </ul>
  *
  * This base class acts as the common abstraction for operational algorithms,
@@ -302,14 +303,14 @@ public abstract class AbstractGraph implements Graph {
 	}
 	
 	@Override
-	public Optional<GraphElement> getGraphElementById(ElementId id) {
+	public Optional<GraphElement> getGraphElementById(int id) {
 		for(Node node : nodes()) {
-			if(node.getId().equals(id)) {
+			if(node.id() == id) {
 			    return Optional.of(node);
 			}
 		}
 		for(Edge edge : edges()) {
-			if(edge.getId().equals(id)) {
+			if(edge.id() == id) {
 			    return Optional.of(edge);
 			}
 		}
@@ -317,9 +318,9 @@ public abstract class AbstractGraph implements Graph {
 	}
 	
 	@Override
-	public Optional<Node> getNodeById(ElementId id) {
+	public Optional<Node> getNodeById(int id) {
 		for(Node node : nodes()) {
-			if(node.getId().equals(id)) {
+			if(node.id() == id) {
 				return Optional.of(node);
 			}
 		}
@@ -327,9 +328,9 @@ public abstract class AbstractGraph implements Graph {
 	}
 	
 	@Override
-	public Optional<Edge> getEdgeById(ElementId id) {
+	public Optional<Edge> getEdgeById(int id) {
 		for(Edge edge : edges()) {
-			if(edge.getId().equals(id)) {
+			if(edge.id() == id) {
 				return Optional.of(edge);
 			}
 		}

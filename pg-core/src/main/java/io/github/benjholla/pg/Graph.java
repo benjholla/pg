@@ -22,17 +22,17 @@ public interface Graph {
 	/**
 	 * Returns the graph element denoted by the given id if one exists
 	 */
-	public Optional<GraphElement> getGraphElementById(ElementId id);
+	public Optional<GraphElement> getGraphElementById(int id);
 	
 	/**
 	 * Returns the node denoted by the given id if one exists
 	 */
-	public Optional<Node> getNodeById(ElementId id);
+	public Optional<Node> getNodeById(int id);
 	
 	/**
 	 * Returns the edge denoted by the given id if one exists
 	 */
-	public Optional<Edge> getEdgeById(ElementId id);
+	public Optional<Edge> getEdgeById(int id);
 	
 	/**
 	 * Add a graph element to the graph

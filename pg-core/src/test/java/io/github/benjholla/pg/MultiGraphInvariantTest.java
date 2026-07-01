@@ -15,7 +15,7 @@ public class MultiGraphInvariantTest {
         Edge e2 = new Edge(a, b);
         e2.tags().add("type2");
 
-        PropertyGraph graph = new PropertyGraph(a, b);
+        HeavyGraph graph = new HeavyGraph(a, b);
         graph.add(e1);
         graph.add(e2);
 

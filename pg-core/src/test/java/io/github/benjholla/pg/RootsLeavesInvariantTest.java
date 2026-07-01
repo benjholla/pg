@@ -8,7 +8,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testRootsHaveNoInEdges() {
         Node a = new Node(); Node b = new Node(); Node c = new Node();
-        PropertyGraph graph = new PropertyGraph();
+        HeavyGraph graph = new HeavyGraph();
         graph.add(new Edge(a, b));
         graph.add(new Edge(b, c));
 
@@ -28,7 +28,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testLeavesHaveNoOutEdges() {
         Node a = new Node(); Node b = new Node(); Node c = new Node();
-        PropertyGraph graph = new PropertyGraph();
+        HeavyGraph graph = new HeavyGraph();
         graph.add(new Edge(a, b));
         graph.add(new Edge(b, c));
 
@@ -48,7 +48,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testIsolatedNodesAreBothRootsAndLeaves() {
         Node isolated = new Node();
-        PropertyGraph graph = new PropertyGraph(isolated);
+        HeavyGraph graph = new HeavyGraph(isolated);
 
         assertTrue(graph.roots().contains(isolated), "Isolated node is a root");
         assertTrue(graph.leaves().contains(isolated), "Isolated node is a leaf");
@@ -57,7 +57,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = new Node(); Node b = new Node(); Node c = new Node();
-        PropertyGraph graph = new PropertyGraph();
+        HeavyGraph graph = new HeavyGraph();
         graph.add(new Edge(a, b));
         graph.add(new Edge(b, c));
         graph.add(new Edge(c, a));

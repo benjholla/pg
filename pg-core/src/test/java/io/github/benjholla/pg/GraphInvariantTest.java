@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GraphInvariantTest {
 
-    private PropertyGraph graph;
+    private HeavyGraph graph;
     private Node a, b, c;
     private Edge ab, bc, ca;
 
@@ -23,7 +23,7 @@ public class GraphInvariantTest {
         bc = new Edge(b, c);
         ca = new Edge(c, a);
 
-        graph = new PropertyGraph(a, b, c);
+        graph = new HeavyGraph(a, b, c);
         graph.add(ab);
         graph.add(bc);
         graph.add(ca);

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GraphAlgebraicPropertiesTest {
 
-    private PropertyGraph gA, gB, gC;
+    private HeavyGraph gA, gB, gC;
     private Node a, b, c, d, e;
     private Edge ab, bc, cd, de;
 
@@ -27,14 +27,14 @@ public class GraphAlgebraicPropertiesTest {
         cd = new Edge(c, d);
         de = new Edge(d, e);
 
-        gA = new PropertyGraph(a, b, c);
+        gA = new HeavyGraph(a, b, c);
         gA.add(ab);
         gA.add(bc);
 
-        gB = new PropertyGraph(c, d);
+        gB = new HeavyGraph(c, d);
         gB.add(cd);
 
-        gC = new PropertyGraph(a, b, d, e);
+        gC = new HeavyGraph(a, b, d, e);
         gC.add(ab);
         gC.add(de);
     }
@@ -101,7 +101,7 @@ public class GraphAlgebraicPropertiesTest {
 
     @Test
     public void testIdentityOperations() {
-        PropertyGraph empty = new PropertyGraph();
+        HeavyGraph empty = new HeavyGraph();
 
         // A U ∅ == A
         assertGraphsEqual(gA, gA.union(empty));

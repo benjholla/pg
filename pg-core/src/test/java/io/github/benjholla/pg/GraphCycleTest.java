@@ -15,7 +15,7 @@ public class GraphCycleTest {
         Edge bc = new Edge(b, c);
         Edge ca = new Edge(c, a); // Cycle!
 
-        PropertyGraph graph = new PropertyGraph(a, b, c);
+        HeavyGraph graph = new HeavyGraph(a, b, c);
         graph.add(ab);
         graph.add(bc);
         graph.add(ca);

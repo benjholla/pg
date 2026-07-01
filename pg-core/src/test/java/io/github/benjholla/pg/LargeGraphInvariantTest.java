@@ -10,7 +10,7 @@ public class LargeGraphInvariantTest {
         // Create a large linearly connected graph to verify we don't hit StackOverflowError
         // due to recursive implementations
         int size = 10000;
-        PropertyGraph graph = new PropertyGraph();
+        HeavyGraph graph = new HeavyGraph();
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {

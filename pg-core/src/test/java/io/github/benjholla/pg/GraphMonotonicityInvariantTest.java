@@ -10,12 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GraphMonotonicityInvariantTest {
 
-    private PropertyGraph graph;
+    private HeavyGraph graph;
     private Node a, b, c, d, e, f, g;
 
     @BeforeEach
     public void setUp() {
-        graph = new PropertyGraph();
+        graph = new HeavyGraph();
         a = new Node(); b = new Node(); c = new Node(); d = new Node();
         e = new Node(); f = new Node(); g = new Node();
 

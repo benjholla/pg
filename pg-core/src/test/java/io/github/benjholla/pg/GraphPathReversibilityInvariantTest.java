@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GraphPathReversibilityInvariantTest {
 
-    private PropertyGraph graph;
+    private HeavyGraph graph;
     private Node a, b, c, d, e;
 
     @BeforeEach
     public void setUp() {
-        graph = new PropertyGraph();
+        graph = new HeavyGraph();
         a = new Node(); b = new Node(); c = new Node();
         d = new Node(); e = new Node();
 

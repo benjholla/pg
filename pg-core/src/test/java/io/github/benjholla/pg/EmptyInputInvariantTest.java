@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EmptyInputInvariantTest {
-    private PropertyGraph graph;
+    private HeavyGraph graph;
 
     @BeforeEach
     public void setUp() {
-        graph = new PropertyGraph();
+        graph = new HeavyGraph();
         Node a = new Node(); Node b = new Node();
         graph.add(new Edge(a, b));
     }
 
     @Test
     public void testEmptyInputsToTraversals() {
-        Graph empty = new PropertyGraph();
+        Graph empty = new HeavyGraph();
 
         Graph result1 = graph.forward(empty);
         assertTrue(result1.isEmpty(), "forward(empty) should be empty");

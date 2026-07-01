@@ -6,15 +6,15 @@ import java.util.Objects;
 
 public abstract class GraphElement {
 	
-	private ElementId id;
+	private final int id;
 	
-	private TagSet tags;
+	private final TagSet tags;
 	
 	// attributes define specialized graph properties
-	private AttributeMap attributes;
+	private final AttributeMap attributes;
 	
 	protected GraphElement() {
-		this.id = ElementIdFactory.INSTANCE.create();
+		this.id = IdGenerator.INSTANCE.create();
 		this.tags = new TagSet();
 		this.attributes = new AttributeMap();
 	}
@@ -37,7 +37,7 @@ public abstract class GraphElement {
 		return attributes;
 	}
 	
-	public ElementId getId() {
+	public int id() {
 		return id;
 	}
 	

@@ -25,17 +25,17 @@ public class NullElementTest {
     }
 
     @Test
-    public void testPropertyGraphConstructorsNull() {
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((Node[]) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph(new Node[]{null}));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((NodeSet) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((Edge[]) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((NodeSet) null, (EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph(new Graph[]{null}));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph((java.util.Collection<Graph>) null));
-        assertThrows(NullPointerException.class, () -> new PropertyGraph(java.util.Arrays.asList((Graph) null)));
+    public void testHeavyGraphConstructorsNull() {
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((Node[]) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((NodeSet) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((Edge[]) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph(new Edge[]{null}));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((EdgeSet) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((NodeSet) null, (EdgeSet) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((Graph[]) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph(new Graph[]{null}));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph((java.util.Collection<Graph>) null));
+        assertThrows(NullPointerException.class, () -> new HeavyGraph(java.util.Arrays.asList((Graph) null)));
     }
 }

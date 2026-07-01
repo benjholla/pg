@@ -2,102 +2,102 @@ package io.github.benjholla.pg;
 
 import java.util.Collection;
 
-public class PropertyGraph extends AbstractGraph {
+public class HeavyGraph extends AbstractGraph {
 
     /**
      * Constructs a new empty graph
      */
-    public PropertyGraph() {
+    public HeavyGraph() {
         super();
     }
     
     /**
      * Constructs a new graph of the given nodes
      */
-    public PropertyGraph(Node... nodes) {
+    public HeavyGraph(Node... nodes) {
         super(nodes);
     }
     
     /**
      * Constructs a new graph of the given nodes
      */
-    public PropertyGraph(NodeSet nodes) {
+    public HeavyGraph(NodeSet nodes) {
         super(nodes);
     }
     
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    public PropertyGraph(Edge... edges) {
+    public HeavyGraph(Edge... edges) {
         super(edges);
     }
     
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    public PropertyGraph(EdgeSet edges) {
+    public HeavyGraph(EdgeSet edges) {
         super(edges);
     }
     
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    public PropertyGraph(NodeSet nodes, EdgeSet edges) {
+    public HeavyGraph(NodeSet nodes, EdgeSet edges) {
         super(nodes, edges);
     }
     
     /**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-    public PropertyGraph(Graph... graphs) {
+    public HeavyGraph(Graph... graphs) {
         super(graphs);
     }
     
     /**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-    public PropertyGraph(Collection<Graph> graphs) {
+    public HeavyGraph(Collection<Graph> graphs) {
         super(graphs);
     }
     
     @Override
-    protected PropertyGraph newGraph() {
-        return new PropertyGraph();
+    protected HeavyGraph newGraph() {
+        return new HeavyGraph();
     }
 
     @Override
-    protected PropertyGraph newGraph(Node... nodes) {
-        return new PropertyGraph(nodes);
+    protected HeavyGraph newGraph(Node... nodes) {
+        return new HeavyGraph(nodes);
     }
 
     @Override
-    protected PropertyGraph newGraph(NodeSet nodes) {
-        return new PropertyGraph(nodes);
+    protected HeavyGraph newGraph(NodeSet nodes) {
+        return new HeavyGraph(nodes);
     }
 
     @Override
-    protected PropertyGraph newGraph(Edge... edges) {
-        return new PropertyGraph(edges);
+    protected HeavyGraph newGraph(Edge... edges) {
+        return new HeavyGraph(edges);
     }
 
     @Override
-    protected PropertyGraph newGraph(EdgeSet edges) {
-        return new PropertyGraph(edges);
+    protected HeavyGraph newGraph(EdgeSet edges) {
+        return new HeavyGraph(edges);
     }
 
     @Override
-    protected PropertyGraph newGraph(NodeSet nodes, EdgeSet edges) {
-        return new PropertyGraph(nodes, edges);
+    protected HeavyGraph newGraph(NodeSet nodes, EdgeSet edges) {
+        return new HeavyGraph(nodes, edges);
     }
 
     @Override
-    protected PropertyGraph newGraph(Graph... graphs) {
-        return new PropertyGraph(graphs);
+    protected HeavyGraph newGraph(Graph... graphs) {
+        return new HeavyGraph(graphs);
     }
 
     @Override
-    protected PropertyGraph newGraph(Collection<Graph> graphs) {
-        return new PropertyGraph(graphs);
+    protected HeavyGraph newGraph(Collection<Graph> graphs) {
+        return new HeavyGraph(graphs);
     }
 	
 }

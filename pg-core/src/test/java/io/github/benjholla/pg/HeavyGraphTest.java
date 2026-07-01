@@ -4,15 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PropertyGraphTest {
+public class HeavyGraphTest {
 
-    private PropertyGraph graph;
+    private HeavyGraph graph;
     private Node a, b, c, d, e, f, g;
     private Edge ab, bc, cb, cd, de, dg;
 
     @BeforeEach
     public void setUp() {
-        graph = new PropertyGraph();
+        graph = new HeavyGraph();
 
         a = new Node();
         a.attributes().put("name", "a");
@@ -92,32 +92,32 @@ public class PropertyGraphTest {
 
     @Test
     public void testConstructors() {
-        PropertyGraph empty = new PropertyGraph();
+        HeavyGraph empty = new HeavyGraph();
         assertTrue(empty.isEmpty());
 
-        PropertyGraph withNodes = new PropertyGraph(a, b);
+        HeavyGraph withNodes = new HeavyGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
 
-        PropertyGraph withNodeSet = new PropertyGraph(new NodeSet(a, b));
+        HeavyGraph withNodeSet = new HeavyGraph(new NodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        PropertyGraph withEdges = new PropertyGraph(ab, bc);
+        HeavyGraph withEdges = new HeavyGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        PropertyGraph withEdgeSet = new PropertyGraph(new EdgeSet(ab, bc));
+        HeavyGraph withEdgeSet = new HeavyGraph(new EdgeSet(ab, bc));
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
-        PropertyGraph withSets = new PropertyGraph(new NodeSet(a, b, c), new EdgeSet(ab, bc));
+        HeavyGraph withSets = new HeavyGraph(new NodeSet(a, b, c), new EdgeSet(ab, bc));
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
-        PropertyGraph withGraphs = new PropertyGraph(withNodes, withEdges);
+        HeavyGraph withGraphs = new HeavyGraph(withNodes, withEdges);
         assertEquals(3, withGraphs.nodes().size());
         assertEquals(2, withGraphs.edges().size());
 
-        PropertyGraph withGraphsColl = new PropertyGraph(java.util.Arrays.asList(withNodes, withEdges));
+        HeavyGraph withGraphsColl = new HeavyGraph(java.util.Arrays.asList(withNodes, withEdges));
         assertEquals(3, withGraphsColl.nodes().size());
         assertEquals(2, withGraphsColl.edges().size());
     }
@@ -240,8 +240,8 @@ public class PropertyGraphTest {
 
     @Test
     public void testUnion() {
-        PropertyGraph g1 = new PropertyGraph(a, b);
-        PropertyGraph g2 = new PropertyGraph(c, d);
+        HeavyGraph g1 = new HeavyGraph(a, b);
+        HeavyGraph g2 = new HeavyGraph(c, d);
 
         Graph union = g1.union(g2);
         assertEquals(4, union.nodes().size());
@@ -256,7 +256,7 @@ public class PropertyGraphTest {
 
     @Test
     public void testDifference() {
-        PropertyGraph sub = new PropertyGraph(a, b, c);
+        HeavyGraph sub = new HeavyGraph(a, b, c);
         sub.add(ab);
         sub.add(bc);
 
@@ -272,7 +272,7 @@ public class PropertyGraphTest {
         assertTrue(diffEdges.nodes().contains(a));
         assertEquals(0, diffEdges.edges().size());
 
-        PropertyGraph g2 = new PropertyGraph(c);
+        HeavyGraph g2 = new HeavyGraph(c);
         Graph diffGraph = sub.difference(g2);
         assertEquals(2, diffGraph.nodes().size());
         assertTrue(diffGraph.nodes().contains(a));
@@ -283,7 +283,7 @@ public class PropertyGraphTest {
 
     @Test
     public void testDifferenceEdges() {
-        PropertyGraph sub = new PropertyGraph(a, b, c);
+        HeavyGraph sub = new HeavyGraph(a, b, c);
         sub.add(ab);
         sub.add(bc);
 
@@ -292,7 +292,7 @@ public class PropertyGraphTest {
         assertEquals(1, diffE.edges().size());
         assertTrue(diffE.edges().contains(bc));
 
-        PropertyGraph g2 = new PropertyGraph(bc);
+        HeavyGraph g2 = new HeavyGraph(bc);
         Graph diffG = sub.differenceEdges(g2);
         assertEquals(3, diffG.nodes().size());
         assertEquals(1, diffG.edges().size());
@@ -301,11 +301,11 @@ public class PropertyGraphTest {
 
     @Test
     public void testIntersection() {
-        PropertyGraph g1 = new PropertyGraph(a, b, c);
+        HeavyGraph g1 = new HeavyGraph(a, b, c);
         g1.add(ab);
         g1.add(bc);
 
-        PropertyGraph g2 = new PropertyGraph(b, c, d);
+        HeavyGraph g2 = new HeavyGraph(b, c, d);
         g2.add(bc);
         g2.add(cd);
 
@@ -327,7 +327,7 @@ public class PropertyGraphTest {
 
     @Test
     public void testInduce() {
-        PropertyGraph g1 = new PropertyGraph(a, b, c); // nodes only
+        HeavyGraph g1 = new HeavyGraph(a, b, c); // nodes only
 
         Graph induced = g1.induce(ab, bc, cd);
         assertEquals(3, induced.nodes().size());

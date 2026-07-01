@@ -6,6 +6,7 @@ public sealed interface AttributeValue permits
     AttributeValue.StringVal,
     AttributeValue.IntVal,
     AttributeValue.LongVal,
+    AttributeValue.FloatVal,
     AttributeValue.DoubleVal,
     AttributeValue.BooleanVal,
     AttributeValue.ByteArrayVal {
@@ -16,6 +17,7 @@ public sealed interface AttributeValue permits
     // 2. Primitives
     record IntVal(int value) implements AttributeValue {}
     record LongVal(long value) implements AttributeValue {}
+    record FloatVal(double value) implements AttributeValue {}
     record DoubleVal(double value) implements AttributeValue {}
     record BooleanVal(boolean value) implements AttributeValue {}
 

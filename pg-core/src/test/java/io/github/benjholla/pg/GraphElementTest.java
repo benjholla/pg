@@ -1,10 +1,16 @@
 package io.github.benjholla.pg;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GraphElementTest {
 
@@ -21,9 +27,9 @@ public class GraphElementTest {
 
     @Test
     public void testId() {
-        assertNotNull(element.getId());
+        assertNotNull(element.id());
         GraphElement element2 = new TestGraphElement();
-        assertNotEquals(element.getId(), element2.getId());
+        assertNotEquals(element.id(), element2.id());
     }
 
     @Test

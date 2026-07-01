@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphNullHandlingTest {
-    private PropertyGraph graph;
+    private HeavyGraph graph;
 
     @BeforeEach
     public void setup() {
-        graph = new PropertyGraph();
+        graph = new HeavyGraph();
     }
 
     @Test
@@ -106,7 +106,7 @@ public class GraphNullHandlingTest {
     @Test
     public void testBetweenNullHandling() {
         Node n = new Node();
-        Graph g = new PropertyGraph();
+        Graph g = new HeavyGraph();
         NodeSet ns = new NodeSet();
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.between(n, (Node) null));
@@ -119,7 +119,7 @@ public class GraphNullHandlingTest {
     @Test
     public void testBetweenStepNullHandling() {
         Node n = new Node();
-        Graph g = new PropertyGraph();
+        Graph g = new HeavyGraph();
         NodeSet ns = new NodeSet();
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.betweenStep(n, (Node) null));

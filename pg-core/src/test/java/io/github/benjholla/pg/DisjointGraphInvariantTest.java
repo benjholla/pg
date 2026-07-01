@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DisjointGraphInvariantTest {
-    private PropertyGraph graphA;
-    private PropertyGraph graphB;
+    private HeavyGraph graphA;
+    private HeavyGraph graphB;
 
     private Node a1, a2, b1, b2;
 
@@ -14,12 +14,12 @@ public class DisjointGraphInvariantTest {
     public void setUp() {
         a1 = new Node();
         a2 = new Node();
-        graphA = new PropertyGraph(a1, a2);
+        graphA = new HeavyGraph(a1, a2);
         graphA.add(new Edge(a1, a2));
 
         b1 = new Node();
         b2 = new Node();
-        graphB = new PropertyGraph(b1, b2);
+        graphB = new HeavyGraph(b1, b2);
         graphB.add(new Edge(b1, b2));
     }
 
@@ -44,8 +44,8 @@ public class DisjointGraphInvariantTest {
 
     @Test
     public void testBetweenDisjointSubgraphsIsEmpty() {
-        PropertyGraph unionGraph = new PropertyGraph(graphA.nodes(), graphA.edges());
-        unionGraph = (PropertyGraph) unionGraph.union(graphB);
+        HeavyGraph unionGraph = new HeavyGraph(graphA.nodes(), graphA.edges());
+        unionGraph = (HeavyGraph) unionGraph.union(graphB);
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB
         Graph between = unionGraph.between(a1, b2);

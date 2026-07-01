@@ -10,7 +10,7 @@ public class SelfLoopInvariantTest {
         Node a = new Node();
         Edge loop = new Edge(a, a);
 
-        PropertyGraph graph = new PropertyGraph(a);
+        HeavyGraph graph = new HeavyGraph(a);
         graph.add(loop);
 
         Graph result = graph.forward(a);
