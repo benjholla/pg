@@ -72,3 +72,17 @@ public class Example {
 ## Installation
 
 Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven configurations (e.g. from Maven Central or your local repository if published).
+
+## Test Coverage
+
+This project uses Jacoco to track test coverage. To generate the coverage report, run the following command:
+
+```bash
+./gradlew test jacocoTestReport
+```
+
+After the command completes successfully, you can view the HTML coverage report by opening the following file in your web browser:
+
+```
+pg-core/build/reports/jacoco/test/html/index.html
+```
