@@ -95,6 +95,12 @@ public class EdgeSetTest {
 
         EdgeSet nullVals = edgeSet.filter("type", (Object[]) null);
         assertTrue(nullVals.isEmpty());
+
+        EdgeSet nullAttrOnly = edgeSet.filter((String) null);
+        assertTrue(nullAttrOnly.isEmpty());
+
+        EdgeSet nullAttrAndNullVals = edgeSet.filter(null, (Object[]) null);
+        assertTrue(nullAttrAndNullVals.isEmpty());
     }
 
     @Test
