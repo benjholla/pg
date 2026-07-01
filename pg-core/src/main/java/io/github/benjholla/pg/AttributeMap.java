@@ -3,7 +3,7 @@ package io.github.benjholla.pg;
 import java.util.Map;
 
 /**
- * Attributes map arbitrary keys to object values.
+ * Attributes map arbitrary keys to attribute values.
  */
 public interface AttributeMap extends Map<String, AttributeValue> {
 
