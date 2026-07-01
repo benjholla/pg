@@ -11,14 +11,14 @@ public class GraphTransitivityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        a = new Node(); b = new Node(); c = new Node();
-        d = new Node(); e = new Node();
+        a = new HeavyNode(); b = new HeavyNode(); c = new HeavyNode();
+        d = new HeavyNode(); e = new HeavyNode();
 
-        graph.add(new Edge(a, b));
-        graph.add(new Edge(b, c));
-        graph.add(new Edge(c, d));
-        graph.add(new Edge(d, e));
-        graph.add(new Edge(c, a)); // create a cycle to make things interesting
+        graph.add(new HeavyEdge(a, b));
+        graph.add(new HeavyEdge(b, c));
+        graph.add(new HeavyEdge(c, d));
+        graph.add(new HeavyEdge(d, e));
+        graph.add(new HeavyEdge(c, a)); // create a cycle to make things interesting
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

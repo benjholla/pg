@@ -12,15 +12,15 @@ public class DisjointGraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a1 = new Node();
-        a2 = new Node();
+        a1 = new HeavyNode();
+        a2 = new HeavyNode();
         graphA = new HeavyGraph(a1, a2);
-        graphA.add(new Edge(a1, a2));
+        graphA.add(new HeavyEdge(a1, a2));
 
-        b1 = new Node();
-        b2 = new Node();
+        b1 = new HeavyNode();
+        b2 = new HeavyNode();
         graphB = new HeavyGraph(b1, b2);
-        graphB.add(new Edge(b1, b2));
+        graphB.add(new HeavyEdge(b1, b2));
     }
 
     @Test

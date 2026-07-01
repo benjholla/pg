@@ -105,9 +105,9 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenNullHandling() {
-        Node n = new Node();
+        Node n = new HeavyNode();
         Graph g = new HeavyGraph();
-        NodeSet ns = new NodeSet();
+        NodeSet ns = new HeavyNodeSet();
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.between(n, (Node) null));
         assertThrows(NullPointerException.class, () -> graph.between((Graph) null, g));
@@ -118,9 +118,9 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenStepNullHandling() {
-        Node n = new Node();
+        Node n = new HeavyNode();
         Graph g = new HeavyGraph();
-        NodeSet ns = new NodeSet();
+        NodeSet ns = new HeavyNodeSet();
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.betweenStep(n, (Node) null));
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Graph) null, g));

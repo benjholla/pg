@@ -2,7 +2,7 @@ package io.github.benjholla.pg;
 
 import java.util.Collection;
 
-public class HeavyGraph extends AbstractGraph {
+public class HeavyGraph extends HeavyAbstractGraph {
 
     /**
      * Constructs a new empty graph

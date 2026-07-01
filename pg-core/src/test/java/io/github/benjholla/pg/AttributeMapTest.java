@@ -14,7 +14,7 @@ public class AttributeMapTest {
 
     @BeforeEach
     public void setUp() {
-        attributeMap = new AttributeMap();
+        attributeMap = new HeavyAttributeMap();
     }
 
     @Test
@@ -80,13 +80,13 @@ public class AttributeMapTest {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("key1", new AttributeValue.StringVal("value1"));
 
-        AttributeMap attrMap = new AttributeMap(map);
+        AttributeMap attrMap = new HeavyAttributeMap(map);
         assertEquals(new AttributeValue.StringVal("value1"), attrMap.get("key1"));
 
         Map<String, AttributeValue> nullKeyMap = new HashMap<>();
         nullKeyMap.put(null, new AttributeValue.StringVal("value"));
         assertThrows(NullPointerException.class, () -> {
-            new AttributeMap(nullKeyMap);
+            new HeavyAttributeMap(nullKeyMap);
         });
     }
 

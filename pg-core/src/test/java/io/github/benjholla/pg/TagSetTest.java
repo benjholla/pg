@@ -15,7 +15,7 @@ public class TagSetTest {
 
     @BeforeEach
     public void setUp() {
-        tagSet = new TagSet();
+        tagSet = new HeavyTagSet();
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TagSetTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        TagSet tagSet2 = new TagSet();
+        TagSet tagSet2 = new HeavyTagSet();
         assertEquals(tagSet, tagSet2);
         assertEquals(tagSet.hashCode(), tagSet2.hashCode());
 

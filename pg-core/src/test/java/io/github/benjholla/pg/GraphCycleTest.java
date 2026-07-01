@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 public class GraphCycleTest {
     @Test
     public void testForwardWithCycle() {
-        Node a = new Node();
-        Node b = new Node();
-        Node c = new Node();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
+        Node c = new HeavyNode();
 
-        Edge ab = new Edge(a, b);
-        Edge bc = new Edge(b, c);
-        Edge ca = new Edge(c, a); // Cycle!
+        Edge ab = new HeavyEdge(a, b);
+        Edge bc = new HeavyEdge(b, c);
+        Edge ca = new HeavyEdge(c, a); // Cycle!
 
         HeavyGraph graph = new HeavyGraph(a, b, c);
         graph.add(ab);

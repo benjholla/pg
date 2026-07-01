@@ -10,8 +10,8 @@ public class EmptyInputInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        Node a = new Node(); Node b = new Node();
-        graph.add(new Edge(a, b));
+        Node a = new HeavyNode(); Node b = new HeavyNode();
+        graph.add(new HeavyEdge(a, b));
     }
 
     @Test

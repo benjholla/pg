@@ -15,40 +15,40 @@ public class EdgeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = new Node();
-        n2 = new Node();
-        n3 = new Node();
+        n1 = new HeavyNode();
+        n2 = new HeavyNode();
+        n3 = new HeavyNode();
 
-        e1 = new Edge(n1, n2);
+        e1 = new HeavyEdge(n1, n2);
         e1.attributes().put("type", "A");
         e1.attributes().put("val", 1);
 
-        e2 = new Edge(n2, n3);
+        e2 = new HeavyEdge(n2, n3);
         e2.attributes().put("type", "B");
         e2.attributes().put("val", 2);
 
-        e3 = new Edge(n3, n1);
+        e3 = new HeavyEdge(n3, n1);
         e3.attributes().put("type", "A");
         e3.attributes().put("val", 3);
 
-        edgeSet = new EdgeSet(e1, e2, e3);
+        edgeSet = new HeavyEdgeSet(e1, e2, e3);
     }
 
     @Test
     public void testConstructors() {
-        EdgeSet empty = new EdgeSet();
+        EdgeSet empty = new HeavyEdgeSet();
         assertTrue(empty.isEmpty());
 
-        EdgeSet single = new EdgeSet(e1);
+        EdgeSet single = new HeavyEdgeSet(e1);
         assertEquals(1, single.size());
         assertTrue(single.contains(e1));
 
-        EdgeSet multi = new EdgeSet(e1, e2);
+        EdgeSet multi = new HeavyEdgeSet(e1, e2);
         assertEquals(2, multi.size());
         assertTrue(multi.contains(e1));
         assertTrue(multi.contains(e2));
 
-        EdgeSet coll = new EdgeSet(Arrays.asList(e2, e3));
+        EdgeSet coll = new HeavyEdgeSet(Arrays.asList(e2, e3));
         assertEquals(2, coll.size());
         assertTrue(coll.contains(e2));
         assertTrue(coll.contains(e3));
@@ -60,7 +60,7 @@ public class EdgeSetTest {
         assertTrue(optEdge.isPresent());
         assertTrue(edgeSet.contains(optEdge.get()));
 
-        EdgeSet empty = new EdgeSet();
+        EdgeSet empty = new HeavyEdgeSet();
         assertFalse(empty.one().isPresent());
     }
 
@@ -105,20 +105,20 @@ public class EdgeSetTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EdgeSet es1 = new EdgeSet(e1, e2);
-        EdgeSet es2 = new EdgeSet(e2, e1);
+        EdgeSet es1 = new HeavyEdgeSet(e1, e2);
+        EdgeSet es2 = new HeavyEdgeSet(e2, e1);
         assertEquals(es1, es2);
         assertEquals(es1.hashCode(), es2.hashCode());
 
-        EdgeSet es3 = new EdgeSet(e1, e3);
+        EdgeSet es3 = new HeavyEdgeSet(e1, e3);
         assertNotEquals(es1, es3);
     }
 
     @Test
     public void testToString() {
-        EdgeSet es = new EdgeSet(e1);
+        EdgeSet es = new HeavyEdgeSet(e1);
         String str = es.toString();
-        assertTrue(str.startsWith("EdgeSet [edges="));
+        assertTrue(str.startsWith("HeavyEdgeSet [edges="));
         assertTrue(str.contains(e1.toString()));
         assertTrue(str.endsWith("]"));
     }
