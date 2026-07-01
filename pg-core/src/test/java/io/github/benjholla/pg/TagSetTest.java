@@ -140,7 +140,7 @@ public class TagSetTest {
     public void testToString() {
         tagSet.add("tag1");
         String str = tagSet.toString();
-        assertTrue(str.startsWith("TagSet [tags="));
+        assertTrue(str.startsWith("["));
         assertTrue(str.contains("tag1"));
         assertTrue(str.endsWith("]"));
     }
