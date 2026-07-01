@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Attributes map arbitrary keys to object values.
  */
-public class AttributeMap extends HashMap<String, Object> {
+public class AttributeMap extends HashMap<String, AttributeValue> {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,22 +15,46 @@ public class AttributeMap extends HashMap<String, Object> {
         super();
     }
 
-    public AttributeMap(Map<? extends String, ? extends Object> m) {
+    public AttributeMap(Map<? extends String, ? extends AttributeValue> m) {
         super();
         this.putAll(m);
     }
 
     @Override
-    public Object put(String key, Object value) {
+    public AttributeValue put(String key, AttributeValue value) {
         Objects.requireNonNull(key, "Attribute key cannot be null");
         Objects.requireNonNull(value, "Attribute value cannot be null");
         return super.put(key, value);
     }
 
+    public AttributeValue put(String key, String value) {
+        return this.put(key, new AttributeValue.StringVal(value));
+    }
+
+    public AttributeValue put(String key, int value) {
+        return this.put(key, new AttributeValue.IntVal(value));
+    }
+
+    public AttributeValue put(String key, long value) {
+        return this.put(key, new AttributeValue.LongVal(value));
+    }
+
+    public AttributeValue put(String key, double value) {
+        return this.put(key, new AttributeValue.DoubleVal(value));
+    }
+
+    public AttributeValue put(String key, boolean value) {
+        return this.put(key, new AttributeValue.BooleanVal(value));
+    }
+
+    public AttributeValue put(String key, byte[] value) {
+        return this.put(key, new AttributeValue.ByteArrayVal(value));
+    }
+
     @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
+    public void putAll(Map<? extends String, ? extends AttributeValue> m) {
         Objects.requireNonNull(m, "Attribute map cannot be null");
-        for (Map.Entry<? extends String, ? extends Object> entry : m.entrySet()) {
+        for (Map.Entry<? extends String, ? extends AttributeValue> entry : m.entrySet()) {
             Objects.requireNonNull(entry.getKey(), "Attribute key cannot be null");
             Objects.requireNonNull(entry.getValue(), "Attribute value cannot be null");
         }
@@ -38,7 +62,7 @@ public class AttributeMap extends HashMap<String, Object> {
     }
 
     @Override
-    public Object putIfAbsent(String key, Object value) {
+    public AttributeValue putIfAbsent(String key, AttributeValue value) {
         Objects.requireNonNull(key, "Attribute key cannot be null");
         Objects.requireNonNull(value, "Attribute value cannot be null");
         return super.putIfAbsent(key, value);

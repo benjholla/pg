@@ -43,7 +43,7 @@ public class NodeSet extends HashSet<Node> {
     public NodeSet filter(String attribute){
         NodeSet result = new NodeSet();
         for(Node node : this){
-            if(node.hasAttr(attribute)){
+           if(node.attributes().containsKey(attribute)){
                 result.add(node);
             }
         }
@@ -57,7 +57,7 @@ public class NodeSet extends HashSet<Node> {
         NodeSet result = new NodeSet();
         if(attribute != null && values != null){
             for(Node node : this){
-                Object attributeValue = node.getAttr(attribute);
+               Object attributeValue = node.attributes().get(attribute);
                 if(attributeValue != null) {
                     for(Object value : values) {
                         if(value != null) {

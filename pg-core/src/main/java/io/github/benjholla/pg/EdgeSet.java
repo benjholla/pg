@@ -43,7 +43,7 @@ public class EdgeSet extends HashSet<Edge> {
    public EdgeSet filter(String attribute){
        EdgeSet result = new EdgeSet();
        for(Edge edge : this){
-           if(edge.hasAttr(attribute)){
+           if(edge.attributes().containsKey(attribute)){
                result.add(edge);
            }
        }
@@ -57,7 +57,7 @@ public class EdgeSet extends HashSet<Edge> {
        EdgeSet result = new EdgeSet();
        if(attribute != null && values != null){
            for(Edge edge : this){
-               Object attributeValue = edge.getAttr(attribute);
+               Object attributeValue = edge.attributes().get(attribute);
                if(attributeValue != null) {
                    for(Object value : values) {
                        if(value != null) {

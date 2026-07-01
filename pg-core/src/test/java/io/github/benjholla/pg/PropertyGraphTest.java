@@ -15,58 +15,58 @@ public class PropertyGraphTest {
         graph = new PropertyGraph();
 
         a = new Node();
-        a.putAttr("name", "a");
+        a.attributes().put("name", "a");
         a.tags().add("vowel");
 
         b = new Node();
-        b.putAttr("name", "b");
+        b.attributes().put("name", "b");
         b.tags().add("consonant");
         b.tags().add("letter");
 
         c = new Node();
-        c.putAttr("name", "c");
+        c.attributes().put("name", "c");
         c.tags().add("consonant");
         c.tags().add("letter");
 
         d = new Node();
-        d.putAttr("name", "d");
+        d.attributes().put("name", "d");
         d.tags().add("consonant");
 
         e = new Node();
-        e.putAttr("name", "e");
+        e.attributes().put("name", "e");
         e.tags().add("vowel");
 
         f = new Node();
-        f.putAttr("name", "f");
+        f.attributes().put("name", "f");
         f.tags().add("consonant");
 
         g = new Node();
-        g.putAttr("name", "g");
+        g.attributes().put("name", "g");
         g.tags().add("consonant");
 
         ab = new Edge(a, b);
-        ab.putAttr("weight", 1);
+        ab.attributes().put("weight", 1);
         ab.tags().add("path");
 
         bc = new Edge(b, c);
-        bc.putAttr("weight", 2);
+        bc.attributes().put("weight", 2);
         bc.tags().add("path");
         bc.tags().add("main");
 
         cb = new Edge(c, b);
-        cb.putAttr("weight", 3);
+        cb.attributes().put("weight", 3);
         cb.tags().add("back");
 
         cd = new Edge(c, d);
-        cd.putAttr("weight", 4);
+        cd.attributes().put("weight", 4);
         cd.tags().add("path");
 
         de = new Edge(d, e);
-        de.putAttr("weight", 5);
+        de.attributes().put("weight", 5);
         de.tags().add("path");
 
         dg = new Edge(d, g);
-        dg.putAttr("weight", 6);
+        dg.attributes().put("weight", 6);
         dg.tags().add("branch");
 
         graph.add(a);
@@ -349,14 +349,14 @@ public class PropertyGraphTest {
         NodeSet weighted = graph.selectNodes("name");
         assertEquals(7, weighted.size());
 
-        NodeSet bNode = graph.selectNodes("name", "b");
+        NodeSet bNode = graph.selectNodes("name", new AttributeValue.StringVal("b"));
         assertEquals(1, bNode.size());
         assertTrue(bNode.contains(b));
 
         EdgeSet weightedEdges = graph.selectEdges("weight");
         assertEquals(6, weightedEdges.size());
 
-        EdgeSet w1 = graph.selectEdges("weight", 1, 3);
+        EdgeSet w1 = graph.selectEdges("weight", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
         assertEquals(2, w1.size());
         assertTrue(w1.contains(ab));
         assertTrue(w1.contains(cb));
