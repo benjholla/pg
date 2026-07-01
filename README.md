@@ -16,14 +16,14 @@ Graphs are everywhere, but many graph libraries focus on heavy integration with 
 - `GraphElement`: The base class for both nodes and edges. Elements have a unique `ElementId`, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.
 - `Node`: Represents a vertex in the graph.
 - `Edge`: Represents a directed connection between a `from` node and a `to` node.
-- `PropertyGraph`: The default, in-memory implementation of a graph. It supports creating new subgraphs through composable, set-theoretic operations.
+- `HeavyGraph`: The default, in-memory implementation of a graph. It supports creating new subgraphs through composable, set-theoretic operations.
 
 ## Quick Start
 
 ```java
 import io.github.benjholla.pg.Node;
 import io.github.benjholla.pg.Edge;
-import io.github.benjholla.pg.PropertyGraph;
+import io.github.benjholla.pg.HeavyGraph;
 import io.github.benjholla.pg.Graph;
 
 public class Example {
@@ -31,15 +31,15 @@ public class Example {
         // Create nodes
         Node alice = new Node();
         alice.tags().add("Person");
-        alice.putAttr("name", "Alice");
+        alice.attributes().put("name", "Alice");
 
         Node bob = new Node();
         bob.tags().add("Person");
-        bob.putAttr("name", "Bob");
+        bob.attributes().put("name", "Bob");
 
         Node charlie = new Node();
         charlie.tags().add("Person");
-        charlie.putAttr("name", "Charlie");
+        charlie.attributes().put("name", "Charlie");
 
         // Create edges
         Edge knows1 = new Edge(alice, bob);
@@ -49,7 +49,7 @@ public class Example {
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        PropertyGraph graph = new PropertyGraph(alice, bob, charlie);
+        HeavyGraph graph = new HeavyGraph(alice, bob, charlie);
         graph.add(knows1);
         graph.add(knows2);
 
