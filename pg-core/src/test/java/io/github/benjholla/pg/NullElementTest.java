@@ -7,18 +7,18 @@ public class NullElementTest {
 
     @Test
     public void testNodeSetNull() {
-        assertThrows(NullPointerException.class, () -> new NodeSet(new Node(), null));
+        assertThrows(NullPointerException.class, () -> new HeavyNodeSet(new HeavyNode(), null));
     }
 
     @Test
     public void testEdgeSetNull() {
-        assertThrows(NullPointerException.class, () -> new EdgeSet(new Edge(new Node(), new Node()), null));
+        assertThrows(NullPointerException.class, () -> new HeavyEdgeSet(new HeavyEdge(new HeavyNode(), new HeavyNode()), null));
     }
 
 
     @Test
     public void testTagSetNull() {
-        TagSet tagSet = new TagSet();
+        TagSet tagSet = new HeavyTagSet();
         assertThrows(NullPointerException.class, () -> tagSet.add(null));
         assertThrows(NullPointerException.class, () -> tagSet.addAll(null));
         assertThrows(NullPointerException.class, () -> tagSet.addAll(java.util.Arrays.asList("tag1", null)));

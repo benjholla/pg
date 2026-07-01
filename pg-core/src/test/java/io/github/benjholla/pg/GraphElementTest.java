@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 public class GraphElementTest {
 
-    private static class TestGraphElement extends GraphElement {
+    private static class TestGraphElement extends HeavyGraphElement {
         // Concrete class for testing the abstract GraphElement
     }
 

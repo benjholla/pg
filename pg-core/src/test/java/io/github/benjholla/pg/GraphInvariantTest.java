@@ -15,13 +15,13 @@ public class GraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new Node();
-        b = new Node();
-        c = new Node();
+        a = new HeavyNode();
+        b = new HeavyNode();
+        c = new HeavyNode();
 
-        ab = new Edge(a, b);
-        bc = new Edge(b, c);
-        ca = new Edge(c, a);
+        ab = new HeavyEdge(a, b);
+        bc = new HeavyEdge(b, c);
+        ca = new HeavyEdge(c, a);
 
         graph = new HeavyGraph(a, b, c);
         graph.add(ab);
@@ -53,9 +53,9 @@ public class GraphInvariantTest {
 
     @Test
     public void testEdgeCannotExistWithoutTerminalNodes() {
-        Node d = new Node();
-        Node e = new Node();
-        Edge de = new Edge(d, e);
+        Node d = new HeavyNode();
+        Node e = new HeavyNode();
+        Edge de = new HeavyEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
         graph.add(de);

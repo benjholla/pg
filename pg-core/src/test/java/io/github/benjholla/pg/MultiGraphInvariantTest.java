@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 public class MultiGraphInvariantTest {
     @Test
     public void testMultipleEdgesBetweenSameNodes() {
-        Node a = new Node();
-        Node b = new Node();
-        Edge e1 = new Edge(a, b);
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
+        Edge e1 = new HeavyEdge(a, b);
         e1.tags().add("type1");
-        Edge e2 = new Edge(a, b);
+        Edge e2 = new HeavyEdge(a, b);
         e2.tags().add("type2");
 
         HeavyGraph graph = new HeavyGraph(a, b);

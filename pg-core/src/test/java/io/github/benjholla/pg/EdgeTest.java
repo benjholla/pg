@@ -12,9 +12,9 @@ public class EdgeTest {
 
     @BeforeEach
     public void setUp() {
-        fromNode = new Node();
-        toNode = new Node();
-        edge = new Edge(fromNode, toNode);
+        fromNode = new HeavyNode();
+        toNode = new HeavyNode();
+        edge = new HeavyEdge(fromNode, toNode);
     }
 
     @Test
@@ -25,9 +25,9 @@ public class EdgeTest {
 
     @Test
     public void testNullEndpoints() {
-        assertThrows(IllegalArgumentException.class, () -> new Edge(null, toNode));
-        assertThrows(IllegalArgumentException.class, () -> new Edge(fromNode, null));
-        assertThrows(IllegalArgumentException.class, () -> new Edge(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(null, toNode));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(fromNode, null));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(null, null));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class EdgeTest {
         edge.tags().add("connection");
 
         String str = edge.toString();
-        assertTrue(str.startsWith("Edge [from="));
+        assertTrue(str.startsWith("HeavyEdge [from="));
         assertTrue(str.contains("to="));
         assertTrue(str.contains("attributes="));
         assertTrue(str.contains("weight=IntVal[value=10]"));

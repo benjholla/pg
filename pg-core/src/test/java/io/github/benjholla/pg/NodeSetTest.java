@@ -14,36 +14,36 @@ public class NodeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = new Node();
+        n1 = new HeavyNode();
         n1.attributes().put("type", "A");
         n1.attributes().put("val", 1);
 
-        n2 = new Node();
+        n2 = new HeavyNode();
         n2.attributes().put("type", "B");
         n2.attributes().put("val", 2);
 
-        n3 = new Node();
+        n3 = new HeavyNode();
         n3.attributes().put("type", "A");
         n3.attributes().put("val", 3);
 
-        nodeSet = new NodeSet(n1, n2, n3);
+        nodeSet = new HeavyNodeSet(n1, n2, n3);
     }
 
     @Test
     public void testConstructors() {
-        NodeSet empty = new NodeSet();
+        NodeSet empty = new HeavyNodeSet();
         assertTrue(empty.isEmpty());
 
-        NodeSet single = new NodeSet(n1);
+        NodeSet single = new HeavyNodeSet(n1);
         assertEquals(1, single.size());
         assertTrue(single.contains(n1));
 
-        NodeSet multi = new NodeSet(n1, n2);
+        NodeSet multi = new HeavyNodeSet(n1, n2);
         assertEquals(2, multi.size());
         assertTrue(multi.contains(n1));
         assertTrue(multi.contains(n2));
 
-        NodeSet coll = new NodeSet(Arrays.asList(n2, n3));
+        NodeSet coll = new HeavyNodeSet(Arrays.asList(n2, n3));
         assertEquals(2, coll.size());
         assertTrue(coll.contains(n2));
         assertTrue(coll.contains(n3));
@@ -55,7 +55,7 @@ public class NodeSetTest {
         assertTrue(optNode.isPresent());
         assertTrue(nodeSet.contains(optNode.get()));
 
-        NodeSet empty = new NodeSet();
+        NodeSet empty = new HeavyNodeSet();
         assertFalse(empty.one().isPresent());
     }
 
@@ -100,20 +100,20 @@ public class NodeSetTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        NodeSet ns1 = new NodeSet(n1, n2);
-        NodeSet ns2 = new NodeSet(n2, n1);
+        NodeSet ns1 = new HeavyNodeSet(n1, n2);
+        NodeSet ns2 = new HeavyNodeSet(n2, n1);
         assertEquals(ns1, ns2);
         assertEquals(ns1.hashCode(), ns2.hashCode());
 
-        NodeSet ns3 = new NodeSet(n1, n3);
+        NodeSet ns3 = new HeavyNodeSet(n1, n3);
         assertNotEquals(ns1, ns3);
     }
 
     @Test
     public void testToString() {
-        NodeSet ns = new NodeSet(n1);
+        NodeSet ns = new HeavyNodeSet(n1);
         String str = ns.toString();
-        assertTrue(str.startsWith("NodeSet [nodes="));
+        assertTrue(str.startsWith("HeavyNodeSet [nodes="));
         assertTrue(str.contains(n1.toString()));
         assertTrue(str.endsWith("]"));
     }

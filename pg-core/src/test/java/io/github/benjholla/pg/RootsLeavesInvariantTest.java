@@ -7,10 +7,10 @@ public class RootsLeavesInvariantTest {
 
     @Test
     public void testRootsHaveNoInEdges() {
-        Node a = new Node(); Node b = new Node(); Node c = new Node();
+        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new Edge(a, b));
-        graph.add(new Edge(b, c));
+        graph.add(new HeavyEdge(a, b));
+        graph.add(new HeavyEdge(b, c));
 
         NodeSet roots = graph.roots();
         for (Node root : roots) {
@@ -27,10 +27,10 @@ public class RootsLeavesInvariantTest {
 
     @Test
     public void testLeavesHaveNoOutEdges() {
-        Node a = new Node(); Node b = new Node(); Node c = new Node();
+        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new Edge(a, b));
-        graph.add(new Edge(b, c));
+        graph.add(new HeavyEdge(a, b));
+        graph.add(new HeavyEdge(b, c));
 
         NodeSet leaves = graph.leaves();
         for (Node leaf : leaves) {
@@ -47,7 +47,7 @@ public class RootsLeavesInvariantTest {
 
     @Test
     public void testIsolatedNodesAreBothRootsAndLeaves() {
-        Node isolated = new Node();
+        Node isolated = new HeavyNode();
         HeavyGraph graph = new HeavyGraph(isolated);
 
         assertTrue(graph.roots().contains(isolated), "Isolated node is a root");
@@ -56,11 +56,11 @@ public class RootsLeavesInvariantTest {
 
     @Test
     public void testCyclicGraphHasNoRootsOrLeaves() {
-        Node a = new Node(); Node b = new Node(); Node c = new Node();
+        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new Edge(a, b));
-        graph.add(new Edge(b, c));
-        graph.add(new Edge(c, a));
+        graph.add(new HeavyEdge(a, b));
+        graph.add(new HeavyEdge(b, c));
+        graph.add(new HeavyEdge(c, a));
 
         assertTrue(graph.roots().isEmpty(), "Cyclic graph with no ingress nodes has no roots");
         assertTrue(graph.leaves().isEmpty(), "Cyclic graph with no egress nodes has no leaves");

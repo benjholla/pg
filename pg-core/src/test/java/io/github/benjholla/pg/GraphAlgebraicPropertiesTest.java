@@ -16,16 +16,16 @@ public class GraphAlgebraicPropertiesTest {
 
     @BeforeEach
     public void setUp() {
-        a = new Node();
-        b = new Node();
-        c = new Node();
-        d = new Node();
-        e = new Node();
+        a = new HeavyNode();
+        b = new HeavyNode();
+        c = new HeavyNode();
+        d = new HeavyNode();
+        e = new HeavyNode();
 
-        ab = new Edge(a, b);
-        bc = new Edge(b, c);
-        cd = new Edge(c, d);
-        de = new Edge(d, e);
+        ab = new HeavyEdge(a, b);
+        bc = new HeavyEdge(b, c);
+        cd = new HeavyEdge(c, d);
+        de = new HeavyEdge(d, e);
 
         gA = new HeavyGraph(a, b, c);
         gA.add(ab);

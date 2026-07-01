@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 public class SelfLoopInvariantTest {
     @Test
     public void testSelfLoop() {
-        Node a = new Node();
-        Edge loop = new Edge(a, a);
+        Node a = new HeavyNode();
+        Edge loop = new HeavyEdge(a, a);
 
         HeavyGraph graph = new HeavyGraph(a);
         graph.add(loop);

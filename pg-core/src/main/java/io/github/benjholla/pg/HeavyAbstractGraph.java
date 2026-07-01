@@ -29,7 +29,7 @@ import io.github.benjholla.pg.Node.NodeDirection;
  * instantiate their specific graph type (e.g., preserving universe references
  * when deriving subgraphs).
  */
-public abstract class AbstractGraph implements Graph {
+public abstract class HeavyAbstractGraph implements Graph {
 
 	private NodeSet nodes;
 	private EdgeSet edges;
@@ -39,12 +39,12 @@ public abstract class AbstractGraph implements Graph {
 	/**
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
 	 */
-	protected class AdjacencyMaintainingEdgeSet extends EdgeSet {
+	protected class AdjacencyMaintainingEdgeSet extends HeavyEdgeSet {
         private static final long serialVersionUID = 1L;
 
         private void addEdgeToMaps(Edge e) {
-			inEdgesMap.computeIfAbsent(e.to(), k -> new EdgeSet()).add(e);
-			outEdgesMap.computeIfAbsent(e.from(), k -> new EdgeSet()).add(e);
+			inEdgesMap.computeIfAbsent(e.to(), k -> new HeavyEdgeSet()).add(e);
+			outEdgesMap.computeIfAbsent(e.from(), k -> new HeavyEdgeSet()).add(e);
 		}
 
 		private void removeEdgeFromMaps(Edge e) {
@@ -149,8 +149,8 @@ public abstract class AbstractGraph implements Graph {
 	/**
 	 * Constructs a new empty graph
 	 */
-	protected AbstractGraph() {
-		this.nodes = new NodeSet();
+	protected HeavyAbstractGraph() {
+		this.nodes = new HeavyNodeSet();
 		this.inEdgesMap = new HashMap<>();
 		this.outEdgesMap = new HashMap<>();
 		this.edges = new AdjacencyMaintainingEdgeSet();
@@ -159,7 +159,7 @@ public abstract class AbstractGraph implements Graph {
 	/**
      * Constructs a new graph of the given nodes
      */
-	protected AbstractGraph(Node... nodes) {
+	protected HeavyAbstractGraph(Node... nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
@@ -171,7 +171,7 @@ public abstract class AbstractGraph implements Graph {
     /**
      * Constructs a new graph of the given nodes
      */
-	protected AbstractGraph(NodeSet nodes) {
+	protected HeavyAbstractGraph(NodeSet nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
         addAll(nodes);
@@ -180,7 +180,7 @@ public abstract class AbstractGraph implements Graph {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	protected AbstractGraph(Edge... edges) {
+	protected HeavyAbstractGraph(Edge... edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
@@ -192,7 +192,7 @@ public abstract class AbstractGraph implements Graph {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	protected AbstractGraph(EdgeSet edges) {
+	protected HeavyAbstractGraph(EdgeSet edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
         for(Edge edge : edges) {
@@ -203,7 +203,7 @@ public abstract class AbstractGraph implements Graph {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	protected AbstractGraph(NodeSet nodes, EdgeSet edges) {
+	protected HeavyAbstractGraph(NodeSet nodes, EdgeSet edges) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		Objects.requireNonNull(edges, "edges cannot be null");
@@ -214,7 +214,7 @@ public abstract class AbstractGraph implements Graph {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	protected AbstractGraph(Graph... graphs) {
+	protected HeavyAbstractGraph(Graph... graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
@@ -227,7 +227,7 @@ public abstract class AbstractGraph implements Graph {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	protected AbstractGraph(Collection<Graph> graphs) {
+	protected HeavyAbstractGraph(Collection<Graph> graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
@@ -375,7 +375,7 @@ public abstract class AbstractGraph implements Graph {
 			result |= nodes().remove(node);
 			Optional<EdgeSet> inEdgesOpt = getInEdgesToNode(node);
 			if (inEdgesOpt.isPresent()) {
-				EdgeSet inEdges = new EdgeSet(inEdgesOpt.get());
+				EdgeSet inEdges = new HeavyEdgeSet(inEdgesOpt.get());
 				for (Edge edge : inEdges) {
 					edges().remove(edge);
 					result = true;
@@ -383,7 +383,7 @@ public abstract class AbstractGraph implements Graph {
 			}
 			Optional<EdgeSet> outEdgesOpt = getOutEdgesFromNode(node);
 			if (outEdgesOpt.isPresent()) {
-				EdgeSet outEdges = new EdgeSet(outEdgesOpt.get());
+				EdgeSet outEdges = new HeavyEdgeSet(outEdgesOpt.get());
 				for (Edge edge : outEdges) {
 					edges().remove(edge);
 					result = true;
@@ -411,15 +411,15 @@ public abstract class AbstractGraph implements Graph {
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
 		if(direction == NodeDirection.IN){
-			return getInEdgesToNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
+			return getInEdgesToNode(node).map(HeavyEdgeSet::new).orElseGet(HeavyEdgeSet::new);
 		} else {
-			return getOutEdgesFromNode(node).map(EdgeSet::new).orElseGet(EdgeSet::new);
+			return getOutEdgesFromNode(node).map(HeavyEdgeSet::new).orElseGet(HeavyEdgeSet::new);
 		}
 	}
 	
 	@Override
 	public NodeSet limit(NodeDirection direction){
-		NodeSet result = new NodeSet();
+		NodeSet result = new HeavyNodeSet();
 		for(Node node : nodes()){
 			EdgeSet connections = edges(node, direction);
 			if(connections.isEmpty()){
@@ -441,7 +441,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet predecessors(Node... origin){
-		return predecessors(new NodeSet(origin));
+		return predecessors(new HeavyNodeSet(origin));
 	}
 	
 	@Override
@@ -451,7 +451,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet predecessors(NodeSet origin){
-		NodeSet result = new NodeSet();
+		NodeSet result = new HeavyNodeSet();
 		for(Node node : origin){
 			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
@@ -464,7 +464,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet successors(Node... origin){
-		return successors(new NodeSet(origin));
+		return successors(new HeavyNodeSet(origin));
 	}
 	
 	@Override
@@ -474,7 +474,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet successors(NodeSet origin){
-		NodeSet result = new NodeSet();
+		NodeSet result = new HeavyNodeSet();
 		for(Node node : origin){
 			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
@@ -489,7 +489,7 @@ public abstract class AbstractGraph implements Graph {
 	public Graph forwardStep(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return forwardStep(new NodeSet(origin));
+		return forwardStep(new HeavyNodeSet(origin));
 	}
 	
 	@Override
@@ -518,7 +518,7 @@ public abstract class AbstractGraph implements Graph {
 	public Graph reverseStep(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return reverseStep(new NodeSet(origin));
+		return reverseStep(new HeavyNodeSet(origin));
 	}
 	
 	@Override
@@ -691,7 +691,7 @@ public abstract class AbstractGraph implements Graph {
 	public Graph betweenStep(Node from, Node to){
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
-		return betweenStep(new NodeSet(from), new NodeSet(to));
+		return betweenStep(new HeavyNodeSet(from), new HeavyNodeSet(to));
 	}
 	
 	@Override
@@ -723,7 +723,7 @@ public abstract class AbstractGraph implements Graph {
 	public Graph between(Node from, Node to) {
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
-		return between(new NodeSet(from), new NodeSet(to));
+		return between(new HeavyNodeSet(from), new HeavyNodeSet(to));
 	}
 	
 	@Override
@@ -755,14 +755,14 @@ public abstract class AbstractGraph implements Graph {
 	public Graph forward(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return forward(new NodeSet(origin));
+		return forward(new HeavyNodeSet(origin));
 	}
 	
 	@Override
 	public Graph forward(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		Graph result = newGraph(origin);
-		NodeSet frontier = new NodeSet(origin.nodes());
+		NodeSet frontier = new HeavyNodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
@@ -788,14 +788,14 @@ public abstract class AbstractGraph implements Graph {
 	public Graph reverse(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return reverse(new NodeSet(origin));
+		return reverse(new HeavyNodeSet(origin));
 	}
 	
 	@Override
 	public Graph reverse(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		Graph result = newGraph(origin);
-		NodeSet frontier = new NodeSet(origin.nodes());
+		NodeSet frontier = new HeavyNodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
@@ -821,14 +821,14 @@ public abstract class AbstractGraph implements Graph {
 	public Graph induce(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return induce(new EdgeSet(edges));
+		return induce(new HeavyEdgeSet(edges));
 	}
 	
 	@Override
 	public Graph induce(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
-		EdgeSet inducibleEdges = new EdgeSet();
+		EdgeSet inducibleEdges = new HeavyEdgeSet();
 		for(Graph graph : graphs){
 			inducibleEdges.addAll(graph.edges());
 		}
@@ -874,7 +874,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet nodesTaggedWithAny(String... tags){
-        NodeSet result = new NodeSet();
+        NodeSet result = new HeavyNodeSet();
         for(Node node : nodes()){
             for(String tag : tags){
                 if(node.tags().contains(tag)){
@@ -888,7 +888,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public NodeSet nodesTaggedWithAll(String... tags){
-        NodeSet result = new NodeSet();
+        NodeSet result = new HeavyNodeSet();
         for(Node node : nodes()){
             boolean add = true;
             for(String tag : tags){
@@ -911,7 +911,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public EdgeSet edgesTaggedWithAny(String... tags){
-        EdgeSet result = new EdgeSet();
+        EdgeSet result = new HeavyEdgeSet();
         for(Edge edge : edges){
             for(String tag : tags){
                 if(edge.tags().contains(tag)){
@@ -925,7 +925,7 @@ public abstract class AbstractGraph implements Graph {
 	
 	@Override
 	public EdgeSet edgesTaggedWithAll(String... tags){
-        EdgeSet result = new EdgeSet();
+        EdgeSet result = new HeavyEdgeSet();
         for(Edge edge : edges){
             boolean add = true;
             for(String tag : tags){

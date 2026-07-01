@@ -14,58 +14,58 @@ public class HeavyGraphTest {
     public void setUp() {
         graph = new HeavyGraph();
 
-        a = new Node();
+        a = new HeavyNode();
         a.attributes().put("name", "a");
         a.tags().add("vowel");
 
-        b = new Node();
+        b = new HeavyNode();
         b.attributes().put("name", "b");
         b.tags().add("consonant");
         b.tags().add("letter");
 
-        c = new Node();
+        c = new HeavyNode();
         c.attributes().put("name", "c");
         c.tags().add("consonant");
         c.tags().add("letter");
 
-        d = new Node();
+        d = new HeavyNode();
         d.attributes().put("name", "d");
         d.tags().add("consonant");
 
-        e = new Node();
+        e = new HeavyNode();
         e.attributes().put("name", "e");
         e.tags().add("vowel");
 
-        f = new Node();
+        f = new HeavyNode();
         f.attributes().put("name", "f");
         f.tags().add("consonant");
 
-        g = new Node();
+        g = new HeavyNode();
         g.attributes().put("name", "g");
         g.tags().add("consonant");
 
-        ab = new Edge(a, b);
+        ab = new HeavyEdge(a, b);
         ab.attributes().put("weight", 1);
         ab.tags().add("path");
 
-        bc = new Edge(b, c);
+        bc = new HeavyEdge(b, c);
         bc.attributes().put("weight", 2);
         bc.tags().add("path");
         bc.tags().add("main");
 
-        cb = new Edge(c, b);
+        cb = new HeavyEdge(c, b);
         cb.attributes().put("weight", 3);
         cb.tags().add("back");
 
-        cd = new Edge(c, d);
+        cd = new HeavyEdge(c, d);
         cd.attributes().put("weight", 4);
         cd.tags().add("path");
 
-        de = new Edge(d, e);
+        de = new HeavyEdge(d, e);
         de.attributes().put("weight", 5);
         de.tags().add("path");
 
-        dg = new Edge(d, g);
+        dg = new HeavyEdge(d, g);
         dg.attributes().put("weight", 6);
         dg.tags().add("branch");
 
@@ -98,18 +98,18 @@ public class HeavyGraphTest {
         HeavyGraph withNodes = new HeavyGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
 
-        HeavyGraph withNodeSet = new HeavyGraph(new NodeSet(a, b));
+        HeavyGraph withNodeSet = new HeavyGraph(new HeavyNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
         HeavyGraph withEdges = new HeavyGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        HeavyGraph withEdgeSet = new HeavyGraph(new EdgeSet(ab, bc));
+        HeavyGraph withEdgeSet = new HeavyGraph(new HeavyEdgeSet(ab, bc));
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
-        HeavyGraph withSets = new HeavyGraph(new NodeSet(a, b, c), new EdgeSet(ab, bc));
+        HeavyGraph withSets = new HeavyGraph(new HeavyNodeSet(a, b, c), new HeavyEdgeSet(ab, bc));
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
