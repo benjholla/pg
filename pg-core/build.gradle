@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'eclipse'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'io.github.benjholla'
@@ -38,5 +39,11 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
         }
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
     }
 }
