@@ -74,7 +74,7 @@ Strictly implement the exact method signatures, generics, and return types provi
 The foundation of this project relies on key interfaces located in the following files:
 - pg-core\src\main\java\io\github\benjholla\pg\TagSet.java
 - pg-core\src\main\java\io\github\benjholla\pg\AttributeMap.java
-- pg-core\src\main\java\io\github\benjholla\pg\ElementId.java
+- pg-core\src\main\java\io\github\benjholla\pg\AttributeValue.java
 - pg-core\src\main\java\io\github\benjholla\pg\Node.java
 - pg-core\src\main\java\io\github\benjholla\pg\NodeSet.java
 - pg-core\src\main\java\io\github\benjholla\pg\Edge.java
