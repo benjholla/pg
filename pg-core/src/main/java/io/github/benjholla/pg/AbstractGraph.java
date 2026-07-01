@@ -12,6 +12,22 @@ import java.util.Optional;
 
 import io.github.benjholla.pg.Node.NodeDirection;
 
+/**
+ * AbstractGraph provides the core storage, adjacency maps, and graph operations.
+ *
+ * <p><strong>Architectural Note:</strong> This abstraction is intentional and not a
+ * "single-use" base class. In the long-term CHPG vision, this library supports
+ * two primary graph modes:
+ * <ul>
+ *   <li>{@link PropertyGraph} (Write-Optimized / EphemeralGraph)</li>
+ *   <li>UniverseGraph (Read-Optimized, backed by a central registry/universe)</li>
+ * </ul>
+ *
+ * This base class acts as the common abstraction for operational algorithms,
+ * relying on the {@code newGraph(...)} factory methods to allow subclasses to
+ * instantiate their specific graph type (e.g., preserving universe references
+ * when deriving subgraphs).
+ */
 public abstract class AbstractGraph implements Graph {
 
 	private NodeSet nodes;
@@ -221,7 +237,14 @@ public abstract class AbstractGraph implements Graph {
     }
     
     /**
-     * Creates an empty graph of this graph kind
+     * Creates an empty graph of this graph kind.
+     *
+     * <p><strong>Architectural Note:</strong> This factory hook is necessary
+     * so that graph operations defined in {@code AbstractGraph} (like union, intersection)
+     * can yield a subgraph of the exact concrete type (e.g., maintaining a reference to
+     * a central universe registry for future {@code UniverseGraph} implementations).
+     *
+     * @return a new empty graph instance
      */
     protected abstract Graph newGraph();
     
