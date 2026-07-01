@@ -20,16 +20,16 @@ public class EdgeSetTest {
         n3 = new Node();
 
         e1 = new Edge(n1, n2);
-        e1.putAttr("type", "A");
-        e1.putAttr("val", 1);
+        e1.attributes().put("type", "A");
+        e1.attributes().put("val", 1);
 
         e2 = new Edge(n2, n3);
-        e2.putAttr("type", "B");
-        e2.putAttr("val", 2);
+        e2.attributes().put("type", "B");
+        e2.attributes().put("val", 2);
 
         e3 = new Edge(n3, n1);
-        e3.putAttr("type", "A");
-        e3.putAttr("val", 3);
+        e3.attributes().put("type", "A");
+        e3.attributes().put("val", 3);
 
         edgeSet = new EdgeSet(e1, e2, e3);
     }
@@ -66,7 +66,7 @@ public class EdgeSetTest {
 
     @Test
     public void testFilterByAttributePresent() {
-        e1.putAttr("unique", true);
+        e1.attributes().put("unique", true);
         EdgeSet filtered = edgeSet.filter("unique");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(e1));
@@ -77,20 +77,20 @@ public class EdgeSetTest {
 
     @Test
     public void testFilterByAttributeAndValues() {
-        EdgeSet filteredTypeA = edgeSet.filter("type", "A");
+        EdgeSet filteredTypeA = edgeSet.filter("type", new AttributeValue.StringVal("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(e1));
         assertTrue(filteredTypeA.contains(e3));
 
-        EdgeSet filteredVal = edgeSet.filter("val", 1, 3);
+        EdgeSet filteredVal = edgeSet.filter("val", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(e1));
         assertTrue(filteredVal.contains(e3));
 
-        EdgeSet filteredNone = edgeSet.filter("type", "C");
+        EdgeSet filteredNone = edgeSet.filter("type", new AttributeValue.StringVal("C"));
         assertTrue(filteredNone.isEmpty());
 
-        EdgeSet nullAttr = edgeSet.filter(null, "A");
+        EdgeSet nullAttr = edgeSet.filter(null, new AttributeValue.StringVal("A"));
         assertTrue(nullAttr.isEmpty());
 
         EdgeSet nullVals = edgeSet.filter("type", (Object[]) null);

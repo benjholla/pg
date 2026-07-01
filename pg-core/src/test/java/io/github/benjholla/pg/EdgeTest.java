@@ -32,14 +32,14 @@ public class EdgeTest {
 
     @Test
     public void testToString() {
-        edge.putAttr("weight", 10);
+        edge.attributes().put("weight", 10);
         edge.tags().add("connection");
 
         String str = edge.toString();
         assertTrue(str.startsWith("Edge [from="));
         assertTrue(str.contains("to="));
         assertTrue(str.contains("attributes="));
-        assertTrue(str.contains("weight=10"));
+        assertTrue(str.contains("weight=IntVal[value=10]"));
         assertTrue(str.contains("tags="));
         assertTrue(str.contains("connection"));
         assertTrue(str.endsWith("]"));

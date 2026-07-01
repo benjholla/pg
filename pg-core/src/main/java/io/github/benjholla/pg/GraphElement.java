@@ -37,47 +37,6 @@ public abstract class GraphElement {
 		return attributes;
 	}
 	
-	/**
-	 * Checks if an attribute with the specified name exists.
-	 *
-	 * @param name the attribute key
-	 * @return true if the attribute exists, false otherwise
-	 */
-	public boolean hasAttr(String name) {
-		return attributes.containsKey(name);
-	}
-	
-	/**
-	 * Associates the specified value with the specified attribute name.
-	 *
-	 * @param name the attribute key
-	 * @param value the attribute value
-	 * @return the previous value associated with name, or null if there was no mapping
-	 */
-	public Object putAttr(String name, Object value) {
-		return attributes.put(name, value);
-	}
-	
-	/**
-	 * Returns the value to which the specified attribute name is mapped.
-	 *
-	 * @param name the attribute key
-	 * @return the attribute value, or null if this element contains no mapping for the name
-	 */
-	public Object getAttr(String name) {
-		return attributes.get(name);
-	}
-	
-	/**
-	 * Removes the mapping for a specified attribute name if it is present.
-	 *
-	 * @param name the attribute key
-	 * @return the previous value associated with name, or null if there was no mapping
-	 */
-	public Object removeAttr(String name) {
-		return attributes.remove(name);
-	}
-	
 	public ElementId getId() {
 		return id;
 	}

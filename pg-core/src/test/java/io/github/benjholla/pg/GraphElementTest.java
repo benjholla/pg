@@ -38,34 +38,34 @@ public class GraphElementTest {
 
     @Test
     public void testAttributes() {
-        Map<String, Object> attrs = element.attributes();
+        Map<String, AttributeValue> attrs = element.attributes();
         assertNotNull(attrs);
         assertTrue(attrs.isEmpty());
     }
 
     @Test
     public void testPutAndGetAttr() {
-        assertNull(element.getAttr("key1"));
-        assertFalse(element.hasAttr("key1"));
+        assertNull(element.attributes().get("key1"));
+        assertFalse(element.attributes().containsKey("key1"));
 
-        element.putAttr("key1", "val1");
+        element.attributes().put("key1", "val1");
 
-        assertTrue(element.hasAttr("key1"));
-        assertEquals("val1", element.getAttr("key1"));
+        assertTrue(element.attributes().containsKey("key1"));
+        assertEquals(new AttributeValue.StringVal("val1"), element.attributes().get("key1"));
 
-        element.putAttr("key1", "val2");
-        assertEquals("val2", element.getAttr("key1"));
+        element.attributes().put("key1", "val2");
+        assertEquals(new AttributeValue.StringVal("val2"), element.attributes().get("key1"));
     }
 
     @Test
     public void testRemoveAttr() {
-        element.putAttr("key1", "val1");
-        assertTrue(element.hasAttr("key1"));
+        element.attributes().put("key1", "val1");
+        assertTrue(element.attributes().containsKey("key1"));
 
-        Object removed = element.removeAttr("key1");
-        assertEquals("val1", removed);
-        assertFalse(element.hasAttr("key1"));
-        assertNull(element.getAttr("key1"));
+        AttributeValue removed = element.attributes().remove("key1");
+        assertEquals(new AttributeValue.StringVal("val1"), removed);
+        assertFalse(element.attributes().containsKey("key1"));
+        assertNull(element.attributes().get("key1"));
     }
 
     @Test

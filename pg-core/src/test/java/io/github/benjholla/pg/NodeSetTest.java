@@ -15,16 +15,16 @@ public class NodeSetTest {
     @BeforeEach
     public void setUp() {
         n1 = new Node();
-        n1.putAttr("type", "A");
-        n1.putAttr("val", 1);
+        n1.attributes().put("type", "A");
+        n1.attributes().put("val", 1);
 
         n2 = new Node();
-        n2.putAttr("type", "B");
-        n2.putAttr("val", 2);
+        n2.attributes().put("type", "B");
+        n2.attributes().put("val", 2);
 
         n3 = new Node();
-        n3.putAttr("type", "A");
-        n3.putAttr("val", 3);
+        n3.attributes().put("type", "A");
+        n3.attributes().put("val", 3);
 
         nodeSet = new NodeSet(n1, n2, n3);
     }
@@ -61,7 +61,7 @@ public class NodeSetTest {
 
     @Test
     public void testFilterByAttributePresent() {
-        n1.putAttr("unique", true);
+        n1.attributes().put("unique", true);
         NodeSet filtered = nodeSet.filter("unique");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(n1));
@@ -72,20 +72,20 @@ public class NodeSetTest {
 
     @Test
     public void testFilterByAttributeAndValues() {
-        NodeSet filteredTypeA = nodeSet.filter("type", "A");
+        NodeSet filteredTypeA = nodeSet.filter("type", new AttributeValue.StringVal("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(n1));
         assertTrue(filteredTypeA.contains(n3));
 
-        NodeSet filteredVal = nodeSet.filter("val", 1, 3);
+        NodeSet filteredVal = nodeSet.filter("val", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(n1));
         assertTrue(filteredVal.contains(n3));
 
-        NodeSet filteredNone = nodeSet.filter("type", "C");
+        NodeSet filteredNone = nodeSet.filter("type", new AttributeValue.StringVal("C"));
         assertTrue(filteredNone.isEmpty());
 
-        NodeSet nullAttr = nodeSet.filter(null, "A");
+        NodeSet nullAttr = nodeSet.filter(null, new AttributeValue.StringVal("A"));
         assertTrue(nullAttr.isEmpty());
 
         NodeSet nullVals = nodeSet.filter("type", (Object[]) null);
