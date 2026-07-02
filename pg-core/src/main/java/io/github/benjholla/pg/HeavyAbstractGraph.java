@@ -370,26 +370,14 @@ public abstract class HeavyAbstractGraph implements Graph {
 			Edge edge = (Edge) graphElement;
 			return edges().remove(edge);
 		} else {
-			boolean result = false;
 			Node node = (Node) graphElement;
-			result |= nodes().remove(node);
-			Optional<EdgeSet> inEdgesOpt = getInEdgesToNode(node);
-			if (inEdgesOpt.isPresent()) {
-				EdgeSet inEdges = new HeavyEdgeSet(inEdgesOpt.get());
-				for (Edge edge : inEdges) {
-					edges().remove(edge);
-					result = true;
-				}
-			}
-			Optional<EdgeSet> outEdgesOpt = getOutEdgesFromNode(node);
-			if (outEdgesOpt.isPresent()) {
-				EdgeSet outEdges = new HeavyEdgeSet(outEdgesOpt.get());
-				for (Edge edge : outEdges) {
-					edges().remove(edge);
-					result = true;
-				}
-			}
-			return result;
+			getInEdgesToNode(node).ifPresent(inEdges -> {
+				edges().removeAll(new HeavyEdgeSet(inEdges));
+			});
+			getOutEdgesFromNode(node).ifPresent(outEdges -> {
+				edges().removeAll(new HeavyEdgeSet(outEdges));
+			});
+			return nodes().remove(node);
 		}
 	}
 
@@ -606,18 +594,10 @@ public abstract class HeavyAbstractGraph implements Graph {
 			if(difference.isEmpty()) {
 				break;
 			}
-			// traverse the current result graph to discover the edges that should be removed as
-			// a result of removing nodes in the given graph
-			EdgeSet incomingEdges = difference.reverseStep(graph.nodes()).edges();
-			EdgeSet outgoingEdges = difference.forwardStep(graph.nodes()).edges();
-			
-			// remove nodes from given graph
-			difference.nodes().removeAll(graph.nodes());
-			
-			// remove edges from given graph, including edges incoming and outgoing from removed nodes
+			for (Node node : graph.nodes()) {
+				difference.remove(node);
+			}
 			difference.edges().removeAll(graph.edges());
-			difference.edges().removeAll(incomingEdges);
-			difference.edges().removeAll(outgoingEdges);
 		}
 		return difference;
 	}
