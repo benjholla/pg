@@ -13,7 +13,7 @@ Graphs are everywhere, but many graph libraries focus on heavy integration with 
 
 ## Core Abstractions
 
-- `GraphElement`: The base class for both nodes and edges. Elements have a unique `ElementId`, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.
+- `GraphElement`: The base interface for both nodes and edges. Elements have a unique primitive `int` ID, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.
 - `Node`: Represents a vertex in the graph.
 - `Edge`: Represents a directed connection between a `from` node and a `to` node.
 - `HeavyGraph`: The default, in-memory implementation of a graph. It supports creating new subgraphs through composable, set-theoretic operations.
@@ -21,31 +21,33 @@ Graphs are everywhere, but many graph libraries focus on heavy integration with 
 ## Quick Start
 
 ```java
-import io.github.benjholla.pg.Node;
-import io.github.benjholla.pg.Edge;
-import io.github.benjholla.pg.HeavyGraph;
-import io.github.benjholla.pg.Graph;
+import io.github.benjholla.pg.api.Node;
+import io.github.benjholla.pg.api.Edge;
+import io.github.benjholla.pg.heavy.HeavyNode;
+import io.github.benjholla.pg.heavy.HeavyEdge;
+import io.github.benjholla.pg.heavy.HeavyGraph;
+import io.github.benjholla.pg.api.Graph;
 
 public class Example {
     public static void main(String[] args) {
         // Create nodes
-        Node alice = new Node();
+        Node alice = new HeavyNode();
         alice.tags().add("Person");
         alice.attributes().put("name", "Alice");
 
-        Node bob = new Node();
+        Node bob = new HeavyNode();
         bob.tags().add("Person");
         bob.attributes().put("name", "Bob");
 
-        Node charlie = new Node();
+        Node charlie = new HeavyNode();
         charlie.tags().add("Person");
         charlie.attributes().put("name", "Charlie");
 
         // Create edges
-        Edge knows1 = new Edge(alice, bob);
+        Edge knows1 = new HeavyEdge(alice, bob);
         knows1.tags().add("knows");
 
-        Edge knows2 = new Edge(bob, charlie);
+        Edge knows2 = new HeavyEdge(bob, charlie);
         knows2.tags().add("knows");
 
         // Instantiate a graph
@@ -84,5 +86,5 @@ This project uses Jacoco to track test coverage. To generate the coverage report
 After the command completes successfully, you can view the HTML coverage report by opening the following file in your web browser:
 
 ```
-pg-core/build/reports/jacoco/test/html/index.html
+pg-heavy/build/reports/jacoco/test/html/index.html
 ```
