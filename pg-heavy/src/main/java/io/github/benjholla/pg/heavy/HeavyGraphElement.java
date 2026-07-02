@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import io.github.benjholla.pg.api.AttributeMap;
 import io.github.benjholla.pg.api.GraphElement;
-import io.github.benjholla.pg.api.IdGenerator;
 import io.github.benjholla.pg.api.TagSet;
 
 public abstract class HeavyGraphElement implements GraphElement {

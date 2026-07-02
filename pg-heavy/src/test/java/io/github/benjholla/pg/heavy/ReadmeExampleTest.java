@@ -1,13 +1,12 @@
 package io.github.benjholla.pg.heavy;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
-import io.github.benjholla.pg.api.Edge;
-import io.github.benjholla.pg.heavy.HeavyGraph;
-import io.github.benjholla.pg.heavy.HeavyNode;
-import io.github.benjholla.pg.heavy.HeavyEdge;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReadmeExampleTest {
     @Test

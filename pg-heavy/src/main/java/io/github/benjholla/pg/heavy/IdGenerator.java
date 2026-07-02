@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.api;
+package io.github.benjholla.pg.heavy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

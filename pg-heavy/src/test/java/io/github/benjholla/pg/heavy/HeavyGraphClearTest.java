@@ -2,11 +2,13 @@ package io.github.benjholla.pg.heavy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.Iterator;
+
 import org.junit.jupiter.api.Test;
+
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Node;
-import java.util.Iterator;
 
 public class HeavyGraphClearTest {
     @Test

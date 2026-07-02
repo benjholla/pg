@@ -2,10 +2,10 @@ package io.github.benjholla.pg.heavy;
 
 import java.util.Collection;
 import java.util.HashSet;
-import io.github.benjholla.pg.api.AttributeValue;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
