@@ -90,4 +90,20 @@ public class GraphElementTest {
         assertNotEquals(null, element);
         assertNotEquals(element, new Object());
     }
+
+
+    @Test
+    public void testEqualsDifferentClass2() {
+        GraphElement el = new TestGraphElement();
+        assertFalse(el.equals(new Object()));
+    }
+
+
+
+    @Test
+    public void testEqualsNull() {
+        GraphElement el = new TestGraphElement();
+        assertFalse(el.equals(null));
+    }
+
 }
