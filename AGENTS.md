@@ -8,8 +8,8 @@ To solve this, our library uses a **Central Registry Pattern** backed by primiti
 
 ## 2. The Multi-Module Ecosystem
 To support both everyday development and massive-scale analysis, the project is divided into four strict modules:
- * **pg-api:** The pure interface layer (Graph, Node, Edge, ElementSet, and the sealed AttributeValue). Contains zero implementation logic and defines identity purely as int id().
- * **pg-heavy:** Depends on pg-api. A heavyweight reference implementation using adjacency lists and standard Java collections. Manages its own simple ID generation (e.g., AtomicInteger).
+ * **pg-api:** The pure interface layer (Graph, Node, Edge, ElementSet, and the sealed AttributeValue, as well as the IdGenerator). Contains zero implementation logic (except for simple ID generation) and defines identity purely as int id().
+ * **pg-heavy:** Depends on pg-api. A heavyweight reference implementation using adjacency lists and standard Java collections.
  * **pg-universe:** Depends on pg-api. The high-scale bitwise engine, Central Registry, Flyweights, and the transactional EphemeralGraph. Manages its own dual-polarity ID generation.
  * **pg-io:** Depends on pg-api. The interoperability hub providing universal importers/exporters. It translates pure graph state into formats like JSON or DOT, and acts as the strict boundary where external presentation logic (like visualization highlighting) is married to the graph data.
 
