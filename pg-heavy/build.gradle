@@ -43,7 +43,7 @@ eclipse {
             }
         }
     }
-    
+
     // Explicitly configure Eclipse to write the encoding preference file
     jdt {
         file {
