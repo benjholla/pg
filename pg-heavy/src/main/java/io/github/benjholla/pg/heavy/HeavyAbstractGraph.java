@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 import io.github.benjholla.pg.api.Graph;
@@ -839,7 +840,7 @@ public abstract class HeavyAbstractGraph implements Graph {
 	}
 	
 	@Override
-	public EdgeSet selectEdges(String attribute, Object... values){
+	public EdgeSet selectEdges(String attribute, AttributeValue... values){
 		return edges.filter(attribute, values);
 	}
 	
@@ -849,7 +850,7 @@ public abstract class HeavyAbstractGraph implements Graph {
 	}
 	
 	@Override
-	public NodeSet selectNodes(String attribute, Object... values){
+	public NodeSet selectNodes(String attribute, AttributeValue... values){
 		return nodes.filter(attribute, values);
 	}
 	

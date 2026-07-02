@@ -2,6 +2,7 @@ package io.github.benjholla.pg.heavy;
 
 import java.util.Collection;
 import java.util.HashSet;
+import io.github.benjholla.pg.api.AttributeValue;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -56,13 +57,13 @@ public class HeavyNodeSet extends HashSet<Node> implements NodeSet {
     /**
      * Returns a node set filtered to nodes with the attribute key and value
      */
-    public NodeSet filter(String attribute, Object... values){
+    public NodeSet filter(String attribute, AttributeValue... values){
         HeavyNodeSet result = new HeavyNodeSet();
         if(attribute != null && values != null){
             for(Node node : this){
-               Object attributeValue = node.attributes().get(attribute);
+               AttributeValue attributeValue = node.attributes().get(attribute);
                 if(attributeValue != null) {
-                    for(Object value : values) {
+                    for(AttributeValue value : values) {
                         if(value != null) {
                             if(Objects.equals(attributeValue, value)) {
                                 result.add(node);

@@ -96,13 +96,13 @@ public class NodeSetTest {
         NodeSet nullAttr = nodeSet.filter(null, new AttributeValue.StringVal("A"));
         assertTrue(nullAttr.isEmpty());
 
-        NodeSet nullVals = nodeSet.filter("type", (Object[]) null);
+        NodeSet nullVals = nodeSet.filter("type", (AttributeValue[]) null);
         assertTrue(nullVals.isEmpty());
 
         NodeSet nullAttrOnly = nodeSet.filter((String) null);
         assertTrue(nullAttrOnly.isEmpty());
 
-        NodeSet nullAttrAndNullVals = nodeSet.filter(null, (Object[]) null);
+        NodeSet nullAttrAndNullVals = nodeSet.filter(null, (AttributeValue[]) null);
         assertTrue(nullAttrAndNullVals.isEmpty());
     }
 
