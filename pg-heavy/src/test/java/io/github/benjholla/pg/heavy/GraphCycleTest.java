@@ -1,0 +1,29 @@
+package io.github.benjholla.pg.heavy;
+
+import io.github.benjholla.pg.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+public class GraphCycleTest {
+    @Test
+    public void testForwardWithCycle() {
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
+        Node c = new HeavyNode();
+
+        Edge ab = new HeavyEdge(a, b);
+        Edge bc = new HeavyEdge(b, c);
+        Edge ca = new HeavyEdge(c, a); // Cycle!
+
+        HeavyGraph graph = new HeavyGraph(a, b, c);
+        graph.add(ab);
+        graph.add(bc);
+        graph.add(ca);
+
+        Graph result = graph.forward(a);
+        assertEquals(3, result.nodes().size());
+        assertEquals(3, result.edges().size());
+    }
+}

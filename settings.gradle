@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = 'pg'
-include 'pg-core'
+include 'pg-api', 'pg-heavy'
