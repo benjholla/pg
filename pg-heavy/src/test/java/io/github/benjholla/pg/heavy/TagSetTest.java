@@ -149,4 +149,14 @@ public class TagSetTest {
         assertTrue(str.contains("tag1"));
         assertTrue(str.endsWith("]"));
     }
+
+
+    @Test
+    public void testCollectionConstructor() {
+        java.util.List<String> tags = java.util.Arrays.asList("tag1", "tag2");
+        HeavyTagSet tagSet = new HeavyTagSet(tags);
+        assertEquals(2, tagSet.size());
+        assertTrue(tagSet.contains("tag1"));
+        assertTrue(tagSet.contains("tag2"));
+    }
 }
