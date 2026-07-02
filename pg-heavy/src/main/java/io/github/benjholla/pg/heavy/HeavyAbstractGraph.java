@@ -839,7 +839,7 @@ public abstract class HeavyAbstractGraph implements Graph {
 	}
 	
 	@Override
-	public EdgeSet selectEdges(String attribute, Object... values){
+	public EdgeSet selectEdges(String attribute, io.github.benjholla.pg.api.AttributeValue... values){
 		return edges.filter(attribute, values);
 	}
 	
@@ -849,7 +849,7 @@ public abstract class HeavyAbstractGraph implements Graph {
 	}
 	
 	@Override
-	public NodeSet selectNodes(String attribute, Object... values){
+	public NodeSet selectNodes(String attribute, io.github.benjholla.pg.api.AttributeValue... values){
 		return nodes.filter(attribute, values);
 	}
 	

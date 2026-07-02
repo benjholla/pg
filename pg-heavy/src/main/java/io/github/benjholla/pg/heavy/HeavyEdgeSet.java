@@ -2,6 +2,7 @@ package io.github.benjholla.pg.heavy;
 
 import java.util.Collection;
 import java.util.HashSet;
+import io.github.benjholla.pg.api.AttributeValue;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -56,13 +57,13 @@ public class HeavyEdgeSet extends HashSet<Edge> implements EdgeSet {
    /**
     * Returns a edge set filtered to edges with the attribute key and value
     */
-   public EdgeSet filter(String attribute, Object... values){
+   public EdgeSet filter(String attribute, AttributeValue... values){
        HeavyEdgeSet result = new HeavyEdgeSet();
        if(attribute != null && values != null){
            for(Edge edge : this){
-               Object attributeValue = edge.attributes().get(attribute);
+               AttributeValue attributeValue = edge.attributes().get(attribute);
                if(attributeValue != null) {
-                   for(Object value : values) {
+                   for(AttributeValue value : values) {
                        if(value != null) {
                            if(Objects.equals(attributeValue, value)) {
                                result.add(edge);

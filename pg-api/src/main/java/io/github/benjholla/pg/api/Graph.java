@@ -471,7 +471,7 @@ public interface Graph {
 	/**
 	 * Select subgraph contain edges that have the given attribute key with any value specified in the given values.
 	 */
-	public EdgeSet selectEdges(String attribute, Object... values);
+	public EdgeSet selectEdges(String attribute, AttributeValue... values);
 	
 	/**
 	 * Select subgraph containing nodes that have a given key defined, with any value.
@@ -481,6 +481,6 @@ public interface Graph {
 	/**
 	 * Select subgraph containing nodes that have a given key with any value specified in the given values.
 	 */
-	public NodeSet selectNodes(String attribute, Object... values);
+	public NodeSet selectNodes(String attribute, AttributeValue... values);
 	
 }
