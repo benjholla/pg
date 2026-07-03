@@ -2,71 +2,77 @@ package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class EphemeralNodeSet extends HashSet<Node> implements NodeSet {
+public class EphemeralNodeSet implements NodeSet {
 
-    private static final long serialVersionUID = 1L;
+    private final HashSet<EphemeralNode> internalSet;
 
     public EphemeralNodeSet() {
-        super();
+        this.internalSet = new HashSet<>();
     }
 
     public EphemeralNodeSet(Node initialNode) {
-        super();
-        add(Objects.requireNonNull(initialNode, "Node cannot be null"));
+        this();
+        add(initialNode);
     }
 
     public EphemeralNodeSet(Node... initialNodes) {
-        super();
+        this();
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
-        for (Node n : initialNodes) add(Objects.requireNonNull(n, "Node cannot be null"));
+        for (Node e : initialNodes) add(e);
     }
 
     public EphemeralNodeSet(Collection<Node> initialNodes) {
-        super();
+        this();
         Objects.requireNonNull(initialNodes, "Node collection cannot be null");
-        for (Node n : initialNodes) add(Objects.requireNonNull(n, "Node cannot be null"));
+        addAll(initialNodes);
     }
 
-    /**
-     * Return any node in the set or empty if none exist
-     */
+    private EphemeralNode validate(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
+        if (!(node instanceof EphemeralNode impl)) {
+            throw new IllegalArgumentException(
+                "Cross-graph contamination: Expected EphemeralNode, got " + node.getClass().getSimpleName()
+            );
+        }
+        return impl;
+    }
+
+    @Override
     public Optional<Node> one() {
-        return stream().findAny();
+        return internalSet.stream().map(e -> (Node) e).findAny();
     }
 
-    /**
-     * Returns a node set filtered to nodes with the attribute key and value
-     */
-    public NodeSet filter(String attribute){
+    @Override
+    public NodeSet filter(String attribute) {
         EphemeralNodeSet result = new EphemeralNodeSet();
-        for(Node node : this){
-           if(node.attributes().containsKey(attribute)){
-                result.add(node);
+        for (EphemeralNode node : internalSet) {
+           if (node.attributes().containsKey(attribute)) {
+                result.internalSet.add(node);
             }
         }
         return result;
     }
 
-    /**
-     * Returns a node set filtered to nodes with the attribute key and value
-     */
-    public NodeSet filter(String attribute, AttributeValue... values){
+    @Override
+    public NodeSet filter(String attribute, AttributeValue... values) {
         EphemeralNodeSet result = new EphemeralNodeSet();
-        if(attribute != null && values != null){
-            for(Node node : this){
+        if (attribute != null && values != null) {
+            for (EphemeralNode node : internalSet) {
                AttributeValue attributeValue = node.attributes().get(attribute);
-                if(attributeValue != null) {
-                    for(AttributeValue value : values) {
-                        if(value != null) {
-                            if(Objects.equals(attributeValue, value)) {
-                                result.add(node);
+                if (attributeValue != null) {
+                    for (AttributeValue value : values) {
+                        if (value != null) {
+                            if (Objects.equals(attributeValue, value)) {
+                                result.internalSet.add(node);
                                 break;
                             }
                         }
@@ -77,25 +83,143 @@ public class EphemeralNodeSet extends HashSet<Node> implements NodeSet {
         return result;
     }
 
+    @Override
+    public boolean add(Node node) {
+        return internalSet.add(validate(node));
+    }
 
     @Override
-    public boolean add(Node e) {
-        return super.add(Objects.requireNonNull(e, "Node cannot be null"));
+    public boolean contains(Object obj) {
+        if (!(obj instanceof Node node)) return false;
+        try {
+            return internalSet.contains(validate(node));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean remove(Object obj) {
+        if (!(obj instanceof Node node)) return false;
+        try {
+            return internalSet.remove(validate(node));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public int size() {
+        return internalSet.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return internalSet.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        internalSet.clear();
+    }
+
+    @Override
+    public Iterator<Node> iterator() {
+        Iterator<EphemeralNode> internalIterator = internalSet.iterator();
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() { return internalIterator.hasNext(); }
+            @Override
+            public Node next() { return internalIterator.next(); }
+            @Override
+            public void remove() { internalIterator.remove(); }
+        };
+    }
+
+    @Override
+    public Object[] toArray() {
+        return internalSet.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return internalSet.toArray(a);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        for (Object obj : c) {
+            if (!contains(obj)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends Node> c) {
         Objects.requireNonNull(c, "Node collection cannot be null");
+        for (Node e : c) {
+            validate(e);
+        }
         boolean modified = false;
         for (Node e : c) {
-            if (super.add(Objects.requireNonNull(e, "Node cannot be null"))) modified = true;
+            modified |= internalSet.add((EphemeralNode) e);
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        boolean modified = false;
+        Iterator<EphemeralNode> it = internalSet.iterator();
+        while (it.hasNext()) {
+            if (!c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        boolean modified = false;
+        for (Object obj : c) {
+            modified |= this.remove(obj);
         }
         return modified;
     }
 
     @Override
     public String toString() {
-        return "EphemeralNodeSet [nodes=" + super.toString() + "]";
+        return "EphemeralNodeSet [nodes=" + internalSet.toString() + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Set)) return false;
+        Collection<?> c = (Collection<?>) o;
+        if (c.size() != size()) return false;
+        try {
+            return containsAll(c);
+        } catch (ClassCastException | NullPointerException unused) {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int h = 0;
+        for (EphemeralNode obj : internalSet) {
+            if (obj != null) {
+                h += obj.hashCode();
+            }
+        }
+        return h;
+    }
 }
