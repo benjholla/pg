@@ -112,3 +112,28 @@ When implementing custom interfaces like NodeSet or EdgeSet, you must use **comp
 **4. Zero-Allocation Traversals**
 Graph traversals generate immense Garbage Collection (GC) pressure via nested loops.
  * **Direct Iterator Delegation:** When implementing iterator(), do not instantiate anonymous wrapper classes. Because the boundary checks on .add() mathematically guarantee internal type safety, you must use a double-cast (e.g., @SuppressWarnings("unchecked") return (Iterator<Node>) (Iterator<?>) internalSet.iterator();) to hand the developer the JDK's internal iterator directly, ensuring zero object allocation in hot loops.
+
+### ⚙️ SYSTEM ARCHITECTURE & BOUNDARY CONSTRAINTS FOR GRAPH IMPLEMENTATIONS (UPDATED)
+This brief governs the internal data structures, ID-based routing, and boundary validation philosophy for concrete Graph implementations (e.g., HeavyGraph, EphemeralGraph) within the pg ecosystem.
+#### 1. Internal Structure & Primitive Routing (The ID Mandate)
+Concrete graph engines discard object wrappers and route entirely via primitive integer IDs to achieve O(1) performance and prepare for serialization (e.g., pg-io).
+ * **The 4-Pillar Adjacency Structure (e.g., HeavyGraph):** Internally, the graph must map primitive IDs to their corresponding elements. Do not use generic Node or Edge objects as keys.
+   * Map<Integer, HeavyNode> nodes (Global Node Registry)
+   * Map<Integer, HeavyEdge> edges (Global Edge Registry)
+   * Map<Integer, HeavyEdgeSet> outEdges (Outbound Adjacency)
+   * Map<Integer, HeavyEdgeSet> inEdges (Inbound Adjacency)
+ * **Primitive Extraction:** The engine must actively validate an element's type *before* extracting its .id() to prevent silent routing failures or ID collisions.
+#### 2. The API Philosophy: Command-Query Separation
+Graph boundaries follow a strict rule to ensure standard Java collection compatibility while protecting internal adjacency lists: **Reads are safe; Writes and Anchors are strict.**
+ * **Subtractions & Queries (Silent Ignore):** Operations that ask *if* something exists or ask to *remove* something (e.g., removeNode, removeEdge, contains, intersect, difference). If a foreign or incompatible node is provided, the graph must safely return false or an empty collection. Do not throw exceptions.
+ * **Additive Mutations (Violent Fail):** Operations that inject state into the graph (e.g., addEdge). If a foreign element is provided, the graph must immediately throw an IllegalArgumentException. Do not attempt to cast or recover.
+ * **Traversal Anchors (Violent Fail):** Operations that anchor a topological search (e.g., forwardStep, outEdges, neighbors). The anchor element is a precondition, not a query parameter. Supplying a foreign anchor must immediately throw an IllegalArgumentException to prevent logic masking in downstream algorithms.
+#### 3. Differentiated Engine Guardrails
+Validation strictness scales based on the ID generation strategy of the specific engine module.
+ * **pg-heavy (Type Validation Only):** Because HeavyGraph utilizes a globally unique static singleton for ID generation, cross-instance collisions are impossible. Methods only require a strict type check (e.g., instanceof HeavyNode) to reject cross-engine contamination.
+ * **pg-universe (Type + Instance Validation):** Because EphemeralGraph generates locally scoped negative IDs (starting at -1), different instances will issue identical IDs. Methods must strictly validate type (instanceof EphemeralNode) **and** instance ownership (node.graph() == this) to prevent cross-universe adjacency corruption.
+#### 4. Encapsulation & Shielded Views
+The Graph is the absolute source of truth for topology and must heavily encapsulate its integer-backed maps.
+ * **No Raw Leaks:** When satisfying API contracts like graph.nodes() or returning the result of a traversal, the graph must never return its internal java.util.Collection or java.util.Map.values().
+ * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., HeavyNodeSet, HeavyEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the
+graph's internal state.
