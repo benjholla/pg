@@ -29,18 +29,6 @@ public class EphemeralGraph implements Graph {
 	private Map<Node, EdgeSet> inEdgesMap;
 	private Map<Node, EdgeSet> outEdgesMap;
 
-    /**
-     * TEMPORARY GUARDRAIL: Enforces Option 1 strict local scope.
-     * Throws if an ID is positive (Universe scope).
-     */
-    private static void requireLocalId(int id) {
-        if (id >= 0) {
-            throw new IllegalArgumentException(
-                "Foreign links to Universe IDs (" + id + ") are strictly disabled until Universe integration."
-            );
-        }
-    }
-
 	/**
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
 	 */
@@ -48,8 +36,8 @@ public class EphemeralGraph implements Graph {
         private static final long serialVersionUID = 1L;
 
         private void addEdgeToMaps(Edge e) {
-            requireLocalId(e.to().id());
-            requireLocalId(e.from().id());
+            EphemeralGuardrails.requireLocalId(e.to().id());
+            EphemeralGuardrails.requireLocalId(e.from().id());
 			inEdgesMap.computeIfAbsent(e.to(), k -> new EphemeralEdgeSet()).add(e);
 			outEdgesMap.computeIfAbsent(e.from(), k -> new EphemeralEdgeSet()).add(e);
 		}
@@ -299,7 +287,7 @@ public class EphemeralGraph implements Graph {
 	@Override
 	public boolean add(GraphElement graphElement) {
 		Objects.requireNonNull(graphElement, "graphElement cannot be null");
-        requireLocalId(graphElement.id());
+        EphemeralGuardrails.requireLocalId(graphElement.id());
 		boolean result = false;
 		if(graphElement instanceof Node) {
 			Node node = (Node) graphElement;

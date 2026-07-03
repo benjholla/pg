@@ -78,24 +78,12 @@ public class EphemeralEdgeSet extends HashSet<Edge> implements EdgeSet {
    }
 
 
-    /**
-     * TEMPORARY GUARDRAIL: Enforces Option 1 strict local scope.
-     * Throws if an ID is positive (Universe scope).
-     */
-    private static void requireLocalId(int id) {
-        if (id >= 0) {
-            throw new IllegalArgumentException(
-                "Foreign links to Universe IDs (" + id + ") are strictly disabled until Universe integration."
-            );
-        }
-    }
-
     @Override
     public boolean add(Edge e) {
         Objects.requireNonNull(e, "Edge cannot be null");
-        requireLocalId(e.id());
-        requireLocalId(e.from().id());
-        requireLocalId(e.to().id());
+        EphemeralGuardrails.requireLocalId(e.id());
+        EphemeralGuardrails.requireLocalId(e.from().id());
+        EphemeralGuardrails.requireLocalId(e.to().id());
         return super.add(e);
     }
 
