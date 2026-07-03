@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
@@ -202,24 +201,14 @@ public class HeavyNodeSet implements NodeSet {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Set)) return false;
-        Collection<?> c = (Collection<?>) o;
-        if (c.size() != size()) return false;
-        try {
-            return containsAll(c);
-        } catch (ClassCastException | NullPointerException unused) {
-            return false;
-        }
+        // Standard Java semantics: safely compares sizes and elements,
+        // evaluating to true for empty sets of different types,
+        // while deferring to elements for populated sets.
+        return internalSet.equals(o);
     }
 
     @Override
     public int hashCode() {
-        int h = 0;
-        for (HeavyNode obj : internalSet) {
-            if (obj != null) {
-                h += obj.hashCode();
-            }
-        }
-        return h;
+        return internalSet.hashCode();
     }
 }
