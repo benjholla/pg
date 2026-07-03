@@ -16,11 +16,21 @@ public class NullElementTest {
     @Test
     public void testNodeSetNull() {
         assertThrows(NullPointerException.class, () -> new EphemeralNodeSet(new EphemeralNode(), null));
+
+        NodeSet nodeSet = new EphemeralNodeSet();
+        assertThrows(NullPointerException.class, () -> nodeSet.add(null));
+        assertThrows(NullPointerException.class, () -> nodeSet.addAll(null));
+        assertThrows(NullPointerException.class, () -> nodeSet.addAll(java.util.Arrays.asList(new EphemeralNode(), null)));
     }
 
     @Test
     public void testEdgeSetNull() {
         assertThrows(NullPointerException.class, () -> new EphemeralEdgeSet(new EphemeralEdge(new EphemeralNode(), new EphemeralNode()), null));
+
+        EdgeSet edgeSet = new EphemeralEdgeSet();
+        assertThrows(NullPointerException.class, () -> edgeSet.add(null));
+        assertThrows(NullPointerException.class, () -> edgeSet.addAll(null));
+        assertThrows(NullPointerException.class, () -> edgeSet.addAll(java.util.Arrays.asList(new EphemeralEdge(new EphemeralNode(), new EphemeralNode()), null)));
     }
 
 
