@@ -1,0 +1,86 @@
+package io.github.benjholla.pg.universe.ephemeral;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import io.github.benjholla.pg.api.Edge;
+import io.github.benjholla.pg.api.Node;
+
+/**
+ * Validates fundamental invariants of the Graph interface implementations.
+ */
+public class GraphInvariantTest {
+
+    private EphemeralGraph graph;
+    private Node a, b, c;
+    private Edge ab, bc, ca;
+
+    @BeforeEach
+    public void setUp() {
+        a = new EphemeralNode();
+        b = new EphemeralNode();
+        c = new EphemeralNode();
+
+        ab = new EphemeralEdge(a, b);
+        bc = new EphemeralEdge(b, c);
+        ca = new EphemeralEdge(c, a);
+
+        graph = new EphemeralGraph(a, b, c);
+        graph.add(ab);
+        graph.add(bc);
+        graph.add(ca);
+    }
+
+    @Test
+    public void testRemoveNodeRemovesAssociatedEdges() {
+        // Assert initial state
+        assertTrue(graph.nodes().contains(a));
+        assertTrue(graph.edges().contains(ab));
+        assertTrue(graph.edges().contains(ca));
+
+        // When node 'a' is removed
+        boolean nodeRemoved = graph.remove(a);
+        assertTrue(nodeRemoved);
+
+        // Then node 'a' is gone
+        assertFalse(graph.nodes().contains(a));
+
+        // And incident edges must also be removed
+        assertFalse(graph.edges().contains(ab), "Edge ab must be removed because node a was removed");
+        assertFalse(graph.edges().contains(ca), "Edge ca must be removed because node a was removed");
+
+        // Independent edges should remain
+        assertTrue(graph.edges().contains(bc));
+    }
+
+    @Test
+    public void testEdgeCannotExistWithoutTerminalNodes() {
+        Node d = new EphemeralNode();
+        Node e = new EphemeralNode();
+        Edge de = new EphemeralEdge(d, e);
+
+        // Attempting to add an edge implicitly adds its nodes
+        graph.add(de);
+        assertTrue(graph.nodes().contains(d));
+        assertTrue(graph.nodes().contains(e));
+        assertTrue(graph.edges().contains(de));
+
+        // If we remove 'd', 'de' must disappear
+        graph.remove(d);
+        assertFalse(graph.edges().contains(de));
+    }
+
+    @Test
+    public void testIsolateNode() {
+        // Removing 'ab' and 'bc' leaves 'b' isolated but present
+        graph.remove(ab);
+        graph.remove(bc);
+
+        assertTrue(graph.nodes().contains(b), "Node b should still exist after its edges are removed");
+        assertFalse(graph.edges().contains(ab));
+        assertFalse(graph.edges().contains(bc));
+    }
+}

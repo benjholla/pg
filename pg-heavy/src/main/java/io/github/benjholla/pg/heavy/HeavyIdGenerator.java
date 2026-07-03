@@ -2,7 +2,7 @@ package io.github.benjholla.pg.heavy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public enum IdGenerator {
+public enum HeavyIdGenerator {
     INSTANCE;
 
     // reserving negative values and zero for future capabilities
