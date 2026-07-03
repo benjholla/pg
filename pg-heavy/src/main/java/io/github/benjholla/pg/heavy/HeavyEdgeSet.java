@@ -1,5 +1,6 @@
 package io.github.benjholla.pg.heavy;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class HeavyEdgeSet implements EdgeSet {
     public HeavyEdgeSet(Edge... initialEdges) {
         this();
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
-        for (Edge e : initialEdges) add(e);
+        addAll(Arrays.asList(initialEdges));
     }
 
     public HeavyEdgeSet(Collection<Edge> initialEdges) {

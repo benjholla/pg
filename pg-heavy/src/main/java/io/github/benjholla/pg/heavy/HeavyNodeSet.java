@@ -1,5 +1,6 @@
 package io.github.benjholla.pg.heavy;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class HeavyNodeSet implements NodeSet {
     public HeavyNodeSet(Node... initialNodes) {
         this();
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
-        for (Node e : initialNodes) add(e);
+        addAll(Arrays.asList(initialNodes));
     }
 
     public HeavyNodeSet(Collection<Node> initialNodes) {

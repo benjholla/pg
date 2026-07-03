@@ -1,5 +1,6 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class EphemeralNodeSet implements NodeSet {
     public EphemeralNodeSet(Node... initialNodes) {
         this();
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
-        for (Node e : initialNodes) add(e);
+        addAll(Arrays.asList(initialNodes));
     }
 
     public EphemeralNodeSet(Collection<Node> initialNodes) {

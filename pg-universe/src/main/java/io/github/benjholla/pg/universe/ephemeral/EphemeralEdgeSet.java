@@ -1,5 +1,6 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public class EphemeralEdgeSet implements EdgeSet {
     public EphemeralEdgeSet(Edge... initialEdges) {
         this();
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
-        for (Edge e : initialEdges) add(e);
+        addAll(Arrays.asList(initialEdges));
     }
 
     public EphemeralEdgeSet(Collection<Edge> initialEdges) {
