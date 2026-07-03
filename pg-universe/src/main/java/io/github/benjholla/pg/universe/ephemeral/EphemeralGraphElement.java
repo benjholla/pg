@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.heavy;
+package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.Objects;
 
@@ -6,7 +6,7 @@ import io.github.benjholla.pg.api.AttributeMap;
 import io.github.benjholla.pg.api.GraphElement;
 import io.github.benjholla.pg.api.TagSet;
 
-public abstract class HeavyGraphElement implements GraphElement {
+public abstract class EphemeralGraphElement implements GraphElement {
 
 	private final int id;
 
@@ -15,10 +15,10 @@ public abstract class HeavyGraphElement implements GraphElement {
 	// attributes define specialized graph properties
 	private final AttributeMap attributes;
 
-	protected HeavyGraphElement() {
-		this.id = HeavyIdGenerator.INSTANCE.create();
-		this.tags = new HeavyTagSet();
-		this.attributes = new HeavyAttributeMap();
+	protected EphemeralGraphElement() {
+		this.id = EphemeralIdGenerator.INSTANCE.create();
+		this.tags = new EphemeralTagSet();
+		this.attributes = new EphemeralAttributeMap();
 	}
 
 	/**
@@ -54,9 +54,9 @@ public abstract class HeavyGraphElement implements GraphElement {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof HeavyGraphElement))
+		if (!(obj instanceof EphemeralGraphElement))
 			return false;
-		HeavyGraphElement other = (HeavyGraphElement) obj;
+		EphemeralGraphElement other = (EphemeralGraphElement) obj;
 		return Objects.equals(id, other.id);
 	}
 

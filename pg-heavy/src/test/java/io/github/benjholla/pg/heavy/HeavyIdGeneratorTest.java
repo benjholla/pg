@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-public class IdGeneratorTest {
+public class HeavyIdGeneratorTest {
 
     @Test
     public void testConcurrentIdGeneration() throws InterruptedException {
@@ -26,7 +26,7 @@ public class IdGeneratorTest {
             executor.submit(() -> {
                 try {
                     for (int j = 0; j < idsPerThread; j++) {
-                        generatedIds.add(IdGenerator.INSTANCE.create());
+                        generatedIds.add(HeavyIdGenerator.INSTANCE.create());
                     }
                 } finally {
                     latch.countDown();
