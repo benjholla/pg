@@ -124,17 +124,10 @@ public class EphemeralNodeSet implements NodeSet {
         internalSet.clear();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Node> iterator() {
-        Iterator<EphemeralNode> internalIterator = internalSet.iterator();
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() { return internalIterator.hasNext(); }
-            @Override
-            public Node next() { return internalIterator.next(); }
-            @Override
-            public void remove() { internalIterator.remove(); }
-        };
+        return (Iterator<Node>) (Iterator<?>) internalSet.iterator();
     }
 
     @Override

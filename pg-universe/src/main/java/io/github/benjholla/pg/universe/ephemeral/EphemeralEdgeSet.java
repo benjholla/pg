@@ -124,17 +124,10 @@ public class EphemeralEdgeSet implements EdgeSet {
         internalSet.clear();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Edge> iterator() {
-        Iterator<EphemeralEdge> internalIterator = internalSet.iterator();
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() { return internalIterator.hasNext(); }
-            @Override
-            public Edge next() { return internalIterator.next(); }
-            @Override
-            public void remove() { internalIterator.remove(); }
-        };
+        return (Iterator<Edge>) (Iterator<?>) internalSet.iterator();
     }
 
     @Override
