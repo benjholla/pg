@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
@@ -196,7 +197,10 @@ public class HeavyNodeSet implements NodeSet {
 
     @Override
     public String toString() {
-        return "HeavyNodeSet [nodes=" + internalSet.toString() + "]";
+        String joined = internalSet.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "[", "]"));
+        return "HeavyNodeSet [nodes=" + joined + "]";
     }
 
     @Override

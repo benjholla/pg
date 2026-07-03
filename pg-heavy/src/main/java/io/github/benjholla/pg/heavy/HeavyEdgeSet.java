@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
@@ -196,7 +197,10 @@ public class HeavyEdgeSet implements EdgeSet {
 
     @Override
     public String toString() {
-        return "HeavyEdgeSet [edges=" + internalSet.toString() + "]";
+        String joined = internalSet.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "[", "]"));
+        return "HeavyEdgeSet [edges=" + joined + "]";
     }
 
     @Override
