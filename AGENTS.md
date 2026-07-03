@@ -93,3 +93,22 @@ Do not reinvent well-solved problems. If a high-quality library already performs
 
 # Repository Hygiene
 Clean up after yourself! Before opening a PR/MR, ensure no temporary or incidental development artifacts remain. Remove patch files, diff files, scratch notes, generated temporary outputs, debugging helpers, backup files, and other one-off artifacts unless they provide clear long-term value to the project. Leave the repository in a state that is clean, intentional, and easy for future contributors to navigate. Every committed file should justify its continued existence.
+
+---
+
+### ⚙️ SYSTEM ARCHITECTURE & BOUNDARY CONSTRAINTS FOR pg GRAPH ECOSYSTEM
+**1. Architecture & Cross-Contamination Prevention**
+The engine uses primitive ID-based routing, not standard object references. The generic Node and Edge interfaces from pg-api are shared across both the pg-heavy (lightweight, globally unique IDs) and pg-universe (bitwise, locally scoped IDs) implementations.
+ * **Strict Type Borders:** You must use explicit instanceof checks (e.g., node instanceof HeavyNode) to actively reject foreign implementations before extracting primitive IDs for internal maps or arrays.
+ * **Avoid Generics:** Do not introduce generics to pg-api to solve type safety. Keep the API monomorphic and rely on runtime type checks. Modern JVM polymorphic inline caches (PICs) will optimize these checks away in hot loops.
+**2. Standardizing Collections (Composition over Inheritance)**
+When implementing custom interfaces like NodeSet or EdgeSet, you must use **composition** (wrapping a strictly-typed java.util.HashSet or java.util.BitSet) rather than extending standard collections.
+ * **Mutations (Fail-Fast):** Additive methods (add, addAll) must actively enforce the type boundary using instanceof and throw an IllegalArgumentException immediately if a foreign type is detected.
+ * **Subtractions (Silent Ignore):** Query and removal methods (contains, remove, removeAll) must passively catch or handle foreign types and safely return false without crashing, aligning with standard Java collection semantics.
+**3. Equality and Hashing Mechanics**
+ * **Elements:** Identity for concrete nodes and edges is defined strictly by Type and Primitive ID. Implement equals() using a fast-path reference check, a strict instanceof type check, and finally a primitive this.id() == that.id() check. Hash codes must rely purely on the primitive ID (e.g., Integer.hashCode(id)).
+ * **Sets:** Custom sets must delegate equality and hashing directly to their internal collections to respect the mathematical contract of java.util.Set (where empty sets of different types evaluate to true).
+ * **Wrapper Optimization:** All custom sets must intercept self-comparisons with a fast-path if (this == o) return true; before delegating. Failure to do so will cause the internal JDK logic to fail its own fast-path and degrade to an O(N) element-by-element iteration.
+**4. Zero-Allocation Traversals**
+Graph traversals generate immense Garbage Collection (GC) pressure via nested loops.
+ * **Direct Iterator Delegation:** When implementing iterator(), do not instantiate anonymous wrapper classes. Because the boundary checks on .add() mathematically guarantee internal type safety, you must use a double-cast (e.g., @SuppressWarnings("unchecked") return (Iterator<Node>) (Iterator<?>) internalSet.iterator();) to hand the developer the JDK's internal iterator directly, ensuring zero object allocation in hot loops.
