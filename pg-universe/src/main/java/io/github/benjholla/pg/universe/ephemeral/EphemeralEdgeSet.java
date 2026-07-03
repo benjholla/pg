@@ -44,6 +44,7 @@ public class EphemeralEdgeSet implements EdgeSet {
                 "Cross-graph contamination: Expected EphemeralEdge, got " + edge.getClass().getSimpleName()
             );
         }
+        EphemeralGuardrails.requireLocalId(impl.id());
         return impl;
     }
 

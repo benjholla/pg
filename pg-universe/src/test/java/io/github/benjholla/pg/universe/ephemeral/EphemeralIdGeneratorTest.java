@@ -40,7 +40,7 @@ public class EphemeralIdGeneratorTest {
 
         assertEquals(threadCount * idsPerThread, generatedIds.size(), "All generated IDs must be unique");
         for (int id : generatedIds) {
-            assertTrue(id > 0, "IDs must be strictly positive");
+            assertTrue(id < 0, "IDs must be strictly negative");
         }
     }
 }
