@@ -78,9 +78,23 @@ public class EphemeralNodeSet extends HashSet<Node> implements NodeSet {
     }
 
 
+    /**
+     * TEMPORARY GUARDRAIL: Enforces Option 1 strict local scope.
+     * Throws if an ID is positive (Universe scope).
+     */
+    private static void requireLocalId(int id) {
+        if (id >= 0) {
+            throw new IllegalArgumentException(
+                "Foreign links to Universe IDs (" + id + ") are strictly disabled until Universe integration."
+            );
+        }
+    }
+
     @Override
     public boolean add(Node e) {
-        return super.add(Objects.requireNonNull(e, "Node cannot be null"));
+        Objects.requireNonNull(e, "Node cannot be null");
+        requireLocalId(e.id());
+        return super.add(e);
     }
 
     @Override
