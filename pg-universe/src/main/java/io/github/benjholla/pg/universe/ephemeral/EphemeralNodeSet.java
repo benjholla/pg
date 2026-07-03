@@ -44,6 +44,7 @@ public class EphemeralNodeSet implements NodeSet {
                 "Cross-graph contamination: Expected EphemeralNode, got " + node.getClass().getSimpleName()
             );
         }
+        EphemeralGuardrails.requireLocalId(impl.id());
         return impl;
     }
 
