@@ -21,7 +21,7 @@ import java.util.Arrays;
  * drastically reduces the exhaustive branch requirements for downstream consumers. When 
  * extracting properties via Java {@code switch} expressions, developers only need to handle 
  * a maximum of 6 branches rather than the full suite of Java primitives.</li>
- * <li><b>JSON & Transport Interoperability:</b> This specific subset perfectly mirrors 
+ * <li><b>JSON &amp; Transport Interoperability:</b> This specific subset perfectly mirrors
  * native JSON data types (String, Number, Boolean). This guarantees a frictionless, 
  * 1-to-1 serialization pipeline in the {@code pg-io} module, ensuring attributes map cleanly 
  * to the {@code pgv} TypeScript visualizer.</li>
