@@ -27,8 +27,8 @@ public class InducePropertiesInvariantTest {
         bc = new HeavyEdge(b, c);
 
         gA = new HeavyGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
     }
 
     @Test

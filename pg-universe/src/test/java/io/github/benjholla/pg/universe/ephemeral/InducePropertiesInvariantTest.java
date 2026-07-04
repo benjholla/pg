@@ -27,8 +27,8 @@ public class InducePropertiesInvariantTest {
         bc = new EphemeralEdge(b, c);
 
         gA = new EphemeralGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
     }
 
     @Test

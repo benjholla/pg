@@ -27,10 +27,10 @@ public class AbsorptionLawsInvariantTest {
         HeavyEdge bc = new HeavyEdge(b, c);
 
         gA = new HeavyGraph(a, b);
-        gA.add(ab);
+        gA.addEdge(ab);
 
         gB = new HeavyGraph(b, c);
-        gB.add(bc);
+        gB.addEdge(bc);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

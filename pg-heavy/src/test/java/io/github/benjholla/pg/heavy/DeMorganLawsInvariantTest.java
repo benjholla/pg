@@ -28,15 +28,15 @@ public class DeMorganLawsInvariantTest {
 
         // A is the superset
         gA = new HeavyGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
 
         // B and C are subsets
         gB = new HeavyGraph(a, b);
-        gB.add(ab);
+        gB.addEdge(ab);
 
         gC = new HeavyGraph(b, c);
-        gC.add(bc);
+        gC.addEdge(bc);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

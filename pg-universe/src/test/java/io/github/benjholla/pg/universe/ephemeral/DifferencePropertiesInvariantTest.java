@@ -25,14 +25,14 @@ public class DifferencePropertiesInvariantTest {
         EphemeralEdge bc = new EphemeralEdge(b, c);
 
         gA = new EphemeralGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
 
         gB = new EphemeralGraph(a, b);
-        gB.add(ab);
+        gB.addEdge(ab);
 
         gC = new EphemeralGraph(b, c);
-        gC.add(bc);
+        gC.addEdge(bc);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

@@ -27,10 +27,10 @@ public class AbsorptionLawsInvariantTest {
         EphemeralEdge bc = new EphemeralEdge(b, c);
 
         gA = new EphemeralGraph(a, b);
-        gA.add(ab);
+        gA.addEdge(ab);
 
         gB = new EphemeralGraph(b, c);
-        gB.add(bc);
+        gB.addEdge(bc);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {
