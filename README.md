@@ -20,6 +20,8 @@ Graphs are everywhere, but many graph libraries focus on heavy integration with 
 
 ## Quick Start
 
+*Note: This example is continuously validated by the executable test `ReadmeExampleTest.java` to ensure it remains synchronized with the implementation.*
+
 ```java
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.Edge;
