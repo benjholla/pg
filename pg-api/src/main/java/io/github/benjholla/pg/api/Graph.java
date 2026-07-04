@@ -6,6 +6,19 @@ import java.util.Optional;
 import io.github.benjholla.pg.api.Node.NodeDirection;
 
 public interface Graph {
+
+	public static final java.util.Comparator<Graph> SIZE_COMPARATOR = new java.util.Comparator<Graph>() {
+		@Override
+		public int compare(Graph g1, Graph g2) {
+			int nodes = Integer.compare(g1.nodes().size(), g2.nodes().size());
+			if (nodes != 0) {
+				return nodes;
+			} else {
+				return Integer.compare(g1.edges().size(), g2.edges().size());
+			}
+		}
+	};
+
 	
 	/**
 	 * Returns the node denoted by the given id if one exists
