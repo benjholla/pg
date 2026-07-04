@@ -16,11 +16,21 @@ public class NullElementTest {
     @Test
     public void testNodeSetNull() {
         assertThrows(NullPointerException.class, () -> new HeavyNodeSet(new HeavyNode(), null));
+
+        NodeSet nodeSet = new HeavyNodeSet();
+        assertThrows(NullPointerException.class, () -> nodeSet.add(null));
+        assertThrows(NullPointerException.class, () -> nodeSet.addAll(null));
+        assertThrows(NullPointerException.class, () -> nodeSet.addAll(java.util.Arrays.asList(new HeavyNode(), null)));
     }
 
     @Test
     public void testEdgeSetNull() {
         assertThrows(NullPointerException.class, () -> new HeavyEdgeSet(new HeavyEdge(new HeavyNode(), new HeavyNode()), null));
+
+        EdgeSet edgeSet = new HeavyEdgeSet();
+        assertThrows(NullPointerException.class, () -> edgeSet.add(null));
+        assertThrows(NullPointerException.class, () -> edgeSet.addAll(null));
+        assertThrows(NullPointerException.class, () -> edgeSet.addAll(java.util.Arrays.asList(new HeavyEdge(new HeavyNode(), new HeavyNode()), null)));
     }
 
 
