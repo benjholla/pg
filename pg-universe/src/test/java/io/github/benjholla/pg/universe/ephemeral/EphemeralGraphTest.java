@@ -12,7 +12,6 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 import io.github.benjholla.pg.api.Graph;
-import io.github.benjholla.pg.api.GraphElement;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
@@ -81,25 +80,26 @@ public class EphemeralGraphTest {
         dg.attributes().put("weight", 6);
         dg.tags().add("branch");
 
-        graph.add(a);
-        graph.add(b);
-        graph.add(c);
-        graph.add(d);
-        graph.add(e);
-        graph.add(f); // f is added, no edges
-        graph.add(g);
+        graph.addNode(a);
+        graph.addNode(b);
+        graph.addNode(c);
+        graph.addNode(d);
+        graph.addNode(e);
+        graph.addNode(f); // f is added, no edges
+        graph.addNode(g);
 
-        graph.add(ab);
-        graph.add(bc);
-        graph.add(cb);
-        graph.add(cd);
-        graph.add(de);
-        graph.add(dg);
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+        graph.addEdge(cb);
+        graph.addEdge(cd);
+        graph.addEdge(de);
+        graph.addEdge(dg);
     }
 
     @Test
     public void testAddNull() {
-        assertThrows(NullPointerException.class, () -> graph.add((GraphElement) null));
+        assertThrows(NullPointerException.class, () -> graph.addNode((Node) null));
+        assertThrows(NullPointerException.class, () -> graph.addEdge((Edge) null));
     }
 
     @Test
@@ -269,8 +269,8 @@ public class EphemeralGraphTest {
     @Test
     public void testDifference() {
         EphemeralGraph sub = new EphemeralGraph(a, b, c);
-        sub.add(ab);
-        sub.add(bc);
+        sub.addEdge(ab);
+        sub.addEdge(bc);
 
         Graph diffNodes = sub.difference(a);
         assertEquals(2, diffNodes.nodes().size());
@@ -296,8 +296,8 @@ public class EphemeralGraphTest {
     @Test
     public void testDifferenceEdges() {
         EphemeralGraph sub = new EphemeralGraph(a, b, c);
-        sub.add(ab);
-        sub.add(bc);
+        sub.addEdge(ab);
+        sub.addEdge(bc);
 
         Graph diffE = sub.differenceEdges(ab);
         assertEquals(3, diffE.nodes().size()); // nodes not removed
@@ -314,12 +314,12 @@ public class EphemeralGraphTest {
     @Test
     public void testIntersection() {
         EphemeralGraph g1 = new EphemeralGraph(a, b, c);
-        g1.add(ab);
-        g1.add(bc);
+        g1.addEdge(ab);
+        g1.addEdge(bc);
 
         EphemeralGraph g2 = new EphemeralGraph(b, c, d);
-        g2.add(bc);
-        g2.add(cd);
+        g2.addEdge(bc);
+        g2.addEdge(cd);
 
         Graph intersect = g1.intersection(g2);
         assertEquals(2, intersect.nodes().size());

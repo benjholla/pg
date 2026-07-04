@@ -20,12 +20,12 @@ public class DisjointGraphInvariantTest {
         a1 = new HeavyNode();
         a2 = new HeavyNode();
         graphA = new HeavyGraph(a1, a2);
-        graphA.add(new HeavyEdge(a1, a2));
+        graphA.addEdge(new HeavyEdge(a1, a2));
 
         b1 = new HeavyNode();
         b2 = new HeavyNode();
         graphB = new HeavyGraph(b1, b2);
-        graphB.add(new HeavyEdge(b1, b2));
+        graphB.addEdge(new HeavyEdge(b1, b2));
     }
 
     @Test

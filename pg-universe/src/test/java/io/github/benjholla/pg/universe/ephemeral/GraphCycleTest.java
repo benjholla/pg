@@ -20,9 +20,9 @@ public class GraphCycleTest {
         Edge ca = new EphemeralEdge(c, a); // Cycle!
 
         EphemeralGraph graph = new EphemeralGraph(a, b, c);
-        graph.add(ab);
-        graph.add(bc);
-        graph.add(ca);
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
 
         Graph result = graph.forward(a);
         assertEquals(3, result.nodes().size());

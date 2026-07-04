@@ -19,13 +19,13 @@ public class GraphDegreeInvariantTest {
         a = new HeavyNode(); b = new HeavyNode(); c = new HeavyNode();
         d = new HeavyNode(); e = new HeavyNode();
 
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
-        graph.add(new HeavyEdge(c, d));
-        graph.add(new HeavyEdge(d, b)); // cycle
-        graph.add(new HeavyEdge(d, e));
-        graph.add(new HeavyEdge(e, a)); // another cycle
-        graph.add(new HeavyEdge(a, a)); // self-loop
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(c, d));
+        graph.addEdge(new HeavyEdge(d, b)); // cycle
+        graph.addEdge(new HeavyEdge(d, e));
+        graph.addEdge(new HeavyEdge(e, a)); // another cycle
+        graph.addEdge(new HeavyEdge(a, a)); // self-loop
     }
 
     @Test

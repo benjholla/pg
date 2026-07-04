@@ -20,8 +20,8 @@ public class MultiGraphInvariantTest {
         e2.tags().add("type2");
 
         EphemeralGraph graph = new EphemeralGraph(a, b);
-        graph.add(e1);
-        graph.add(e2);
+        graph.addEdge(e1);
+        graph.addEdge(e2);
 
         Graph result = graph.forwardStep(a);
         assertEquals(2, result.nodes().size());

@@ -29,9 +29,9 @@ public class GraphInvariantTest {
         ca = new HeavyEdge(c, a);
 
         graph = new HeavyGraph(a, b, c);
-        graph.add(ab);
-        graph.add(bc);
-        graph.add(ca);
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class GraphInvariantTest {
         assertTrue(graph.edges().contains(ca));
 
         // When node 'a' is removed
-        boolean nodeRemoved = graph.remove(a);
+        boolean nodeRemoved = graph.removeNode(a);
         assertTrue(nodeRemoved);
 
         // Then node 'a' is gone
@@ -63,21 +63,21 @@ public class GraphInvariantTest {
         Edge de = new HeavyEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
-        graph.add(de);
+        graph.addEdge(de);
         assertTrue(graph.nodes().contains(d));
         assertTrue(graph.nodes().contains(e));
         assertTrue(graph.edges().contains(de));
 
         // If we remove 'd', 'de' must disappear
-        graph.remove(d);
+        graph.removeNode(d);
         assertFalse(graph.edges().contains(de));
     }
 
     @Test
     public void testIsolateNode() {
         // Removing 'ab' and 'bc' leaves 'b' isolated but present
-        graph.remove(ab);
-        graph.remove(bc);
+        graph.removeEdge(ab);
+        graph.removeEdge(bc);
 
         assertTrue(graph.nodes().contains(b), "Node b should still exist after its edges are removed");
         assertFalse(graph.edges().contains(ab));

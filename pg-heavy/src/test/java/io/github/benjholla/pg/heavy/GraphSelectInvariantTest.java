@@ -45,12 +45,12 @@ public class GraphSelectInvariantTest {
         ca = new HeavyEdge(c, a);
         ca.attributes().put("distance", new AttributeValue.IntVal(50));
 
-        graph.add(a);
-        graph.add(b);
-        graph.add(c);
-        graph.add(ab);
-        graph.add(bc);
-        graph.add(ca);
+        graph.addNode(a);
+        graph.addNode(b);
+        graph.addNode(c);
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+        graph.addEdge(ca);
     }
 
     @Test

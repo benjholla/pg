@@ -15,7 +15,7 @@ public class SelfLoopInvariantTest {
         Edge loop = new HeavyEdge(a, a);
 
         HeavyGraph graph = new HeavyGraph(a);
-        graph.add(loop);
+        graph.addEdge(loop);
 
         Graph result = graph.forward(a);
         assertEquals(1, result.nodes().size());

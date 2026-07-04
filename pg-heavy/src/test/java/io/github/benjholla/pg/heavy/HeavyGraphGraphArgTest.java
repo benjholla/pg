@@ -17,8 +17,8 @@ public class HeavyGraphGraphArgTest {
         Edge e1 = new HeavyEdge(n1, n2);
         Edge e2 = new HeavyEdge(n2, n3);
         HeavyGraph graph = new HeavyGraph();
-        graph.add(e1);
-        graph.add(e2);
+        graph.addEdge(e1);
+        graph.addEdge(e2);
 
         Graph g1 = new HeavyGraph(n2);
 
@@ -48,7 +48,7 @@ public class HeavyGraphGraphArgTest {
         Node n2 = new HeavyNode();
         Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
 
         Graph gRemove1 = new HeavyGraph(e1);
         Graph gRemove2 = new HeavyGraph(e1);
@@ -64,7 +64,7 @@ public class HeavyGraphGraphArgTest {
         Node n3 = new HeavyNode();
         Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
 
         NodeSet emptyFrom = new HeavyNodeSet();
         NodeSet validTo = new HeavyNodeSet(n2);

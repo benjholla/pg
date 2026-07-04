@@ -34,15 +34,15 @@ public class GraphAlgebraicPropertiesTest {
         de = new EphemeralEdge(d, e);
 
         gA = new EphemeralGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
 
         gB = new EphemeralGraph(c, d);
-        gB.add(cd);
+        gB.addEdge(cd);
 
         gC = new EphemeralGraph(a, b, d, e);
-        gC.add(ab);
-        gC.add(de);
+        gC.addEdge(ab);
+        gC.addEdge(de);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

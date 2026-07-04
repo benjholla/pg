@@ -15,8 +15,8 @@ public class RootsLeavesInvariantTest {
     public void testRootsHaveNoInEdges() {
         Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
 
         NodeSet roots = graph.roots();
         for (Node root : roots) {
@@ -35,8 +35,8 @@ public class RootsLeavesInvariantTest {
     public void testLeavesHaveNoOutEdges() {
         Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
 
         NodeSet leaves = graph.leaves();
         for (Node leaf : leaves) {
@@ -64,9 +64,9 @@ public class RootsLeavesInvariantTest {
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
-        graph.add(new EphemeralEdge(c, a));
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(c, a));
 
         assertTrue(graph.roots().isEmpty(), "Cyclic graph with no ingress nodes has no roots");
         assertTrue(graph.leaves().isEmpty(), "Cyclic graph with no egress nodes has no leaves");

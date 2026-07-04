@@ -20,12 +20,12 @@ public class DisjointGraphInvariantTest {
         a1 = new EphemeralNode();
         a2 = new EphemeralNode();
         graphA = new EphemeralGraph(a1, a2);
-        graphA.add(new EphemeralEdge(a1, a2));
+        graphA.addEdge(new EphemeralEdge(a1, a2));
 
         b1 = new EphemeralNode();
         b2 = new EphemeralNode();
         graphB = new EphemeralGraph(b1, b2);
-        graphB.add(new EphemeralEdge(b1, b2));
+        graphB.addEdge(new EphemeralEdge(b1, b2));
     }
 
     @Test

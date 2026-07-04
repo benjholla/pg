@@ -23,13 +23,13 @@ public class GraphPathReversibilityInvariantTest {
         d = new HeavyNode(); e = new HeavyNode();
 
         // Create a path a -> b -> c -> d -> e
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
-        graph.add(new HeavyEdge(c, d));
-        graph.add(new HeavyEdge(d, e));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(c, d));
+        graph.addEdge(new HeavyEdge(d, e));
 
         // Add a cycle for complexity
-        graph.add(new HeavyEdge(c, a));
+        graph.addEdge(new HeavyEdge(c, a));
     }
 
     @Test

@@ -20,7 +20,7 @@ public class LargeGraphInvariantTest {
         for(int i=0; i<size; i++) {
             nodes[i] = new EphemeralNode();
             if(i > 0) {
-                graph.add(new EphemeralEdge(nodes[i-1], nodes[i]));
+                graph.addEdge(new EphemeralEdge(nodes[i-1], nodes[i]));
             }
         }
 

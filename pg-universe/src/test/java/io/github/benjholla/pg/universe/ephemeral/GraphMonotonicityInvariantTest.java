@@ -24,12 +24,12 @@ public class GraphMonotonicityInvariantTest {
         a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode(); d = new EphemeralNode();
         e = new EphemeralNode(); f = new EphemeralNode(); g = new EphemeralNode();
 
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
-        graph.add(new EphemeralEdge(c, d));
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(c, d));
 
-        graph.add(new EphemeralEdge(e, f));
-        graph.add(new EphemeralEdge(f, g));
+        graph.addEdge(new EphemeralEdge(e, f));
+        graph.addEdge(new EphemeralEdge(f, g));
     }
 
     private void assertIsSubgraph(Graph subgraph, Graph supergraph) {

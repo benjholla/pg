@@ -15,8 +15,8 @@ public class RootsLeavesInvariantTest {
     public void testRootsHaveNoInEdges() {
         Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
 
         NodeSet roots = graph.roots();
         for (Node root : roots) {
@@ -35,8 +35,8 @@ public class RootsLeavesInvariantTest {
     public void testLeavesHaveNoOutEdges() {
         Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
 
         NodeSet leaves = graph.leaves();
         for (Node leaf : leaves) {
@@ -64,9 +64,9 @@ public class RootsLeavesInvariantTest {
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
-        graph.add(new HeavyEdge(c, a));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(c, a));
 
         assertTrue(graph.roots().isEmpty(), "Cyclic graph with no ingress nodes has no roots");
         assertTrue(graph.leaves().isEmpty(), "Cyclic graph with no egress nodes has no leaves");

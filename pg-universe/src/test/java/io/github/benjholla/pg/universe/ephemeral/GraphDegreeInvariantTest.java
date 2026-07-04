@@ -19,13 +19,13 @@ public class GraphDegreeInvariantTest {
         a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
         d = new EphemeralNode(); e = new EphemeralNode();
 
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
-        graph.add(new EphemeralEdge(c, d));
-        graph.add(new EphemeralEdge(d, b)); // cycle
-        graph.add(new EphemeralEdge(d, e));
-        graph.add(new EphemeralEdge(e, a)); // another cycle
-        graph.add(new EphemeralEdge(a, a)); // self-loop
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(c, d));
+        graph.addEdge(new EphemeralEdge(d, b)); // cycle
+        graph.addEdge(new EphemeralEdge(d, e));
+        graph.addEdge(new EphemeralEdge(e, a)); // another cycle
+        graph.addEdge(new EphemeralEdge(a, a)); // self-loop
     }
 
     @Test

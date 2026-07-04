@@ -24,12 +24,12 @@ public class GraphMonotonicityInvariantTest {
         a = new HeavyNode(); b = new HeavyNode(); c = new HeavyNode(); d = new HeavyNode();
         e = new HeavyNode(); f = new HeavyNode(); g = new HeavyNode();
 
-        graph.add(new HeavyEdge(a, b));
-        graph.add(new HeavyEdge(b, c));
-        graph.add(new HeavyEdge(c, d));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(c, d));
 
-        graph.add(new HeavyEdge(e, f));
-        graph.add(new HeavyEdge(f, g));
+        graph.addEdge(new HeavyEdge(e, f));
+        graph.addEdge(new HeavyEdge(f, g));
     }
 
     private void assertIsSubgraph(Graph subgraph, Graph supergraph) {

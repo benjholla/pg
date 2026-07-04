@@ -17,7 +17,7 @@ public class HeavyGraphClearTest {
         Node n2 = new HeavyNode();
         Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
         graph.edges().clear();
         assertTrue(graph.edges().isEmpty());
         assertEquals(2, graph.nodes().size());
@@ -31,7 +31,7 @@ public class HeavyGraphClearTest {
         Node n2 = new HeavyNode();
         Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
         Iterator<Edge> it = graph.edges().iterator();
         assertTrue(it.hasNext());
         Edge current = it.next();

@@ -17,8 +17,8 @@ public class EphemeralGraphGraphArgTest {
         Edge e1 = new EphemeralEdge(n1, n2);
         Edge e2 = new EphemeralEdge(n2, n3);
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(e1);
-        graph.add(e2);
+        graph.addEdge(e1);
+        graph.addEdge(e2);
 
         Graph g1 = new EphemeralGraph(n2);
 
@@ -48,7 +48,7 @@ public class EphemeralGraphGraphArgTest {
         Node n2 = new EphemeralNode();
         Edge e1 = new EphemeralEdge(n1, n2);
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
 
         Graph gRemove1 = new EphemeralGraph(e1);
         Graph gRemove2 = new EphemeralGraph(e1);
@@ -64,7 +64,7 @@ public class EphemeralGraphGraphArgTest {
         Node n3 = new EphemeralNode();
         Edge e1 = new EphemeralEdge(n1, n2);
         EphemeralGraph graph = new EphemeralGraph();
-        graph.add(e1);
+        graph.addEdge(e1);
 
         NodeSet emptyFrom = new EphemeralNodeSet();
         NodeSet validTo = new EphemeralNodeSet(n2);

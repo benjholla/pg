@@ -34,15 +34,15 @@ public class GraphAlgebraicPropertiesTest {
         de = new HeavyEdge(d, e);
 
         gA = new HeavyGraph(a, b, c);
-        gA.add(ab);
-        gA.add(bc);
+        gA.addEdge(ab);
+        gA.addEdge(bc);
 
         gB = new HeavyGraph(c, d);
-        gB.add(cd);
+        gB.addEdge(cd);
 
         gC = new HeavyGraph(a, b, d, e);
-        gC.add(ab);
-        gC.add(de);
+        gC.addEdge(ab);
+        gC.addEdge(de);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

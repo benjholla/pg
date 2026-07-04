@@ -33,8 +33,8 @@ public class ReadmeExampleTest {
 
         // Instantiate a graph
         EphemeralGraph graph = new EphemeralGraph(alice, bob, charlie);
-        graph.add(knows1);
-        graph.add(knows2);
+        graph.addEdge(knows1);
+        graph.addEdge(knows2);
 
         // Perform set-theoretic operations
         // E.g., Find nodes and edges starting from Alice (forward transitive traversal)

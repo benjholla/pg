@@ -19,11 +19,11 @@ public class GraphTransitivityInvariantTest {
         a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
         d = new EphemeralNode(); e = new EphemeralNode();
 
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
-        graph.add(new EphemeralEdge(c, d));
-        graph.add(new EphemeralEdge(d, e));
-        graph.add(new EphemeralEdge(c, a)); // create a cycle to make things interesting
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(c, d));
+        graph.addEdge(new EphemeralEdge(d, e));
+        graph.addEdge(new EphemeralEdge(c, a)); // create a cycle to make things interesting
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

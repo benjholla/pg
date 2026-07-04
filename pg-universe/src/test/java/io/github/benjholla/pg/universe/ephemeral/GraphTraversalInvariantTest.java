@@ -19,11 +19,11 @@ public class GraphTraversalInvariantTest {
         a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
         d = new EphemeralNode(); e = new EphemeralNode(); f = new EphemeralNode();
 
-        graph.add(new EphemeralEdge(a, b));
-        graph.add(new EphemeralEdge(b, c));
-        graph.add(new EphemeralEdge(c, d));
-        graph.add(new EphemeralEdge(d, b)); // cycle b-c-d-b
-        graph.add(new EphemeralEdge(e, f));
+        graph.addEdge(new EphemeralEdge(a, b));
+        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge(new EphemeralEdge(c, d));
+        graph.addEdge(new EphemeralEdge(d, b)); // cycle b-c-d-b
+        graph.addEdge(new EphemeralEdge(e, f));
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

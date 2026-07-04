@@ -15,7 +15,7 @@ public class SelfLoopInvariantTest {
         Edge loop = new EphemeralEdge(a, a);
 
         EphemeralGraph graph = new EphemeralGraph(a);
-        graph.add(loop);
+        graph.addEdge(loop);
 
         Graph result = graph.forward(a);
         assertEquals(1, result.nodes().size());

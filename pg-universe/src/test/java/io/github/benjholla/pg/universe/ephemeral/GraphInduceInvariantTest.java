@@ -31,8 +31,8 @@ public class GraphInduceInvariantTest {
         bc = new EphemeralEdge(b, c);
         ca = new EphemeralEdge(c, a);
 
-        graph.add(a);
-        graph.add(b);
+        graph.addNode(a);
+        graph.addNode(b);
     }
 
     @Test
@@ -54,9 +54,9 @@ public class GraphInduceInvariantTest {
     @Test
     public void testInduceFromOtherGraph() {
         Graph otherGraph = new EphemeralGraph(a, b, c);
-        otherGraph.add(ab);
-        otherGraph.add(bc);
-        otherGraph.add(ca);
+        otherGraph.addEdge(ab);
+        otherGraph.addEdge(bc);
+        otherGraph.addEdge(ca);
 
         Graph induced = graph.induce(otherGraph);
 
