@@ -39,6 +39,16 @@ public interface Graph {
     };
     
 	/**
+	 * Returns true if the graph contains the specified node.
+	 */
+	public boolean containsNode(Node node);
+
+	/**
+	 * Returns true if the graph contains the specified edge.
+	 */
+	public boolean containsEdge(Edge edge);
+
+	/**
 	 * Returns the node denoted by the given id if one exists
 	 */
 	public Optional<Node> node(int id);
@@ -61,6 +71,12 @@ public interface Graph {
      * @return Returns true if the graph changed as a result of the operation
      */
     public boolean addEdge(Edge edge);
+	/**
+	 * Add an edge to the graph. Will fail if the terminal nodes are not present.
+	 *
+	 * @return Returns true if the graph changed as a result of the operation
+	 */
+	public boolean putEdge(Edge edge);
 	
     /**
      * Add nodes to the graph

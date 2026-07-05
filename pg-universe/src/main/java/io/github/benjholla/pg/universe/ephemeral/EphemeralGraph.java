@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,127 +22,19 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public class EphemeralGraph implements Graph {
 
-	private NodeSet nodes;
-	private EdgeSet edges;
-	private Map<Node, EdgeSet> inEdgesMap;
-	private Map<Node, EdgeSet> outEdgesMap;
-
-	/**
-	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
-	 */
-	protected class AdjacencyMaintainingEdgeSet extends EphemeralEdgeSet {
-        private void addEdgeToMaps(Edge e) {
-			inEdgesMap.computeIfAbsent(e.to(), k -> new EphemeralEdgeSet()).add(e);
-			outEdgesMap.computeIfAbsent(e.from(), k -> new EphemeralEdgeSet()).add(e);
-		}
-
-		private void removeEdgeFromMaps(Edge e) {
-			EdgeSet inSet = inEdgesMap.get(e.to());
-			if (inSet != null) {
-				inSet.remove(e);
-				if (inSet.isEmpty()) inEdgesMap.remove(e.to());
-			}
-			EdgeSet outSet = outEdgesMap.get(e.from());
-			if (outSet != null) {
-				outSet.remove(e);
-				if (outSet.isEmpty()) outEdgesMap.remove(e.from());
-			}
-		}
-
-		@Override
-		public boolean add(Edge e) {
-			boolean added = super.add(e);
-			if (added) {
-				addEdgeToMaps(e);
-			}
-			return added;
-		}
-
-		@Override
-		public boolean remove(Object o) {
-			boolean removed = super.remove(o);
-			if (removed && o instanceof Edge) {
-				removeEdgeFromMaps((Edge) o);
-			}
-			return removed;
-		}
-
-		@Override
-		public boolean addAll(Collection<? extends Edge> c) {
-			boolean modified = false;
-			for (Edge e : c) {
-				if (add(e)) modified = true;
-			}
-			return modified;
-		}
-
-		@Override
-		public boolean removeAll(Collection<?> c) {
-			boolean modified = false;
-			for (Object e : c) {
-				if (remove(e)) modified = true;
-			}
-			return modified;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> c) {
-			boolean modified = false;
-			Iterator<Edge> it = super.iterator();
-			while (it.hasNext()) {
-				Edge e = it.next();
-				if (!c.contains(e)) {
-					it.remove();
-					removeEdgeFromMaps(e);
-					modified = true;
-				}
-			}
-			return modified;
-		}
-
-		@Override
-		public void clear() {
-			super.clear();
-			inEdgesMap.clear();
-			outEdgesMap.clear();
-		}
-
-		@Override
-		public Iterator<Edge> iterator() {
-			Iterator<Edge> superIt = super.iterator();
-			return new Iterator<Edge>() {
-				private Edge current = null;
-
-				@Override
-				public boolean hasNext() {
-					return superIt.hasNext();
-				}
-
-				@Override
-				public Edge next() {
-					current = superIt.next();
-					return current;
-				}
-
-				@Override
-				public void remove() {
-					superIt.remove();
-					if (current != null) {
-						removeEdgeFromMaps(current);
-					}
-				}
-			};
-		}
-	}
+	private Map<Integer, EphemeralNode> nodes;
+	private Map<Integer, EphemeralEdge> edges;
+	private Map<Integer, EphemeralEdgeSet> inEdges;
+	private Map<Integer, EphemeralEdgeSet> outEdges;
 
 	/**
 	 * Constructs a new empty graph
 	 */
 	public EphemeralGraph() {
-		this.nodes = new EphemeralNodeSet();
-		this.inEdgesMap = new HashMap<>();
-		this.outEdgesMap = new HashMap<>();
-		this.edges = new AdjacencyMaintainingEdgeSet();
+		this.nodes = new HashMap<>();
+		this.edges = new HashMap<>();
+		this.inEdges = new HashMap<>();
+		this.outEdges = new HashMap<>();
 	}
 
 	/**
@@ -233,7 +124,8 @@ public class EphemeralGraph implements Graph {
 	 * @return The set of incoming edges to the given node
 	 */
 	protected Optional<EdgeSet> getInEdgesToNode(Node node){
-		return Optional.ofNullable(inEdgesMap.get(node));
+		if (!(node instanceof EphemeralNode en)) return Optional.empty();
+		return Optional.ofNullable(inEdges.get(en.id()));
 	}
 
 	/**
@@ -241,43 +133,91 @@ public class EphemeralGraph implements Graph {
 	 * @return The set of out-coming edges from the given node
 	 */
 	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
-		return Optional.ofNullable(outEdgesMap.get(node));
+		if (!(node instanceof EphemeralNode en)) return Optional.empty();
+		return Optional.ofNullable(outEdges.get(en.id()));
+	}
+
+
+	@Override
+	public boolean containsNode(Node node) {
+		// Silent Ignore
+		if (!(node instanceof EphemeralNode en)) return false;
+		return nodes.containsKey(en.id());
+	}
+
+	@Override
+	public boolean containsEdge(Edge edge) {
+		// Silent Ignore
+		if (!(edge instanceof EphemeralEdge ee)) return false;
+		return edges.containsKey(ee.id());
 	}
 
 	@Override
 	public Optional<Node> node(int id) {
-		for(Node node : nodes()) {
-			if(node.id() == id) {
-				return Optional.of(node);
-			}
-		}
-		return Optional.empty();
+		return Optional.ofNullable(nodes.get(id));
 	}
 
 	@Override
 	public Optional<Edge> edge(int id) {
-		for(Edge edge : edges()) {
-			if(edge.id() == id) {
-				return Optional.of(edge);
-			}
-		}
-		return Optional.empty();
+		return Optional.ofNullable(edges.get(id));
 	}
+
 
 	@Override
 	public boolean addNode(Node node) {
 		Objects.requireNonNull(node, "node cannot be null");
-        return this.nodes.add(node);
+        // 1. Violent Fail boundary
+        if (!(node instanceof EphemeralNode en)) {
+            throw new IllegalArgumentException("Expected EphemeralNode in EphemeralGraph.");
+        }
+
+        // 2. Idempotent check (don't overwrite existing wiring)
+        if (nodes.containsKey(en.id())) {
+            return false;
+        }
+
+        // 3. Synchronize the 4 Pillars
+        nodes.put(en.id(), en);
+        outEdges.put(en.id(), new EphemeralEdgeSet());
+        inEdges.put(en.id(), new EphemeralEdgeSet());
+        return true;
 	}
 	
 	@Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
+        // Auto-vivify terminal nodes
         boolean result = false;
-        result |= this.edges.add(edge);
-        result |= this.nodes.add(edge.from());
-        result |= this.nodes.add(edge.to());
+        result |= addNode(edge.from());
+        result |= addNode(edge.to());
+        result |= putEdge(edge);
         return result;
+    }
+
+	@Override
+    public boolean putEdge(Edge edge) {
+        Objects.requireNonNull(edge, "edge cannot be null");
+        // 1. Violent Fail boundary
+        if (!(edge instanceof EphemeralEdge ee)) {
+            throw new IllegalArgumentException("Expected EphemeralEdge in EphemeralGraph.");
+        }
+
+        // 2. Validate Topology Anchors
+        // The graph MUST violently fail if the nodes aren't registered,
+        // otherwise the adjacency maps will throw NullPointerExceptions.
+        if (!nodes.containsKey(ee.from().id()) || !nodes.containsKey(ee.to().id())) {
+            throw new IllegalArgumentException("Source or target node is not present in the graph.");
+        }
+
+        // 3. Idempotent check
+        if (edges.putIfAbsent(ee.id(), ee) != null) {
+            return false; // Edge already existed
+        }
+
+        // 4. Wire the adjacency maps
+        outEdges.get(ee.from().id()).add(ee);
+        inEdges.get(ee.to().id()).add(ee);
+        return true;
     }
 
 	@Override
@@ -304,18 +244,44 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public boolean removeNode(Node node) {
-        getInEdgesToNode(node).ifPresent(inEdges -> {
-            edges.removeAll(new EphemeralEdgeSet(inEdges));
-        });
-        getOutEdgesFromNode(node).ifPresent(outEdges -> {
-            edges.removeAll(new EphemeralEdgeSet(outEdges));
-        });
-        return nodes.remove(node);
+        // 1. Silent Ignore
+        if (!(node instanceof EphemeralNode en) || !nodes.containsKey(en.id())) {
+            return false;
+        }
+
+        int targetId = en.id();
+
+        // 2. Cascading Teardown: Scrub Outbound Edges
+        for (Edge out : outEdges.get(targetId)) {
+            edges.remove(out.id()); // Remove from global registry
+            inEdges.get(out.to().id()).remove(out); // Disconnect from neighbor
+        }
+
+        // 3. Cascading Teardown: Scrub Inbound Edges
+        for (Edge in : inEdges.get(targetId)) {
+            edges.remove(in.id()); // Remove from global registry
+            outEdges.get(in.from().id()).remove(in); // Disconnect from neighbor
+        }
+
+        // 4. Collapse the pillars for this ID
+        outEdges.remove(targetId);
+        inEdges.remove(targetId);
+        nodes.remove(targetId);
+        return true;
 	}
 	
 	@Override
     public boolean removeEdge(Edge edge) {
-	    return edges.remove(edge);
+        // 1. Silent Ignore
+        if (!(edge instanceof EphemeralEdge ee) || !edges.containsKey(ee.id())) {
+            return false;
+        }
+
+        // 2. Teardown
+        edges.remove(ee.id());
+        outEdges.get(ee.from().id()).remove(ee);
+        inEdges.get(ee.to().id()).remove(ee);
+        return true;
     }
 	
 	@Override
@@ -345,42 +311,47 @@ public class EphemeralGraph implements Graph {
     }
 
     @Override
-    public boolean retainAllNodes(Collection<? extends Node> nodes) {
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for(Node node : nodes) {
+    public boolean retainAllNodes(Collection<? extends Node> nodesToKeep) {
+        Objects.requireNonNull(nodesToKeep, "nodes cannot be null");
+        for(Node node : nodesToKeep) {
             Objects.requireNonNull(node, "node set elements cannot be null");
         }
         boolean result = false;
-        Iterator<Node> iterator = this.nodes.iterator();
-        while (iterator.hasNext()) {
-            if (!nodes.contains(iterator.next())) {
-                iterator.remove();
-                result = true;
+        // Collect nodes to remove to avoid concurrent modification
+        Collection<Node> toRemove = new ArrayList<>();
+        for (Node node : this.nodes.values()) {
+            if (!nodesToKeep.contains(node)) {
+                toRemove.add(node);
             }
+        }
+        for (Node node : toRemove) {
+            result |= removeNode(node);
         }
         return result;
     }
 
     @Override
-    public boolean retainAllEdges(Collection<? extends Edge> edges) {
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for(Edge edge : edges) {
+    public boolean retainAllEdges(Collection<? extends Edge> edgesToKeep) {
+        Objects.requireNonNull(edgesToKeep, "edges cannot be null");
+        for(Edge edge : edgesToKeep) {
             Objects.requireNonNull(edge, "edge set elements cannot be null");
         }
         boolean result = false;
-        Iterator<Edge> iterator = this.edges.iterator();
-        while (iterator.hasNext()) {
-            if (!edges.contains(iterator.next())) {
-                iterator.remove();
-                result = true;
+        Collection<Edge> toRemove = new ArrayList<>();
+        for (Edge edge : this.edges.values()) {
+            if (!edgesToKeep.contains(edge)) {
+                toRemove.add(edge);
             }
+        }
+        for (Edge edge : toRemove) {
+            result |= removeEdge(edge);
         }
         return result;
     }
     
     public void clearEdges() {
-        inEdgesMap.clear();
-        outEdgesMap.clear();
+        inEdges.clear();
+        outEdges.clear();
         edges.clear();
     }
     
@@ -391,12 +362,18 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public NodeSet nodes() {
-		return new EphemeralUnmodifiableNodeSet(nodes);
+		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		EphemeralNodeSet s = new EphemeralNodeSet();
+		s.addAll(nodes.values());
+		return new EphemeralUnmodifiableNodeSet(s);
 	}
 
 	@Override
 	public EdgeSet edges() {
-		return new EphemeralUnmodifiableEdgeSet(edges);
+		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		EphemeralEdgeSet s = new EphemeralEdgeSet();
+		s.addAll(edges.values());
+		return new EphemeralUnmodifiableEdgeSet(s);
 	}
 
 	@Override
@@ -838,22 +815,22 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public EdgeSet selectEdges(String attribute){
-		return edges.filter(attribute);
+		return edges().filter(attribute);
 	}
 
 	@Override
 	public EdgeSet selectEdges(String attribute, AttributeValue... values){
-		return edges.filter(attribute, values);
+		return edges().filter(attribute, values);
 	}
 
 	@Override
 	public NodeSet selectNodes(String attribute){
-		return nodes.filter(attribute);
+		return nodes().filter(attribute);
 	}
 
 	@Override
 	public NodeSet selectNodes(String attribute, AttributeValue... values){
-		return nodes.filter(attribute, values);
+		return nodes().filter(attribute, values);
 	}
 
 	@Override
@@ -901,7 +878,7 @@ public class EphemeralGraph implements Graph {
 	@Override
 	public EdgeSet edgesTaggedWithAny(String... tags){
         EdgeSet result = new EphemeralEdgeSet();
-        for(Edge edge : edges){
+        for(Edge edge : edges.values()){
             for(String tag : tags){
                 if(edge.tags().contains(tag)){
                     result.add(edge);
@@ -915,7 +892,7 @@ public class EphemeralGraph implements Graph {
 	@Override
 	public EdgeSet edgesTaggedWithAll(String... tags){
         EdgeSet result = new EphemeralEdgeSet();
-        for(Edge edge : edges){
+        for(Edge edge : edges.values()){
             boolean add = true;
             for(String tag : tags){
                 if(!edge.tags().contains(tag)){
