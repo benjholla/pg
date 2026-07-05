@@ -303,7 +303,7 @@ public interface Graph {
 	 * 
 	 * This behavior may seem counter-intuitive if one is thinking in terms of
 	 * removing a single edge from a graph. Consider the graphs: - g1: a -> b ->
-	 * c - g2: a -> b g1.remove(g2) yields the graph containing only node c:
+	 * c - g2: a -> b g1.difference(g2) yields the graph containing only node c:
 	 * because b is removed, so b -> c is also removed. In general, this
 	 * operation is useful for removing nodes from a graph, but may not be as
 	 * useful for operating on edges.
@@ -318,7 +318,7 @@ public interface Graph {
 	 * 
 	 * This behavior may seem counter-intuitive if one is thinking in terms of
 	 * removing a single edge from a graph. Consider the graphs: - g1: a -> b ->
-	 * c - g2: a -> b g1.remove(g2) yields the graph containing only node c:
+	 * c - g2: a -> b g1.difference(g2) yields the graph containing only node c:
 	 * because b is removed, so b -> c is also removed. In general, this
 	 * operation is useful for removing nodes from a graph, but may not be as
 	 * useful for operating on edges.
