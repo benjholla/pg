@@ -15,7 +15,7 @@ import io.github.benjholla.pg.api.NodeSet;
 
 public class UnmodifiableNodeSet implements NodeSet {
     private final NodeSet nodes;
-
+    
     public UnmodifiableNodeSet(NodeSet nodes) {
         this.nodes = nodes;
     }
@@ -107,7 +107,7 @@ public class UnmodifiableNodeSet implements NodeSet {
     public Stream<Node> parallelStream() {
         return nodes.parallelStream();
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -120,9 +120,9 @@ public class UnmodifiableNodeSet implements NodeSet {
     public int hashCode() {
         return nodes.hashCode();
     }
-
+    
     public String toString() {
         return nodes.toString();
     }
-
+    
 }
