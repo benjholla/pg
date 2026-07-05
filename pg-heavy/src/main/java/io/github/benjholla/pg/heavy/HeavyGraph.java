@@ -324,12 +324,12 @@ public class HeavyGraph implements Graph {
 
 	@Override
 	public NodeSet nodes() {
-		return nodes;
+		return new UnmodifiableNodeSet(nodes);
 	}
 
 	@Override
 	public EdgeSet edges() {
-		return edges;
+		return new UnmodifiableEdgeSet(edges);
 	}
 
 	@Override
