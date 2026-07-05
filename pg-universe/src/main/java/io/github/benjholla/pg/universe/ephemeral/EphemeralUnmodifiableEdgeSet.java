@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.heavy;
+package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,116 +13,133 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 
-public class UnmodifiableEdgeSet implements EdgeSet {
-    private final EdgeSet nodes;
-    
-    public UnmodifiableEdgeSet(EdgeSet nodes) {
-        this.nodes = nodes;
+public class EphemeralUnmodifiableEdgeSet implements EdgeSet {
+    private final EdgeSet edges;
+
+    public EphemeralUnmodifiableEdgeSet(EdgeSet edges) {
+        this.edges = edges;
     }
 
     public Optional<Edge> one() {
-        return nodes.one();
+        return edges.one();
     }
 
     public EdgeSet filter(String attribute) {
-        return nodes.filter(attribute);
+        return edges.filter(attribute);
     }
 
     public void forEach(Consumer<? super Edge> action) {
-        nodes.forEach(action);
+        edges.forEach(action);
     }
 
     public EdgeSet filter(String attribute, AttributeValue... values) {
-        return nodes.filter(attribute, values);
+        return edges.filter(attribute, values);
     }
 
-    public boolean add(Edge node) {
-        return nodes.add(node);
+    public boolean add(Edge edge) {
+        throw new UnsupportedOperationException();
     }
 
     public boolean contains(Object obj) {
-        return nodes.contains(obj);
+        return edges.contains(obj);
     }
 
     public boolean remove(Object obj) {
-        return nodes.remove(obj);
+        throw new UnsupportedOperationException();
     }
 
     public int size() {
-        return nodes.size();
+        return edges.size();
     }
 
     public boolean isEmpty() {
-        return nodes.isEmpty();
+        return edges.isEmpty();
     }
 
     public void clear() {
-        nodes.clear();
+        throw new UnsupportedOperationException();
     }
 
     public Iterator<Edge> iterator() {
-        return nodes.iterator();
+        return new Iterator<Edge>() {
+            private final Iterator<Edge> it = edges.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Edge next() {
+                return it.next();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     public Object[] toArray() {
-        return nodes.toArray();
+        return edges.toArray();
     }
 
     public <T> T[] toArray(T[] a) {
-        return nodes.toArray(a);
+        return edges.toArray(a);
     }
 
     public boolean containsAll(Collection<?> c) {
-        return nodes.containsAll(c);
+        return edges.containsAll(c);
     }
 
     public boolean addAll(Collection<? extends Edge> c) {
-        return nodes.addAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public boolean retainAll(Collection<?> c) {
-        return nodes.retainAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public boolean removeAll(Collection<?> c) {
-        return nodes.removeAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public Spliterator<Edge> spliterator() {
-        return nodes.spliterator();
+        return edges.spliterator();
     }
 
     public <T> T[] toArray(IntFunction<T[]> generator) {
-        return nodes.toArray(generator);
+        return edges.toArray(generator);
     }
 
     public boolean removeIf(Predicate<? super Edge> filter) {
-        return nodes.removeIf(filter);
+        throw new UnsupportedOperationException();
     }
 
     public Stream<Edge> stream() {
-        return nodes.stream();
+        return edges.stream();
     }
 
     public Stream<Edge> parallelStream() {
-        return nodes.parallelStream();
+        return edges.parallelStream();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        return nodes.equals(obj);
+        return edges.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return nodes.hashCode();
+        return edges.hashCode();
     }
-    
+
     public String toString() {
-        return nodes.toString();
+        return edges.toString();
     }
-    
+
 }

@@ -320,12 +320,12 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public NodeSet nodes() {
-		return nodes;
+		return new EphemeralUnmodifiableNodeSet(nodes);
 	}
 
 	@Override
 	public EdgeSet edges() {
-		return edges;
+		return new EphemeralUnmodifiableEdgeSet(edges);
 	}
 
 	@Override
