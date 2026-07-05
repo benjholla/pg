@@ -33,8 +33,6 @@ public class EphemeralGraph implements Graph {
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
 	 */
 	protected class AdjacencyMaintainingEdgeSet extends EphemeralEdgeSet {
-        private static final long serialVersionUID = 1L;
-
         private void addEdgeToMaps(Edge e) {
 			inEdgesMap.computeIfAbsent(e.to(), k -> new EphemeralEdgeSet()).add(e);
 			outEdgesMap.computeIfAbsent(e.from(), k -> new EphemeralEdgeSet()).add(e);

@@ -33,8 +33,6 @@ public class HeavyGraph implements Graph {
 	 * An internal EdgeSet that maintains the inEdgesMap and outEdgesMap.
 	 */
 	protected class AdjacencyMaintainingEdgeSet extends HeavyEdgeSet {
-        private static final long serialVersionUID = 1L;
-
         private void addEdgeToMaps(Edge e) {
 			inEdgesMap.computeIfAbsent(e.to(), k -> new HeavyEdgeSet()).add(e);
 			outEdgesMap.computeIfAbsent(e.from(), k -> new HeavyEdgeSet()).add(e);
