@@ -491,7 +491,7 @@ public class EphemeralGraph implements Graph {
 		// by largest to smallest so that we start with the largest set and minimize add operations
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		sortedGraphs.add(this);
-		Collections.sort(sortedGraphs, EphemeralGraphSort.GRAPH_SIZE_COMPARATOR.reversed());
+		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 		Graph initial = sortedGraphs.remove(0);
 
 		Graph union = new EphemeralGraph(initial.nodes(), initial.edges());
@@ -525,7 +525,7 @@ public class EphemeralGraph implements Graph {
 		// note that this ordering does not include this graph because difference
 		// operations do not commute (the given graphs are effectively a union)
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-		Collections.sort(sortedGraphs, EphemeralGraphSort.GRAPH_SIZE_COMPARATOR.reversed());
+		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 
 		Graph difference = new EphemeralGraph(this.nodes(), this.edges());
 		for(Graph graph : sortedGraphs){
@@ -556,7 +556,7 @@ public class EphemeralGraph implements Graph {
 		// note that this ordering does not include this graph because difference
 		// operations do not commute (the given graphs are effectively a union)
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-		Collections.sort(sortedGraphs, EphemeralGraphSort.GRAPH_SIZE_COMPARATOR.reversed());
+		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 
 		Graph difference = new EphemeralGraph(this.nodes(), this.edges());
 		for(Graph graph : sortedGraphs){
@@ -591,7 +591,7 @@ public class EphemeralGraph implements Graph {
 		// and minimize retain operations
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		sortedGraphs.add(this);
-		Collections.sort(sortedGraphs, EphemeralGraphSort.GRAPH_SIZE_COMPARATOR);
+		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR);
 		Graph initial = sortedGraphs.remove(0);
 
 		Graph intersection = new EphemeralGraph(initial.nodes(), initial.edges());
