@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.heavy;
+package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,10 +13,10 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class UnmodifiableNodeSet implements NodeSet {
+public class EphemeralUnmodifiableNodeSet implements NodeSet {
     private final NodeSet nodes;
     
-    public UnmodifiableNodeSet(NodeSet nodes) {
+    public EphemeralUnmodifiableNodeSet(NodeSet nodes) {
         this.nodes = nodes;
     }
 
@@ -37,7 +37,7 @@ public class UnmodifiableNodeSet implements NodeSet {
     }
 
     public boolean add(Node node) {
-        return nodes.add(node);
+        throw new UnsupportedOperationException();
     }
 
     public boolean contains(Object obj) {
@@ -45,7 +45,7 @@ public class UnmodifiableNodeSet implements NodeSet {
     }
 
     public boolean remove(Object obj) {
-        return nodes.remove(obj);
+        throw new UnsupportedOperationException();
     }
 
     public int size() {
@@ -57,11 +57,28 @@ public class UnmodifiableNodeSet implements NodeSet {
     }
 
     public void clear() {
-        nodes.clear();
+        throw new UnsupportedOperationException();
     }
 
     public Iterator<Node> iterator() {
-        return nodes.iterator();
+        return new Iterator<Node>() {
+            private final Iterator<Node> it = nodes.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Node next() {
+                return it.next();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     public Object[] toArray() {
@@ -77,15 +94,15 @@ public class UnmodifiableNodeSet implements NodeSet {
     }
 
     public boolean addAll(Collection<? extends Node> c) {
-        return nodes.addAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public boolean retainAll(Collection<?> c) {
-        return nodes.retainAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public boolean removeAll(Collection<?> c) {
-        return nodes.removeAll(c);
+        throw new UnsupportedOperationException();
     }
 
     public Spliterator<Node> spliterator() {
@@ -97,7 +114,7 @@ public class UnmodifiableNodeSet implements NodeSet {
     }
 
     public boolean removeIf(Predicate<? super Node> filter) {
-        return nodes.removeIf(filter);
+        throw new UnsupportedOperationException();
     }
 
     public Stream<Node> stream() {
