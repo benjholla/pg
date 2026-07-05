@@ -267,16 +267,16 @@ public class EphemeralGraph implements Graph {
 	@Override
 	public boolean addNode(Node node) {
 		Objects.requireNonNull(node, "node cannot be null");
-        return this.nodes().add(node);
+        return this.nodes.add(node);
 	}
 	
 	@Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
         boolean result = false;
-        result |= this.edges().add(edge);
-        result |= this.nodes().add(edge.from());
-        result |= this.nodes().add(edge.to());
+        result |= this.edges.add(edge);
+        result |= this.nodes.add(edge.from());
+        result |= this.nodes.add(edge.to());
         return result;
     }
 
@@ -305,17 +305,88 @@ public class EphemeralGraph implements Graph {
 	@Override
 	public boolean removeNode(Node node) {
         getInEdgesToNode(node).ifPresent(inEdges -> {
-            edges().removeAll(new EphemeralEdgeSet(inEdges));
+            edges.removeAll(new EphemeralEdgeSet(inEdges));
         });
         getOutEdgesFromNode(node).ifPresent(outEdges -> {
-            edges().removeAll(new EphemeralEdgeSet(outEdges));
+            edges.removeAll(new EphemeralEdgeSet(outEdges));
         });
-        return nodes().remove(node);
+        return nodes.remove(node);
 	}
 	
 	@Override
     public boolean removeEdge(Edge edge) {
-	    return edges().remove(edge);
+	    return edges.remove(edge);
+    }
+	
+	@Override
+    public boolean removeAllNodes(Collection<? extends Node> nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        boolean result = false;
+        for(Node node : nodes) {
+            Objects.requireNonNull(node, "node set elements cannot be null");
+        }
+        for(Node node : nodes) {
+            result |= removeNode(node);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean removeAllEdges(Collection<? extends Edge> edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
+        boolean result = false;
+        for(Edge edge : edges) {
+            Objects.requireNonNull(edge, "edge set elements cannot be null");
+        }
+        for(Edge edge : edges) {
+            result |= removeEdge(edge);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean retainAllNodes(Collection<? extends Node> nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        for(Node node : nodes) {
+            Objects.requireNonNull(node, "node set elements cannot be null");
+        }
+        boolean result = false;
+        Iterator<Node> iterator = this.nodes.iterator();
+        while (iterator.hasNext()) {
+            if (!nodes.contains(iterator.next())) {
+                iterator.remove();
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean retainAllEdges(Collection<? extends Edge> edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
+        for(Edge edge : edges) {
+            Objects.requireNonNull(edge, "edge set elements cannot be null");
+        }
+        boolean result = false;
+        Iterator<Edge> iterator = this.edges.iterator();
+        while (iterator.hasNext()) {
+            if (!edges.contains(iterator.next())) {
+                iterator.remove();
+                result = true;
+            }
+        }
+        return result;
+    }
+    
+    public void clearEdges() {
+        inEdgesMap.clear();
+        outEdgesMap.clear();
+        edges.clear();
+    }
+    
+    public void clear() {
+        clearEdges();
+        nodes.clear();
     }
 
 	@Override
@@ -425,9 +496,9 @@ public class EphemeralGraph implements Graph {
 		for(Node node : origin.nodes()){
 			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
-					result.nodes().add(edge.from());
-					result.nodes().add(edge.to());
-					result.edges().add(edge);
+					result.addNode(edge.from());
+					result.addNode(edge.to());
+					result.addEdge(edge);
 				}
 			});
 		}
@@ -454,9 +525,9 @@ public class EphemeralGraph implements Graph {
 		for(Node node : origin.nodes()){
 			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
-					result.nodes().add(edge.from());
-					result.nodes().add(edge.to());
-					result.edges().add(edge);
+					result.addNode(edge.from());
+					result.addNode(edge.to());
+					result.addEdge(edge);
 				}
 			});
 		}
@@ -496,8 +567,8 @@ public class EphemeralGraph implements Graph {
 
 		Graph union = new EphemeralGraph(initial.nodes(), initial.edges());
 		for(Graph graph : sortedGraphs){
-			union.nodes().addAll(graph.nodes());
-			union.edges().addAll(graph.edges());
+			union.addAllNodes(graph.nodes());
+			union.addAllEdges(graph.edges());
 		}
 		return union;
 	}
@@ -535,7 +606,7 @@ public class EphemeralGraph implements Graph {
 			for (Node node : graph.nodes()) {
 				difference.removeNode(node);
 			}
-			difference.edges().removeAll(graph.edges());
+			difference.removeAllEdges(graph.edges());
 		}
 		return difference;
 	}
@@ -563,7 +634,7 @@ public class EphemeralGraph implements Graph {
 			if(difference.edges().isEmpty()) {
 				break;
 			}
-			difference.edges().removeAll(graph.edges());
+			difference.removeAllEdges(graph.edges());
 		}
 		return difference;
 	}
@@ -599,8 +670,8 @@ public class EphemeralGraph implements Graph {
 			if(intersection.isEmpty()) {
 				break;
 			}
-			intersection.nodes().retainAll(graph.nodes());
-			intersection.edges().retainAll(graph.edges());
+			intersection.retainAllNodes(graph.nodes());
+			intersection.retainAllEdges(graph.edges());
 		}
 		return intersection;
 	}
@@ -686,10 +757,10 @@ public class EphemeralGraph implements Graph {
 			frontier.remove(next);
 			getOutEdgesFromNode(next).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
-					if(result.nodes().add(edge.to())){
+					if(result.addNode(edge.to())){
 						frontier.add(edge.to());
 					}
-					result.edges().add(edge);
+					result.addEdge(edge);
 				}
 			});
 		}
@@ -719,10 +790,10 @@ public class EphemeralGraph implements Graph {
 			frontier.remove(next);
 			getInEdgesToNode(next).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
-					if(result.nodes().add(edge.from())){
+					if(result.addNode(edge.from())){
 						frontier.add(edge.from());
 					}
-					result.edges().add(edge);
+					result.addEdge(edge);
 				}
 			});
 		}
@@ -759,7 +830,7 @@ public class EphemeralGraph implements Graph {
 		Graph result = new EphemeralGraph(this);
 		for(Edge edge : edges) {
 			if(result.nodes().contains(edge.from()) && result.nodes().contains(edge.to())) {
-				result.edges().add(edge);
+				result.addEdge(edge);
 			}
 		}
 		return result;

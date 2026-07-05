@@ -77,17 +77,65 @@ public interface Graph {
     public boolean addAllEdges(Collection<? extends Edge> edges);
     
     /**
-     * Remove a node from the graph
+     * Remove a node from the graph if the given node exists in this graph
      */
     public boolean removeNode(Node node);
     
     /**
-     * Remove a edge from the graph
+     * Remove a edge from the graph if the given node exists in this graph
      * 
-     *  @return Returns true if the graph changed as a result of the operation
+     * @return Returns true if the graph changed as a result of the operation
      */
     public boolean removeEdge(Edge edge);
-
+    
+    /**
+     * Remove all nodes from the graph if the given nodes exist in this graph
+     */
+    public boolean removeAllNodes(Collection<? extends Node> nodes);
+    
+    /**
+     * Remove all edges from the graph if the given edges exist in this graph
+     * 
+     * @return Returns true if the graph changed as a result of the operation
+     */
+    public boolean removeAllEdges(Collection<? extends Edge> edges);
+    
+    /**
+     * Retains only the nodes in this graph that are contained in the
+     * specified collection (optional operation).  In other words, removes
+     * from this graph all of its nodes that are not contained in the
+     * specified collection.  If the specified collection is also a set, this
+     * operation effectively modifies this set so that its value is the
+     * <i>intersection</i> of the two sets.
+     * 
+     * @return Returns true if the graph changed as a result of the operation
+     */
+    public boolean retainAllNodes(Collection<? extends Node> nodes);
+    
+    /**
+     * Retains only the edges in this graph that are contained in the
+     * specified collection (optional operation).  In other words, removes
+     * from this graph all of its edges that are not contained in the
+     * specified collection.  If the specified collection is also a set, this
+     * operation effectively modifies this set so that its value is the
+     * <i>intersection</i> of the two sets.
+     * 
+     * @return Returns true if the graph changed as a result of the operation
+     */
+    public boolean retainAllEdges(Collection<? extends Edge> edges);
+    
+    /**
+     * Removes all of the edge elements from this graph (leaving only nodes if they
+     * exist).
+     */
+    public void clearEdges();
+    
+    /**
+     * Removes all of the node and edge elements from this graph. The graph will be
+     * empty after this call returns.
+     */
+    public void clear();
+    
 	/**
 	 * Return an immutable set of nodes in the graph
 	 */
