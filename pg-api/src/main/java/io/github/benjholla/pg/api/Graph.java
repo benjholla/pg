@@ -5,6 +5,25 @@ import java.util.Optional;
 
 import io.github.benjholla.pg.api.Node.NodeDirection;
 
+/**
+ * Represents a mathematical directed property graph.
+ * <p>
+ * A {@code Graph} acts as the primary container and query engine for {@link Node}s and {@link Edge}s.
+ * This library embraces a <b>set-theoretic</b> approach to graph operations. Rather than modifying
+ * a single monolithic graph during analysis, operations like {@link #union(Graph...)},
+ * {@link #intersection(Graph...)}, and traversals like {@link #forward(Node...)} typically yield
+ * <i>new</i> graphs (subgraphs) representing the result of the query.
+ * <p>
+ * <b>Important Characteristics:</b>
+ * <ul>
+ * <li><b>Cascading Edge Removal:</b> Because an edge cannot exist without its endpoints, removing a
+ * node from the graph automatically removes any incident edges.
+ * <i>Note: This domain-specific behavior means graph set difference operations do not strictly adhere
+ * to all standard set-theoretic algebraic laws.</i></li>
+ * <li><b>Element Identity:</b> Graphs manage topology and rely on the primitive {@code int} identity
+ * of {@link GraphElement}s for fast O(1) routing and adjacency lookups.</li>
+ * </ul>
+ */
 public interface Graph {
 	
 	/**
