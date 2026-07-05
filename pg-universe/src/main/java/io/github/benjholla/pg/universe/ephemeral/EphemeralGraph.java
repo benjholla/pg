@@ -344,6 +344,7 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public NodeSet limit(NodeDirection direction){
+		java.util.Objects.requireNonNull(direction, "NodeDirection cannot be null");
 		NodeSet result = new EphemeralNodeSet();
 		for(Node node : nodes()){
 			EdgeSet connections = edges(node, direction);
