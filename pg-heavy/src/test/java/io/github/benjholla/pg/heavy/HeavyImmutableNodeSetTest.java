@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
-public class HeavyUnmodifiableNodeSetTest {
+public class HeavyImmutableNodeSetTest {
     @Test
     public void testUnsupportedOperations() {
         HeavyNodeSet internalSet = new HeavyNodeSet();
-        HeavyUnmodifiableNodeSet set = new HeavyUnmodifiableNodeSet(internalSet);
+        HeavyImmutableNodeSet set = new HeavyImmutableNodeSet(internalSet);
         HeavyNode n = new HeavyNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
@@ -32,7 +32,7 @@ public class HeavyUnmodifiableNodeSetTest {
         HeavyNodeSet internalSet = new HeavyNodeSet();
         HeavyNode n1 = new HeavyNode();
         internalSet.add(n1);
-        HeavyUnmodifiableNodeSet set = new HeavyUnmodifiableNodeSet(internalSet);
+        HeavyImmutableNodeSet set = new HeavyImmutableNodeSet(internalSet);
 
         assertTrue(set.contains(n1));
         assertEquals(1, set.size());

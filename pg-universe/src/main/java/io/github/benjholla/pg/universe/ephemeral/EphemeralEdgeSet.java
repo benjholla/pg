@@ -62,7 +62,7 @@ public class EphemeralEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new EphemeralUnmodifiableEdgeSet(result);
+        return new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
@@ -83,21 +83,21 @@ public class EphemeralEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new EphemeralUnmodifiableEdgeSet(result);
+        return new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other == null || other.isEmpty()) {
-            return new EphemeralUnmodifiableEdgeSet(result);
+            return new EphemeralImmutableEdgeSet(result);
         }
         for (EphemeralEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return new EphemeralUnmodifiableEdgeSet(result);
+        return new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class EphemeralEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new EphemeralUnmodifiableEdgeSet(result);
+        return new EphemeralImmutableEdgeSet(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +123,7 @@ public class EphemeralEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new EphemeralUnmodifiableEdgeSet(result);
+        return new EphemeralImmutableEdgeSet(result);
     }
 
     @Override

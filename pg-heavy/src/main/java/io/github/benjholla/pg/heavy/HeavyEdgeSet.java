@@ -61,7 +61,7 @@ public class HeavyEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new HeavyUnmodifiableEdgeSet(result);
+        return new HeavyImmutableEdgeSet(result);
     }
 
     @Override
@@ -82,21 +82,21 @@ public class HeavyEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new HeavyUnmodifiableEdgeSet(result);
+        return new HeavyImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         HeavyEdgeSet result = new HeavyEdgeSet();
         if (other == null || other.isEmpty()) {
-            return new HeavyUnmodifiableEdgeSet(result);
+            return new HeavyImmutableEdgeSet(result);
         }
         for (HeavyEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return new HeavyUnmodifiableEdgeSet(result);
+        return new HeavyImmutableEdgeSet(result);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class HeavyEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new HeavyUnmodifiableEdgeSet(result);
+        return new HeavyImmutableEdgeSet(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class HeavyEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new HeavyUnmodifiableEdgeSet(result);
+        return new HeavyImmutableEdgeSet(result);
     }
 
     @Override

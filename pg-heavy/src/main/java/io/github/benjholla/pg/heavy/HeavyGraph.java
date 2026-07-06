@@ -22,7 +22,7 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public class HeavyGraph implements Graph {
 
-	private static final EdgeSet EMPTY_EDGES = new HeavyUnmodifiableEdgeSet(new HeavyEdgeSet());
+	private static final EdgeSet EMPTY_EDGES = new HeavyImmutableEdgeSet(new HeavyEdgeSet());
 
 	private Map<Integer, HeavyNode> nodes;
 	private Map<Integer, HeavyEdge> edges;
@@ -405,18 +405,18 @@ public class HeavyGraph implements Graph {
 	
 	@Override
 	public NodeSet nodes() {
-		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		// TODO: everything should be changed to the UnmodifiableLiveNodeSet
 		HeavyNodeSet s = new HeavyNodeSet();
 		s.addAll(nodes.values());
-		return new HeavyUnmodifiableNodeSet(s);
+		return new HeavyImmutableNodeSet(s);
 	}
 
 	@Override
 	public EdgeSet edges() {
-		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		// TODO: everything should be changed to the UnmodifiableLiveEdgeSet
 		HeavyEdgeSet s = new HeavyEdgeSet();
 		s.addAll(edges.values());
-		return new HeavyUnmodifiableEdgeSet(s);
+		return new HeavyImmutableEdgeSet(s);
 	}
 
 	@Override
@@ -996,7 +996,7 @@ public class HeavyGraph implements Graph {
 				result.add(e);
 			}
 		}
-		return result.isEmpty() ? EMPTY_EDGES : new HeavyUnmodifiableEdgeSet(result);
+		return result.isEmpty() ? EMPTY_EDGES : new HeavyImmutableEdgeSet(result);
 	}
 
 	@Override

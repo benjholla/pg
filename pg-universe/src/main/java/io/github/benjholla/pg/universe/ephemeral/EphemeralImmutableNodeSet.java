@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.heavy;
+package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,10 +14,10 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class HeavyUnmodifiableNodeSet implements NodeSet {
+public class EphemeralImmutableNodeSet implements NodeSet {
     private final NodeSet nodes;
     
-    public HeavyUnmodifiableNodeSet(NodeSet nodes) {
+    public EphemeralImmutableNodeSet(NodeSet nodes) {
         this.nodes = nodes;
     }
 

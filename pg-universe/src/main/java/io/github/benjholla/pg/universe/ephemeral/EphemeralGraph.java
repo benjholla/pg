@@ -22,7 +22,7 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public class EphemeralGraph implements Graph {
 
-	private static final EdgeSet EMPTY_EDGES = new EphemeralUnmodifiableEdgeSet(new EphemeralEdgeSet());
+	private static final EdgeSet EMPTY_EDGES = new EphemeralImmutableEdgeSet(new EphemeralEdgeSet());
 
 	private Map<Integer, EphemeralNode> nodes;
 	private Map<Integer, EphemeralEdge> edges;
@@ -401,18 +401,18 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public NodeSet nodes() {
-		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		// TODO: everything should be changed to the UnmodifiableLiveNodeSet
 		EphemeralNodeSet s = new EphemeralNodeSet();
 		s.addAll(nodes.values());
-		return new EphemeralUnmodifiableNodeSet(s);
+		return new EphemeralImmutableNodeSet(s);
 	}
 
 	@Override
 	public EdgeSet edges() {
-		// TODO optimize Umodifiable wrapper for 4 pillar structure
+		// TODO: everything should be changed to the UnmodifiableLiveEdgeSet
 		EphemeralEdgeSet s = new EphemeralEdgeSet();
 		s.addAll(edges.values());
-		return new EphemeralUnmodifiableEdgeSet(s);
+		return new EphemeralImmutableEdgeSet(s);
 	}
 
 	@Override
@@ -992,7 +992,7 @@ public class EphemeralGraph implements Graph {
 				result.add(e);
 			}
 		}
-		return result.isEmpty() ? EMPTY_EDGES : new EphemeralUnmodifiableEdgeSet(result);
+		return result.isEmpty() ? EMPTY_EDGES : new EphemeralImmutableEdgeSet(result);
 	}
 
 	@Override

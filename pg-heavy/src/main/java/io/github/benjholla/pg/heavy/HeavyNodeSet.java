@@ -61,7 +61,7 @@ public class HeavyNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new HeavyUnmodifiableNodeSet(result);
+        return new HeavyImmutableNodeSet(result);
     }
 
     @Override
@@ -82,21 +82,21 @@ public class HeavyNodeSet implements NodeSet {
                 }
             }
         }
-        return new HeavyUnmodifiableNodeSet(result);
+        return new HeavyImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         HeavyNodeSet result = new HeavyNodeSet();
         if (other == null || other.isEmpty()) {
-            return new HeavyUnmodifiableNodeSet(result);
+            return new HeavyImmutableNodeSet(result);
         }
         for (HeavyNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return new HeavyUnmodifiableNodeSet(result);
+        return new HeavyImmutableNodeSet(result);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class HeavyNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new HeavyUnmodifiableNodeSet(result);
+        return new HeavyImmutableNodeSet(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class HeavyNodeSet implements NodeSet {
                 }
             }
         }
-        return new HeavyUnmodifiableNodeSet(result);
+        return new HeavyImmutableNodeSet(result);
     }
 
     @Override

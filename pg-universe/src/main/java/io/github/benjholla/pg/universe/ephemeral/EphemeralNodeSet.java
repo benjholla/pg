@@ -62,7 +62,7 @@ public class EphemeralNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new EphemeralUnmodifiableNodeSet(result);
+        return new EphemeralImmutableNodeSet(result);
     }
 
     @Override
@@ -83,21 +83,21 @@ public class EphemeralNodeSet implements NodeSet {
                 }
             }
         }
-        return new EphemeralUnmodifiableNodeSet(result);
+        return new EphemeralImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (other == null || other.isEmpty()) {
-            return new EphemeralUnmodifiableNodeSet(result);
+            return new EphemeralImmutableNodeSet(result);
         }
         for (EphemeralNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return new EphemeralUnmodifiableNodeSet(result);
+        return new EphemeralImmutableNodeSet(result);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class EphemeralNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new EphemeralUnmodifiableNodeSet(result);
+        return new EphemeralImmutableNodeSet(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +123,7 @@ public class EphemeralNodeSet implements NodeSet {
                 }
             }
         }
-        return new EphemeralUnmodifiableNodeSet(result);
+        return new EphemeralImmutableNodeSet(result);
     }
 
     @Override

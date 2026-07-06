@@ -1,15 +1,15 @@
-package io.github.benjholla.pg.heavy;
+package io.github.benjholla.pg.universe.ephemeral;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
-public class HeavyUnmodifiableEdgeSetTest {
+public class EphemeralImmutableEdgeSetTest {
     @Test
     public void testUnsupportedOperations() {
-        HeavyEdgeSet internalSet = new HeavyEdgeSet();
-        HeavyUnmodifiableEdgeSet set = new HeavyUnmodifiableEdgeSet(internalSet);
-        HeavyEdge e = new HeavyEdge(new HeavyNode(), new HeavyNode());
+        EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
+        EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
+        EphemeralEdge e = new EphemeralEdge(new EphemeralNode(), new EphemeralNode());
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(e));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(e));
@@ -29,12 +29,12 @@ public class HeavyUnmodifiableEdgeSetTest {
 
     @Test
     public void testDelegatedMethods() {
-        HeavyEdgeSet internalSet = new HeavyEdgeSet();
-        HeavyNode n1 = new HeavyNode();
-        HeavyNode n2 = new HeavyNode();
-        HeavyEdge e1 = new HeavyEdge(n1, n2);
+        EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
+        EphemeralNode n1 = new EphemeralNode();
+        EphemeralNode n2 = new EphemeralNode();
+        EphemeralEdge e1 = new EphemeralEdge(n1, n2);
         internalSet.add(e1);
-        HeavyUnmodifiableEdgeSet set = new HeavyUnmodifiableEdgeSet(internalSet);
+        EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
 
         assertTrue(set.contains(e1));
         assertEquals(1, set.size());
@@ -43,7 +43,7 @@ public class HeavyUnmodifiableEdgeSetTest {
         assertEquals(e1, set.iterator().next());
 
         assertNotNull(set.toArray());
-        assertNotNull(set.toArray(new HeavyEdge[0]));
+        assertNotNull(set.toArray(new EphemeralEdge[0]));
         assertNotNull(set.spliterator());
         assertNotNull(set.stream());
         assertNotNull(set.parallelStream());
