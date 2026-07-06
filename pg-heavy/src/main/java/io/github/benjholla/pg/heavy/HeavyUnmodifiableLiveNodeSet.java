@@ -121,7 +121,7 @@ public class HeavyUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public boolean contains(Object obj) {
         if (!(obj instanceof HeavyNode hn)) return false;
-        return nodes.containsKey(hn.id()) && nodes.get(hn.id()).equals(hn);
+        return nodes.containsKey(hn.id());
     }
 
     @Override

@@ -212,7 +212,10 @@ public class HeavyGraph implements Graph {
 	@Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
-        // Auto-vivify terminal nodes
+        if (!(edge instanceof HeavyEdge)) {
+            throw new IllegalArgumentException("Expected HeavyEdge in HeavyGraph.");
+        }
+        // Auto-vivify terminal nodes safely
         boolean result = false;
         result |= addNode(edge.from());
         result |= addNode(edge.to());
