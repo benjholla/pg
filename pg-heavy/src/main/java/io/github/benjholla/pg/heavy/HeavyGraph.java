@@ -153,6 +153,30 @@ public class HeavyGraph implements Graph {
 	}
 
 	@Override
+	public boolean containsAllNodes(Collection<? extends Node> nodes) {
+		Objects.requireNonNull(nodes, "nodes cannot be null");
+		for (Node node : nodes) {
+			Objects.requireNonNull(node, "node set elements cannot be null");
+			if (!containsNode(node)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean containsAllEdges(Collection<? extends Edge> edges) {
+		Objects.requireNonNull(edges, "edges cannot be null");
+		for (Edge edge : edges) {
+			Objects.requireNonNull(edge, "edge set elements cannot be null");
+			if (!containsEdge(edge)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public Optional<Node> node(int id) {
 		return Optional.ofNullable(nodes.get(id));
 	}
@@ -193,6 +217,19 @@ public class HeavyGraph implements Graph {
         result |= linkEdge(edge);
         return result;
     }
+
+	@Override
+	public boolean linkAllEdges(Collection<? extends Edge> edges) {
+		Objects.requireNonNull(edges, "edges cannot be null");
+		boolean result = false;
+		for (Edge edge : edges) {
+			Objects.requireNonNull(edge, "edge set elements cannot be null");
+		}
+		for (Edge edge : edges) {
+			result |= linkEdge(edge);
+		}
+		return result;
+	}
 
 	@Override
     public boolean linkEdge(Edge edge) {

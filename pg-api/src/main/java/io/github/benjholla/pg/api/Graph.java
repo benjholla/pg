@@ -49,6 +49,16 @@ public interface Graph {
 	public boolean containsEdge(Edge edge);
 
 	/**
+	 * Returns true if the graph contains all of the specified nodes.
+	 */
+	public boolean containsAllNodes(Collection<? extends Node> nodes);
+
+	/**
+	 * Returns true if the graph contains all of the specified edges.
+	 */
+	public boolean containsAllEdges(Collection<? extends Edge> edges);
+
+	/**
 	 * Returns the node denoted by the given id if one exists
 	 */
 	public Optional<Node> node(int id);
@@ -78,6 +88,13 @@ public interface Graph {
 	 */
 	public boolean linkEdge(Edge edge);
 	
+	/**
+	 * Add edges to the graph. Will fail if the terminal nodes are not present.
+	 *
+	 * @return Returns true if the graph changed as a result of the operation
+	 */
+	public boolean linkAllEdges(Collection<? extends Edge> edges);
+
     /**
      * Add nodes to the graph
      * 
