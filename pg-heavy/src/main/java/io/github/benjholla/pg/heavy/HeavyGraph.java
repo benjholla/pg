@@ -22,6 +22,8 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public class HeavyGraph implements Graph {
 
+	private static final EdgeSet EMPTY_EDGES = new HeavyUnmodifiableEdgeSet(new HeavyEdgeSet());
+
 	private Map<Integer, HeavyNode> nodes;
 	private Map<Integer, HeavyEdge> edges;
 	private Map<Integer, HeavyEdgeSet> inEdges;
@@ -946,6 +948,78 @@ public class HeavyGraph implements Graph {
             }
         }
         return result;
+	}
+
+	@Override
+	public Node createNode() {
+		return new HeavyNode();
+	}
+
+	@Override
+	public Edge createEdge(Node source, Node target) {
+		if (!(source instanceof HeavyNode)) {
+			throw new IllegalArgumentException("Source node is not native to HeavyGraph.");
+		}
+		if (!(target instanceof HeavyNode)) {
+			throw new IllegalArgumentException("Target node is not native to HeavyGraph.");
+		}
+		return new HeavyEdge(source, target);
+	}
+
+	@Override
+	public boolean adjacent(Node source, Node target) {
+		if (!(source instanceof HeavyNode hSource) || !nodes.containsKey(hSource.id())) return false;
+		if (!(target instanceof HeavyNode hTarget) || !nodes.containsKey(hTarget.id())) return false;
+
+		Optional<EdgeSet> out = getOutEdgesFromNode(hSource);
+		if (out.isEmpty()) return false;
+
+		for (Edge e : out.get()) {
+			if (e.to().equals(hTarget)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public EdgeSet edges(Node source, Node target) {
+		if (!(source instanceof HeavyNode hSource) || !nodes.containsKey(hSource.id())) return EMPTY_EDGES;
+		if (!(target instanceof HeavyNode hTarget) || !nodes.containsKey(hTarget.id())) return EMPTY_EDGES;
+
+		Optional<EdgeSet> out = getOutEdgesFromNode(hSource);
+		if (out.isEmpty()) return EMPTY_EDGES;
+
+		EdgeSet result = new HeavyEdgeSet();
+		for (Edge e : out.get()) {
+			if (e.to().equals(hTarget)) {
+				result.add(e);
+			}
+		}
+		return result.isEmpty() ? EMPTY_EDGES : new HeavyUnmodifiableEdgeSet(result);
+	}
+
+	@Override
+	public int degree(Node node, NodeDirection direction) {
+		if (!(node instanceof HeavyNode hn) || !nodes.containsKey(hn.id())) {
+			return 0; // Silent Ignore
+		}
+
+		return switch (direction) {
+			case OUT -> {
+				HeavyEdgeSet out = outEdges.get(hn.id());
+				yield out == null ? 0 : out.size();
+			}
+			case IN -> {
+				HeavyEdgeSet in = inEdges.get(hn.id());
+				yield in == null ? 0 : in.size();
+			}
+			case BOTH -> {
+				HeavyEdgeSet out = outEdges.get(hn.id());
+				HeavyEdgeSet in = inEdges.get(hn.id());
+				yield (out == null ? 0 : out.size()) + (in == null ? 0 : in.size());
+			}
+		};
 	}
 
 }

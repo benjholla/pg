@@ -549,5 +549,41 @@ public interface Graph {
      * specified in the given values.
      */
     public NodeSet selectNodes(String attribute, AttributeValue... values);
-	
+
+    /**
+     * Instantiates and returns a new Node native to this graph's implementation.
+     * Note: This does NOT add the node to the graph. Use addNode() for structural mutation.
+     */
+    public Node createNode();
+
+    /**
+     * Instantiates and returns a new Edge native to this graph's implementation.
+     */
+    public Edge createEdge(Node source, Node target);
+
+    /**
+     * Returns true if there is at least one edge originating at the source and terminating at the target.
+     */
+    public boolean adjacent(Node source, Node target);
+
+    /**
+     * Returns the set of edges that originate at the source and terminate at the target.
+     */
+    public EdgeSet edges(Node source, Node target);
+
+    /**
+     * Returns the number of edges connected to this node in the specified direction.
+     */
+    public int degree(Node node, NodeDirection direction);
+
+    /*
+     * TODO: Graph-Level Attributes
+     * Graph-level attributes are temporarily deferred to prevent the graph from
+     * becoming a global state bucket. This API will be activated strictly when
+     * required for universal topological contexts (e.g., semantic coordinate systems
+     * for geospatial projections).
+     *
+     * public AttributeMap attributes();
+     */
+
 }
