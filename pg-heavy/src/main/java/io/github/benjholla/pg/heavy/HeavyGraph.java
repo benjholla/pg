@@ -405,19 +405,15 @@ public class HeavyGraph implements Graph {
 	
 	@Override
 	public NodeSet nodes() {
-		// TODO: everything should be changed to the UnmodifiableLiveNodeSet
-		HeavyNodeSet s = new HeavyNodeSet();
-		s.addAll(nodes.values());
-		return new HeavyImmutableNodeSet(s);
+		return new HeavyUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
 	}
+
 
 	@Override
 	public EdgeSet edges() {
-		// TODO: everything should be changed to the UnmodifiableLiveEdgeSet
-		HeavyEdgeSet s = new HeavyEdgeSet();
-		s.addAll(edges.values());
-		return new HeavyImmutableEdgeSet(s);
+		return new HeavyUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
 	}
+
 
 	@Override
 	public boolean isEmpty() {

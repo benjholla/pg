@@ -401,19 +401,15 @@ public class EphemeralGraph implements Graph {
 
 	@Override
 	public NodeSet nodes() {
-		// TODO: everything should be changed to the UnmodifiableLiveNodeSet
-		EphemeralNodeSet s = new EphemeralNodeSet();
-		s.addAll(nodes.values());
-		return new EphemeralImmutableNodeSet(s);
+		return new EphemeralUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
 	}
+
 
 	@Override
 	public EdgeSet edges() {
-		// TODO: everything should be changed to the UnmodifiableLiveEdgeSet
-		EphemeralEdgeSet s = new EphemeralEdgeSet();
-		s.addAll(edges.values());
-		return new EphemeralImmutableEdgeSet(s);
+		return new EphemeralUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
 	}
+
 
 	@Override
 	public boolean isEmpty() {
