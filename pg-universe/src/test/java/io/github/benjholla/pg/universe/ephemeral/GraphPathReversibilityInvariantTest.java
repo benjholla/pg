@@ -12,6 +12,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental path-reversibility axioms for directed graphs.
  */
 public class GraphPathReversibilityInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c, d, e;
@@ -19,17 +21,17 @@ public class GraphPathReversibilityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = (EphemeralNode) new EphemeralGraph().createNode(); b = (EphemeralNode) new EphemeralGraph().createNode(); c = (EphemeralNode) new EphemeralGraph().createNode();
-        d = (EphemeralNode) new EphemeralGraph().createNode(); e = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
+        d = factory.createNode(); e = factory.createNode();
 
         // Create a path a -> b -> c -> d -> e
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, d));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(d, e));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
+        graph.addEdge(factory.createEdge(d, e));
 
         // Add a cycle for complexity
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, a));
+        graph.addEdge(factory.createEdge(c, a));
     }
 
     @Test

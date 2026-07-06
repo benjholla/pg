@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EphemeralGuardrailsTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testRequireLocalId() {
         assertThrows(IllegalArgumentException.class, () -> EphemeralGuardrails.requireLocalId(0));

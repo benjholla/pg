@@ -11,13 +11,15 @@ import io.github.benjholla.pg.api.Node.NodeDirection;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class GraphLimitInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     @Test
     public void testLimitInEquivalentToRoots() {
-        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
+        Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         NodeSet roots = graph.roots();
@@ -29,10 +31,10 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitOutEquivalentToLeaves() {
-        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
+        Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
 
         NodeSet limitOut = graph.limit(NodeDirection.OUT);
         NodeSet leaves = graph.leaves();
@@ -52,8 +54,8 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitIsolatedNodes() {
-        Node a = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralGraph graph = (EphemeralGraph) new EphemeralGraph().createGraph(a);
+        Node a = factory.createNode();
+        EphemeralGraph graph = factory.createGraph(a);
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         assertEquals(1, limitIn.size());
@@ -66,11 +68,11 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitCyclicGraph() {
-        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
+        Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, a));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, a));
 
         assertTrue(graph.limit(NodeDirection.IN).isEmpty());
         assertTrue(graph.limit(NodeDirection.OUT).isEmpty());

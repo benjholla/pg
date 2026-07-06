@@ -16,21 +16,23 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class NodeSetTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private Node n1, n2, n3;
     private NodeSet nodeSet;
 
     @BeforeEach
     public void setUp() {
-        n1 = (EphemeralNode) new EphemeralGraph().createNode();
+        n1 = factory.createNode();
         n1.attributes().put("type", "A");
         n1.attributes().put("val", 1);
 
-        n2 = (EphemeralNode) new EphemeralGraph().createNode();
+        n2 = factory.createNode();
         n2.attributes().put("type", "B");
         n2.attributes().put("val", 2);
 
-        n3 = (EphemeralNode) new EphemeralGraph().createNode();
+        n3 = factory.createNode();
         n3.attributes().put("type", "A");
         n3.attributes().put("val", 3);
 

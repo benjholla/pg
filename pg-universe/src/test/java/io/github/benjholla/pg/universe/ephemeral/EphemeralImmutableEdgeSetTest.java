@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 public class EphemeralImmutableEdgeSetTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testUnsupportedOperations() {
         EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
         EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
-        EphemeralEdge e = (EphemeralEdge) new EphemeralGraph().createEdge((EphemeralNode) new EphemeralGraph().createNode(), (EphemeralNode) new EphemeralGraph().createNode());
+        EphemeralEdge e = factory.createEdge(factory.createNode(), factory.createNode());
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(e));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(e));
@@ -30,9 +32,9 @@ public class EphemeralImmutableEdgeSetTest {
     @Test
     public void testDelegatedMethods() {
         EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
-        EphemeralNode n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralNode n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralEdge e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
+        EphemeralNode n1 = factory.createNode();
+        EphemeralNode n2 = factory.createNode();
+        EphemeralEdge e1 = factory.createEdge(n1, n2);
         internalSet.add(e1);
         EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
 

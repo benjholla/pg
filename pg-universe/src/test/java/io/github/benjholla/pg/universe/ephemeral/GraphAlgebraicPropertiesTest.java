@@ -15,6 +15,8 @@ import io.github.benjholla.pg.api.Node;
  * These properties ensure operations behave predictably as mathematical sets.
  */
 public class GraphAlgebraicPropertiesTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA, gB, gC;
     private Node a, b, c, d, e;
@@ -22,25 +24,25 @@ public class GraphAlgebraicPropertiesTest {
 
     @BeforeEach
     public void setUp() {
-        a = (EphemeralNode) new EphemeralGraph().createNode();
-        b = (EphemeralNode) new EphemeralGraph().createNode();
-        c = (EphemeralNode) new EphemeralGraph().createNode();
-        d = (EphemeralNode) new EphemeralGraph().createNode();
-        e = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
+        d = factory.createNode();
+        e = factory.createNode();
 
-        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
-        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
-        cd = (EphemeralEdge) new EphemeralGraph().createEdge(c, d);
-        de = (EphemeralEdge) new EphemeralGraph().createEdge(d, e);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        cd = factory.createEdge(c, d);
+        de = factory.createEdge(d, e);
 
-        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        gA = factory.createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = (EphemeralGraph) new EphemeralGraph().createGraph(c, d);
+        gB = factory.createGraph(c, d);
         gB.addEdge(cd);
 
-        gC = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, d, e);
+        gC = factory.createGraph(a, b, d, e);
         gC.addEdge(ab);
         gC.addEdge(de);
     }

@@ -15,6 +15,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates invariant properties of the induce operations.
  */
 public class GraphInduceInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c;
@@ -23,13 +25,13 @@ public class GraphInduceInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = (EphemeralNode) new EphemeralGraph().createNode();
-        b = (EphemeralNode) new EphemeralGraph().createNode();
-        c = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
 
-        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
-        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
-        ca = (EphemeralEdge) new EphemeralGraph().createEdge(c, a);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        ca = factory.createEdge(c, a);
 
         graph.addNode(a);
         graph.addNode(b);
@@ -53,7 +55,7 @@ public class GraphInduceInvariantTest {
 
     @Test
     public void testInduceFromOtherGraph() {
-        Graph otherGraph = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        Graph otherGraph = factory.createGraph(a, b, c);
         otherGraph.addEdge(ab);
         otherGraph.addEdge(bc);
         otherGraph.addEdge(ca);

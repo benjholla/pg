@@ -13,6 +13,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental invariants of the Graph interface implementations.
  */
 public class GraphInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c;
@@ -20,15 +22,15 @@ public class GraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = (EphemeralNode) new EphemeralGraph().createNode();
-        b = (EphemeralNode) new EphemeralGraph().createNode();
-        c = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
 
-        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
-        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
-        ca = (EphemeralEdge) new EphemeralGraph().createEdge(c, a);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        ca = factory.createEdge(c, a);
 
-        graph = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        graph = factory.createGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);
@@ -58,9 +60,9 @@ public class GraphInvariantTest {
 
     @Test
     public void testEdgeCannotExistWithoutTerminalNodes() {
-        Node d = (EphemeralNode) new EphemeralGraph().createNode();
-        Node e = (EphemeralNode) new EphemeralGraph().createNode();
-        Edge de = (EphemeralEdge) new EphemeralGraph().createEdge(d, e);
+        Node d = factory.createNode();
+        Node e = factory.createNode();
+        Edge de = factory.createEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
         graph.addEdge(de);

@@ -13,6 +13,8 @@ import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphIdentityTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node n1, n2;
@@ -21,9 +23,9 @@ public class GraphIdentityTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
+        n1 = factory.createNode();
+        n2 = factory.createNode();
+        e1 = factory.createEdge(n1, n2);
 
         graph.addNode(n1);
         graph.addNode(n2);

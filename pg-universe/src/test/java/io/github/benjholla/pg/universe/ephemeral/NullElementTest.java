@@ -12,25 +12,27 @@ import io.github.benjholla.pg.api.NodeSet;
 import io.github.benjholla.pg.api.TagSet;
 
 public class NullElementTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     @Test
     public void testNodeSetNull() {
-        assertThrows(NullPointerException.class, () -> new EphemeralNodeSet((EphemeralNode) new EphemeralGraph().createNode(), null));
+        assertThrows(NullPointerException.class, () -> new EphemeralNodeSet(factory.createNode(), null));
 
         NodeSet nodeSet = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> nodeSet.add(null));
         assertThrows(NullPointerException.class, () -> nodeSet.addAll(null));
-        assertThrows(NullPointerException.class, () -> nodeSet.addAll(java.util.Arrays.asList((EphemeralNode) new EphemeralGraph().createNode(), null)));
+        assertThrows(NullPointerException.class, () -> nodeSet.addAll(java.util.Arrays.asList(factory.createNode(), null)));
     }
 
     @Test
     public void testEdgeSetNull() {
-        assertThrows(NullPointerException.class, () -> new EphemeralEdgeSet((EphemeralEdge) new EphemeralGraph().createEdge((EphemeralNode) new EphemeralGraph().createNode(), (EphemeralNode) new EphemeralGraph().createNode()), null));
+        assertThrows(NullPointerException.class, () -> new EphemeralEdgeSet(factory.createEdge(factory.createNode(), factory.createNode()), null));
 
         EdgeSet edgeSet = new EphemeralEdgeSet();
         assertThrows(NullPointerException.class, () -> edgeSet.add(null));
         assertThrows(NullPointerException.class, () -> edgeSet.addAll(null));
-        assertThrows(NullPointerException.class, () -> edgeSet.addAll(java.util.Arrays.asList((EphemeralEdge) new EphemeralGraph().createEdge((EphemeralNode) new EphemeralGraph().createNode(), (EphemeralNode) new EphemeralGraph().createNode()), null)));
+        assertThrows(NullPointerException.class, () -> edgeSet.addAll(java.util.Arrays.asList(factory.createEdge(factory.createNode(), factory.createNode()), null)));
     }
 
 
@@ -44,16 +46,16 @@ public class NullElementTest {
 
     @Test
     public void testEphemeralGraphConstructorsNull() {
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((Node[]) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph(new Node[]{null}));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((NodeSet) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((Edge[]) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((NodeSet) null, (EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph(new Graph[]{null}));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph((java.util.Collection<Graph>) null));
-        assertThrows(NullPointerException.class, () -> new EphemeralGraph().createGraph(java.util.Arrays.asList((Graph) null)));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((Node[]) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((NodeSet) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((Edge[]) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph(new Edge[]{null}));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((EdgeSet) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((NodeSet) null, (EdgeSet) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((Graph[]) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph(new Graph[]{null}));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((java.util.Collection<Graph>) null));
+        assertThrows(NullPointerException.class, () -> factory.createGraph(java.util.Arrays.asList((Graph) null)));
     }
 }

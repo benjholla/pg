@@ -16,6 +16,8 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class EphemeralGraphTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c, d, e, f, g;
@@ -25,58 +27,58 @@ public class EphemeralGraphTest {
     public void setUp() {
         graph = new EphemeralGraph();
 
-        a = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode();
         a.attributes().put("name", "a");
         a.tags().add("vowel");
 
-        b = (EphemeralNode) new EphemeralGraph().createNode();
+        b = factory.createNode();
         b.attributes().put("name", "b");
         b.tags().add("consonant");
         b.tags().add("letter");
 
-        c = (EphemeralNode) new EphemeralGraph().createNode();
+        c = factory.createNode();
         c.attributes().put("name", "c");
         c.tags().add("consonant");
         c.tags().add("letter");
 
-        d = (EphemeralNode) new EphemeralGraph().createNode();
+        d = factory.createNode();
         d.attributes().put("name", "d");
         d.tags().add("consonant");
 
-        e = (EphemeralNode) new EphemeralGraph().createNode();
+        e = factory.createNode();
         e.attributes().put("name", "e");
         e.tags().add("vowel");
 
-        f = (EphemeralNode) new EphemeralGraph().createNode();
+        f = factory.createNode();
         f.attributes().put("name", "f");
         f.tags().add("consonant");
 
-        g = (EphemeralNode) new EphemeralGraph().createNode();
+        g = factory.createNode();
         g.attributes().put("name", "g");
         g.tags().add("consonant");
 
-        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        ab = factory.createEdge(a, b);
         ab.attributes().put("weight", 1);
         ab.tags().add("path");
 
-        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        bc = factory.createEdge(b, c);
         bc.attributes().put("weight", 2);
         bc.tags().add("path");
         bc.tags().add("main");
 
-        cb = (EphemeralEdge) new EphemeralGraph().createEdge(c, b);
+        cb = factory.createEdge(c, b);
         cb.attributes().put("weight", 3);
         cb.tags().add("back");
 
-        cd = (EphemeralEdge) new EphemeralGraph().createEdge(c, d);
+        cd = factory.createEdge(c, d);
         cd.attributes().put("weight", 4);
         cd.tags().add("path");
 
-        de = (EphemeralEdge) new EphemeralGraph().createEdge(d, e);
+        de = factory.createEdge(d, e);
         de.attributes().put("weight", 5);
         de.tags().add("path");
 
-        dg = (EphemeralEdge) new EphemeralGraph().createEdge(d, g);
+        dg = factory.createEdge(d, g);
         dg.attributes().put("weight", 6);
         dg.tags().add("branch");
 
@@ -107,29 +109,29 @@ public class EphemeralGraphTest {
         EphemeralGraph empty = new EphemeralGraph();
         assertTrue(empty.isEmpty());
 
-        EphemeralGraph withNodes = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
+        EphemeralGraph withNodes = factory.createGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
 
-        EphemeralGraph withNodeSet = (EphemeralGraph) new EphemeralGraph().createGraph(new EphemeralNodeSet(a, b));
+        EphemeralGraph withNodeSet = factory.createGraph(new EphemeralNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        EphemeralGraph withEdges = (EphemeralGraph) new EphemeralGraph().createGraph(ab, bc);
+        EphemeralGraph withEdges = factory.createGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        EphemeralGraph withEdgeSet = (EphemeralGraph) new EphemeralGraph().createGraph(new EphemeralEdgeSet(ab, bc));
+        EphemeralGraph withEdgeSet = factory.createGraph(new EphemeralEdgeSet(ab, bc));
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
-        EphemeralGraph withSets = (EphemeralGraph) new EphemeralGraph().createGraph(new EphemeralNodeSet(a, b, c), new EphemeralEdgeSet(ab, bc));
+        EphemeralGraph withSets = factory.createGraph(new EphemeralNodeSet(a, b, c), new EphemeralEdgeSet(ab, bc));
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
-        EphemeralGraph withGraphs = (EphemeralGraph) new EphemeralGraph().createGraph(withNodes, withEdges);
+        EphemeralGraph withGraphs = factory.createGraph(withNodes, withEdges);
         assertEquals(3, withGraphs.nodes().size());
         assertEquals(2, withGraphs.edges().size());
 
-        EphemeralGraph withGraphsColl = (EphemeralGraph) new EphemeralGraph().createGraph(java.util.Arrays.asList(withNodes, withEdges));
+        EphemeralGraph withGraphsColl = factory.createGraph(java.util.Arrays.asList(withNodes, withEdges));
         assertEquals(3, withGraphsColl.nodes().size());
         assertEquals(2, withGraphsColl.edges().size());
     }
@@ -252,8 +254,8 @@ public class EphemeralGraphTest {
 
     @Test
     public void testUnion() {
-        EphemeralGraph g1 = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
-        EphemeralGraph g2 = (EphemeralGraph) new EphemeralGraph().createGraph(c, d);
+        EphemeralGraph g1 = factory.createGraph(a, b);
+        EphemeralGraph g2 = factory.createGraph(c, d);
 
         Graph union = g1.union(g2);
         assertEquals(4, union.nodes().size());
@@ -268,7 +270,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testDifference() {
-        EphemeralGraph sub = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        EphemeralGraph sub = factory.createGraph(a, b, c);
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -284,7 +286,7 @@ public class EphemeralGraphTest {
         assertTrue(diffEdges.nodes().contains(a));
         assertEquals(0, diffEdges.edges().size());
 
-        EphemeralGraph g2 = (EphemeralGraph) new EphemeralGraph().createGraph(c);
+        EphemeralGraph g2 = factory.createGraph(c);
         Graph diffGraph = sub.difference(g2);
         assertEquals(2, diffGraph.nodes().size());
         assertTrue(diffGraph.nodes().contains(a));
@@ -295,7 +297,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testDifferenceEdges() {
-        EphemeralGraph sub = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        EphemeralGraph sub = factory.createGraph(a, b, c);
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -304,7 +306,7 @@ public class EphemeralGraphTest {
         assertEquals(1, diffE.edges().size());
         assertTrue(diffE.edges().contains(bc));
 
-        EphemeralGraph g2 = (EphemeralGraph) new EphemeralGraph().createGraph(bc);
+        EphemeralGraph g2 = factory.createGraph(bc);
         Graph diffG = sub.differenceEdges(g2);
         assertEquals(3, diffG.nodes().size());
         assertEquals(1, diffG.edges().size());
@@ -313,11 +315,11 @@ public class EphemeralGraphTest {
 
     @Test
     public void testIntersection() {
-        EphemeralGraph g1 = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        EphemeralGraph g1 = factory.createGraph(a, b, c);
         g1.addEdge(ab);
         g1.addEdge(bc);
 
-        EphemeralGraph g2 = (EphemeralGraph) new EphemeralGraph().createGraph(b, c, d);
+        EphemeralGraph g2 = factory.createGraph(b, c, d);
         g2.addEdge(bc);
         g2.addEdge(cd);
 
@@ -339,7 +341,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testInduce() {
-        EphemeralGraph g1 = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c); // nodes only
+        EphemeralGraph g1 = factory.createGraph(a, b, c); // nodes only
 
         Graph induced = g1.induce(ab, bc, cd);
         assertEquals(3, induced.nodes().size());

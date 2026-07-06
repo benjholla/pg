@@ -10,20 +10,22 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphTraversalInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     private EphemeralGraph graph;
     private Node a, b, c, d, e, f;
 
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = (EphemeralNode) new EphemeralGraph().createNode(); b = (EphemeralNode) new EphemeralGraph().createNode(); c = (EphemeralNode) new EphemeralGraph().createNode();
-        d = (EphemeralNode) new EphemeralGraph().createNode(); e = (EphemeralNode) new EphemeralGraph().createNode(); f = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
+        d = factory.createNode(); e = factory.createNode(); f = factory.createNode();
 
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, d));
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(d, b)); // cycle b-c-d-b
-        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(e, f));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
+        graph.addEdge(factory.createEdge(d, b)); // cycle b-c-d-b
+        graph.addEdge(factory.createEdge(e, f));
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {
@@ -48,7 +50,7 @@ public class GraphTraversalInvariantTest {
     @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
-        Graph unionNodes = (EphemeralGraph) new EphemeralGraph().createGraph(a, e);
+        Graph unionNodes = factory.createGraph(a, e);
         Graph forwardUnion = graph.forward(unionNodes);
 
         Graph forwardA = graph.forward(a);

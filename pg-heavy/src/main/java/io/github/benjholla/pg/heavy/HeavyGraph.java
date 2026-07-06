@@ -33,42 +33,42 @@ public class HeavyGraph implements Graph {
 	 * Constructs a new empty graph
 	 */
     @Override
-    public Graph createGraph() {
+    public HeavyGraph createGraph() {
         return new HeavyGraph();
     }
 
     @Override
-    public Graph createGraph(Node... nodes) {
+    public HeavyGraph createGraph(Node... nodes) {
         return new HeavyGraph(nodes);
     }
 
     @Override
-    public Graph createGraph(NodeSet nodes) {
+    public HeavyGraph createGraph(NodeSet nodes) {
         return new HeavyGraph(nodes);
     }
 
     @Override
-    public Graph createGraph(Edge... edges) {
+    public HeavyGraph createGraph(Edge... edges) {
         return new HeavyGraph(edges);
     }
 
     @Override
-    public Graph createGraph(EdgeSet edges) {
+    public HeavyGraph createGraph(EdgeSet edges) {
         return new HeavyGraph(edges);
     }
 
     @Override
-    public Graph createGraph(NodeSet nodes, EdgeSet edges) {
+    public HeavyGraph createGraph(NodeSet nodes, EdgeSet edges) {
         return new HeavyGraph(nodes, edges);
     }
 
     @Override
-    public Graph createGraph(Graph... graphs) {
+    public HeavyGraph createGraph(Graph... graphs) {
         return new HeavyGraph(graphs);
     }
 
     @Override
-    public Graph createGraph(Collection<Graph> graphs) {
+    public HeavyGraph createGraph(Collection<Graph> graphs) {
         return new HeavyGraph(graphs);
     }
 
@@ -990,12 +990,12 @@ public class HeavyGraph implements Graph {
 	}
 
 	@Override
-	public Node createNode() {
+	public HeavyNode createNode() {
 		return new HeavyNode();
 	}
 
 	@Override
-	public Edge createEdge(Node source, Node target) {
+	public HeavyEdge createEdge(Node source, Node target) {
 		if (!(source instanceof HeavyNode)) {
 			throw new IllegalArgumentException("Source node is not native to HeavyGraph.");
 		}

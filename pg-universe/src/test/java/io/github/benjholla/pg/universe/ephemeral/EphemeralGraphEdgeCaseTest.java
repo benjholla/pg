@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import io.github.benjholla.pg.api.Graph;
 
 public class EphemeralGraphEdgeCaseTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     @Test
     public void testUnionWithNull() {

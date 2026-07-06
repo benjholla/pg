@@ -17,6 +17,8 @@ import io.github.benjholla.pg.api.EdgeSet;
 import io.github.benjholla.pg.api.Node;
 
 public class EdgeSetTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private Node n1, n2, n3;
     private Edge e1, e2, e3;
@@ -24,19 +26,19 @@ public class EdgeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        n3 = (EphemeralNode) new EphemeralGraph().createNode();
+        n1 = factory.createNode();
+        n2 = factory.createNode();
+        n3 = factory.createNode();
 
-        e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
+        e1 = factory.createEdge(n1, n2);
         e1.attributes().put("type", "A");
         e1.attributes().put("val", 1);
 
-        e2 = (EphemeralEdge) new EphemeralGraph().createEdge(n2, n3);
+        e2 = factory.createEdge(n2, n3);
         e2.attributes().put("type", "B");
         e2.attributes().put("val", 2);
 
-        e3 = (EphemeralEdge) new EphemeralGraph().createEdge(n3, n1);
+        e3 = factory.createEdge(n3, n1);
         e3.attributes().put("type", "A");
         e3.attributes().put("val", 3);
 

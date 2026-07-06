@@ -33,42 +33,42 @@ public class EphemeralGraph implements Graph {
 	 * Constructs a new empty graph
 	 */
     @Override
-    public Graph createGraph() {
+    public EphemeralGraph createGraph() {
         return new EphemeralGraph();
     }
 
     @Override
-    public Graph createGraph(Node... nodes) {
+    public EphemeralGraph createGraph(Node... nodes) {
         return new EphemeralGraph(nodes);
     }
 
     @Override
-    public Graph createGraph(NodeSet nodes) {
+    public EphemeralGraph createGraph(NodeSet nodes) {
         return new EphemeralGraph(nodes);
     }
 
     @Override
-    public Graph createGraph(Edge... edges) {
+    public EphemeralGraph createGraph(Edge... edges) {
         return new EphemeralGraph(edges);
     }
 
     @Override
-    public Graph createGraph(EdgeSet edges) {
+    public EphemeralGraph createGraph(EdgeSet edges) {
         return new EphemeralGraph(edges);
     }
 
     @Override
-    public Graph createGraph(NodeSet nodes, EdgeSet edges) {
+    public EphemeralGraph createGraph(NodeSet nodes, EdgeSet edges) {
         return new EphemeralGraph(nodes, edges);
     }
 
     @Override
-    public Graph createGraph(Graph... graphs) {
+    public EphemeralGraph createGraph(Graph... graphs) {
         return new EphemeralGraph(graphs);
     }
 
     @Override
-    public Graph createGraph(Collection<Graph> graphs) {
+    public EphemeralGraph createGraph(Collection<Graph> graphs) {
         return new EphemeralGraph(graphs);
     }
 
@@ -983,12 +983,12 @@ public class EphemeralGraph implements Graph {
 	}
 
 	@Override
-	public Node createNode() {
+	public EphemeralNode createNode() {
 		return new EphemeralNode();
 	}
 
 	@Override
-	public Edge createEdge(Node source, Node target) {
+	public EphemeralEdge createEdge(Node source, Node target) {
 		if (!(source instanceof EphemeralNode)) {
 			throw new IllegalArgumentException("Source node is not native to EphemeralGraph.");
 		}

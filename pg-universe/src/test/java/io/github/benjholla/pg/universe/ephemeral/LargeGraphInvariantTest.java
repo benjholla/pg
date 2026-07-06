@@ -8,6 +8,8 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class LargeGraphInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     @Test
     public void testDeepLinearGraphTraversal() {
@@ -18,9 +20,9 @@ public class LargeGraphInvariantTest {
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {
-            nodes[i] = (EphemeralNode) new EphemeralGraph().createNode();
+            nodes[i] = factory.createNode();
             if(i > 0) {
-                graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(nodes[i-1], nodes[i]));
+                graph.addEdge(factory.createEdge(nodes[i-1], nodes[i]));
             }
         }
 

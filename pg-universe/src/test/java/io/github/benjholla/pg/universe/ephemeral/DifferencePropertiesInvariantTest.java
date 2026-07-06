@@ -12,26 +12,28 @@ import io.github.benjholla.pg.api.Graph;
  * Validates properties related to set differences on graphs.
  */
 public class DifferencePropertiesInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA, gB, gC;
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralNode b = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralNode c = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode a = factory.createNode();
+        EphemeralNode b = factory.createNode();
+        EphemeralNode c = factory.createNode();
 
-        EphemeralEdge ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
-        EphemeralEdge bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        EphemeralEdge ab = factory.createEdge(a, b);
+        EphemeralEdge bc = factory.createEdge(b, c);
 
-        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
+        gA = factory.createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
+        gB = factory.createGraph(a, b);
         gB.addEdge(ab);
 
-        gC = (EphemeralGraph) new EphemeralGraph().createGraph(b, c);
+        gC = factory.createGraph(b, c);
         gC.addEdge(bc);
     }
 

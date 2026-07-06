@@ -17,18 +17,20 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.TagSet;
 
 public class NodeTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private Node element;
 
     @BeforeEach
     public void setUp() {
-        element = (EphemeralNode) new EphemeralGraph().createNode();
+        element = factory.createNode();
     }
 
     @Test
     public void testId() {
         assertNotNull(element.id());
-        Node element2 = (EphemeralNode) new EphemeralGraph().createNode();
+        Node element2 = factory.createNode();
         assertNotEquals(element.id(), element2.id());
     }
 
@@ -76,7 +78,7 @@ public class NodeTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        Node element2 = (EphemeralNode) new EphemeralGraph().createNode();
+        Node element2 = factory.createNode();
         assertNotEquals(element, element2);
 
         // Element ID dictates equality
@@ -89,19 +91,19 @@ public class NodeTest {
 
     @Test
     public void testEqualsDifferentClass2() {
-        Node el = (EphemeralNode) new EphemeralGraph().createNode();
+        Node el = factory.createNode();
         assertFalse(el.equals(new Object()));
     }
 
     @Test
     public void testEqualsNull() {
-        Node el = (EphemeralNode) new EphemeralGraph().createNode();
+        Node el = factory.createNode();
         assertFalse(el.equals(null));
     }
 
     @Test
     public void testToString() {
-        Node node = (EphemeralNode) new EphemeralGraph().createNode();
+        Node node = factory.createNode();
         node.attributes().put("name", "test-node");
         node.tags().add("test-tag");
 

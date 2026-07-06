@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 public class EphemeralIdGeneratorTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     @Test
     public void testConcurrentIdGeneration() throws InterruptedException {

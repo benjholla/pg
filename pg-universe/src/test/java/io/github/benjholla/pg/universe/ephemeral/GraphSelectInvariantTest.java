@@ -17,6 +17,8 @@ import io.github.benjholla.pg.api.NodeSet;
  * Validates the behavior of selectNodes and selectEdges operations.
  */
 public class GraphSelectInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c;
@@ -26,23 +28,23 @@ public class GraphSelectInvariantTest {
     public void setUp() {
         graph = new EphemeralGraph();
 
-        a = (EphemeralNode) new EphemeralGraph().createNode();
+        a = factory.createNode();
         a.attributes().put("color", new AttributeValue.StringVal("red"));
         a.attributes().put("weight", new AttributeValue.IntVal(10));
 
-        b = (EphemeralNode) new EphemeralGraph().createNode();
+        b = factory.createNode();
         b.attributes().put("color", new AttributeValue.StringVal("blue"));
 
-        c = (EphemeralNode) new EphemeralGraph().createNode();
+        c = factory.createNode();
         c.attributes().put("weight", new AttributeValue.IntVal(20));
 
-        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        ab = factory.createEdge(a, b);
         ab.attributes().put("type", new AttributeValue.StringVal("friend"));
 
-        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        bc = factory.createEdge(b, c);
         bc.attributes().put("type", new AttributeValue.StringVal("enemy"));
 
-        ca = (EphemeralEdge) new EphemeralGraph().createEdge(c, a);
+        ca = factory.createEdge(c, a);
         ca.attributes().put("distance", new AttributeValue.IntVal(50));
 
         graph.addNode(a);

@@ -14,22 +14,24 @@ import io.github.benjholla.pg.api.Graph;
  * 2. A ∩ (A U B) = A
  */
 public class AbsorptionLawsInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA, gB;
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralNode b = (EphemeralNode) new EphemeralGraph().createNode();
-        EphemeralNode c = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode a = factory.createNode();
+        EphemeralNode b = factory.createNode();
+        EphemeralNode c = factory.createNode();
 
-        EphemeralEdge ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
-        EphemeralEdge bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        EphemeralEdge ab = factory.createEdge(a, b);
+        EphemeralEdge bc = factory.createEdge(b, c);
 
-        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
+        gA = factory.createGraph(a, b);
         gA.addEdge(ab);
 
-        gB = (EphemeralGraph) new EphemeralGraph().createGraph(b, c);
+        gB = factory.createGraph(b, c);
         gB.addEdge(bc);
     }
 

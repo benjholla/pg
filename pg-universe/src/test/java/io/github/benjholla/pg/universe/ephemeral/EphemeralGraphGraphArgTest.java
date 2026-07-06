@@ -9,18 +9,20 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class EphemeralGraphGraphArgTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testGraphArgMethods() {
-        Node n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        Node n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        Node n3 = (EphemeralNode) new EphemeralGraph().createNode();
-        Edge e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
-        Edge e2 = (EphemeralEdge) new EphemeralGraph().createEdge(n2, n3);
+        Node n1 = factory.createNode();
+        Node n2 = factory.createNode();
+        Node n3 = factory.createNode();
+        Edge e1 = factory.createEdge(n1, n2);
+        Edge e2 = factory.createEdge(n2, n3);
         EphemeralGraph graph = new EphemeralGraph();
         graph.addEdge(e1);
         graph.addEdge(e2);
 
-        Graph g1 = (EphemeralGraph) new EphemeralGraph().createGraph(n2);
+        Graph g1 = factory.createGraph(n2);
 
         assertEquals(1, graph.predecessors(g1).size());
         assertTrue(graph.predecessors(g1).contains(n1));
@@ -28,14 +30,14 @@ public class EphemeralGraphGraphArgTest {
         assertEquals(1, graph.successors(g1).size());
         assertTrue(graph.successors(g1).contains(n3));
 
-        Graph gFrom = (EphemeralGraph) new EphemeralGraph().createGraph(n1);
-        Graph gTo = (EphemeralGraph) new EphemeralGraph().createGraph(n2);
+        Graph gFrom = factory.createGraph(n1);
+        Graph gTo = factory.createGraph(n2);
 
         Graph betweenStep = graph.betweenStep(gFrom, gTo);
         assertEquals(2, betweenStep.nodes().size());
         assertTrue(betweenStep.edges().contains(e1));
 
-        Graph gTo3 = (EphemeralGraph) new EphemeralGraph().createGraph(n3);
+        Graph gTo3 = factory.createGraph(n3);
         Graph between = graph.between(gFrom, gTo3);
         assertEquals(3, between.nodes().size());
         assertTrue(between.edges().contains(e1));
@@ -44,14 +46,14 @@ public class EphemeralGraphGraphArgTest {
 
     @Test
     public void testDifferenceEdgesBreak() {
-        Node n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        Node n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        Edge e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
+        Node n1 = factory.createNode();
+        Node n2 = factory.createNode();
+        Edge e1 = factory.createEdge(n1, n2);
         EphemeralGraph graph = new EphemeralGraph();
         graph.addEdge(e1);
 
-        Graph gRemove1 = (EphemeralGraph) new EphemeralGraph().createGraph(e1);
-        Graph gRemove2 = (EphemeralGraph) new EphemeralGraph().createGraph(e1);
+        Graph gRemove1 = factory.createGraph(e1);
+        Graph gRemove2 = factory.createGraph(e1);
 
         Graph diff = graph.differenceEdges(gRemove1, gRemove2);
         assertTrue(diff.edges().isEmpty());
@@ -59,10 +61,10 @@ public class EphemeralGraphGraphArgTest {
 
     @Test
     public void testBetweenEmptyHandling() {
-        Node n1 = (EphemeralNode) new EphemeralGraph().createNode();
-        Node n2 = (EphemeralNode) new EphemeralGraph().createNode();
-        Node n3 = (EphemeralNode) new EphemeralGraph().createNode();
-        Edge e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
+        Node n1 = factory.createNode();
+        Node n2 = factory.createNode();
+        Node n3 = factory.createNode();
+        Edge e1 = factory.createEdge(n1, n2);
         EphemeralGraph graph = new EphemeralGraph();
         graph.addEdge(e1);
 
