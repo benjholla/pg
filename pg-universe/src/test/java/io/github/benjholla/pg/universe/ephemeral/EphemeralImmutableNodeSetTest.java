@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
-public class EphemeralUnmodifiableNodeSetTest {
+public class EphemeralImmutableNodeSetTest {
     @Test
     public void testUnsupportedOperations() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
-        EphemeralUnmodifiableNodeSet set = new EphemeralUnmodifiableNodeSet(internalSet);
+        EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
         EphemeralNode n = new EphemeralNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
@@ -32,7 +32,7 @@ public class EphemeralUnmodifiableNodeSetTest {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
         EphemeralNode n1 = new EphemeralNode();
         internalSet.add(n1);
-        EphemeralUnmodifiableNodeSet set = new EphemeralUnmodifiableNodeSet(internalSet);
+        EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
 
         assertTrue(set.contains(n1));
         assertEquals(1, set.size());

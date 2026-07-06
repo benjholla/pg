@@ -11,58 +11,58 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import io.github.benjholla.pg.api.AttributeValue;
-import io.github.benjholla.pg.api.Edge;
-import io.github.benjholla.pg.api.EdgeSet;
+import io.github.benjholla.pg.api.Node;
+import io.github.benjholla.pg.api.NodeSet;
 
-public class HeavyUnmodifiableEdgeSet implements EdgeSet {
-    private final EdgeSet edges;
-
-    public HeavyUnmodifiableEdgeSet(EdgeSet edges) {
-        this.edges = edges;
+public class HeavyImmutableNodeSet implements NodeSet {
+    private final NodeSet nodes;
+    
+    public HeavyImmutableNodeSet(NodeSet nodes) {
+        this.nodes = nodes;
     }
 
-    public Optional<Edge> one() {
-        return edges.one();
+    public Optional<Node> one() {
+        return nodes.one();
     }
 
-    public EdgeSet filter(String attribute) {
-        return edges.filter(attribute);
+    public NodeSet filter(String attribute) {
+        return nodes.filter(attribute);
     }
 
-    public void forEach(Consumer<? super Edge> action) {
-        edges.forEach(action);
+    public void forEach(Consumer<? super Node> action) {
+        nodes.forEach(action);
     }
 
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        return edges.filter(attribute, values);
+    public NodeSet filter(String attribute, AttributeValue... values) {
+        return nodes.filter(attribute, values);
     }
 
-    public EdgeSet intersect(Collection<? extends Edge> other) {
-        return edges.intersect(other);
+    public NodeSet intersect(Collection<? extends Node> other) {
+        return nodes.intersect(other);
     }
 
-    public EdgeSet difference(Collection<? extends Edge> other) {
-        return edges.difference(other);
+    public NodeSet difference(Collection<? extends Node> other) {
+        return nodes.difference(other);
     }
 
-    public EdgeSet union(Collection<? extends Edge> other) {
-        return edges.union(other);
+    public NodeSet union(Collection<? extends Node> other) {
+        return nodes.union(other);
     }
 
     public Set<Integer> ids() {
-        return edges.ids();
+        return nodes.ids();
     }
 
     public int[] toIdArray() {
-        return edges.toIdArray();
+        return nodes.toIdArray();
     }
 
-    public boolean add(Edge edge) {
+    public boolean add(Node node) {
         throw new UnsupportedOperationException();
     }
 
     public boolean contains(Object obj) {
-        return edges.contains(obj);
+        return nodes.contains(obj);
     }
 
     public boolean remove(Object obj) {
@@ -70,20 +70,20 @@ public class HeavyUnmodifiableEdgeSet implements EdgeSet {
     }
 
     public int size() {
-        return edges.size();
+        return nodes.size();
     }
 
     public boolean isEmpty() {
-        return edges.isEmpty();
+        return nodes.isEmpty();
     }
 
     public void clear() {
         throw new UnsupportedOperationException();
     }
 
-    public Iterator<Edge> iterator() {
-        return new Iterator<Edge>() {
-            private final Iterator<Edge> it = edges.iterator();
+    public Iterator<Node> iterator() {
+        return new Iterator<Node>() {
+            private final Iterator<Node> it = nodes.iterator();
 
             @Override
             public boolean hasNext() {
@@ -91,7 +91,7 @@ public class HeavyUnmodifiableEdgeSet implements EdgeSet {
             }
 
             @Override
-            public Edge next() {
+            public Node next() {
                 return it.next();
             }
 
@@ -103,18 +103,18 @@ public class HeavyUnmodifiableEdgeSet implements EdgeSet {
     }
 
     public Object[] toArray() {
-        return edges.toArray();
+        return nodes.toArray();
     }
 
     public <T> T[] toArray(T[] a) {
-        return edges.toArray(a);
+        return nodes.toArray(a);
     }
 
     public boolean containsAll(Collection<?> c) {
-        return edges.containsAll(c);
+        return nodes.containsAll(c);
     }
 
-    public boolean addAll(Collection<? extends Edge> c) {
+    public boolean addAll(Collection<? extends Node> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -126,41 +126,41 @@ public class HeavyUnmodifiableEdgeSet implements EdgeSet {
         throw new UnsupportedOperationException();
     }
 
-    public Spliterator<Edge> spliterator() {
-        return edges.spliterator();
+    public Spliterator<Node> spliterator() {
+        return nodes.spliterator();
     }
 
     public <T> T[] toArray(IntFunction<T[]> generator) {
-        return edges.toArray(generator);
+        return nodes.toArray(generator);
     }
 
-    public boolean removeIf(Predicate<? super Edge> filter) {
+    public boolean removeIf(Predicate<? super Node> filter) {
         throw new UnsupportedOperationException();
     }
 
-    public Stream<Edge> stream() {
-        return edges.stream();
+    public Stream<Node> stream() {
+        return nodes.stream();
     }
 
-    public Stream<Edge> parallelStream() {
-        return edges.parallelStream();
+    public Stream<Node> parallelStream() {
+        return nodes.parallelStream();
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        return edges.equals(obj);
+        return nodes.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return edges.hashCode();
+        return nodes.hashCode();
     }
-
+    
     public String toString() {
-        return edges.toString();
+        return nodes.toString();
     }
-
+    
 }

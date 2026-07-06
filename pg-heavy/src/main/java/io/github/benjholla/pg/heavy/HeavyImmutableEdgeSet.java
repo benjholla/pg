@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.universe.ephemeral;
+package io.github.benjholla.pg.heavy;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,10 +14,10 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 
-public class EphemeralUnmodifiableEdgeSet implements EdgeSet {
+public class HeavyImmutableEdgeSet implements EdgeSet {
     private final EdgeSet edges;
 
-    public EphemeralUnmodifiableEdgeSet(EdgeSet edges) {
+    public HeavyImmutableEdgeSet(EdgeSet edges) {
         this.edges = edges;
     }
 

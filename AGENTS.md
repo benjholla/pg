@@ -141,3 +141,9 @@ Validation strictness scales based on the ID generation strategy of the specific
 The Graph is the absolute source of truth for topology and must heavily encapsulate its integer-backed maps.
  * **No Raw Leaks:** When satisfying API contracts like graph.nodes() or returning the result of a traversal, the graph must never return its internal java.util.Collection or java.util.Map.values().
  * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., HeavyNodeSet, HeavyEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the graph's internal state.
+
+#### 5. Graph Collection Wrappers (Immutable vs Live)
+The Graph API uses distinct terminology to clarify behavior when returning collections:
+* **1. ImmutableNodeSet (The Snapshot):** This is the gold standard. The word "Immutable" makes a very specific promise: *the underlying data cannot and will not change, regardless of who holds a reference to it*. This guarantees to the developer that this set is a permanently frozen query result. Future maintainers must never let the backing HashSet escape local scope when constructing this object.
+* **2. UnmodifiableLiveNodeSet (The View):** "Unmodifiable" means *you* cannot modify it through this reference, but the underlying data might still mutate. The developer knows their .add() will violently fail, but they also know the set will dynamically reflect the breathing, living graph topology.
+Locking in UnmodifiableLiveNodeSet (for the 4-pillar internal maps) and ImmutableNodeSet (for the functional math and .filter() returns) provides an incredibly disciplined internal vocabulary.
