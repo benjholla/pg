@@ -140,5 +140,4 @@ Validation strictness scales based on the ID generation strategy of the specific
 #### 4. Encapsulation & Shielded Views
 The Graph is the absolute source of truth for topology and must heavily encapsulate its integer-backed maps.
  * **No Raw Leaks:** When satisfying API contracts like graph.nodes() or returning the result of a traversal, the graph must never return its internal java.util.Collection or java.util.Map.values().
- * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., HeavyNodeSet, HeavyEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the
-graph's internal state.
+ * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., HeavyNodeSet, HeavyEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the graph's internal state.
