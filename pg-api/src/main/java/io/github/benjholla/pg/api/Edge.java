@@ -14,4 +14,14 @@ package io.github.benjholla.pg.api;
 public interface Edge extends GraphElement {
     Node from();
     Node to();
+
+    /*
+     * ARCHITECTURE NOTE: Bidirectional Edge Support
+     * Currently utilizing "query-time" bidirectionality (storing strictly directed
+     * edges but supporting undirected traversal via NodeDirection.BOTH).
+     * * If structural undirected edges are added to the storage layer in the future,
+     * the Edge interface must be expanded to handle ambiguous source/target semantics:
+     * - boolean isDirected();
+     * - Node opposite(Node anchor); // Required for agnostic traversal hopping
+     */
 }
