@@ -110,7 +110,6 @@ public class HeavyEdgeSet implements EdgeSet {
         return new HeavyImmutableEdgeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
         HeavyEdgeSet result = new HeavyEdgeSet();

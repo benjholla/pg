@@ -111,7 +111,6 @@ public class EphemeralEdgeSet implements EdgeSet {
         return new EphemeralImmutableEdgeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();

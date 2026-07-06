@@ -19,9 +19,6 @@ import io.github.benjholla.pg.api.NodeSet;
 public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     private final Map<Integer, EphemeralNode> nodes;
-    private final Map<Integer, EphemeralEdge> edges;
-    private final Map<Integer, EphemeralEdgeSet> inEdges;
-    private final Map<Integer, EphemeralEdgeSet> outEdges;
 
     public EphemeralUnmodifiableLiveNodeSet(
             Map<Integer, EphemeralNode> nodes,
@@ -29,9 +26,6 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
             Map<Integer, EphemeralEdgeSet> inEdges,
             Map<Integer, EphemeralEdgeSet> outEdges) {
         this.nodes = Objects.requireNonNull(nodes);
-        this.edges = Objects.requireNonNull(edges);
-        this.inEdges = Objects.requireNonNull(inEdges);
-        this.outEdges = Objects.requireNonNull(outEdges);
     }
 
     @Override
@@ -96,7 +90,6 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
         return new EphemeralImmutableNodeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public NodeSet union(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet(); result.addAll(nodes.values());
@@ -151,7 +144,6 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Node> iterator() {
         return new Iterator<Node>() {
@@ -212,6 +204,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
         nodes.values().forEach(action);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Spliterator<Node> spliterator() {
         return (Spliterator<Node>) (Spliterator<?>) nodes.values().spliterator();

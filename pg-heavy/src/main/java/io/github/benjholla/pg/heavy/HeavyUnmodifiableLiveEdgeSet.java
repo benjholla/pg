@@ -18,20 +18,14 @@ import io.github.benjholla.pg.api.EdgeSet;
 
 public class HeavyUnmodifiableLiveEdgeSet implements EdgeSet {
 
-    private final Map<Integer, HeavyNode> nodes;
     private final Map<Integer, HeavyEdge> edges;
-    private final Map<Integer, HeavyEdgeSet> inEdges;
-    private final Map<Integer, HeavyEdgeSet> outEdges;
 
     public HeavyUnmodifiableLiveEdgeSet(
             Map<Integer, HeavyNode> nodes,
             Map<Integer, HeavyEdge> edges,
             Map<Integer, HeavyEdgeSet> inEdges,
             Map<Integer, HeavyEdgeSet> outEdges) {
-        this.nodes = Objects.requireNonNull(nodes);
         this.edges = Objects.requireNonNull(edges);
-        this.inEdges = Objects.requireNonNull(inEdges);
-        this.outEdges = Objects.requireNonNull(outEdges);
     }
 
     @Override
@@ -150,7 +144,6 @@ public class HeavyUnmodifiableLiveEdgeSet implements EdgeSet {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Edge> iterator() {
         return new Iterator<Edge>() {
@@ -211,6 +204,7 @@ public class HeavyUnmodifiableLiveEdgeSet implements EdgeSet {
         edges.values().forEach(action);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Spliterator<Edge> spliterator() {
         return (Spliterator<Edge>) (Spliterator<?>) edges.values().spliterator();

@@ -111,7 +111,6 @@ public class EphemeralNodeSet implements NodeSet {
         return new EphemeralImmutableNodeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public NodeSet union(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet();

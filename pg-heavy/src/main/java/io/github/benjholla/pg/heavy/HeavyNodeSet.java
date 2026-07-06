@@ -110,7 +110,6 @@ public class HeavyNodeSet implements NodeSet {
         return new HeavyImmutableNodeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public NodeSet union(Collection<? extends Node> other) {
         HeavyNodeSet result = new HeavyNodeSet();

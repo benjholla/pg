@@ -18,20 +18,14 @@ import io.github.benjholla.pg.api.EdgeSet;
 
 public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
-    private final Map<Integer, EphemeralNode> nodes;
     private final Map<Integer, EphemeralEdge> edges;
-    private final Map<Integer, EphemeralEdgeSet> inEdges;
-    private final Map<Integer, EphemeralEdgeSet> outEdges;
 
     public EphemeralUnmodifiableLiveEdgeSet(
             Map<Integer, EphemeralNode> nodes,
             Map<Integer, EphemeralEdge> edges,
             Map<Integer, EphemeralEdgeSet> inEdges,
             Map<Integer, EphemeralEdgeSet> outEdges) {
-        this.nodes = Objects.requireNonNull(nodes);
         this.edges = Objects.requireNonNull(edges);
-        this.inEdges = Objects.requireNonNull(inEdges);
-        this.outEdges = Objects.requireNonNull(outEdges);
     }
 
     @Override
@@ -96,7 +90,6 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         return new EphemeralImmutableEdgeSet(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
@@ -151,7 +144,6 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Edge> iterator() {
         return new Iterator<Edge>() {
@@ -212,6 +204,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         edges.values().forEach(action);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Spliterator<Edge> spliterator() {
         return (Spliterator<Edge>) (Spliterator<?>) edges.values().spliterator();
