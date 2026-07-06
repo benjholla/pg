@@ -190,12 +190,12 @@ public class HeavyGraph implements Graph {
         boolean result = false;
         result |= addNode(edge.from());
         result |= addNode(edge.to());
-        result |= putEdge(edge);
+        result |= linkEdge(edge);
         return result;
     }
 
 	@Override
-    public boolean putEdge(Edge edge) {
+    public boolean linkEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
         // 1. Violent Fail boundary
         if (!(edge instanceof HeavyEdge he)) {

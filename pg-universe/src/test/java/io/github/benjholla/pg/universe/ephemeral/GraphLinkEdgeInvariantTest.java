@@ -9,13 +9,13 @@ import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Node;
 
 /**
- * Validates the invariant that putEdge requires topological anchors.
- * Unlike addEdge, putEdge must violently fail if the nodes aren't registered.
+ * Validates the invariant that linkEdge requires topological anchors.
+ * Unlike addEdge, linkEdge must violently fail if the nodes aren't registered.
  */
-public class GraphPutEdgeInvariantTest {
+public class GraphLinkEdgeInvariantTest {
 
     @Test
-    public void testPutEdgeSucceedsWhenNodesPresent() {
+    public void testLinkEdgeSucceedsWhenNodesPresent() {
         EphemeralGraph graph = new EphemeralGraph();
         Node a = new EphemeralNode();
         Node b = new EphemeralNode();
@@ -23,42 +23,42 @@ public class GraphPutEdgeInvariantTest {
         graph.addNode(b);
 
         Edge edge = new EphemeralEdge(a, b);
-        assertTrue(graph.putEdge(edge), "putEdge should return true when edge is successfully added");
-        assertTrue(graph.edges().contains(edge), "Graph should contain the put edge");
+        assertTrue(graph.linkEdge(edge), "linkEdge should return true when edge is successfully added");
+        assertTrue(graph.edges().contains(edge), "Graph should contain the linked edge");
     }
 
     @Test
-    public void testPutEdgeFailsWhenFromNodeMissing() {
+    public void testLinkEdgeFailsWhenFromNodeMissing() {
         EphemeralGraph graph = new EphemeralGraph();
         Node a = new EphemeralNode();
         Node b = new EphemeralNode();
         graph.addNode(b); // Only target is present
 
         Edge edge = new EphemeralEdge(a, b);
-        assertThrows(IllegalArgumentException.class, () -> graph.putEdge(edge),
-                "putEdge should throw IllegalArgumentException when 'from' node is missing");
+        assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
+                "linkEdge should throw IllegalArgumentException when 'from' node is missing");
     }
 
     @Test
-    public void testPutEdgeFailsWhenToNodeMissing() {
+    public void testLinkEdgeFailsWhenToNodeMissing() {
         EphemeralGraph graph = new EphemeralGraph();
         Node a = new EphemeralNode();
         Node b = new EphemeralNode();
         graph.addNode(a); // Only source is present
 
         Edge edge = new EphemeralEdge(a, b);
-        assertThrows(IllegalArgumentException.class, () -> graph.putEdge(edge),
-                "putEdge should throw IllegalArgumentException when 'to' node is missing");
+        assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
+                "linkEdge should throw IllegalArgumentException when 'to' node is missing");
     }
 
     @Test
-    public void testPutEdgeFailsWhenBothNodesMissing() {
+    public void testLinkEdgeFailsWhenBothNodesMissing() {
         EphemeralGraph graph = new EphemeralGraph();
         Node a = new EphemeralNode();
         Node b = new EphemeralNode();
 
         Edge edge = new EphemeralEdge(a, b);
-        assertThrows(IllegalArgumentException.class, () -> graph.putEdge(edge),
-                "putEdge should throw IllegalArgumentException when both nodes are missing");
+        assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
+                "linkEdge should throw IllegalArgumentException when both nodes are missing");
     }
 }
