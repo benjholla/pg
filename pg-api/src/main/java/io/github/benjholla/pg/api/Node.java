@@ -8,5 +8,5 @@ package io.github.benjholla.pg.api;
  * a {@link TagSet} for labeling, and an {@link AttributeMap} for property storage.
  */
 public interface Node extends GraphElement {
-    enum NodeDirection { IN, OUT; }
+    enum NodeDirection { IN, OUT, BOTH; }
 }

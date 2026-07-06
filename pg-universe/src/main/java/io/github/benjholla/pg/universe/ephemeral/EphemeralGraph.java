@@ -22,6 +22,8 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public class EphemeralGraph implements Graph {
 
+	private static final EdgeSet EMPTY_EDGES = new EphemeralUnmodifiableEdgeSet(new EphemeralEdgeSet());
+
 	private Map<Integer, EphemeralNode> nodes;
 	private Map<Integer, EphemeralEdge> edges;
 	private Map<Integer, EphemeralEdgeSet> inEdges;
@@ -942,6 +944,78 @@ public class EphemeralGraph implements Graph {
             }
         }
         return result;
+	}
+
+	@Override
+	public Node createNode() {
+		return new EphemeralNode();
+	}
+
+	@Override
+	public Edge createEdge(Node source, Node target) {
+		if (!(source instanceof EphemeralNode)) {
+			throw new IllegalArgumentException("Source node is not native to EphemeralGraph.");
+		}
+		if (!(target instanceof EphemeralNode)) {
+			throw new IllegalArgumentException("Target node is not native to EphemeralGraph.");
+		}
+		return new EphemeralEdge(source, target);
+	}
+
+	@Override
+	public boolean adjacent(Node source, Node target) {
+		if (!(source instanceof EphemeralNode eSource) || !nodes.containsKey(eSource.id())) return false;
+		if (!(target instanceof EphemeralNode eTarget) || !nodes.containsKey(eTarget.id())) return false;
+
+		Optional<EdgeSet> out = getOutEdgesFromNode(eSource);
+		if (out.isEmpty()) return false;
+
+		for (Edge e : out.get()) {
+			if (e.to().equals(eTarget)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public EdgeSet edges(Node source, Node target) {
+		if (!(source instanceof EphemeralNode eSource) || !nodes.containsKey(eSource.id())) return EMPTY_EDGES;
+		if (!(target instanceof EphemeralNode eTarget) || !nodes.containsKey(eTarget.id())) return EMPTY_EDGES;
+
+		Optional<EdgeSet> out = getOutEdgesFromNode(eSource);
+		if (out.isEmpty()) return EMPTY_EDGES;
+
+		EdgeSet result = new EphemeralEdgeSet();
+		for (Edge e : out.get()) {
+			if (e.to().equals(eTarget)) {
+				result.add(e);
+			}
+		}
+		return result.isEmpty() ? EMPTY_EDGES : new EphemeralUnmodifiableEdgeSet(result);
+	}
+
+	@Override
+	public int degree(Node node, NodeDirection direction) {
+		if (!(node instanceof EphemeralNode en) || !nodes.containsKey(en.id())) {
+			return 0; // Silent Ignore
+		}
+
+		return switch (direction) {
+			case OUT -> {
+				EphemeralEdgeSet out = outEdges.get(en.id());
+				yield out == null ? 0 : out.size();
+			}
+			case IN -> {
+				EphemeralEdgeSet in = inEdges.get(en.id());
+				yield in == null ? 0 : in.size();
+			}
+			case BOTH -> {
+				EphemeralEdgeSet out = outEdges.get(en.id());
+				EphemeralEdgeSet in = inEdges.get(en.id());
+				yield (out == null ? 0 : out.size()) + (in == null ? 0 : in.size());
+			}
+		};
 	}
 
 }
