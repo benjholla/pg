@@ -3,6 +3,7 @@ package io.github.benjholla.pg.universe.ephemeral;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -34,6 +35,26 @@ public class EphemeralUnmodifiableNodeSet implements NodeSet {
 
     public NodeSet filter(String attribute, AttributeValue... values) {
         return nodes.filter(attribute, values);
+    }
+
+    public NodeSet intersect(Collection<? extends Node> other) {
+        return nodes.intersect(other);
+    }
+
+    public NodeSet difference(Collection<? extends Node> other) {
+        return nodes.difference(other);
+    }
+
+    public NodeSet union(Collection<? extends Node> other) {
+        return nodes.union(other);
+    }
+
+    public Set<Integer> ids() {
+        return nodes.ids();
+    }
+
+    public int[] toIdArray() {
+        return nodes.toIdArray();
     }
 
     public boolean add(Node node) {

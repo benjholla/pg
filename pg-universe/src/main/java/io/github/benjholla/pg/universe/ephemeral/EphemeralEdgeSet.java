@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
@@ -61,7 +62,7 @@ public class EphemeralEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result;
+        return new EphemeralUnmodifiableEdgeSet(result);
     }
 
     @Override
@@ -82,7 +83,57 @@ public class EphemeralEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result;
+        return new EphemeralUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public EdgeSet intersect(Collection<? extends Edge> other) {
+        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        if (other == null || other.isEmpty()) {
+            return new EphemeralUnmodifiableEdgeSet(result);
+        }
+        for (EphemeralEdge edge : internalSet) {
+            if (other.contains(edge)) {
+                result.internalSet.add(edge);
+            }
+        }
+        return new EphemeralUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public EdgeSet difference(Collection<? extends Edge> other) {
+        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        for (EphemeralEdge edge : internalSet) {
+            if (other == null || !other.contains(edge)) {
+                result.internalSet.add(edge);
+            }
+        }
+        return new EphemeralUnmodifiableEdgeSet(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public EdgeSet union(Collection<? extends Edge> other) {
+        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        result.internalSet.addAll(this.internalSet);
+        if (other != null) {
+            for (Edge e : other) {
+                if (e instanceof EphemeralEdge ee) {
+                    result.internalSet.add(ee);
+                }
+            }
+        }
+        return new EphemeralUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public Set<Integer> ids() {
+        return internalSet.stream().map(Edge::id).collect(Collectors.toSet());
+    }
+
+    @Override
+    public int[] toIdArray() {
+        return internalSet.stream().mapToInt(Edge::id).toArray();
     }
 
     @Override

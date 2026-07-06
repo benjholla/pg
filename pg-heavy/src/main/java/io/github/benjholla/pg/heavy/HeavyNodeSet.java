@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
@@ -60,7 +61,7 @@ public class HeavyNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result;
+        return new HeavyUnmodifiableNodeSet(result);
     }
 
     @Override
@@ -81,7 +82,57 @@ public class HeavyNodeSet implements NodeSet {
                 }
             }
         }
-        return result;
+        return new HeavyUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public NodeSet intersect(Collection<? extends Node> other) {
+        HeavyNodeSet result = new HeavyNodeSet();
+        if (other == null || other.isEmpty()) {
+            return new HeavyUnmodifiableNodeSet(result);
+        }
+        for (HeavyNode node : internalSet) {
+            if (other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return new HeavyUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public NodeSet difference(Collection<? extends Node> other) {
+        HeavyNodeSet result = new HeavyNodeSet();
+        for (HeavyNode node : internalSet) {
+            if (other == null || !other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return new HeavyUnmodifiableNodeSet(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public NodeSet union(Collection<? extends Node> other) {
+        HeavyNodeSet result = new HeavyNodeSet();
+        result.internalSet.addAll(this.internalSet);
+        if (other != null) {
+            for (Node n : other) {
+                if (n instanceof HeavyNode hn) {
+                    result.internalSet.add(hn);
+                }
+            }
+        }
+        return new HeavyUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public Set<Integer> ids() {
+        return internalSet.stream().map(Node::id).collect(Collectors.toSet());
+    }
+
+    @Override
+    public int[] toIdArray() {
+        return internalSet.stream().mapToInt(Node::id).toArray();
     }
 
     @Override
