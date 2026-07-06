@@ -12,14 +12,14 @@ import io.github.benjholla.pg.api.Node;
 public class MultiGraphInvariantTest {
     @Test
     public void testMultipleEdgesBetweenSameNodes() {
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
-        Edge e1 = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
+        Edge e1 = new HeavyEdge(a, b);
         e1.tags().add("type1");
-        Edge e2 = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Edge e2 = new HeavyEdge(a, b);
         e2.tags().add("type2");
 
-        HeavyGraph graph = (HeavyGraph) new HeavyGraph().createGraph(a, b);
+        HeavyGraph graph = new HeavyGraph(a, b);
         graph.addEdge(e1);
         graph.addEdge(e2);
 

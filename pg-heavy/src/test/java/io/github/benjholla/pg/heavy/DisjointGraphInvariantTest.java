@@ -17,15 +17,15 @@ public class DisjointGraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a1 = (HeavyNode) new HeavyGraph().createNode();
-        a2 = (HeavyNode) new HeavyGraph().createNode();
-        graphA = (HeavyGraph) new HeavyGraph().createGraph(a1, a2);
-        graphA.addEdge((HeavyEdge) new HeavyGraph().createEdge(a1, a2));
+        a1 = new HeavyNode();
+        a2 = new HeavyNode();
+        graphA = new HeavyGraph(a1, a2);
+        graphA.addEdge(new HeavyEdge(a1, a2));
 
-        b1 = (HeavyNode) new HeavyGraph().createNode();
-        b2 = (HeavyNode) new HeavyGraph().createNode();
-        graphB = (HeavyGraph) new HeavyGraph().createGraph(b1, b2);
-        graphB.addEdge((HeavyEdge) new HeavyGraph().createEdge(b1, b2));
+        b1 = new HeavyNode();
+        b2 = new HeavyNode();
+        graphB = new HeavyGraph(b1, b2);
+        graphB.addEdge(new HeavyEdge(b1, b2));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DisjointGraphInvariantTest {
 
     @Test
     public void testBetweenDisjointSubgraphsIsEmpty() {
-        HeavyGraph unionGraph = (HeavyGraph) new HeavyGraph().createGraph(graphA.nodes(), graphA.edges());
+        HeavyGraph unionGraph = new HeavyGraph(graphA.nodes(), graphA.edges());
         unionGraph = (HeavyGraph) unionGraph.union(graphB);
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB

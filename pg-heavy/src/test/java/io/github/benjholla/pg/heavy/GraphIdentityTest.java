@@ -21,9 +21,9 @@ public class GraphIdentityTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        n1 = (HeavyNode) new HeavyGraph().createNode();
-        n2 = (HeavyNode) new HeavyGraph().createNode();
-        e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
+        n1 = new HeavyNode();
+        n2 = new HeavyNode();
+        e1 = new HeavyEdge(n1, n2);
 
         graph.addNode(n1);
         graph.addNode(n2);

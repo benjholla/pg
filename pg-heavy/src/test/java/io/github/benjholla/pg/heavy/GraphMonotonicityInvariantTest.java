@@ -21,15 +21,15 @@ public class GraphMonotonicityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        a = (HeavyNode) new HeavyGraph().createNode(); b = (HeavyNode) new HeavyGraph().createNode(); c = (HeavyNode) new HeavyGraph().createNode(); d = (HeavyNode) new HeavyGraph().createNode();
-        e = (HeavyNode) new HeavyGraph().createNode(); f = (HeavyNode) new HeavyGraph().createNode(); g = (HeavyNode) new HeavyGraph().createNode();
+        a = new HeavyNode(); b = new HeavyNode(); c = new HeavyNode(); d = new HeavyNode();
+        e = new HeavyNode(); f = new HeavyNode(); g = new HeavyNode();
 
-        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(a, b));
-        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(b, c));
-        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(c, d));
+        graph.addEdge(new HeavyEdge(a, b));
+        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge(new HeavyEdge(c, d));
 
-        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(e, f));
-        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(f, g));
+        graph.addEdge(new HeavyEdge(e, f));
+        graph.addEdge(new HeavyEdge(f, g));
     }
 
     private void assertIsSubgraph(Graph subgraph, Graph supergraph) {

@@ -11,10 +11,10 @@ import io.github.benjholla.pg.api.Node;
 public class SelfLoopInvariantTest {
     @Test
     public void testSelfLoop() {
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Edge loop = (HeavyEdge) new HeavyGraph().createEdge(a, a);
+        Node a = new HeavyNode();
+        Edge loop = new HeavyEdge(a, a);
 
-        HeavyGraph graph = (HeavyGraph) new HeavyGraph().createGraph(a);
+        HeavyGraph graph = new HeavyGraph(a);
         graph.addEdge(loop);
 
         Graph result = graph.forward(a);

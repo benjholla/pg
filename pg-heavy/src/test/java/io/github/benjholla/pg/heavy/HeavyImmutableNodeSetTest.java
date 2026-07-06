@@ -9,7 +9,7 @@ public class HeavyImmutableNodeSetTest {
     public void testUnsupportedOperations() {
         HeavyNodeSet internalSet = new HeavyNodeSet();
         HeavyImmutableNodeSet set = new HeavyImmutableNodeSet(internalSet);
-        HeavyNode n = (HeavyNode) new HeavyGraph().createNode();
+        HeavyNode n = new HeavyNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(n));
@@ -30,7 +30,7 @@ public class HeavyImmutableNodeSetTest {
     @Test
     public void testDelegatedMethods() {
         HeavyNodeSet internalSet = new HeavyNodeSet();
-        HeavyNode n1 = (HeavyNode) new HeavyGraph().createNode();
+        HeavyNode n1 = new HeavyNode();
         internalSet.add(n1);
         HeavyImmutableNodeSet set = new HeavyImmutableNodeSet(internalSet);
 

@@ -12,27 +12,27 @@ public class ReadmeExampleTest {
     @Test
     public void testReadmeExample() {
         // Create nodes
-        Node alice = (HeavyNode) new HeavyGraph().createNode();
+        Node alice = new HeavyNode();
         alice.tags().add("Person");
         alice.attributes().put("name", "Alice");
 
-        Node bob = (HeavyNode) new HeavyGraph().createNode();
+        Node bob = new HeavyNode();
         bob.tags().add("Person");
         bob.attributes().put("name", "Bob");
 
-        Node charlie = (HeavyNode) new HeavyGraph().createNode();
+        Node charlie = new HeavyNode();
         charlie.tags().add("Person");
         charlie.attributes().put("name", "Charlie");
 
         // Create edges
-        Edge knows1 = (HeavyEdge) new HeavyGraph().createEdge(alice, bob);
+        Edge knows1 = new HeavyEdge(alice, bob);
         knows1.tags().add("knows");
 
-        Edge knows2 = (HeavyEdge) new HeavyGraph().createEdge(bob, charlie);
+        Edge knows2 = new HeavyEdge(bob, charlie);
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        HeavyGraph graph = (HeavyGraph) new HeavyGraph().createGraph(alice, bob, charlie);
+        HeavyGraph graph = new HeavyGraph(alice, bob, charlie);
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 

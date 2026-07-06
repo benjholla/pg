@@ -11,16 +11,16 @@ import io.github.benjholla.pg.api.NodeSet;
 public class HeavyGraphGraphArgTest {
     @Test
     public void testGraphArgMethods() {
-        Node n1 = (HeavyNode) new HeavyGraph().createNode();
-        Node n2 = (HeavyNode) new HeavyGraph().createNode();
-        Node n3 = (HeavyNode) new HeavyGraph().createNode();
-        Edge e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
-        Edge e2 = (HeavyEdge) new HeavyGraph().createEdge(n2, n3);
+        Node n1 = new HeavyNode();
+        Node n2 = new HeavyNode();
+        Node n3 = new HeavyNode();
+        Edge e1 = new HeavyEdge(n1, n2);
+        Edge e2 = new HeavyEdge(n2, n3);
         HeavyGraph graph = new HeavyGraph();
         graph.addEdge(e1);
         graph.addEdge(e2);
 
-        Graph g1 = (HeavyGraph) new HeavyGraph().createGraph(n2);
+        Graph g1 = new HeavyGraph(n2);
 
         assertEquals(1, graph.predecessors(g1).size());
         assertTrue(graph.predecessors(g1).contains(n1));
@@ -28,14 +28,14 @@ public class HeavyGraphGraphArgTest {
         assertEquals(1, graph.successors(g1).size());
         assertTrue(graph.successors(g1).contains(n3));
 
-        Graph gFrom = (HeavyGraph) new HeavyGraph().createGraph(n1);
-        Graph gTo = (HeavyGraph) new HeavyGraph().createGraph(n2);
+        Graph gFrom = new HeavyGraph(n1);
+        Graph gTo = new HeavyGraph(n2);
 
         Graph betweenStep = graph.betweenStep(gFrom, gTo);
         assertEquals(2, betweenStep.nodes().size());
         assertTrue(betweenStep.edges().contains(e1));
 
-        Graph gTo3 = (HeavyGraph) new HeavyGraph().createGraph(n3);
+        Graph gTo3 = new HeavyGraph(n3);
         Graph between = graph.between(gFrom, gTo3);
         assertEquals(3, between.nodes().size());
         assertTrue(between.edges().contains(e1));
@@ -44,14 +44,14 @@ public class HeavyGraphGraphArgTest {
 
     @Test
     public void testDifferenceEdgesBreak() {
-        Node n1 = (HeavyNode) new HeavyGraph().createNode();
-        Node n2 = (HeavyNode) new HeavyGraph().createNode();
-        Edge e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
+        Node n1 = new HeavyNode();
+        Node n2 = new HeavyNode();
+        Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
         graph.addEdge(e1);
 
-        Graph gRemove1 = (HeavyGraph) new HeavyGraph().createGraph(e1);
-        Graph gRemove2 = (HeavyGraph) new HeavyGraph().createGraph(e1);
+        Graph gRemove1 = new HeavyGraph(e1);
+        Graph gRemove2 = new HeavyGraph(e1);
 
         Graph diff = graph.differenceEdges(gRemove1, gRemove2);
         assertTrue(diff.edges().isEmpty());
@@ -59,10 +59,10 @@ public class HeavyGraphGraphArgTest {
 
     @Test
     public void testBetweenEmptyHandling() {
-        Node n1 = (HeavyNode) new HeavyGraph().createNode();
-        Node n2 = (HeavyNode) new HeavyGraph().createNode();
-        Node n3 = (HeavyNode) new HeavyGraph().createNode();
-        Edge e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
+        Node n1 = new HeavyNode();
+        Node n2 = new HeavyNode();
+        Node n3 = new HeavyNode();
+        Edge e1 = new HeavyEdge(n1, n2);
         HeavyGraph graph = new HeavyGraph();
         graph.addEdge(e1);
 

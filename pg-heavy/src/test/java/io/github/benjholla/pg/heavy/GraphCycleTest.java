@@ -11,15 +11,15 @@ import io.github.benjholla.pg.api.Node;
 public class GraphCycleTest {
     @Test
     public void testForwardWithCycle() {
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
-        Node c = (HeavyNode) new HeavyGraph().createNode();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
+        Node c = new HeavyNode();
 
-        Edge ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
-        Edge bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
-        Edge ca = (HeavyEdge) new HeavyGraph().createEdge(c, a); // Cycle!
+        Edge ab = new HeavyEdge(a, b);
+        Edge bc = new HeavyEdge(b, c);
+        Edge ca = new HeavyEdge(c, a); // Cycle!
 
-        HeavyGraph graph = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
+        HeavyGraph graph = new HeavyGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

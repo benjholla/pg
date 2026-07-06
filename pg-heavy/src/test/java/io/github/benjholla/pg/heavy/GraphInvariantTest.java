@@ -20,15 +20,15 @@ public class GraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = (HeavyNode) new HeavyGraph().createNode();
-        b = (HeavyNode) new HeavyGraph().createNode();
-        c = (HeavyNode) new HeavyGraph().createNode();
+        a = new HeavyNode();
+        b = new HeavyNode();
+        c = new HeavyNode();
 
-        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
-        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
-        ca = (HeavyEdge) new HeavyGraph().createEdge(c, a);
+        ab = new HeavyEdge(a, b);
+        bc = new HeavyEdge(b, c);
+        ca = new HeavyEdge(c, a);
 
-        graph = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
+        graph = new HeavyGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);
@@ -58,9 +58,9 @@ public class GraphInvariantTest {
 
     @Test
     public void testEdgeCannotExistWithoutTerminalNodes() {
-        Node d = (HeavyNode) new HeavyGraph().createNode();
-        Node e = (HeavyNode) new HeavyGraph().createNode();
-        Edge de = (HeavyEdge) new HeavyGraph().createEdge(d, e);
+        Node d = new HeavyNode();
+        Node e = new HeavyNode();
+        Edge de = new HeavyEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
         graph.addEdge(de);

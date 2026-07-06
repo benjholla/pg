@@ -17,12 +17,12 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeSucceedsWhenNodesPresent() {
         HeavyGraph graph = new HeavyGraph();
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
         graph.addNode(a);
         graph.addNode(b);
 
-        Edge edge = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Edge edge = new HeavyEdge(a, b);
         assertTrue(graph.linkEdge(edge), "linkEdge should return true when edge is successfully added");
         assertTrue(graph.edges().contains(edge), "Graph should contain the linked edge");
     }
@@ -30,11 +30,11 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenFromNodeMissing() {
         HeavyGraph graph = new HeavyGraph();
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
         graph.addNode(b); // Only target is present
 
-        Edge edge = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Edge edge = new HeavyEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when 'from' node is missing");
     }
@@ -42,11 +42,11 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenToNodeMissing() {
         HeavyGraph graph = new HeavyGraph();
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
         graph.addNode(a); // Only source is present
 
-        Edge edge = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Edge edge = new HeavyEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when 'to' node is missing");
     }
@@ -54,10 +54,10 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenBothNodesMissing() {
         HeavyGraph graph = new HeavyGraph();
-        Node a = (HeavyNode) new HeavyGraph().createNode();
-        Node b = (HeavyNode) new HeavyGraph().createNode();
+        Node a = new HeavyNode();
+        Node b = new HeavyNode();
 
-        Edge edge = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        Edge edge = new HeavyEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when both nodes are missing");
     }

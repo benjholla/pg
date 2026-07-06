@@ -24,19 +24,19 @@ public class EdgeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = (HeavyNode) new HeavyGraph().createNode();
-        n2 = (HeavyNode) new HeavyGraph().createNode();
-        n3 = (HeavyNode) new HeavyGraph().createNode();
+        n1 = new HeavyNode();
+        n2 = new HeavyNode();
+        n3 = new HeavyNode();
 
-        e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
+        e1 = new HeavyEdge(n1, n2);
         e1.attributes().put("type", "A");
         e1.attributes().put("val", 1);
 
-        e2 = (HeavyEdge) new HeavyGraph().createEdge(n2, n3);
+        e2 = new HeavyEdge(n2, n3);
         e2.attributes().put("type", "B");
         e2.attributes().put("val", 2);
 
-        e3 = (HeavyEdge) new HeavyGraph().createEdge(n3, n1);
+        e3 = new HeavyEdge(n3, n1);
         e3.attributes().put("type", "A");
         e3.attributes().put("val", 3);
 
