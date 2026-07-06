@@ -21,9 +21,9 @@ public class GraphIdentityTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        n1 = new EphemeralNode();
-        n2 = new EphemeralNode();
-        e1 = new EphemeralEdge(n1, n2);
+        n1 = (EphemeralNode) new EphemeralGraph().createNode();
+        n2 = (EphemeralNode) new EphemeralGraph().createNode();
+        e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
 
         graph.addNode(n1);
         graph.addNode(n2);

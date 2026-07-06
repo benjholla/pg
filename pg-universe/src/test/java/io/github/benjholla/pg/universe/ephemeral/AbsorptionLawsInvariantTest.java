@@ -19,17 +19,17 @@ public class AbsorptionLawsInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = new EphemeralNode();
-        EphemeralNode b = new EphemeralNode();
-        EphemeralNode c = new EphemeralNode();
+        EphemeralNode a = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode b = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode c = (EphemeralNode) new EphemeralGraph().createNode();
 
-        EphemeralEdge ab = new EphemeralEdge(a, b);
-        EphemeralEdge bc = new EphemeralEdge(b, c);
+        EphemeralEdge ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        EphemeralEdge bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
 
-        gA = new EphemeralGraph(a, b);
+        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
         gA.addEdge(ab);
 
-        gB = new EphemeralGraph(b, c);
+        gB = (EphemeralGraph) new EphemeralGraph().createGraph(b, c);
         gB.addEdge(bc);
     }
 

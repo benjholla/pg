@@ -17,8 +17,8 @@ public class SelfBetweenPropertiesInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        gA = new EphemeralGraph(a);
+        a = (EphemeralNode) new EphemeralGraph().createNode();
+        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a);
     }
 
     @Test

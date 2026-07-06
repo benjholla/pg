@@ -32,6 +32,46 @@ public class EphemeralGraph implements Graph {
 	/**
 	 * Constructs a new empty graph
 	 */
+    @Override
+    public Graph createGraph() {
+        return new EphemeralGraph();
+    }
+
+    @Override
+    public Graph createGraph(Node... nodes) {
+        return new EphemeralGraph(nodes);
+    }
+
+    @Override
+    public Graph createGraph(NodeSet nodes) {
+        return new EphemeralGraph(nodes);
+    }
+
+    @Override
+    public Graph createGraph(Edge... edges) {
+        return new EphemeralGraph(edges);
+    }
+
+    @Override
+    public Graph createGraph(EdgeSet edges) {
+        return new EphemeralGraph(edges);
+    }
+
+    @Override
+    public Graph createGraph(NodeSet nodes, EdgeSet edges) {
+        return new EphemeralGraph(nodes, edges);
+    }
+
+    @Override
+    public Graph createGraph(Graph... graphs) {
+        return new EphemeralGraph(graphs);
+    }
+
+    @Override
+    public Graph createGraph(Collection<Graph> graphs) {
+        return new EphemeralGraph(graphs);
+    }
+
 	public EphemeralGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();

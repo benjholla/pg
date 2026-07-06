@@ -19,23 +19,23 @@ public class DeMorganLawsInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = new EphemeralNode();
-        EphemeralNode b = new EphemeralNode();
-        EphemeralNode c = new EphemeralNode();
+        EphemeralNode a = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode b = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralNode c = (EphemeralNode) new EphemeralGraph().createNode();
 
-        EphemeralEdge ab = new EphemeralEdge(a, b);
-        EphemeralEdge bc = new EphemeralEdge(b, c);
+        EphemeralEdge ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        EphemeralEdge bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
 
         // A is the superset
-        gA = new EphemeralGraph(a, b, c);
+        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
         // B and C are subsets
-        gB = new EphemeralGraph(a, b);
+        gB = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
         gB.addEdge(ab);
 
-        gC = new EphemeralGraph(b, c);
+        gC = (EphemeralGraph) new EphemeralGraph().createGraph(b, c);
         gC.addEdge(bc);
     }
 

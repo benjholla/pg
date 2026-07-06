@@ -22,25 +22,25 @@ public class GraphAlgebraicPropertiesTest {
 
     @BeforeEach
     public void setUp() {
-        a = new HeavyNode();
-        b = new HeavyNode();
-        c = new HeavyNode();
-        d = new HeavyNode();
-        e = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode();
+        b = (HeavyNode) new HeavyGraph().createNode();
+        c = (HeavyNode) new HeavyGraph().createNode();
+        d = (HeavyNode) new HeavyGraph().createNode();
+        e = (HeavyNode) new HeavyGraph().createNode();
 
-        ab = new HeavyEdge(a, b);
-        bc = new HeavyEdge(b, c);
-        cd = new HeavyEdge(c, d);
-        de = new HeavyEdge(d, e);
+        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
+        cd = (HeavyEdge) new HeavyGraph().createEdge(c, d);
+        de = (HeavyEdge) new HeavyGraph().createEdge(d, e);
 
-        gA = new HeavyGraph(a, b, c);
+        gA = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new HeavyGraph(c, d);
+        gB = (HeavyGraph) new HeavyGraph().createGraph(c, d);
         gB.addEdge(cd);
 
-        gC = new HeavyGraph(a, b, d, e);
+        gC = (HeavyGraph) new HeavyGraph().createGraph(a, b, d, e);
         gC.addEdge(ab);
         gC.addEdge(de);
     }

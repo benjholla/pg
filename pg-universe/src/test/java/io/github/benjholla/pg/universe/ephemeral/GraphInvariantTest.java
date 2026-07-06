@@ -20,15 +20,15 @@ public class GraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
+        a = (EphemeralNode) new EphemeralGraph().createNode();
+        b = (EphemeralNode) new EphemeralGraph().createNode();
+        c = (EphemeralNode) new EphemeralGraph().createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
-        ca = new EphemeralEdge(c, a);
+        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        ca = (EphemeralEdge) new EphemeralGraph().createEdge(c, a);
 
-        graph = new EphemeralGraph(a, b, c);
+        graph = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);
@@ -58,9 +58,9 @@ public class GraphInvariantTest {
 
     @Test
     public void testEdgeCannotExistWithoutTerminalNodes() {
-        Node d = new EphemeralNode();
-        Node e = new EphemeralNode();
-        Edge de = new EphemeralEdge(d, e);
+        Node d = (EphemeralNode) new EphemeralGraph().createNode();
+        Node e = (EphemeralNode) new EphemeralGraph().createNode();
+        Edge de = (EphemeralEdge) new EphemeralGraph().createEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
         graph.addEdge(de);

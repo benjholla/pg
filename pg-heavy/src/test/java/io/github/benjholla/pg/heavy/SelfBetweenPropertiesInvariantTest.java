@@ -17,8 +17,8 @@ public class SelfBetweenPropertiesInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new HeavyNode();
-        gA = new HeavyGraph(a);
+        a = (HeavyNode) new HeavyGraph().createNode();
+        gA = (HeavyGraph) new HeavyGraph().createGraph(a);
     }
 
     @Test

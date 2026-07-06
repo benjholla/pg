@@ -23,13 +23,13 @@ public class GraphInduceInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        a = new HeavyNode();
-        b = new HeavyNode();
-        c = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode();
+        b = (HeavyNode) new HeavyGraph().createNode();
+        c = (HeavyNode) new HeavyGraph().createNode();
 
-        ab = new HeavyEdge(a, b);
-        bc = new HeavyEdge(b, c);
-        ca = new HeavyEdge(c, a);
+        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
+        ca = (HeavyEdge) new HeavyGraph().createEdge(c, a);
 
         graph.addNode(a);
         graph.addNode(b);
@@ -53,7 +53,7 @@ public class GraphInduceInvariantTest {
 
     @Test
     public void testInduceFromOtherGraph() {
-        Graph otherGraph = new HeavyGraph(a, b, c);
+        Graph otherGraph = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         otherGraph.addEdge(ab);
         otherGraph.addEdge(bc);
         otherGraph.addEdge(ca);

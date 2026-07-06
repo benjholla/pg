@@ -12,14 +12,14 @@ import io.github.benjholla.pg.api.Node;
 public class MultiGraphInvariantTest {
     @Test
     public void testMultipleEdgesBetweenSameNodes() {
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
-        Edge e1 = new EphemeralEdge(a, b);
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Node b = (EphemeralNode) new EphemeralGraph().createNode();
+        Edge e1 = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         e1.tags().add("type1");
-        Edge e2 = new EphemeralEdge(a, b);
+        Edge e2 = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         e2.tags().add("type2");
 
-        EphemeralGraph graph = new EphemeralGraph(a, b);
+        EphemeralGraph graph = (EphemeralGraph) new EphemeralGraph().createGraph(a, b);
         graph.addEdge(e1);
         graph.addEdge(e2);
 

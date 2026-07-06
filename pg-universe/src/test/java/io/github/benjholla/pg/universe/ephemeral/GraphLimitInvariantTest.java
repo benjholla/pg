@@ -14,10 +14,10 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitInEquivalentToRoots() {
-        Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         NodeSet roots = graph.roots();
@@ -29,10 +29,10 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitOutEquivalentToLeaves() {
-        Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
 
         NodeSet limitOut = graph.limit(NodeDirection.OUT);
         NodeSet leaves = graph.leaves();
@@ -52,8 +52,8 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitIsolatedNodes() {
-        Node a = new EphemeralNode();
-        EphemeralGraph graph = new EphemeralGraph(a);
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        EphemeralGraph graph = (EphemeralGraph) new EphemeralGraph().createGraph(a);
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         assertEquals(1, limitIn.size());
@@ -66,11 +66,11 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitCyclicGraph() {
-        Node a = new EphemeralNode(); Node b = new EphemeralNode(); Node c = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode(); Node c = (EphemeralNode) new EphemeralGraph().createNode();
         EphemeralGraph graph = new EphemeralGraph();
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, a));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, a));
 
         assertTrue(graph.limit(NodeDirection.IN).isEmpty());
         assertTrue(graph.limit(NodeDirection.OUT).isEmpty());

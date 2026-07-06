@@ -22,13 +22,13 @@ public class NodeTest {
 
     @BeforeEach
     public void setUp() {
-        element = new HeavyNode();
+        element = (HeavyNode) new HeavyGraph().createNode();
     }
 
     @Test
     public void testId() {
         assertNotNull(element.id());
-        Node element2 = new HeavyNode();
+        Node element2 = (HeavyNode) new HeavyGraph().createNode();
         assertNotEquals(element.id(), element2.id());
     }
 
@@ -76,7 +76,7 @@ public class NodeTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        Node element2 = new HeavyNode();
+        Node element2 = (HeavyNode) new HeavyGraph().createNode();
         assertNotEquals(element, element2);
 
         // Element ID dictates equality
@@ -89,19 +89,19 @@ public class NodeTest {
 
     @Test
     public void testEqualsDifferentClass2() {
-        Node el = new HeavyNode();
+        Node el = (HeavyNode) new HeavyGraph().createNode();
         assertFalse(el.equals(new Object()));
     }
 
     @Test
     public void testEqualsNull() {
-        Node el = new HeavyNode();
+        Node el = (HeavyNode) new HeavyGraph().createNode();
         assertFalse(el.equals(null));
     }
 
     @Test
     public void testToString() {
-        Node node = new HeavyNode();
+        Node node = (HeavyNode) new HeavyGraph().createNode();
         node.attributes().put("name", "test-node");
         node.tags().add("test-tag");
 

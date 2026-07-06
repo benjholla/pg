@@ -17,15 +17,15 @@ public class DisjointGraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a1 = new EphemeralNode();
-        a2 = new EphemeralNode();
-        graphA = new EphemeralGraph(a1, a2);
-        graphA.addEdge(new EphemeralEdge(a1, a2));
+        a1 = (EphemeralNode) new EphemeralGraph().createNode();
+        a2 = (EphemeralNode) new EphemeralGraph().createNode();
+        graphA = (EphemeralGraph) new EphemeralGraph().createGraph(a1, a2);
+        graphA.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a1, a2));
 
-        b1 = new EphemeralNode();
-        b2 = new EphemeralNode();
-        graphB = new EphemeralGraph(b1, b2);
-        graphB.addEdge(new EphemeralEdge(b1, b2));
+        b1 = (EphemeralNode) new EphemeralGraph().createNode();
+        b2 = (EphemeralNode) new EphemeralGraph().createNode();
+        graphB = (EphemeralGraph) new EphemeralGraph().createGraph(b1, b2);
+        graphB.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b1, b2));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DisjointGraphInvariantTest {
 
     @Test
     public void testBetweenDisjointSubgraphsIsEmpty() {
-        EphemeralGraph unionGraph = new EphemeralGraph(graphA.nodes(), graphA.edges());
+        EphemeralGraph unionGraph = (EphemeralGraph) new EphemeralGraph().createGraph(graphA.nodes(), graphA.edges());
         unionGraph = (EphemeralGraph) unionGraph.union(graphB);
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB

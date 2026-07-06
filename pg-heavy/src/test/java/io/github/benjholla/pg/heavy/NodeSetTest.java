@@ -22,15 +22,15 @@ public class NodeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = new HeavyNode();
+        n1 = (HeavyNode) new HeavyGraph().createNode();
         n1.attributes().put("type", "A");
         n1.attributes().put("val", 1);
 
-        n2 = new HeavyNode();
+        n2 = (HeavyNode) new HeavyGraph().createNode();
         n2.attributes().put("type", "B");
         n2.attributes().put("val", 2);
 
-        n3 = new HeavyNode();
+        n3 = (HeavyNode) new HeavyGraph().createNode();
         n3.attributes().put("type", "A");
         n3.attributes().put("val", 3);
 

@@ -11,10 +11,10 @@ import io.github.benjholla.pg.api.Node;
 public class SelfLoopInvariantTest {
     @Test
     public void testSelfLoop() {
-        Node a = new EphemeralNode();
-        Edge loop = new EphemeralEdge(a, a);
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Edge loop = (EphemeralEdge) new EphemeralGraph().createEdge(a, a);
 
-        EphemeralGraph graph = new EphemeralGraph(a);
+        EphemeralGraph graph = (EphemeralGraph) new EphemeralGraph().createGraph(a);
         graph.addEdge(loop);
 
         Graph result = graph.forward(a);

@@ -19,14 +19,14 @@ public class InducePropertiesInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
+        a = (EphemeralNode) new EphemeralGraph().createNode();
+        b = (EphemeralNode) new EphemeralGraph().createNode();
+        c = (EphemeralNode) new EphemeralGraph().createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
+        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
 
-        gA = new EphemeralGraph(a, b, c);
+        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
     }
@@ -51,7 +51,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        EphemeralGraph nodesOnly = new EphemeralGraph(a, b, c);
+        EphemeralGraph nodesOnly = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
         EphemeralEdgeSet edgesToAdd = new EphemeralEdgeSet();
         edgesToAdd.add(ab);
 

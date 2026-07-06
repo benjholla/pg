@@ -16,14 +16,14 @@ public class GraphTraversalInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new HeavyGraph();
-        a = new HeavyNode(); b = new HeavyNode(); c = new HeavyNode();
-        d = new HeavyNode(); e = new HeavyNode(); f = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode(); b = (HeavyNode) new HeavyGraph().createNode(); c = (HeavyNode) new HeavyGraph().createNode();
+        d = (HeavyNode) new HeavyGraph().createNode(); e = (HeavyNode) new HeavyGraph().createNode(); f = (HeavyNode) new HeavyGraph().createNode();
 
-        graph.addEdge(new HeavyEdge(a, b));
-        graph.addEdge(new HeavyEdge(b, c));
-        graph.addEdge(new HeavyEdge(c, d));
-        graph.addEdge(new HeavyEdge(d, b)); // cycle b-c-d-b
-        graph.addEdge(new HeavyEdge(e, f));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(a, b));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(b, c));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(c, d));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(d, b)); // cycle b-c-d-b
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(e, f));
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {
@@ -48,7 +48,7 @@ public class GraphTraversalInvariantTest {
     @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
-        Graph unionNodes = new HeavyGraph(a, e);
+        Graph unionNodes = (HeavyGraph) new HeavyGraph().createGraph(a, e);
         Graph forwardUnion = graph.forward(unionNodes);
 
         Graph forwardA = graph.forward(a);

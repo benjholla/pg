@@ -14,8 +14,8 @@ public class EmptyInputInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        Node a = new EphemeralNode(); Node b = new EphemeralNode();
-        graph.addEdge(new EphemeralEdge(a, b));
+        Node a = (EphemeralNode) new EphemeralGraph().createNode(); Node b = (EphemeralNode) new EphemeralGraph().createNode();
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
     }
 
     @Test

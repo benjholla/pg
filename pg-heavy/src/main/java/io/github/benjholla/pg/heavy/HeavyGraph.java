@@ -32,6 +32,46 @@ public class HeavyGraph implements Graph {
 	/**
 	 * Constructs a new empty graph
 	 */
+    @Override
+    public Graph createGraph() {
+        return new HeavyGraph();
+    }
+
+    @Override
+    public Graph createGraph(Node... nodes) {
+        return new HeavyGraph(nodes);
+    }
+
+    @Override
+    public Graph createGraph(NodeSet nodes) {
+        return new HeavyGraph(nodes);
+    }
+
+    @Override
+    public Graph createGraph(Edge... edges) {
+        return new HeavyGraph(edges);
+    }
+
+    @Override
+    public Graph createGraph(EdgeSet edges) {
+        return new HeavyGraph(edges);
+    }
+
+    @Override
+    public Graph createGraph(NodeSet nodes, EdgeSet edges) {
+        return new HeavyGraph(nodes, edges);
+    }
+
+    @Override
+    public Graph createGraph(Graph... graphs) {
+        return new HeavyGraph(graphs);
+    }
+
+    @Override
+    public Graph createGraph(Collection<Graph> graphs) {
+        return new HeavyGraph(graphs);
+    }
+
 	public HeavyGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();

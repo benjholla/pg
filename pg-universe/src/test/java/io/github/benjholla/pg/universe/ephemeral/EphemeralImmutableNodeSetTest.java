@@ -9,7 +9,7 @@ public class EphemeralImmutableNodeSetTest {
     public void testUnsupportedOperations() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
         EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
-        EphemeralNode n = new EphemeralNode();
+        EphemeralNode n = (EphemeralNode) new EphemeralGraph().createNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(n));
@@ -30,7 +30,7 @@ public class EphemeralImmutableNodeSetTest {
     @Test
     public void testDelegatedMethods() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
-        EphemeralNode n1 = new EphemeralNode();
+        EphemeralNode n1 = (EphemeralNode) new EphemeralGraph().createNode();
         internalSet.add(n1);
         EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
 

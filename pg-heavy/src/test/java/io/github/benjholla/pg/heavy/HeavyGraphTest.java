@@ -25,58 +25,58 @@ public class HeavyGraphTest {
     public void setUp() {
         graph = new HeavyGraph();
 
-        a = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode();
         a.attributes().put("name", "a");
         a.tags().add("vowel");
 
-        b = new HeavyNode();
+        b = (HeavyNode) new HeavyGraph().createNode();
         b.attributes().put("name", "b");
         b.tags().add("consonant");
         b.tags().add("letter");
 
-        c = new HeavyNode();
+        c = (HeavyNode) new HeavyGraph().createNode();
         c.attributes().put("name", "c");
         c.tags().add("consonant");
         c.tags().add("letter");
 
-        d = new HeavyNode();
+        d = (HeavyNode) new HeavyGraph().createNode();
         d.attributes().put("name", "d");
         d.tags().add("consonant");
 
-        e = new HeavyNode();
+        e = (HeavyNode) new HeavyGraph().createNode();
         e.attributes().put("name", "e");
         e.tags().add("vowel");
 
-        f = new HeavyNode();
+        f = (HeavyNode) new HeavyGraph().createNode();
         f.attributes().put("name", "f");
         f.tags().add("consonant");
 
-        g = new HeavyNode();
+        g = (HeavyNode) new HeavyGraph().createNode();
         g.attributes().put("name", "g");
         g.tags().add("consonant");
 
-        ab = new HeavyEdge(a, b);
+        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
         ab.attributes().put("weight", 1);
         ab.tags().add("path");
 
-        bc = new HeavyEdge(b, c);
+        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
         bc.attributes().put("weight", 2);
         bc.tags().add("path");
         bc.tags().add("main");
 
-        cb = new HeavyEdge(c, b);
+        cb = (HeavyEdge) new HeavyGraph().createEdge(c, b);
         cb.attributes().put("weight", 3);
         cb.tags().add("back");
 
-        cd = new HeavyEdge(c, d);
+        cd = (HeavyEdge) new HeavyGraph().createEdge(c, d);
         cd.attributes().put("weight", 4);
         cd.tags().add("path");
 
-        de = new HeavyEdge(d, e);
+        de = (HeavyEdge) new HeavyGraph().createEdge(d, e);
         de.attributes().put("weight", 5);
         de.tags().add("path");
 
-        dg = new HeavyEdge(d, g);
+        dg = (HeavyEdge) new HeavyGraph().createEdge(d, g);
         dg.attributes().put("weight", 6);
         dg.tags().add("branch");
 
@@ -107,29 +107,29 @@ public class HeavyGraphTest {
         HeavyGraph empty = new HeavyGraph();
         assertTrue(empty.isEmpty());
 
-        HeavyGraph withNodes = new HeavyGraph(a, b);
+        HeavyGraph withNodes = (HeavyGraph) new HeavyGraph().createGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
 
-        HeavyGraph withNodeSet = new HeavyGraph(new HeavyNodeSet(a, b));
+        HeavyGraph withNodeSet = (HeavyGraph) new HeavyGraph().createGraph(new HeavyNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        HeavyGraph withEdges = new HeavyGraph(ab, bc);
+        HeavyGraph withEdges = (HeavyGraph) new HeavyGraph().createGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        HeavyGraph withEdgeSet = new HeavyGraph(new HeavyEdgeSet(ab, bc));
+        HeavyGraph withEdgeSet = (HeavyGraph) new HeavyGraph().createGraph(new HeavyEdgeSet(ab, bc));
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
-        HeavyGraph withSets = new HeavyGraph(new HeavyNodeSet(a, b, c), new HeavyEdgeSet(ab, bc));
+        HeavyGraph withSets = (HeavyGraph) new HeavyGraph().createGraph(new HeavyNodeSet(a, b, c), new HeavyEdgeSet(ab, bc));
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
-        HeavyGraph withGraphs = new HeavyGraph(withNodes, withEdges);
+        HeavyGraph withGraphs = (HeavyGraph) new HeavyGraph().createGraph(withNodes, withEdges);
         assertEquals(3, withGraphs.nodes().size());
         assertEquals(2, withGraphs.edges().size());
 
-        HeavyGraph withGraphsColl = new HeavyGraph(java.util.Arrays.asList(withNodes, withEdges));
+        HeavyGraph withGraphsColl = (HeavyGraph) new HeavyGraph().createGraph(java.util.Arrays.asList(withNodes, withEdges));
         assertEquals(3, withGraphsColl.nodes().size());
         assertEquals(2, withGraphsColl.edges().size());
     }
@@ -252,8 +252,8 @@ public class HeavyGraphTest {
 
     @Test
     public void testUnion() {
-        HeavyGraph g1 = new HeavyGraph(a, b);
-        HeavyGraph g2 = new HeavyGraph(c, d);
+        HeavyGraph g1 = (HeavyGraph) new HeavyGraph().createGraph(a, b);
+        HeavyGraph g2 = (HeavyGraph) new HeavyGraph().createGraph(c, d);
 
         Graph union = g1.union(g2);
         assertEquals(4, union.nodes().size());
@@ -268,7 +268,7 @@ public class HeavyGraphTest {
 
     @Test
     public void testDifference() {
-        HeavyGraph sub = new HeavyGraph(a, b, c);
+        HeavyGraph sub = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -284,7 +284,7 @@ public class HeavyGraphTest {
         assertTrue(diffEdges.nodes().contains(a));
         assertEquals(0, diffEdges.edges().size());
 
-        HeavyGraph g2 = new HeavyGraph(c);
+        HeavyGraph g2 = (HeavyGraph) new HeavyGraph().createGraph(c);
         Graph diffGraph = sub.difference(g2);
         assertEquals(2, diffGraph.nodes().size());
         assertTrue(diffGraph.nodes().contains(a));
@@ -295,7 +295,7 @@ public class HeavyGraphTest {
 
     @Test
     public void testDifferenceEdges() {
-        HeavyGraph sub = new HeavyGraph(a, b, c);
+        HeavyGraph sub = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -304,7 +304,7 @@ public class HeavyGraphTest {
         assertEquals(1, diffE.edges().size());
         assertTrue(diffE.edges().contains(bc));
 
-        HeavyGraph g2 = new HeavyGraph(bc);
+        HeavyGraph g2 = (HeavyGraph) new HeavyGraph().createGraph(bc);
         Graph diffG = sub.differenceEdges(g2);
         assertEquals(3, diffG.nodes().size());
         assertEquals(1, diffG.edges().size());
@@ -313,11 +313,11 @@ public class HeavyGraphTest {
 
     @Test
     public void testIntersection() {
-        HeavyGraph g1 = new HeavyGraph(a, b, c);
+        HeavyGraph g1 = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         g1.addEdge(ab);
         g1.addEdge(bc);
 
-        HeavyGraph g2 = new HeavyGraph(b, c, d);
+        HeavyGraph g2 = (HeavyGraph) new HeavyGraph().createGraph(b, c, d);
         g2.addEdge(bc);
         g2.addEdge(cd);
 
@@ -339,7 +339,7 @@ public class HeavyGraphTest {
 
     @Test
     public void testInduce() {
-        HeavyGraph g1 = new HeavyGraph(a, b, c); // nodes only
+        HeavyGraph g1 = (HeavyGraph) new HeavyGraph().createGraph(a, b, c); // nodes only
 
         Graph induced = g1.induce(ab, bc, cd);
         assertEquals(3, induced.nodes().size());

@@ -22,13 +22,13 @@ public class NodeTest {
 
     @BeforeEach
     public void setUp() {
-        element = new EphemeralNode();
+        element = (EphemeralNode) new EphemeralGraph().createNode();
     }
 
     @Test
     public void testId() {
         assertNotNull(element.id());
-        Node element2 = new EphemeralNode();
+        Node element2 = (EphemeralNode) new EphemeralGraph().createNode();
         assertNotEquals(element.id(), element2.id());
     }
 
@@ -76,7 +76,7 @@ public class NodeTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        Node element2 = new EphemeralNode();
+        Node element2 = (EphemeralNode) new EphemeralGraph().createNode();
         assertNotEquals(element, element2);
 
         // Element ID dictates equality
@@ -89,19 +89,19 @@ public class NodeTest {
 
     @Test
     public void testEqualsDifferentClass2() {
-        Node el = new EphemeralNode();
+        Node el = (EphemeralNode) new EphemeralGraph().createNode();
         assertFalse(el.equals(new Object()));
     }
 
     @Test
     public void testEqualsNull() {
-        Node el = new EphemeralNode();
+        Node el = (EphemeralNode) new EphemeralGraph().createNode();
         assertFalse(el.equals(null));
     }
 
     @Test
     public void testToString() {
-        Node node = new EphemeralNode();
+        Node node = (EphemeralNode) new EphemeralGraph().createNode();
         node.attributes().put("name", "test-node");
         node.tags().add("test-tag");
 

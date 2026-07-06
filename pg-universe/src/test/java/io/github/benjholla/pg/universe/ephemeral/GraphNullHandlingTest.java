@@ -112,7 +112,7 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenNullHandling() {
-        Node n = new EphemeralNode();
+        Node n = (EphemeralNode) new EphemeralGraph().createNode();
         Graph g = new EphemeralGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, n));
@@ -125,7 +125,7 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenStepNullHandling() {
-        Node n = new EphemeralNode();
+        Node n = (EphemeralNode) new EphemeralGraph().createNode();
         Graph g = new EphemeralGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Node) null, n));

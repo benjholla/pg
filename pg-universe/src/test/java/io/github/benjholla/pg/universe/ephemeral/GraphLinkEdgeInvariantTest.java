@@ -17,12 +17,12 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeSucceedsWhenNodesPresent() {
         EphemeralGraph graph = new EphemeralGraph();
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Node b = (EphemeralNode) new EphemeralGraph().createNode();
         graph.addNode(a);
         graph.addNode(b);
 
-        Edge edge = new EphemeralEdge(a, b);
+        Edge edge = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         assertTrue(graph.linkEdge(edge), "linkEdge should return true when edge is successfully added");
         assertTrue(graph.edges().contains(edge), "Graph should contain the linked edge");
     }
@@ -30,11 +30,11 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenFromNodeMissing() {
         EphemeralGraph graph = new EphemeralGraph();
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Node b = (EphemeralNode) new EphemeralGraph().createNode();
         graph.addNode(b); // Only target is present
 
-        Edge edge = new EphemeralEdge(a, b);
+        Edge edge = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when 'from' node is missing");
     }
@@ -42,11 +42,11 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenToNodeMissing() {
         EphemeralGraph graph = new EphemeralGraph();
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Node b = (EphemeralNode) new EphemeralGraph().createNode();
         graph.addNode(a); // Only source is present
 
-        Edge edge = new EphemeralEdge(a, b);
+        Edge edge = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when 'to' node is missing");
     }
@@ -54,10 +54,10 @@ public class GraphLinkEdgeInvariantTest {
     @Test
     public void testLinkEdgeFailsWhenBothNodesMissing() {
         EphemeralGraph graph = new EphemeralGraph();
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
+        Node a = (EphemeralNode) new EphemeralGraph().createNode();
+        Node b = (EphemeralNode) new EphemeralGraph().createNode();
 
-        Edge edge = new EphemeralEdge(a, b);
+        Edge edge = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         assertThrows(IllegalArgumentException.class, () -> graph.linkEdge(edge),
                 "linkEdge should throw IllegalArgumentException when both nodes are missing");
     }

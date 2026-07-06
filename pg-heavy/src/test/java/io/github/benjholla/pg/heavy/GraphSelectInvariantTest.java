@@ -26,23 +26,23 @@ public class GraphSelectInvariantTest {
     public void setUp() {
         graph = new HeavyGraph();
 
-        a = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode();
         a.attributes().put("color", new AttributeValue.StringVal("red"));
         a.attributes().put("weight", new AttributeValue.IntVal(10));
 
-        b = new HeavyNode();
+        b = (HeavyNode) new HeavyGraph().createNode();
         b.attributes().put("color", new AttributeValue.StringVal("blue"));
 
-        c = new HeavyNode();
+        c = (HeavyNode) new HeavyGraph().createNode();
         c.attributes().put("weight", new AttributeValue.IntVal(20));
 
-        ab = new HeavyEdge(a, b);
+        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
         ab.attributes().put("type", new AttributeValue.StringVal("friend"));
 
-        bc = new HeavyEdge(b, c);
+        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
         bc.attributes().put("type", new AttributeValue.StringVal("enemy"));
 
-        ca = new HeavyEdge(c, a);
+        ca = (HeavyEdge) new HeavyGraph().createEdge(c, a);
         ca.attributes().put("distance", new AttributeValue.IntVal(50));
 
         graph.addNode(a);

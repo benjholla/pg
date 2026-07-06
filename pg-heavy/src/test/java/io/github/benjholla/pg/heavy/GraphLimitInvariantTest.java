@@ -14,10 +14,10 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitInEquivalentToRoots() {
-        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
+        Node a = (HeavyNode) new HeavyGraph().createNode(); Node b = (HeavyNode) new HeavyGraph().createNode(); Node c = (HeavyNode) new HeavyGraph().createNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.addEdge(new HeavyEdge(a, b));
-        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(a, b));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(b, c));
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         NodeSet roots = graph.roots();
@@ -29,10 +29,10 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitOutEquivalentToLeaves() {
-        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
+        Node a = (HeavyNode) new HeavyGraph().createNode(); Node b = (HeavyNode) new HeavyGraph().createNode(); Node c = (HeavyNode) new HeavyGraph().createNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.addEdge(new HeavyEdge(a, b));
-        graph.addEdge(new HeavyEdge(b, c));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(a, b));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(b, c));
 
         NodeSet limitOut = graph.limit(NodeDirection.OUT);
         NodeSet leaves = graph.leaves();
@@ -52,8 +52,8 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitIsolatedNodes() {
-        Node a = new HeavyNode();
-        HeavyGraph graph = new HeavyGraph(a);
+        Node a = (HeavyNode) new HeavyGraph().createNode();
+        HeavyGraph graph = (HeavyGraph) new HeavyGraph().createGraph(a);
 
         NodeSet limitIn = graph.limit(NodeDirection.IN);
         assertEquals(1, limitIn.size());
@@ -66,11 +66,11 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitCyclicGraph() {
-        Node a = new HeavyNode(); Node b = new HeavyNode(); Node c = new HeavyNode();
+        Node a = (HeavyNode) new HeavyGraph().createNode(); Node b = (HeavyNode) new HeavyGraph().createNode(); Node c = (HeavyNode) new HeavyGraph().createNode();
         HeavyGraph graph = new HeavyGraph();
-        graph.addEdge(new HeavyEdge(a, b));
-        graph.addEdge(new HeavyEdge(b, c));
-        graph.addEdge(new HeavyEdge(c, a));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(a, b));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(b, c));
+        graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(c, a));
 
         assertTrue(graph.limit(NodeDirection.IN).isEmpty());
         assertTrue(graph.limit(NodeDirection.OUT).isEmpty());

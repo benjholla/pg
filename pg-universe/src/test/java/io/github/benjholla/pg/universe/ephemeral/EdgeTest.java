@@ -26,15 +26,15 @@ public class EdgeTest {
 
     @BeforeEach
     public void setUp() {
-        fromNode = new EphemeralNode();
-        toNode = new EphemeralNode();
-        edge = new EphemeralEdge(fromNode, toNode);
+        fromNode = (EphemeralNode) new EphemeralGraph().createNode();
+        toNode = (EphemeralNode) new EphemeralGraph().createNode();
+        edge = (EphemeralEdge) new EphemeralGraph().createEdge(fromNode, toNode);
     }
 
     @Test
     public void testId() {
         assertNotNull(edge.id());
-        Edge element2 = new EphemeralEdge(fromNode, toNode);
+        Edge element2 = (EphemeralEdge) new EphemeralGraph().createEdge(fromNode, toNode);
         assertNotEquals(edge.id(), element2.id());
     }
 
@@ -82,7 +82,7 @@ public class EdgeTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        Edge element2 = new EphemeralEdge(fromNode, toNode);
+        Edge element2 = (EphemeralEdge) new EphemeralGraph().createEdge(fromNode, toNode);
         assertNotEquals(edge, element2);
 
         // Element ID dictates equality
@@ -95,13 +95,13 @@ public class EdgeTest {
 
     @Test
     public void testEqualsDifferentClass2() {
-        Edge el = new EphemeralEdge(fromNode, toNode);
+        Edge el = (EphemeralEdge) new EphemeralGraph().createEdge(fromNode, toNode);
         assertFalse(el.equals(new Object()));
     }
 
     @Test
     public void testEqualsNull() {
-        Edge el = new EphemeralEdge(fromNode, toNode);
+        Edge el = (EphemeralEdge) new EphemeralGraph().createEdge(fromNode, toNode);
         assertFalse(el.equals(null));
     }
 
@@ -113,9 +113,9 @@ public class EdgeTest {
 
     @Test
     public void testNullEndpoints() {
-        assertThrows(IllegalArgumentException.class, () -> new EphemeralEdge(null, toNode));
-        assertThrows(IllegalArgumentException.class, () -> new EphemeralEdge(fromNode, null));
-        assertThrows(IllegalArgumentException.class, () -> new EphemeralEdge(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new EphemeralGraph().createEdge(null, toNode));
+        assertThrows(IllegalArgumentException.class, () -> new EphemeralGraph().createEdge(fromNode, null));
+        assertThrows(IllegalArgumentException.class, () -> new EphemeralGraph().createEdge(null, null));
     }
 
     @Test

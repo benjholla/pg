@@ -24,19 +24,19 @@ public class EdgeSetTest {
 
     @BeforeEach
     public void setUp() {
-        n1 = new EphemeralNode();
-        n2 = new EphemeralNode();
-        n3 = new EphemeralNode();
+        n1 = (EphemeralNode) new EphemeralGraph().createNode();
+        n2 = (EphemeralNode) new EphemeralGraph().createNode();
+        n3 = (EphemeralNode) new EphemeralGraph().createNode();
 
-        e1 = new EphemeralEdge(n1, n2);
+        e1 = (EphemeralEdge) new EphemeralGraph().createEdge(n1, n2);
         e1.attributes().put("type", "A");
         e1.attributes().put("val", 1);
 
-        e2 = new EphemeralEdge(n2, n3);
+        e2 = (EphemeralEdge) new EphemeralGraph().createEdge(n2, n3);
         e2.attributes().put("type", "B");
         e2.attributes().put("val", 2);
 
-        e3 = new EphemeralEdge(n3, n1);
+        e3 = (EphemeralEdge) new EphemeralGraph().createEdge(n3, n1);
         e3.attributes().put("type", "A");
         e3.attributes().put("val", 3);
 

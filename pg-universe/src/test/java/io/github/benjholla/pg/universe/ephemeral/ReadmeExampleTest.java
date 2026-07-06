@@ -12,27 +12,27 @@ public class ReadmeExampleTest {
     @Test
     public void testReadmeExample() {
         // Create nodes
-        Node alice = new EphemeralNode();
+        Node alice = (EphemeralNode) new EphemeralGraph().createNode();
         alice.tags().add("Person");
         alice.attributes().put("name", "Alice");
 
-        Node bob = new EphemeralNode();
+        Node bob = (EphemeralNode) new EphemeralGraph().createNode();
         bob.tags().add("Person");
         bob.attributes().put("name", "Bob");
 
-        Node charlie = new EphemeralNode();
+        Node charlie = (EphemeralNode) new EphemeralGraph().createNode();
         charlie.tags().add("Person");
         charlie.attributes().put("name", "Charlie");
 
         // Create edges
-        Edge knows1 = new EphemeralEdge(alice, bob);
+        Edge knows1 = (EphemeralEdge) new EphemeralGraph().createEdge(alice, bob);
         knows1.tags().add("knows");
 
-        Edge knows2 = new EphemeralEdge(bob, charlie);
+        Edge knows2 = (EphemeralEdge) new EphemeralGraph().createEdge(bob, charlie);
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        EphemeralGraph graph = new EphemeralGraph(alice, bob, charlie);
+        EphemeralGraph graph = (EphemeralGraph) new EphemeralGraph().createGraph(alice, bob, charlie);
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 

@@ -9,7 +9,7 @@ public class HeavyImmutableEdgeSetTest {
     public void testUnsupportedOperations() {
         HeavyEdgeSet internalSet = new HeavyEdgeSet();
         HeavyImmutableEdgeSet set = new HeavyImmutableEdgeSet(internalSet);
-        HeavyEdge e = new HeavyEdge(new HeavyNode(), new HeavyNode());
+        HeavyEdge e = (HeavyEdge) new HeavyGraph().createEdge((HeavyNode) new HeavyGraph().createNode(), (HeavyNode) new HeavyGraph().createNode());
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(e));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(e));
@@ -30,9 +30,9 @@ public class HeavyImmutableEdgeSetTest {
     @Test
     public void testDelegatedMethods() {
         HeavyEdgeSet internalSet = new HeavyEdgeSet();
-        HeavyNode n1 = new HeavyNode();
-        HeavyNode n2 = new HeavyNode();
-        HeavyEdge e1 = new HeavyEdge(n1, n2);
+        HeavyNode n1 = (HeavyNode) new HeavyGraph().createNode();
+        HeavyNode n2 = (HeavyNode) new HeavyGraph().createNode();
+        HeavyEdge e1 = (HeavyEdge) new HeavyGraph().createEdge(n1, n2);
         internalSet.add(e1);
         HeavyImmutableEdgeSet set = new HeavyImmutableEdgeSet(internalSet);
 

@@ -19,14 +19,14 @@ public class InducePropertiesInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new HeavyNode();
-        b = new HeavyNode();
-        c = new HeavyNode();
+        a = (HeavyNode) new HeavyGraph().createNode();
+        b = (HeavyNode) new HeavyGraph().createNode();
+        c = (HeavyNode) new HeavyGraph().createNode();
 
-        ab = new HeavyEdge(a, b);
-        bc = new HeavyEdge(b, c);
+        ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
 
-        gA = new HeavyGraph(a, b, c);
+        gA = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
     }
@@ -54,7 +54,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        HeavyGraph nodesOnly = new HeavyGraph(a, b, c);
+        HeavyGraph nodesOnly = (HeavyGraph) new HeavyGraph().createGraph(a, b, c);
         HeavyEdgeSet edgesToAdd = new HeavyEdgeSet();
         edgesToAdd.add(ab);
 

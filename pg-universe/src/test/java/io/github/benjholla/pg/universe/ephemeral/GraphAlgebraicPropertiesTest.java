@@ -22,25 +22,25 @@ public class GraphAlgebraicPropertiesTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
-        d = new EphemeralNode();
-        e = new EphemeralNode();
+        a = (EphemeralNode) new EphemeralGraph().createNode();
+        b = (EphemeralNode) new EphemeralGraph().createNode();
+        c = (EphemeralNode) new EphemeralGraph().createNode();
+        d = (EphemeralNode) new EphemeralGraph().createNode();
+        e = (EphemeralNode) new EphemeralGraph().createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
-        cd = new EphemeralEdge(c, d);
-        de = new EphemeralEdge(d, e);
+        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
+        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
+        cd = (EphemeralEdge) new EphemeralGraph().createEdge(c, d);
+        de = (EphemeralEdge) new EphemeralGraph().createEdge(d, e);
 
-        gA = new EphemeralGraph(a, b, c);
+        gA = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new EphemeralGraph(c, d);
+        gB = (EphemeralGraph) new EphemeralGraph().createGraph(c, d);
         gB.addEdge(cd);
 
-        gC = new EphemeralGraph(a, b, d, e);
+        gC = (EphemeralGraph) new EphemeralGraph().createGraph(a, b, d, e);
         gC.addEdge(ab);
         gC.addEdge(de);
     }

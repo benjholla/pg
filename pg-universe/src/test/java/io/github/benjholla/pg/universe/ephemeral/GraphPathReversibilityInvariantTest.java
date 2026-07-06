@@ -19,17 +19,17 @@ public class GraphPathReversibilityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
-        d = new EphemeralNode(); e = new EphemeralNode();
+        a = (EphemeralNode) new EphemeralGraph().createNode(); b = (EphemeralNode) new EphemeralGraph().createNode(); c = (EphemeralNode) new EphemeralGraph().createNode();
+        d = (EphemeralNode) new EphemeralGraph().createNode(); e = (EphemeralNode) new EphemeralGraph().createNode();
 
         // Create a path a -> b -> c -> d -> e
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, d));
-        graph.addEdge(new EphemeralEdge(d, e));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(a, b));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(b, c));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, d));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(d, e));
 
         // Add a cycle for complexity
-        graph.addEdge(new EphemeralEdge(c, a));
+        graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(c, a));
     }
 
     @Test

@@ -18,9 +18,9 @@ public class LargeGraphInvariantTest {
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {
-            nodes[i] = new EphemeralNode();
+            nodes[i] = (EphemeralNode) new EphemeralGraph().createNode();
             if(i > 0) {
-                graph.addEdge(new EphemeralEdge(nodes[i-1], nodes[i]));
+                graph.addEdge((EphemeralEdge) new EphemeralGraph().createEdge(nodes[i-1], nodes[i]));
             }
         }
 

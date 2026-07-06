@@ -18,9 +18,9 @@ public class LargeGraphInvariantTest {
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {
-            nodes[i] = new HeavyNode();
+            nodes[i] = (HeavyNode) new HeavyGraph().createNode();
             if(i > 0) {
-                graph.addEdge(new HeavyEdge(nodes[i-1], nodes[i]));
+                graph.addEdge((HeavyEdge) new HeavyGraph().createEdge(nodes[i-1], nodes[i]));
             }
         }
 

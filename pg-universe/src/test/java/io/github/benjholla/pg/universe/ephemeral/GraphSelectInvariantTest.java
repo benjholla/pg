@@ -26,23 +26,23 @@ public class GraphSelectInvariantTest {
     public void setUp() {
         graph = new EphemeralGraph();
 
-        a = new EphemeralNode();
+        a = (EphemeralNode) new EphemeralGraph().createNode();
         a.attributes().put("color", new AttributeValue.StringVal("red"));
         a.attributes().put("weight", new AttributeValue.IntVal(10));
 
-        b = new EphemeralNode();
+        b = (EphemeralNode) new EphemeralGraph().createNode();
         b.attributes().put("color", new AttributeValue.StringVal("blue"));
 
-        c = new EphemeralNode();
+        c = (EphemeralNode) new EphemeralGraph().createNode();
         c.attributes().put("weight", new AttributeValue.IntVal(20));
 
-        ab = new EphemeralEdge(a, b);
+        ab = (EphemeralEdge) new EphemeralGraph().createEdge(a, b);
         ab.attributes().put("type", new AttributeValue.StringVal("friend"));
 
-        bc = new EphemeralEdge(b, c);
+        bc = (EphemeralEdge) new EphemeralGraph().createEdge(b, c);
         bc.attributes().put("type", new AttributeValue.StringVal("enemy"));
 
-        ca = new EphemeralEdge(c, a);
+        ca = (EphemeralEdge) new EphemeralGraph().createEdge(c, a);
         ca.attributes().put("distance", new AttributeValue.IntVal(50));
 
         graph.addNode(a);

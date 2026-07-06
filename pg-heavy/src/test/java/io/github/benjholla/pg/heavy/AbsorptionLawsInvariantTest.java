@@ -19,17 +19,17 @@ public class AbsorptionLawsInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        HeavyNode a = new HeavyNode();
-        HeavyNode b = new HeavyNode();
-        HeavyNode c = new HeavyNode();
+        HeavyNode a = (HeavyNode) new HeavyGraph().createNode();
+        HeavyNode b = (HeavyNode) new HeavyGraph().createNode();
+        HeavyNode c = (HeavyNode) new HeavyGraph().createNode();
 
-        HeavyEdge ab = new HeavyEdge(a, b);
-        HeavyEdge bc = new HeavyEdge(b, c);
+        HeavyEdge ab = (HeavyEdge) new HeavyGraph().createEdge(a, b);
+        HeavyEdge bc = (HeavyEdge) new HeavyGraph().createEdge(b, c);
 
-        gA = new HeavyGraph(a, b);
+        gA = (HeavyGraph) new HeavyGraph().createGraph(a, b);
         gA.addEdge(ab);
 
-        gB = new HeavyGraph(b, c);
+        gB = (HeavyGraph) new HeavyGraph().createGraph(b, c);
         gB.addEdge(bc);
     }
 

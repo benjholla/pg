@@ -26,15 +26,15 @@ public class EdgeTest {
 
     @BeforeEach
     public void setUp() {
-        fromNode = new HeavyNode();
-        toNode = new HeavyNode();
-        edge = new HeavyEdge(fromNode, toNode);
+        fromNode = (HeavyNode) new HeavyGraph().createNode();
+        toNode = (HeavyNode) new HeavyGraph().createNode();
+        edge = (HeavyEdge) new HeavyGraph().createEdge(fromNode, toNode);
     }
 
     @Test
     public void testId() {
         assertNotNull(edge.id());
-        Edge element2 = new HeavyEdge(fromNode, toNode);
+        Edge element2 = (HeavyEdge) new HeavyGraph().createEdge(fromNode, toNode);
         assertNotEquals(edge.id(), element2.id());
     }
 
@@ -82,7 +82,7 @@ public class EdgeTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        Edge element2 = new HeavyEdge(fromNode, toNode);
+        Edge element2 = (HeavyEdge) new HeavyGraph().createEdge(fromNode, toNode);
         assertNotEquals(edge, element2);
 
         // Element ID dictates equality
@@ -95,13 +95,13 @@ public class EdgeTest {
 
     @Test
     public void testEqualsDifferentClass2() {
-        Edge el = new HeavyEdge(fromNode, toNode);
+        Edge el = (HeavyEdge) new HeavyGraph().createEdge(fromNode, toNode);
         assertFalse(el.equals(new Object()));
     }
 
     @Test
     public void testEqualsNull() {
-        Edge el = new HeavyEdge(fromNode, toNode);
+        Edge el = (HeavyEdge) new HeavyGraph().createEdge(fromNode, toNode);
         assertFalse(el.equals(null));
     }
 
@@ -113,9 +113,9 @@ public class EdgeTest {
 
     @Test
     public void testNullEndpoints() {
-        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(null, toNode));
-        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(fromNode, null));
-        assertThrows(IllegalArgumentException.class, () -> new HeavyEdge(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyGraph().createEdge(null, toNode));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyGraph().createEdge(fromNode, null));
+        assertThrows(IllegalArgumentException.class, () -> new HeavyGraph().createEdge(null, null));
     }
 
     @Test
