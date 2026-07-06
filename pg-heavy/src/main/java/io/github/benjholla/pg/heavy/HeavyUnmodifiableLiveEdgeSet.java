@@ -121,7 +121,7 @@ public class HeavyUnmodifiableLiveEdgeSet implements EdgeSet {
     @Override
     public boolean contains(Object obj) {
         if (!(obj instanceof HeavyEdge he)) return false;
-        return edges.containsKey(he.id()) && edges.get(he.id()).equals(he);
+        return edges.containsKey(he.id());
     }
 
     @Override
