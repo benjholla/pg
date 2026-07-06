@@ -11,6 +11,30 @@ Graphs are everywhere, but many graph libraries focus on heavy integration with 
 - Navigate seamlessly with operations like `forward`, `between`, and `induce`.
 - Decorate graphs with dynamic `tags` and `attributes` for powerful filtering.
 
+### The Competitor Landscape
+
+To understand where `pg` fits, it is helpful to contrast it with the three existing archetypes of Java graph libraries:
+
+**1. JGraphT (The Algorithmic Giant)**
+*   **Their Focus:** JGraphT is the academic standard for graph *algorithms* (Dijkstra, A*, flow networks).
+*   **The Contrast:** It relies heavily on Java generics (`Graph<V, E>`), which often leads to massive object allocation overhead and verbose type signatures. It is not fundamentally designed as a "property graph" (where nodes/edges have arbitrary tags and key-value attributes). The `pg-api` interface is vastly cleaner, shielding the user from generic soup while enforcing a strict property-graph data model.
+
+**2. Apache TinkerPop / Gremlin (The Database Behemoth)**
+*   **Their Focus:** This is the industry standard for property graphs, backed by a massive ecosystem, designed to act as a driver for distributed databases (like Neo4j or AWS Neptune).
+*   **The Contrast:** TinkerPop is incredibly heavy. Its traversal language (Gremlin) relies on complex, side-effect-heavy iterators. If you just want an isolated, blazing-fast in-memory graph to manipulate data and pipe it to a visualizer, TinkerPop is like bringing a battleship to a knife fight. `pg`'s O(1) primitive routing and lightweight mechanical isolation completely undercut TinkerPop's overhead.
+
+**3. Google Guava common.graph (The Lightweight Utility)**
+*   **Their Focus:** Guava provides beautiful, modern, lightweight graph interfaces.
+*   **The Contrast:** Guava provides basic topology, but it deliberately lacks rich property graph semantics (no native `AttributeMap` or `TagSet`). More importantly, it does not provide the set-theoretic algebra that `pg` is built upon.
+
+### The Niche `pg` Dominates
+
+`pg` fills a critical void between the heavy database drivers and the purely academic algorithmic libraries. It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine.
+
+*   **The Set-Theoretic Algebra:** This is `pg`'s biggest differentiator. In most graph libraries, extracting a subgraph requires writing a custom iterator, filtering elements, and manually assembling a new graph. By putting `difference()`, `union()`, `intersection()`, and `forwardStep()` directly on the interface—and mandating that they return *new, induced subgraphs* rather than mutating the root—`pg` provides a functional query algebra. You can carve out slices of a massive AST or data-flow graph mathematically, without permanently destroying the original data structure.
+*   **The Mechanical vs. Mathematical Boundary:** `pg` successfully decouples the mathematical contract from the mechanical storage. Downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, implementations like `HeavyGraph` are executing queries using highly defensive, zero-allocation primitive Integer maps.
+*   **Strict Pipeline Defenses:** Because `pg` designed strict boundaries like `linkEdge` (which violently rejects missing anchors or foreign types) and avoids auto-vivification in the core pipeline, this engine is perfectly suited for complex polyglot environments. When transferring JSON schemas between a Java backend, a TypeScript visualizer, or a C++ desktop plotting engine, silent data corruption is fatal. The `pg` API guarantees that if a graph instantiates successfully, its topology is mathematically sound.
+
 ## Core Abstractions
 
 - `GraphElement`: The base interface for both nodes and edges. Elements have a unique primitive `int` ID, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.

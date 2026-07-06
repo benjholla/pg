@@ -4,7 +4,12 @@ You are an expert Java systems engineer tasked with implementing a custom, high-
 ## 1. Project Overview, Philosophy, & The CHPG Vision
 This library handles the static analysis of massive datasets (e.g., millions of nodes representing ASTs or CFGs). Standard Java graph implementations suffer from severe object-header bloat and pointer-chasing overhead, causing JVM heap exhaustion at scale.
 To solve this, our library uses a **Central Registry Pattern** backed by primitive integer mapping and bitwise arithmetic, ensuring maximum performance and near-zero allocation overhead.
+
+The library fills a critical void between heavy database drivers (like TinkerPop) and purely academic algorithmic libraries (like JGraphT). It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine. It successfully decouples the mathematical contract from the mechanical storage: downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, engines are executing queries using highly defensive, zero-allocation primitive integer maps. The architecture incorporates strict pipeline defenses (e.g., violently rejecting missing anchors or foreign types and avoiding auto-vivification in the core pipeline) to guarantee that if a graph instantiates successfully, its topology is mathematically sound, preventing silent data corruption in complex polyglot environments.
+
 **The Long-Term Vision (CHPG & Semantic Projections):** This "Flat Graph" library is the foundational storage engine intended to support advanced program analysis, specifically the discovery and exploitation of "natural projections" (naming conventions, architectural boundaries) as semantic coordinate systems. To support this, the core graph must remain strictly decoupled from any schemas, tag hierarchies, or containment rules. A future "Compound Hierarchical Property Graph" (CHPG) will act as a Semantic Wrapper around this flat graph. The flat graph handles raw state and speed; the future wrapper handles logic and meaning.
+
+**Future-Proofing:** The fluent query API can be implemented with multiple graphs. If we later write a completely new backend (perhaps a `DatabaseGraph` that translates these API calls into SQL or Cypher queries in real-time), our existing library of algorithms will not require a single line of code to be changed.
 
 ## 2. The Multi-Module Ecosystem
 To support both everyday development and massive-scale analysis, the project is divided into four strict modules:
