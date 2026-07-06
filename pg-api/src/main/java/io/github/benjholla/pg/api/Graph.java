@@ -76,7 +76,7 @@ public interface Graph {
 	 *
 	 * @return Returns true if the graph changed as a result of the operation
 	 */
-	public boolean putEdge(Edge edge);
+	public boolean linkEdge(Edge edge);
 	
     /**
      * Add nodes to the graph
