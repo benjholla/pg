@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
@@ -61,7 +62,7 @@ public class EphemeralNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result;
+        return new EphemeralUnmodifiableNodeSet(result);
     }
 
     @Override
@@ -82,7 +83,57 @@ public class EphemeralNodeSet implements NodeSet {
                 }
             }
         }
-        return result;
+        return new EphemeralUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public NodeSet intersect(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (other == null || other.isEmpty()) {
+            return new EphemeralUnmodifiableNodeSet(result);
+        }
+        for (EphemeralNode node : internalSet) {
+            if (other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return new EphemeralUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public NodeSet difference(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode node : internalSet) {
+            if (other == null || !other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return new EphemeralUnmodifiableNodeSet(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public NodeSet union(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        result.internalSet.addAll(this.internalSet);
+        if (other != null) {
+            for (Node n : other) {
+                if (n instanceof EphemeralNode en) {
+                    result.internalSet.add(en);
+                }
+            }
+        }
+        return new EphemeralUnmodifiableNodeSet(result);
+    }
+
+    @Override
+    public Set<Integer> ids() {
+        return internalSet.stream().map(Node::id).collect(Collectors.toSet());
+    }
+
+    @Override
+    public int[] toIdArray() {
+        return internalSet.stream().mapToInt(Node::id).toArray();
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.benjholla.pg.api.AttributeValue;
@@ -60,7 +61,7 @@ public class HeavyEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result;
+        return new HeavyUnmodifiableEdgeSet(result);
     }
 
     @Override
@@ -81,7 +82,57 @@ public class HeavyEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result;
+        return new HeavyUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public EdgeSet intersect(Collection<? extends Edge> other) {
+        HeavyEdgeSet result = new HeavyEdgeSet();
+        if (other == null || other.isEmpty()) {
+            return new HeavyUnmodifiableEdgeSet(result);
+        }
+        for (HeavyEdge edge : internalSet) {
+            if (other.contains(edge)) {
+                result.internalSet.add(edge);
+            }
+        }
+        return new HeavyUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public EdgeSet difference(Collection<? extends Edge> other) {
+        HeavyEdgeSet result = new HeavyEdgeSet();
+        for (HeavyEdge edge : internalSet) {
+            if (other == null || !other.contains(edge)) {
+                result.internalSet.add(edge);
+            }
+        }
+        return new HeavyUnmodifiableEdgeSet(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public EdgeSet union(Collection<? extends Edge> other) {
+        HeavyEdgeSet result = new HeavyEdgeSet();
+        result.internalSet.addAll(this.internalSet);
+        if (other != null) {
+            for (Edge e : other) {
+                if (e instanceof HeavyEdge he) {
+                    result.internalSet.add(he);
+                }
+            }
+        }
+        return new HeavyUnmodifiableEdgeSet(result);
+    }
+
+    @Override
+    public Set<Integer> ids() {
+        return internalSet.stream().map(Edge::id).collect(Collectors.toSet());
+    }
+
+    @Override
+    public int[] toIdArray() {
+        return internalSet.stream().mapToInt(Edge::id).toArray();
     }
 
     @Override

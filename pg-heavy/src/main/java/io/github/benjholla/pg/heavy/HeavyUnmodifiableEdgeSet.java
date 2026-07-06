@@ -3,6 +3,7 @@ package io.github.benjholla.pg.heavy;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -34,6 +35,26 @@ public class HeavyUnmodifiableEdgeSet implements EdgeSet {
 
     public EdgeSet filter(String attribute, AttributeValue... values) {
         return edges.filter(attribute, values);
+    }
+
+    public EdgeSet intersect(Collection<? extends Edge> other) {
+        return edges.intersect(other);
+    }
+
+    public EdgeSet difference(Collection<? extends Edge> other) {
+        return edges.difference(other);
+    }
+
+    public EdgeSet union(Collection<? extends Edge> other) {
+        return edges.union(other);
+    }
+
+    public Set<Integer> ids() {
+        return edges.ids();
+    }
+
+    public int[] toIdArray() {
+        return edges.toIdArray();
     }
 
     public boolean add(Edge edge) {
