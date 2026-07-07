@@ -13,7 +13,7 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class HeavyNodeSet implements NodeSet {
+public final class HeavyNodeSet implements NodeSet {
 
     private final HashSet<HeavyNode> internalSet;
 

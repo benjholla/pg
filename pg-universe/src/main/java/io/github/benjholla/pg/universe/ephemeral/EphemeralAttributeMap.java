@@ -12,7 +12,7 @@ import io.github.benjholla.pg.api.AttributeValue;
 /**
  * Attributes map arbitrary keys to object values.
  */
-public class EphemeralAttributeMap implements AttributeMap {
+public final class EphemeralAttributeMap implements AttributeMap {
 
     private final Map<String, AttributeValue> delegate;
 

@@ -13,7 +13,7 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class EphemeralNodeSet implements NodeSet {
+public final class EphemeralNodeSet implements NodeSet {
 
     private final HashSet<EphemeralNode> internalSet;
 

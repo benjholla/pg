@@ -5,7 +5,7 @@ import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.TagSet;
 
-public class HeavyEdge implements Edge {
+public final class HeavyEdge implements Edge {
 
     private final int id;
     private final TagSet tags;

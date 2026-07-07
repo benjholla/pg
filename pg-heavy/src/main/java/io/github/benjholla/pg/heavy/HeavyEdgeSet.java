@@ -13,7 +13,7 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 
-public class HeavyEdgeSet implements EdgeSet {
+public final class HeavyEdgeSet implements EdgeSet {
 
     private final HashSet<HeavyEdge> internalSet;
 

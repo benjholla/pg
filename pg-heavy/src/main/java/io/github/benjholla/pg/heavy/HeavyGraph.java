@@ -20,7 +20,7 @@ import io.github.benjholla.pg.api.NodeSet;
 /**
  * HeavyGraph provides the core storage, adjacency maps, and graph operations.
  */
-public class HeavyGraph implements Graph, HeavyFactory {
+public final class HeavyGraph implements Graph, HeavyFactory {
 
 	private static final EdgeSet EMPTY_EDGES = new HeavyImmutableEdgeSet(new HeavyEdgeSet());
 
