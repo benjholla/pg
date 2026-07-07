@@ -11,7 +11,7 @@ import io.github.benjholla.pg.api.TagSet;
 /**
  * Tags denote set membership
  */
-public class EphemeralTagSet implements TagSet {
+public final class EphemeralTagSet implements TagSet {
 
     private final Set<String> delegate;
 

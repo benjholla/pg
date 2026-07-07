@@ -4,7 +4,7 @@ import io.github.benjholla.pg.api.AttributeMap;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.TagSet;
 
-public class HeavyNode implements Node {
+public final class HeavyNode implements Node {
 
     private final int id;
     private final TagSet tags;
