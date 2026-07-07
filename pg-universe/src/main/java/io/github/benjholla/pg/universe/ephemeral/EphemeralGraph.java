@@ -86,7 +86,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
      * Constructs a new graph of the given nodes
      */
-	public EphemeralGraph(Node... nodes) {
+	private EphemeralGraph(Node... nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
@@ -98,7 +98,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given nodes
      */
-	public EphemeralGraph(NodeSet nodes) {
+	private EphemeralGraph(NodeSet nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
         addAllNodes(nodes);
@@ -107,7 +107,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	public EphemeralGraph(Edge... edges) {
+	private EphemeralGraph(Edge... edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
@@ -119,7 +119,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	public EphemeralGraph(EdgeSet edges) {
+	private EphemeralGraph(EdgeSet edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
         for(Edge edge : edges) {
@@ -130,7 +130,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	public EphemeralGraph(NodeSet nodes, EdgeSet edges) {
+	private EphemeralGraph(NodeSet nodes, EdgeSet edges) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		Objects.requireNonNull(edges, "edges cannot be null");
@@ -141,7 +141,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	public EphemeralGraph(Graph... graphs) {
+	private EphemeralGraph(Graph... graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
@@ -154,7 +154,7 @@ public class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	public EphemeralGraph(Collection<Graph> graphs) {
+	private EphemeralGraph(Collection<Graph> graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
