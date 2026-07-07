@@ -1,5 +1,7 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Edge;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,9 +12,9 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphTransitivityInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c, d, e;
 
     @BeforeEach

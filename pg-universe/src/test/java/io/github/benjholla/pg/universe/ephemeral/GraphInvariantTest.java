@@ -1,5 +1,7 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Graph;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,10 +15,10 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental invariants of the Graph interface implementations.
  */
 public class GraphInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c;
     private Edge ab, bc, ca;
 

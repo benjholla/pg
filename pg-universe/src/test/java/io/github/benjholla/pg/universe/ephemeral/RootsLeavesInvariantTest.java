@@ -10,13 +10,13 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class RootsLeavesInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     @Test
     public void testRootsHaveNoInEdges() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -36,7 +36,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testLeavesHaveNoOutEdges() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -56,7 +56,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testIsolatedNodesAreBothRootsAndLeaves() {
         Node isolated = factory.createNode();
-        EphemeralGraph graph = factory.createGraph(isolated);
+        Graph graph = factory.createGraph(isolated);
 
         assertTrue(graph.roots().contains(isolated), "Isolated node is a root");
         assertTrue(graph.leaves().contains(isolated), "Isolated node is a leaf");
@@ -65,7 +65,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
         graph.addEdge(factory.createEdge(c, a));

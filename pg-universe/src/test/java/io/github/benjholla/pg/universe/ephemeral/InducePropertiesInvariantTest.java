@@ -1,5 +1,9 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Edge;
+
+import io.github.benjholla.pg.api.Node;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,12 +16,12 @@ import io.github.benjholla.pg.api.Graph;
  * Validates properties related to graph inducement.
  */
 public class InducePropertiesInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph gA;
-    private EphemeralNode a, b, c;
-    private EphemeralEdge ab, bc;
+    private Graph gA;
+    private Node a, b, c;
+    private Edge ab, bc;
 
     @BeforeEach
     public void setUp() {
@@ -35,7 +39,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceEmptyGraph() {
-        EphemeralGraph empty = new EphemeralGraph();
+        Graph empty = new EphemeralGraph();
         Graph induced = gA.induce(empty);
 
         assertEquals(gA.nodes().size(), induced.nodes().size());
@@ -53,7 +57,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        EphemeralGraph nodesOnly = factory.createGraph(a, b, c);
+        Graph nodesOnly = factory.createGraph(a, b, c);
         EphemeralEdgeSet edgesToAdd = new EphemeralEdgeSet();
         edgesToAdd.add(ab);
 

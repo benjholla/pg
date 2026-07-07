@@ -15,10 +15,10 @@ import io.github.benjholla.pg.api.Node;
  * Validates invariant properties of the induce operations.
  */
 public class GraphInduceInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c;
     private Edge ab, bc, ca;
 

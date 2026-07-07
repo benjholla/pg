@@ -9,7 +9,7 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class ReadmeExampleTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testReadmeExample() {
@@ -34,7 +34,7 @@ public class ReadmeExampleTest {
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        EphemeralGraph graph = factory.createGraph(alice, bob, charlie);
+        Graph graph = factory.createGraph(alice, bob, charlie);
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 

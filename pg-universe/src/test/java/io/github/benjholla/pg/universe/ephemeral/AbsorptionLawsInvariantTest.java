@@ -1,5 +1,9 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Edge;
+
+import io.github.benjholla.pg.api.Node;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,19 +18,19 @@ import io.github.benjholla.pg.api.Graph;
  * 2. A ∩ (A U B) = A
  */
 public class AbsorptionLawsInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph gA, gB;
+    private Graph gA, gB;
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = factory.createNode();
-        EphemeralNode b = factory.createNode();
-        EphemeralNode c = factory.createNode();
+        Node a = factory.createNode();
+        Node b = factory.createNode();
+        Node c = factory.createNode();
 
-        EphemeralEdge ab = factory.createEdge(a, b);
-        EphemeralEdge bc = factory.createEdge(b, c);
+        Edge ab = factory.createEdge(a, b);
+        Edge bc = factory.createEdge(b, c);
 
         gA = factory.createGraph(a, b);
         gA.addEdge(ab);

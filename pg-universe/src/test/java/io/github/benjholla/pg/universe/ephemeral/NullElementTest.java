@@ -12,7 +12,7 @@ import io.github.benjholla.pg.api.NodeSet;
 import io.github.benjholla.pg.api.TagSet;
 
 public class NullElementTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     @Test

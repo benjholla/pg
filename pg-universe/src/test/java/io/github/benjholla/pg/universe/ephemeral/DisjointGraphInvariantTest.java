@@ -10,10 +10,10 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class DisjointGraphInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-    private EphemeralGraph graphA;
-    private EphemeralGraph graphB;
+    private Graph graphA;
+    private Graph graphB;
 
     private Node a1, a2, b1, b2;
 
@@ -51,7 +51,7 @@ public class DisjointGraphInvariantTest {
 
     @Test
     public void testBetweenDisjointSubgraphsIsEmpty() {
-        EphemeralGraph unionGraph = factory.createGraph(graphA.nodes(), graphA.edges());
+        Graph unionGraph = factory.createGraph(graphA.nodes(), graphA.edges());
         unionGraph = (EphemeralGraph) unionGraph.union(graphB);
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB

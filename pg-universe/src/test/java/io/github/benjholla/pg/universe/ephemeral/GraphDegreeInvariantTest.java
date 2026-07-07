@@ -1,5 +1,7 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Graph;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +11,10 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.Node.NodeDirection;
 
 public class GraphDegreeInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c, d, e;
 
     @BeforeEach
@@ -48,7 +50,7 @@ public class GraphDegreeInvariantTest {
 
     @Test
     public void testHandshakingLemmaOnEmptyGraph() {
-        EphemeralGraph emptyGraph = new EphemeralGraph();
+        Graph emptyGraph = new EphemeralGraph();
         int totalInDegree = 0;
         int totalOutDegree = 0;
 

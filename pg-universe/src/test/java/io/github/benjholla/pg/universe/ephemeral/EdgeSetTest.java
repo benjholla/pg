@@ -17,7 +17,7 @@ import io.github.benjholla.pg.api.EdgeSet;
 import io.github.benjholla.pg.api.Node;
 
 public class EdgeSetTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     private Node n1, n2, n3;
