@@ -551,57 +551,6 @@ public interface Graph {
     public NodeSet selectNodes(String attribute, AttributeValue... values);
 
     /**
-     * Instantiates and returns a new empty Graph native to this implementation.
-     */
-    public Graph createGraph();
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given nodes.
-     */
-    public Graph createGraph(Node... nodes);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given nodes.
-     */
-    public Graph createGraph(NodeSet nodes);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given edges.
-     */
-    public Graph createGraph(Edge... edges);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given edges.
-     */
-    public Graph createGraph(EdgeSet edges);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given nodes and edges.
-     */
-    public Graph createGraph(NodeSet nodes, EdgeSet edges);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given graphs.
-     */
-    public Graph createGraph(Graph... graphs);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given graphs.
-     */
-    public Graph createGraph(Collection<Graph> graphs);
-
-    /**
-     * Instantiates and returns a new Node native to this graph's implementation.
-     * Note: This does NOT add the node to the graph. Use addNode() for structural mutation.
-     */
-    public Node createNode();
-
-    /**
-     * Instantiates and returns a new Edge native to this graph's implementation.
-     */
-    public Edge createEdge(Node source, Node target);
-
-    /**
      * Returns true if there is at least one edge originating at the source and terminating at the target.
      */
     public boolean adjacent(Node source, Node target);

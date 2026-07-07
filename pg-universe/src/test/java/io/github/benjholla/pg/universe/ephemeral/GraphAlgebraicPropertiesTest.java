@@ -15,10 +15,10 @@ import io.github.benjholla.pg.api.Node;
  * These properties ensure operations behave predictably as mathematical sets.
  */
 public class GraphAlgebraicPropertiesTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph gA, gB, gC;
+    private Graph gA, gB, gC;
     private Node a, b, c, d, e;
     private Edge ab, bc, cd, de;
 
@@ -109,7 +109,7 @@ public class GraphAlgebraicPropertiesTest {
 
     @Test
     public void testIdentityOperations() {
-        EphemeralGraph empty = new EphemeralGraph();
+        Graph empty = new EphemeralGraph();
 
         // A U ∅ == A
         assertGraphsEqual(gA, gA.union(empty));

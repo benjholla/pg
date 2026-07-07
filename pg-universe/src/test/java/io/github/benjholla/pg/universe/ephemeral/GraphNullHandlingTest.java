@@ -12,9 +12,9 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class GraphNullHandlingTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-    private EphemeralGraph graph;
+    private Graph graph;
 
     @BeforeEach
     public void setup() {

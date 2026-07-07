@@ -19,7 +19,7 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.TagSet;
 
 public class EdgeTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     private Node fromNode;

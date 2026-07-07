@@ -1,5 +1,7 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Node;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +13,11 @@ import io.github.benjholla.pg.api.Graph;
  * Validates properties related to between traversals on the same nodes.
  */
 public class SelfBetweenPropertiesInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph gA;
-    private EphemeralNode a;
+    private Graph gA;
+    private Node a;
 
     @BeforeEach
     public void setUp() {

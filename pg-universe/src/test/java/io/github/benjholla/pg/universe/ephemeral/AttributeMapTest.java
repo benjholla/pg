@@ -15,7 +15,7 @@ import io.github.benjholla.pg.api.AttributeMap;
 import io.github.benjholla.pg.api.AttributeValue;
 
 public class AttributeMapTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     private AttributeMap attributeMap;

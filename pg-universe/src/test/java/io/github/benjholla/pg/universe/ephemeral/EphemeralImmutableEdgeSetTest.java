@@ -1,17 +1,21 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Edge;
+
+import io.github.benjholla.pg.api.Node;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 public class EphemeralImmutableEdgeSetTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testUnsupportedOperations() {
         EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
         EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
-        EphemeralEdge e = factory.createEdge(factory.createNode(), factory.createNode());
+        Edge e = factory.createEdge(factory.createNode(), factory.createNode());
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(e));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(e));
@@ -32,9 +36,9 @@ public class EphemeralImmutableEdgeSetTest {
     @Test
     public void testDelegatedMethods() {
         EphemeralEdgeSet internalSet = new EphemeralEdgeSet();
-        EphemeralNode n1 = factory.createNode();
-        EphemeralNode n2 = factory.createNode();
-        EphemeralEdge e1 = factory.createEdge(n1, n2);
+        Node n1 = factory.createNode();
+        Node n2 = factory.createNode();
+        Edge e1 = factory.createEdge(n1, n2);
         internalSet.add(e1);
         EphemeralImmutableEdgeSet set = new EphemeralImmutableEdgeSet(internalSet);
 

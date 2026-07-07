@@ -14,10 +14,10 @@ import io.github.benjholla.pg.api.NodeSet;
  * Monotonicity states that if A is a subset of B, then traversal(A) should be a subset of traversal(B).
  */
 public class GraphMonotonicityInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c, d, e, f, g;
 
     @BeforeEach

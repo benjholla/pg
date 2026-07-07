@@ -10,7 +10,7 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class MultiGraphInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testMultipleEdgesBetweenSameNodes() {
@@ -21,7 +21,7 @@ public class MultiGraphInvariantTest {
         Edge e2 = factory.createEdge(a, b);
         e2.tags().add("type2");
 
-        EphemeralGraph graph = factory.createGraph(a, b);
+        Graph graph = factory.createGraph(a, b);
         graph.addEdge(e1);
         graph.addEdge(e2);
 

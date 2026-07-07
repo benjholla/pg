@@ -9,7 +9,7 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphCycleTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testForwardWithCycle() {
@@ -21,7 +21,7 @@ public class GraphCycleTest {
         Edge bc = factory.createEdge(b, c);
         Edge ca = factory.createEdge(c, a); // Cycle!
 
-        EphemeralGraph graph = factory.createGraph(a, b, c);
+        Graph graph = factory.createGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

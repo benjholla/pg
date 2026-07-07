@@ -1,5 +1,7 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Graph;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,12 +15,12 @@ import io.github.benjholla.pg.api.Node;
  * Unlike addEdge, linkEdge must violently fail if the nodes aren't registered.
  */
 public class GraphLinkEdgeInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     @Test
     public void testLinkEdgeSucceedsWhenNodesPresent() {
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(a);
@@ -31,7 +33,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenFromNodeMissing() {
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(b); // Only target is present
@@ -43,7 +45,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenToNodeMissing() {
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(a); // Only source is present
@@ -55,7 +57,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenBothNodesMissing() {
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
 

@@ -12,10 +12,10 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental path-reversibility axioms for directed graphs.
  */
 public class GraphPathReversibilityInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
-    private EphemeralGraph graph;
+    private Graph graph;
     private Node a, b, c, d, e;
 
     @BeforeEach

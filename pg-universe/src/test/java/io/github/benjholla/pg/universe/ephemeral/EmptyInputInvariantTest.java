@@ -9,9 +9,9 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class EmptyInputInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-    private EphemeralGraph graph;
+    private Graph graph;
 
     @BeforeEach
     public void setUp() {

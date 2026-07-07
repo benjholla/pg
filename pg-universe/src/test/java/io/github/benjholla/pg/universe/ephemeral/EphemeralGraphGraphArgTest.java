@@ -9,7 +9,7 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class EphemeralGraphGraphArgTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testGraphArgMethods() {
@@ -18,7 +18,7 @@ public class EphemeralGraphGraphArgTest {
         Node n3 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
         Edge e2 = factory.createEdge(n2, n3);
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(e1);
         graph.addEdge(e2);
 
@@ -49,7 +49,7 @@ public class EphemeralGraphGraphArgTest {
         Node n1 = factory.createNode();
         Node n2 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(e1);
 
         Graph gRemove1 = factory.createGraph(e1);
@@ -65,7 +65,7 @@ public class EphemeralGraphGraphArgTest {
         Node n2 = factory.createNode();
         Node n3 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
         graph.addEdge(e1);
 
         NodeSet emptyFrom = new EphemeralNodeSet();

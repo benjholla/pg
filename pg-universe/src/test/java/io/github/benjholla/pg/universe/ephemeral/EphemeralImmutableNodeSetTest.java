@@ -1,17 +1,19 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
+import io.github.benjholla.pg.api.Node;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 public class EphemeralImmutableNodeSetTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testUnsupportedOperations() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
         EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
-        EphemeralNode n = factory.createNode();
+        Node n = factory.createNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(n));
@@ -32,7 +34,7 @@ public class EphemeralImmutableNodeSetTest {
     @Test
     public void testDelegatedMethods() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();
-        EphemeralNode n1 = factory.createNode();
+        Node n1 = factory.createNode();
         internalSet.add(n1);
         EphemeralImmutableNodeSet set = new EphemeralImmutableNodeSet(internalSet);
 

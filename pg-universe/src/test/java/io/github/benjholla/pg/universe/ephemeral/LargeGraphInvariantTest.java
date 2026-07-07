@@ -8,7 +8,7 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class LargeGraphInvariantTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     @Test
@@ -16,7 +16,7 @@ public class LargeGraphInvariantTest {
         // Create a large linearly connected graph to verify we don't hit StackOverflowError
         // due to recursive implementations
         int size = 10000;
-        EphemeralGraph graph = new EphemeralGraph();
+        Graph graph = new EphemeralGraph();
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {

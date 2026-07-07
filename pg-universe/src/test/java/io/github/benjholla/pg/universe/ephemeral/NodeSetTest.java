@@ -16,7 +16,7 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class NodeSetTest {
-    private static final EphemeralGraph factory = new EphemeralGraph();
+    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
 
     private Node n1, n2, n3;
