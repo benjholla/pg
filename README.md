@@ -97,6 +97,13 @@ public class Example {
 }
 ```
 
+## Documentation & Architecture
+
+For deeper insights into the design, performance characteristics, and query optimizations of `pg`, please see the architecture documentation:
+* [Deferred Execution Engine](docs/architecture/DeferredGraph.md)
+* [Deferred Graph Optimizations](docs/architecture/DeferredGraphOptimizations.md)
+* [Performance Goals](docs/architecture/PerformanceGoals.md)
+
 ## Installation
 
 Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven configurations (e.g. from Maven Central or your local repository if published).
