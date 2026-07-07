@@ -566,7 +566,7 @@ public interface Graph {
     public int degree(Node node, NodeDirection direction);
 
     /*
-     * TODO: Graph-Level Attributes
+     * NOTE: Graph-Level Attributes
      * Graph-level attributes are temporarily deferred to prevent the graph from
      * becoming a global state bucket. This API will be activated strictly when
      * required for universal topological contexts (e.g., semantic coordinate systems
