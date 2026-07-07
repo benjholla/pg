@@ -20,7 +20,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeSucceedsWhenNodesPresent() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(a);
@@ -33,7 +33,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenFromNodeMissing() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(b); // Only target is present
@@ -45,7 +45,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenToNodeMissing() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
         graph.addNode(a); // Only source is present
@@ -57,7 +57,7 @@ public class GraphLinkEdgeInvariantTest {
 
     @Test
     public void testLinkEdgeFailsWhenBothNodesMissing() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         Node a = factory.createNode();
         Node b = factory.createNode();
 

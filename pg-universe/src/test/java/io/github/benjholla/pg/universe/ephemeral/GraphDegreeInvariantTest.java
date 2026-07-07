@@ -19,7 +19,7 @@ public class GraphDegreeInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
         a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
         d = factory.createNode(); e = factory.createNode();
 
@@ -50,7 +50,7 @@ public class GraphDegreeInvariantTest {
 
     @Test
     public void testHandshakingLemmaOnEmptyGraph() {
-        Graph emptyGraph = new EphemeralGraph();
+        Graph emptyGraph = factory.createGraph();
         int totalInDegree = 0;
         int totalOutDegree = 0;
 

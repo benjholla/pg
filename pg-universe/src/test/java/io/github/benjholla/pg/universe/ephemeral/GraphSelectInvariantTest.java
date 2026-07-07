@@ -28,7 +28,7 @@ public class GraphSelectInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
 
         a = factory.createNode();
         a.attributes().put("color", new AttributeValue.StringVal("red"));

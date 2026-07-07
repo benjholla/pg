@@ -53,7 +53,7 @@ public class DifferencePropertiesInvariantTest {
     @Test
     public void testDifferenceFromEmpty() {
         // ∅ \ A = ∅
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
         Graph diff = empty.difference(gA);
         assertTrue(diff.isEmpty());
     }
@@ -61,7 +61,7 @@ public class DifferencePropertiesInvariantTest {
     @Test
     public void testDifferenceOfEmpty() {
         // A \ ∅ = A
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
         Graph diff = gA.difference(empty);
         assertGraphsEqual(gA, diff);
     }

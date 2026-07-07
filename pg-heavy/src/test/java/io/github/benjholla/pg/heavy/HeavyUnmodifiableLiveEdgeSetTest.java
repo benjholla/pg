@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 import io.github.benjholla.pg.api.AttributeValue;
 

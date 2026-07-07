@@ -18,7 +18,7 @@ public class EphemeralGraphGraphArgTest {
         Node n3 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
         Edge e2 = factory.createEdge(n2, n3);
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(e1);
         graph.addEdge(e2);
 
@@ -49,7 +49,7 @@ public class EphemeralGraphGraphArgTest {
         Node n1 = factory.createNode();
         Node n2 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(e1);
 
         Graph gRemove1 = factory.createGraph(e1);
@@ -65,7 +65,7 @@ public class EphemeralGraphGraphArgTest {
         Node n2 = factory.createNode();
         Node n3 = factory.createNode();
         Edge e1 = factory.createEdge(n1, n2);
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(e1);
 
         NodeSet emptyFrom = new EphemeralNodeSet();

@@ -19,7 +19,7 @@ public class GraphLimitInvariantTest {
     @Test
     public void testLimitInEquivalentToRoots() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -34,7 +34,7 @@ public class GraphLimitInvariantTest {
     @Test
     public void testLimitOutEquivalentToLeaves() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -48,7 +48,7 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitEmptyGraph() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
 
         assertTrue(graph.limit(NodeDirection.IN).isEmpty());
         assertTrue(graph.limit(NodeDirection.OUT).isEmpty());
@@ -71,7 +71,7 @@ public class GraphLimitInvariantTest {
     @Test
     public void testLimitCyclicGraph() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
         graph.addEdge(factory.createEdge(c, a));
@@ -82,7 +82,7 @@ public class GraphLimitInvariantTest {
 
     @Test
     public void testLimitNullHandling() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         assertThrows(NullPointerException.class, () -> graph.limit(null));
     }
 }

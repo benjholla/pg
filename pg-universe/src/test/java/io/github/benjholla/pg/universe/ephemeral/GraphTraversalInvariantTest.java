@@ -1,6 +1,5 @@
 package io.github.benjholla.pg.universe.ephemeral;
 
-import io.github.benjholla.pg.api.Edge;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +18,7 @@ public class GraphTraversalInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
         a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
         d = factory.createNode(); e = factory.createNode(); f = factory.createNode();
 
