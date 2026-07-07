@@ -15,14 +15,14 @@ public class EmptyInputInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
         Node a = factory.createNode(); Node b = factory.createNode();
         graph.addEdge(factory.createEdge(a, b));
     }
 
     @Test
     public void testEmptyInputsToTraversals() {
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
 
         Graph result1 = graph.forward(empty);
         assertTrue(result1.isEmpty(), "forward(empty) should be empty");

@@ -39,7 +39,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceEmptyGraph() {
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
         Graph induced = gA.induce(empty);
 
         assertEquals(gA.nodes().size(), induced.nodes().size());

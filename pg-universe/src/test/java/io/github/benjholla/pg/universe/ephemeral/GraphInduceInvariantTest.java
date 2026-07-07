@@ -24,7 +24,7 @@ public class GraphInduceInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
         a = factory.createNode();
         b = factory.createNode();
         c = factory.createNode();

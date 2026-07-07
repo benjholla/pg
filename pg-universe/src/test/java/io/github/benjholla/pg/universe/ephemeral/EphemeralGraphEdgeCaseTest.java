@@ -12,7 +12,7 @@ public class EphemeralGraphEdgeCaseTest {
 
     @Test
     public void testUnionWithNull() {
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         assertThrows(NullPointerException.class, () -> graph.union((Graph) null));
     }
 }

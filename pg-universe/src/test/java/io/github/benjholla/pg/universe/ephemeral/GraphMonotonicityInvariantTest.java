@@ -22,7 +22,7 @@ public class GraphMonotonicityInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
         a = factory.createNode(); b = factory.createNode(); c = factory.createNode(); d = factory.createNode();
         e = factory.createNode(); f = factory.createNode(); g = factory.createNode();
 

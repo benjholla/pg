@@ -16,7 +16,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testRootsHaveNoInEdges() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -36,7 +36,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testLeavesHaveNoOutEdges() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
 
@@ -65,7 +65,7 @@ public class RootsLeavesInvariantTest {
     @Test
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = factory.createNode(); Node b = factory.createNode(); Node c = factory.createNode();
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
         graph.addEdge(factory.createEdge(a, b));
         graph.addEdge(factory.createEdge(b, c));
         graph.addEdge(factory.createEdge(c, a));

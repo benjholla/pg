@@ -18,7 +18,7 @@ public class GraphNullHandlingTest {
 
     @BeforeEach
     public void setup() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
     }
 
     @Test
@@ -115,7 +115,7 @@ public class GraphNullHandlingTest {
     @Test
     public void testBetweenNullHandling() {
         Node n = factory.createNode();
-        Graph g = new EphemeralGraph();
+        Graph g = factory.createGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.between(n, (Node) null));
@@ -128,7 +128,7 @@ public class GraphNullHandlingTest {
     @Test
     public void testBetweenStepNullHandling() {
         Node n = factory.createNode();
-        Graph g = new EphemeralGraph();
+        Graph g = factory.createGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Node) null, n));
         assertThrows(NullPointerException.class, () -> graph.betweenStep(n, (Node) null));

@@ -109,7 +109,7 @@ public class GraphAlgebraicPropertiesTest {
 
     @Test
     public void testIdentityOperations() {
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
 
         // A U ∅ == A
         assertGraphsEqual(gA, gA.union(empty));

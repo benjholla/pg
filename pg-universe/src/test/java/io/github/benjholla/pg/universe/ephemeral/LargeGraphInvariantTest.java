@@ -16,7 +16,7 @@ public class LargeGraphInvariantTest {
         // Create a large linearly connected graph to verify we don't hit StackOverflowError
         // due to recursive implementations
         int size = 10000;
-        Graph graph = new EphemeralGraph();
+        Graph graph = factory.createGraph();
 
         Node[] nodes = new Node[size];
         for(int i=0; i<size; i++) {

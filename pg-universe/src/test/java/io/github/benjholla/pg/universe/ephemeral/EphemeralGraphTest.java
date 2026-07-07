@@ -25,7 +25,7 @@ public class EphemeralGraphTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = factory.createGraph();
 
         a = factory.createNode();
         a.attributes().put("name", "a");
@@ -106,7 +106,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testConstructors() {
-        Graph empty = new EphemeralGraph();
+        Graph empty = factory.createGraph();
         assertTrue(empty.isEmpty());
 
         Graph withNodes = factory.createGraph(a, b);
