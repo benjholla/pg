@@ -20,7 +20,7 @@ import io.github.benjholla.pg.api.NodeSet;
 /**
  * EphemeralGraph provides the core storage, adjacency maps, and graph operations.
  */
-public class EphemeralGraph implements Graph, EphemeralFactory {
+public final class EphemeralGraph implements Graph, EphemeralFactory {
 
 	private static final EdgeSet EMPTY_EDGES = new EphemeralImmutableEdgeSet(new EphemeralEdgeSet());
 
