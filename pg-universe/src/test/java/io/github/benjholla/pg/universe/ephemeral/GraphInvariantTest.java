@@ -13,6 +13,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental invariants of the Graph interface implementations.
  */
 public class GraphInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c;
@@ -20,15 +22,15 @@ public class GraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
-        ca = new EphemeralEdge(c, a);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        ca = factory.createEdge(c, a);
 
-        graph = new EphemeralGraph(a, b, c);
+        graph = factory.createGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);
@@ -58,9 +60,9 @@ public class GraphInvariantTest {
 
     @Test
     public void testEdgeCannotExistWithoutTerminalNodes() {
-        Node d = new EphemeralNode();
-        Node e = new EphemeralNode();
-        Edge de = new EphemeralEdge(d, e);
+        Node d = factory.createNode();
+        Node e = factory.createNode();
+        Edge de = factory.createEdge(d, e);
 
         // Attempting to add an edge implicitly adds its nodes
         graph.addEdge(de);

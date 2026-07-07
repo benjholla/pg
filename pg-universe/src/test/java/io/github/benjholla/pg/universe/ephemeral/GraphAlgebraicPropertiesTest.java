@@ -15,6 +15,8 @@ import io.github.benjholla.pg.api.Node;
  * These properties ensure operations behave predictably as mathematical sets.
  */
 public class GraphAlgebraicPropertiesTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA, gB, gC;
     private Node a, b, c, d, e;
@@ -22,25 +24,25 @@ public class GraphAlgebraicPropertiesTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
-        d = new EphemeralNode();
-        e = new EphemeralNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
+        d = factory.createNode();
+        e = factory.createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
-        cd = new EphemeralEdge(c, d);
-        de = new EphemeralEdge(d, e);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        cd = factory.createEdge(c, d);
+        de = factory.createEdge(d, e);
 
-        gA = new EphemeralGraph(a, b, c);
+        gA = factory.createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new EphemeralGraph(c, d);
+        gB = factory.createGraph(c, d);
         gB.addEdge(cd);
 
-        gC = new EphemeralGraph(a, b, d, e);
+        gC = factory.createGraph(a, b, d, e);
         gC.addEdge(ab);
         gC.addEdge(de);
     }

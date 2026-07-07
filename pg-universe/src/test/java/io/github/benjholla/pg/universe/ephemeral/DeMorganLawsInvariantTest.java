@@ -14,28 +14,30 @@ import io.github.benjholla.pg.api.Graph;
  * 2. A \ (B ∩ C) = (A \ B) U (A \ C)
  */
 public class DeMorganLawsInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA, gB, gC;
 
     @BeforeEach
     public void setUp() {
-        EphemeralNode a = new EphemeralNode();
-        EphemeralNode b = new EphemeralNode();
-        EphemeralNode c = new EphemeralNode();
+        EphemeralNode a = factory.createNode();
+        EphemeralNode b = factory.createNode();
+        EphemeralNode c = factory.createNode();
 
-        EphemeralEdge ab = new EphemeralEdge(a, b);
-        EphemeralEdge bc = new EphemeralEdge(b, c);
+        EphemeralEdge ab = factory.createEdge(a, b);
+        EphemeralEdge bc = factory.createEdge(b, c);
 
         // A is the superset
-        gA = new EphemeralGraph(a, b, c);
+        gA = factory.createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
 
         // B and C are subsets
-        gB = new EphemeralGraph(a, b);
+        gB = factory.createGraph(a, b);
         gB.addEdge(ab);
 
-        gC = new EphemeralGraph(b, c);
+        gC = factory.createGraph(b, c);
         gC.addEdge(bc);
     }
 

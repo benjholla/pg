@@ -32,6 +32,46 @@ public class EphemeralGraph implements Graph {
 	/**
 	 * Constructs a new empty graph
 	 */
+    @Override
+    public EphemeralGraph createGraph() {
+        return new EphemeralGraph();
+    }
+
+    @Override
+    public EphemeralGraph createGraph(Node... nodes) {
+        return new EphemeralGraph(nodes);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(NodeSet nodes) {
+        return new EphemeralGraph(nodes);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(Edge... edges) {
+        return new EphemeralGraph(edges);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(EdgeSet edges) {
+        return new EphemeralGraph(edges);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(NodeSet nodes, EdgeSet edges) {
+        return new EphemeralGraph(nodes, edges);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(Graph... graphs) {
+        return new EphemeralGraph(graphs);
+    }
+
+    @Override
+    public EphemeralGraph createGraph(Collection<Graph> graphs) {
+        return new EphemeralGraph(graphs);
+    }
+
 	public EphemeralGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();
@@ -943,12 +983,12 @@ public class EphemeralGraph implements Graph {
 	}
 
 	@Override
-	public Node createNode() {
+	public EphemeralNode createNode() {
 		return new EphemeralNode();
 	}
 
 	@Override
-	public Edge createEdge(Node source, Node target) {
+	public EphemeralEdge createEdge(Node source, Node target) {
 		if (!(source instanceof EphemeralNode)) {
 			throw new IllegalArgumentException("Source node is not native to EphemeralGraph.");
 		}

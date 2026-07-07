@@ -12,6 +12,8 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 public class GraphNullHandlingTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     private EphemeralGraph graph;
 
     @BeforeEach
@@ -112,7 +114,7 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenNullHandling() {
-        Node n = new EphemeralNode();
+        Node n = factory.createNode();
         Graph g = new EphemeralGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, n));
@@ -125,7 +127,7 @@ public class GraphNullHandlingTest {
 
     @Test
     public void testBetweenStepNullHandling() {
-        Node n = new EphemeralNode();
+        Node n = factory.createNode();
         Graph g = new EphemeralGraph();
         NodeSet ns = new EphemeralNodeSet();
         assertThrows(NullPointerException.class, () -> graph.betweenStep((Node) null, n));

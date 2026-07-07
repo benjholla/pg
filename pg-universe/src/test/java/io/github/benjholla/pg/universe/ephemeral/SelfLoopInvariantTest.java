@@ -9,12 +9,14 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class SelfLoopInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testSelfLoop() {
-        Node a = new EphemeralNode();
-        Edge loop = new EphemeralEdge(a, a);
+        Node a = factory.createNode();
+        Edge loop = factory.createEdge(a, a);
 
-        EphemeralGraph graph = new EphemeralGraph(a);
+        EphemeralGraph graph = factory.createGraph(a);
         graph.addEdge(loop);
 
         Graph result = graph.forward(a);

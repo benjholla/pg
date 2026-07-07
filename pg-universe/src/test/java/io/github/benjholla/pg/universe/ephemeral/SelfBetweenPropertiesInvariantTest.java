@@ -11,14 +11,16 @@ import io.github.benjholla.pg.api.Graph;
  * Validates properties related to between traversals on the same nodes.
  */
 public class SelfBetweenPropertiesInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA;
     private EphemeralNode a;
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        gA = new EphemeralGraph(a);
+        a = factory.createNode();
+        gA = factory.createGraph(a);
     }
 
     @Test

@@ -15,6 +15,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates invariant properties of the induce operations.
  */
 public class GraphInduceInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c;
@@ -23,13 +25,13 @@ public class GraphInduceInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
-        ca = new EphemeralEdge(c, a);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
+        ca = factory.createEdge(c, a);
 
         graph.addNode(a);
         graph.addNode(b);
@@ -53,7 +55,7 @@ public class GraphInduceInvariantTest {
 
     @Test
     public void testInduceFromOtherGraph() {
-        Graph otherGraph = new EphemeralGraph(a, b, c);
+        Graph otherGraph = factory.createGraph(a, b, c);
         otherGraph.addEdge(ab);
         otherGraph.addEdge(bc);
         otherGraph.addEdge(ca);

@@ -9,6 +9,8 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.Node.NodeDirection;
 
 public class GraphDegreeInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c, d, e;
@@ -16,16 +18,16 @@ public class GraphDegreeInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
-        d = new EphemeralNode(); e = new EphemeralNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
+        d = factory.createNode(); e = factory.createNode();
 
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, d));
-        graph.addEdge(new EphemeralEdge(d, b)); // cycle
-        graph.addEdge(new EphemeralEdge(d, e));
-        graph.addEdge(new EphemeralEdge(e, a)); // another cycle
-        graph.addEdge(new EphemeralEdge(a, a)); // self-loop
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
+        graph.addEdge(factory.createEdge(d, b)); // cycle
+        graph.addEdge(factory.createEdge(d, e));
+        graph.addEdge(factory.createEdge(e, a)); // another cycle
+        graph.addEdge(factory.createEdge(a, a)); // self-loop
     }
 
     @Test

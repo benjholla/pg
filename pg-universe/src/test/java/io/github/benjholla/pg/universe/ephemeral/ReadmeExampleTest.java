@@ -9,30 +9,32 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class ReadmeExampleTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testReadmeExample() {
         // Create nodes
-        Node alice = new EphemeralNode();
+        Node alice = factory.createNode();
         alice.tags().add("Person");
         alice.attributes().put("name", "Alice");
 
-        Node bob = new EphemeralNode();
+        Node bob = factory.createNode();
         bob.tags().add("Person");
         bob.attributes().put("name", "Bob");
 
-        Node charlie = new EphemeralNode();
+        Node charlie = factory.createNode();
         charlie.tags().add("Person");
         charlie.attributes().put("name", "Charlie");
 
         // Create edges
-        Edge knows1 = new EphemeralEdge(alice, bob);
+        Edge knows1 = factory.createEdge(alice, bob);
         knows1.tags().add("knows");
 
-        Edge knows2 = new EphemeralEdge(bob, charlie);
+        Edge knows2 = factory.createEdge(bob, charlie);
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        EphemeralGraph graph = new EphemeralGraph(alice, bob, charlie);
+        EphemeralGraph graph = factory.createGraph(alice, bob, charlie);
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 

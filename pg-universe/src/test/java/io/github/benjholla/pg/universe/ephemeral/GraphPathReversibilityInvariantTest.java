@@ -12,6 +12,8 @@ import io.github.benjholla.pg.api.Node;
  * Validates fundamental path-reversibility axioms for directed graphs.
  */
 public class GraphPathReversibilityInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c, d, e;
@@ -19,17 +21,17 @@ public class GraphPathReversibilityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
-        d = new EphemeralNode(); e = new EphemeralNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
+        d = factory.createNode(); e = factory.createNode();
 
         // Create a path a -> b -> c -> d -> e
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, d));
-        graph.addEdge(new EphemeralEdge(d, e));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
+        graph.addEdge(factory.createEdge(d, e));
 
         // Add a cycle for complexity
-        graph.addEdge(new EphemeralEdge(c, a));
+        graph.addEdge(factory.createEdge(c, a));
     }
 
     @Test

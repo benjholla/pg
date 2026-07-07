@@ -32,6 +32,46 @@ public class HeavyGraph implements Graph {
 	/**
 	 * Constructs a new empty graph
 	 */
+    @Override
+    public HeavyGraph createGraph() {
+        return new HeavyGraph();
+    }
+
+    @Override
+    public HeavyGraph createGraph(Node... nodes) {
+        return new HeavyGraph(nodes);
+    }
+
+    @Override
+    public HeavyGraph createGraph(NodeSet nodes) {
+        return new HeavyGraph(nodes);
+    }
+
+    @Override
+    public HeavyGraph createGraph(Edge... edges) {
+        return new HeavyGraph(edges);
+    }
+
+    @Override
+    public HeavyGraph createGraph(EdgeSet edges) {
+        return new HeavyGraph(edges);
+    }
+
+    @Override
+    public HeavyGraph createGraph(NodeSet nodes, EdgeSet edges) {
+        return new HeavyGraph(nodes, edges);
+    }
+
+    @Override
+    public HeavyGraph createGraph(Graph... graphs) {
+        return new HeavyGraph(graphs);
+    }
+
+    @Override
+    public HeavyGraph createGraph(Collection<Graph> graphs) {
+        return new HeavyGraph(graphs);
+    }
+
 	public HeavyGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();
@@ -950,12 +990,12 @@ public class HeavyGraph implements Graph {
 	}
 
 	@Override
-	public Node createNode() {
+	public HeavyNode createNode() {
 		return new HeavyNode();
 	}
 
 	@Override
-	public Edge createEdge(Node source, Node target) {
+	public HeavyEdge createEdge(Node source, Node target) {
 		if (!(source instanceof HeavyNode)) {
 			throw new IllegalArgumentException("Source node is not native to HeavyGraph.");
 		}

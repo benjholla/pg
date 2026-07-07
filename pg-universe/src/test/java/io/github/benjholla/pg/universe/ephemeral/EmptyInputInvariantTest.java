@@ -9,13 +9,15 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class EmptyInputInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     private EphemeralGraph graph;
 
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        Node a = new EphemeralNode(); Node b = new EphemeralNode();
-        graph.addEdge(new EphemeralEdge(a, b));
+        Node a = factory.createNode(); Node b = factory.createNode();
+        graph.addEdge(factory.createEdge(a, b));
     }
 
     @Test

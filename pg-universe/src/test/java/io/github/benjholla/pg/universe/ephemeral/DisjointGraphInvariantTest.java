@@ -10,6 +10,8 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class DisjointGraphInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     private EphemeralGraph graphA;
     private EphemeralGraph graphB;
 
@@ -17,15 +19,15 @@ public class DisjointGraphInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a1 = new EphemeralNode();
-        a2 = new EphemeralNode();
-        graphA = new EphemeralGraph(a1, a2);
-        graphA.addEdge(new EphemeralEdge(a1, a2));
+        a1 = factory.createNode();
+        a2 = factory.createNode();
+        graphA = factory.createGraph(a1, a2);
+        graphA.addEdge(factory.createEdge(a1, a2));
 
-        b1 = new EphemeralNode();
-        b2 = new EphemeralNode();
-        graphB = new EphemeralGraph(b1, b2);
-        graphB.addEdge(new EphemeralEdge(b1, b2));
+        b1 = factory.createNode();
+        b2 = factory.createNode();
+        graphB = factory.createGraph(b1, b2);
+        graphB.addEdge(factory.createEdge(b1, b2));
     }
 
     @Test
@@ -49,7 +51,7 @@ public class DisjointGraphInvariantTest {
 
     @Test
     public void testBetweenDisjointSubgraphsIsEmpty() {
-        EphemeralGraph unionGraph = new EphemeralGraph(graphA.nodes(), graphA.edges());
+        EphemeralGraph unionGraph = factory.createGraph(graphA.nodes(), graphA.edges());
         unionGraph = (EphemeralGraph) unionGraph.union(graphB);
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB

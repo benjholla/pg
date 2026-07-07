@@ -9,17 +9,19 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphCycleTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     @Test
     public void testForwardWithCycle() {
-        Node a = new EphemeralNode();
-        Node b = new EphemeralNode();
-        Node c = new EphemeralNode();
+        Node a = factory.createNode();
+        Node b = factory.createNode();
+        Node c = factory.createNode();
 
-        Edge ab = new EphemeralEdge(a, b);
-        Edge bc = new EphemeralEdge(b, c);
-        Edge ca = new EphemeralEdge(c, a); // Cycle!
+        Edge ab = factory.createEdge(a, b);
+        Edge bc = factory.createEdge(b, c);
+        Edge ca = factory.createEdge(c, a); // Cycle!
 
-        EphemeralGraph graph = new EphemeralGraph(a, b, c);
+        EphemeralGraph graph = factory.createGraph(a, b, c);
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

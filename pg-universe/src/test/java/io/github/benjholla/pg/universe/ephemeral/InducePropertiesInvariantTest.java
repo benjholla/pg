@@ -12,6 +12,8 @@ import io.github.benjholla.pg.api.Graph;
  * Validates properties related to graph inducement.
  */
 public class InducePropertiesInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph gA;
     private EphemeralNode a, b, c;
@@ -19,14 +21,14 @@ public class InducePropertiesInvariantTest {
 
     @BeforeEach
     public void setUp() {
-        a = new EphemeralNode();
-        b = new EphemeralNode();
-        c = new EphemeralNode();
+        a = factory.createNode();
+        b = factory.createNode();
+        c = factory.createNode();
 
-        ab = new EphemeralEdge(a, b);
-        bc = new EphemeralEdge(b, c);
+        ab = factory.createEdge(a, b);
+        bc = factory.createEdge(b, c);
 
-        gA = new EphemeralGraph(a, b, c);
+        gA = factory.createGraph(a, b, c);
         gA.addEdge(ab);
         gA.addEdge(bc);
     }
@@ -51,7 +53,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        EphemeralGraph nodesOnly = new EphemeralGraph(a, b, c);
+        EphemeralGraph nodesOnly = factory.createGraph(a, b, c);
         EphemeralEdgeSet edgesToAdd = new EphemeralEdgeSet();
         edgesToAdd.add(ab);
 

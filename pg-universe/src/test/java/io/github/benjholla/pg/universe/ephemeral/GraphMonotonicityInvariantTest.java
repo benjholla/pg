@@ -14,6 +14,8 @@ import io.github.benjholla.pg.api.NodeSet;
  * Monotonicity states that if A is a subset of B, then traversal(A) should be a subset of traversal(B).
  */
 public class GraphMonotonicityInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
 
     private EphemeralGraph graph;
     private Node a, b, c, d, e, f, g;
@@ -21,15 +23,15 @@ public class GraphMonotonicityInvariantTest {
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode(); d = new EphemeralNode();
-        e = new EphemeralNode(); f = new EphemeralNode(); g = new EphemeralNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode(); d = factory.createNode();
+        e = factory.createNode(); f = factory.createNode(); g = factory.createNode();
 
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, d));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
 
-        graph.addEdge(new EphemeralEdge(e, f));
-        graph.addEdge(new EphemeralEdge(f, g));
+        graph.addEdge(factory.createEdge(e, f));
+        graph.addEdge(factory.createEdge(f, g));
     }
 
     private void assertIsSubgraph(Graph subgraph, Graph supergraph) {

@@ -10,20 +10,22 @@ import io.github.benjholla.pg.api.Graph;
 import io.github.benjholla.pg.api.Node;
 
 public class GraphTraversalInvariantTest {
+    private static final EphemeralGraph factory = new EphemeralGraph();
+
     private EphemeralGraph graph;
     private Node a, b, c, d, e, f;
 
     @BeforeEach
     public void setUp() {
         graph = new EphemeralGraph();
-        a = new EphemeralNode(); b = new EphemeralNode(); c = new EphemeralNode();
-        d = new EphemeralNode(); e = new EphemeralNode(); f = new EphemeralNode();
+        a = factory.createNode(); b = factory.createNode(); c = factory.createNode();
+        d = factory.createNode(); e = factory.createNode(); f = factory.createNode();
 
-        graph.addEdge(new EphemeralEdge(a, b));
-        graph.addEdge(new EphemeralEdge(b, c));
-        graph.addEdge(new EphemeralEdge(c, d));
-        graph.addEdge(new EphemeralEdge(d, b)); // cycle b-c-d-b
-        graph.addEdge(new EphemeralEdge(e, f));
+        graph.addEdge(factory.createEdge(a, b));
+        graph.addEdge(factory.createEdge(b, c));
+        graph.addEdge(factory.createEdge(c, d));
+        graph.addEdge(factory.createEdge(d, b)); // cycle b-c-d-b
+        graph.addEdge(factory.createEdge(e, f));
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {
@@ -48,7 +50,7 @@ public class GraphTraversalInvariantTest {
     @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
-        Graph unionNodes = new EphemeralGraph(a, e);
+        Graph unionNodes = factory.createGraph(a, e);
         Graph forwardUnion = graph.forward(unionNodes);
 
         Graph forwardA = graph.forward(a);
