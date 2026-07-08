@@ -11,7 +11,7 @@ public final class HeavyNode implements Node {
     private final AttributeMap attributes;
 
     public HeavyNode() {
-        this.id = HeavyIdGenerator.INSTANCE.create();
+        this.id = HeavyIdGenerator.INSTANCE.createNodeId();
         this.tags = new HeavyTagSet();
         this.attributes = new HeavyAttributeMap();
     }

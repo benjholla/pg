@@ -20,13 +20,15 @@ public class HeavyIdGeneratorTest {
         int idsPerThread = 1000;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
-        Set<Integer> generatedIds = ConcurrentHashMap.newKeySet();
+        Set<Integer> generatedNodeIds = ConcurrentHashMap.newKeySet();
+        Set<Integer> generatedEdgeIds = ConcurrentHashMap.newKeySet();
 
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
                     for (int j = 0; j < idsPerThread; j++) {
-                        generatedIds.add(HeavyIdGenerator.INSTANCE.create());
+                        generatedNodeIds.add(HeavyIdGenerator.INSTANCE.createNodeId());
+                        generatedEdgeIds.add(HeavyIdGenerator.INSTANCE.createEdgeId());
                     }
                 } finally {
                     latch.countDown();
@@ -38,9 +40,14 @@ public class HeavyIdGeneratorTest {
         executor.shutdown();
         assertTrue(executor.awaitTermination(1, TimeUnit.SECONDS));
 
-        assertEquals(threadCount * idsPerThread, generatedIds.size(), "All generated IDs must be unique");
-        for (int id : generatedIds) {
-            assertTrue(id > 0, "IDs must be strictly positive");
+        assertEquals(threadCount * idsPerThread, generatedNodeIds.size(), "All generated node IDs must be unique");
+        for (int id : generatedNodeIds) {
+            assertTrue(id > 0, "Node IDs must be strictly positive");
+        }
+
+        assertEquals(threadCount * idsPerThread, generatedEdgeIds.size(), "All generated edge IDs must be unique");
+        for (int id : generatedEdgeIds) {
+            assertTrue(id > 0, "Edge IDs must be strictly positive");
         }
     }
 }

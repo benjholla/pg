@@ -6,9 +6,14 @@ public enum HeavyIdGenerator {
     INSTANCE;
 
     // reserving negative values and zero for future capabilities
-    private AtomicInteger nextAddress = new AtomicInteger(1);
+    private AtomicInteger nextNodeId = new AtomicInteger(1);
+    private AtomicInteger nextEdgeId = new AtomicInteger(1);
 
-    public int create() {
-        return nextAddress.getAndIncrement();
+    public int createNodeId() {
+        return nextNodeId.getAndIncrement();
+    }
+
+    public int createEdgeId() {
+        return nextEdgeId.getAndIncrement();
     }
 }
