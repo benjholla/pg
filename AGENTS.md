@@ -5,7 +5,7 @@ You are an expert Java systems engineer tasked with implementing a custom, high-
 This library handles the static analysis of massive datasets (e.g., millions of nodes representing ASTs or CFGs). Standard Java graph implementations suffer from severe object-header bloat and pointer-chasing overhead, causing JVM heap exhaustion at scale.
 To solve this, our library uses a **Central Registry Pattern** backed by primitive integer mapping and bitwise arithmetic, ensuring maximum performance and near-zero allocation overhead.
 
-The library fills a critical void between global database drivers (like TinkerPop) and purely academic algorithmic libraries (like JGraphT). It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine. It successfully decouples the mathematical contract from the mechanical storage: downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, engines are executing queries using highly defensive, zero-allocation primitive integer maps. The architecture incorporates strict pipeline defenses (e.g., violently rejecting missing anchors or foreign types and avoiding auto-vivification in the core pipeline) to guarantee that if a graph instantiates successfully, its topology is mathematically sound, preventing silent data corruption in complex polyglot environments.
+The library fills a critical void between heavy database drivers (like TinkerPop) and purely academic algorithmic libraries (like JGraphT). It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine. It successfully decouples the mathematical contract from the mechanical storage: downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, engines are executing queries using highly defensive, zero-allocation primitive integer maps. The architecture incorporates strict pipeline defenses (e.g., violently rejecting missing anchors or foreign types and avoiding auto-vivification in the core pipeline) to guarantee that if a graph instantiates successfully, its topology is mathematically sound, preventing silent data corruption in complex polyglot environments.
 
 **The Long-Term Vision (CHPG & Semantic Projections):** This "Flat Graph" library is the foundational storage engine intended to support advanced program analysis, specifically the discovery and exploitation of "natural projections" (naming conventions, architectural boundaries) as semantic coordinate systems. To support this, the core graph must remain strictly decoupled from any schemas, tag hierarchies, or containment rules. A future "Compound Hierarchical Property Graph" (CHPG) will act as a Semantic Wrapper around this flat graph. The flat graph handles raw state and speed; the future wrapper handles logic and meaning.
 
@@ -14,12 +14,12 @@ The library fills a critical void between global database drivers (like TinkerPo
 ## 2. The Multi-Module Ecosystem
 To support both everyday development and massive-scale analysis, the project is divided into four strict modules:
  * **pg-api:** The pure interface layer (Graph, Node, Edge, ElementSet, and the sealed AttributeValue). Contains zero implementation logic and defines identity purely as int id() without prescribing how to assign ids.
- * **pg-global:** Depends on pg-api. A globalweight reference implementation using adjacency lists and standard Java collections.
+ * **pg-global:** Depends on pg-api. A heavyweight reference implementation using adjacency lists and standard Java collections.
  * **pg-universe:** Depends on pg-api. The high-scale bitwise engine, Central Registry, Flyweights, and the transactional EphemeralGraph. Manages its own dual-polarity ID generation.
  * **pg-io:** Depends on pg-api. The interoperability hub providing universal importers/exporters. It translates pure graph state into formats like JSON or DOT, and acts as the strict boundary where external presentation logic (like visualization highlighting) is married to the graph data.
 
 ## 3. The Core Architecture: The Universe
-The pg-universe module is centralized. We do not use standalone Graph objects that act as global containers.
+The pg-universe module is centralized. We do not use standalone Graph objects that act as heavy containers.
  * **The Universe (Scoped Registry):** The absolute source of truth. Instantiated normally (new Universe()), allowing multiple isolated universes per JVM.
  * **The Dual-Polarity IdGenerator:** An internal engine owned by the Universe. Issues universally unique integer IDs (positive for persistent, negative for ephemeral). It is strictly hidden from pg-api.
  * **Global Inverted Indices (BitSets):** The Universe maintains global indices for tags and attributes using java.util.BitSet.
@@ -28,7 +28,7 @@ The pg-universe module is centralized. We do not use standalone Graph objects th
 ## 4. Elements, Identity, & The Flyweight Pattern
  * **Interfaces over Base Classes:** Node and Edge are strictly interfaces extending GraphElement.
  * **Two Flavors (Memory Layouts):** Implementations are split to guarantee zero memory bloat during read operations.
-   * **Globalweights (EphemeralNode / EphemeralEdge):** Hold local HashMaps and HashSets for state tracking.
+   * **Heavyweights (EphemeralNode / EphemeralEdge):** Hold local HashMaps and HashSets for state tracking.
    * **Flyweights (UniverseNode / UniverseEdge):** Created dynamically during the read-phase. Ultra-lean wrappers containing solely final int id and final Universe universe. Zero local collections.
  * **Primitive Identity Enforcement:** The identity of any element is strictly a primitive int. **Do not wrap the ID in a record, class, or ElementId object.** This is mandatory to prevent object-header bloat and to allow zero-allocation IntStream processing.
  * **ID Polarity as State:** The sign bit of the primitive int acts as the state discriminator. Positive IDs are Persistent/Universe elements. Negative IDs are Transactional/Ephemeral elements.

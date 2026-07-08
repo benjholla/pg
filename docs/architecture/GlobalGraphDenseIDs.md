@@ -10,7 +10,7 @@ This dense, 0-indexed structure provides a critical performance advantage: it al
 
 Both engines strictly implement the same `Graph` interface, meaning both fully support properties and tags. The distinction lies in their memory layout:
 
-*   **GlobalGraph:** Because its IDs are dense and start at 0, it can back its properties and topology with raw arrays (e.g., `AttributeMap[] properties = new AttributeMap[size]`). This provides O(1) lookup speed with perfect cache locality, making it the ultimate engine for global, permanent data querying.
+*   **GlobalGraph:** Because its IDs are dense and start at 0, it can back its properties and topology with raw arrays (e.g., `AttributeMap[] properties = new AttributeMap[size]`). This provides O(1) lookup speed with perfect cache locality, making it the ultimate engine for heavy, permanent data querying.
 *   **EphemeralGraph:** Because its IDs are negative, it must rely on HashMaps (`IntObjectMap`) for property lookups. It incurs a slight hashing overhead, which is the mathematically necessary trade-off for acting as a temporary, isolated scratchpad.
 
 ## The Problem: Dynamic Sizing vs Array Performance

@@ -4,7 +4,7 @@
 
 ## Why `pg`?
 
-Graphs are everywhere, but many graph libraries focus on global integration with databases or introduce overly complex abstractions. `pg` exists to provide a clean, memory-backed property graph model where you can effortlessly:
+Graphs are everywhere, but many graph libraries focus on heavy integration with databases or introduce overly complex abstractions. `pg` exists to provide a clean, memory-backed property graph model where you can effortlessly:
 
 - Compose graphs using sets of nodes and edges.
 - Perform robust set operations like `union`, `difference`, and `intersection`.
@@ -21,7 +21,7 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 
 **2. Apache TinkerPop / Gremlin (The Database Behemoth)**
 *   **Their Focus:** This is the industry standard for property graphs, backed by a massive ecosystem, designed to act as a driver for distributed databases (like Neo4j or AWS Neptune).
-*   **The Contrast:** TinkerPop is incredibly global. Its traversal language (Gremlin) relies on complex, side-effect-global iterators. If you just want an isolated, blazing-fast in-memory graph to manipulate data and pipe it to a visualizer, TinkerPop is like bringing a battleship to a knife fight. `pg`'s O(1) primitive routing and lightweight mechanical isolation completely undercut TinkerPop's overhead.
+*   **The Contrast:** TinkerPop is incredibly heavy. Its traversal language (Gremlin) relies on complex, side-effect-heavy iterators. If you just want an isolated, blazing-fast in-memory graph to manipulate data and pipe it to a visualizer, TinkerPop is like bringing a battleship to a knife fight. `pg`'s O(1) primitive routing and lightweight mechanical isolation completely undercut TinkerPop's overhead.
 
 **3. Google Guava common.graph (The Lightweight Utility)**
 *   **Their Focus:** Guava provides beautiful, modern, lightweight graph interfaces.
@@ -29,7 +29,7 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 
 ### The Niche `pg` Dominates
 
-`pg` fills a critical void between the global database drivers and the purely academic algorithmic libraries. It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine.
+`pg` fills a critical void between the heavy database drivers and the purely academic algorithmic libraries. It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine.
 
 *   **The Set-Theoretic Algebra:** This is `pg`'s biggest differentiator. In most graph libraries, extracting a subgraph requires writing a custom iterator, filtering elements, and manually assembling a new graph. By putting `difference()`, `union()`, `intersection()`, and `forwardStep()` directly on the interface—and mandating that they return *new, induced subgraphs* rather than mutating the root—`pg` provides a functional query algebra. You can carve out slices of a massive AST or data-flow graph mathematically, without permanently destroying the original data structure. (Note: The API for these fluent mathematical operations was heavily inspired by [EnSoft Atlas](https://www.ensoftcorp.com/products/atlas/) and its MIT-licensed open-source [sandbox implementation](https://github.com/EnSoftCorp/toolbox-commons/blob/master/com.ensoftcorp.open.commons%2Fsrc%2Fcom%2Fensoftcorp%2Fopen%2Fcommons%2Fsandbox%2FSandboxGraph.java), but reimagined from the ground up to blend with modern Java APIs and practices. It is also fundamentally backend-agnostic, meaning the same operations could easily delegate to databases like Neo4j or TinkerPop, and is completely decoupled from Eclipse and any specific program analysis ecosystem).
 *   **The Mechanical vs. Mathematical Boundary:** `pg` successfully decouples the mathematical contract from the mechanical storage. Downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, implementations like `GlobalGraph` are executing queries using highly defensive, zero-allocation primitive Integer maps.

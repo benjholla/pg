@@ -1,6 +1,6 @@
 # Architectural Brief: EphemeralGraph Memory & ID Management
 ## 1. The Core ID Architecture
-The EphemeralGraph is designed as an infinitely scalable, high-speed mutation scratchpad. It relies on mathematical isolation rather than global object tracking to maintain memory safety.
+The EphemeralGraph is designed as an infinitely scalable, high-speed mutation scratchpad. It relies on mathematical isolation rather than heavy object tracking to maintain memory safety.
  * **Stateless Flyweights:** EphemeralNode and EphemeralEdge are pure, naked coordinates. They carry exactly one 32-bit int id and **do not** hold a reference back to their parent .graph(). This prevents cyclic garbage collection leaks and keeps elements at an absolute minimum memory footprint (roughly 8 bytes).
  * **The Dedicated Generator:** Every root sandbox is instantiated with its own independent EphemeralIdGenerator.
  * **Isolated, Negative Sequences:** Inside the generator, nodes and edges maintain completely separate integer counters (nextNodeId and nextEdgeId). Both counters start at -1 and count down. This guarantees mathematically dense, gap-less bitsets for maximum CPU L1 cache efficiency.
