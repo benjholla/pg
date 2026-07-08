@@ -17,7 +17,6 @@ import io.github.benjholla.pg.api.AttributeValue;
 public class AttributeMapTest {
     private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-
     private AttributeMap attributeMap;
 
     @BeforeEach
@@ -98,8 +97,6 @@ public class AttributeMapTest {
         });
     }
 
-
-
     @Test
     public void testPutPrimitives() {
         assertNull(attributeMap.put("keyInt", 42));
@@ -137,5 +134,30 @@ public class AttributeMapTest {
 
         assertEquals(val1.hashCode(), val2.hashCode());
         assertNotEquals(val1.hashCode(), val3.hashCode());
+    }
+
+    @Test
+    public void testEqualsAndHashCode() {
+        AttributeMap attrMap1 = new EphemeralAttributeMap();
+        AttributeMap attrMap2 = new EphemeralAttributeMap();
+
+        // Identity
+        assertEquals(attrMap1, attrMap1);
+
+        // Equality
+        assertEquals(attrMap1, attrMap2);
+        assertEquals(attrMap1.hashCode(), attrMap2.hashCode());
+
+        attrMap1.put("key", "val");
+        assertNotEquals(attrMap1, attrMap2);
+        assertNotEquals(attrMap1.hashCode(), attrMap2.hashCode());
+
+        attrMap2.put("key", "val");
+        assertEquals(attrMap1, attrMap2);
+        assertEquals(attrMap1.hashCode(), attrMap2.hashCode());
+
+        // Not equal to null or other types
+        assertNotEquals(attrMap1, null);
+        assertNotEquals(attrMap1, new Object());
     }
 }

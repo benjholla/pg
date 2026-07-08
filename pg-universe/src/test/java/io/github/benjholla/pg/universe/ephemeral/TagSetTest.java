@@ -17,7 +17,6 @@ import io.github.benjholla.pg.api.TagSet;
 public class TagSetTest {
     private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
-
     private TagSet tagSet;
 
     @BeforeEach
@@ -132,15 +131,25 @@ public class TagSetTest {
     @Test
     public void testEqualsAndHashCode() {
         TagSet tagSet2 = new EphemeralTagSet();
+
+        // Identity
+        assertEquals(tagSet, tagSet);
+
+        // Equality
         assertEquals(tagSet, tagSet2);
         assertEquals(tagSet.hashCode(), tagSet2.hashCode());
 
         tagSet.add("tag1");
         assertNotEquals(tagSet, tagSet2);
+        assertNotEquals(tagSet.hashCode(), tagSet2.hashCode());
 
         tagSet2.add("tag1");
         assertEquals(tagSet, tagSet2);
         assertEquals(tagSet.hashCode(), tagSet2.hashCode());
+
+        // Not equal to null or other types
+        assertNotEquals(tagSet, null);
+        assertNotEquals(tagSet, new Object());
     }
 
     @Test
@@ -151,7 +160,6 @@ public class TagSetTest {
         assertTrue(str.contains("tag1"));
         assertTrue(str.endsWith("]"));
     }
-
 
     @Test
     public void testCollectionConstructor() {
