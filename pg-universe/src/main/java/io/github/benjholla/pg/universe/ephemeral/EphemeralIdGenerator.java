@@ -2,13 +2,17 @@ package io.github.benjholla.pg.universe.ephemeral;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public enum EphemeralIdGenerator {
-    INSTANCE;
+public final class EphemeralIdGenerator {
 
     // reserving zero and positive values for universe elements
-    private AtomicInteger nextAddress = new AtomicInteger(-1);
+    private AtomicInteger nextNodeId = new AtomicInteger(-1);
+    private AtomicInteger nextEdgeId = new AtomicInteger(-1);
 
-    public int create() {
-        return nextAddress.getAndDecrement();
+    public int createNodeId() {
+        return nextNodeId.getAndDecrement();
+    }
+
+    public int createEdgeId() {
+        return nextEdgeId.getAndDecrement();
     }
 }

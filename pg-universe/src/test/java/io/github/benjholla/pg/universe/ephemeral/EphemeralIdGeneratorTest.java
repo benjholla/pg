@@ -23,12 +23,13 @@ public class EphemeralIdGeneratorTest {
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
         Set<Integer> generatedIds = ConcurrentHashMap.newKeySet();
+        EphemeralIdGenerator generator = new EphemeralIdGenerator();
 
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
                     for (int j = 0; j < idsPerThread; j++) {
-                        generatedIds.add(EphemeralIdGenerator.INSTANCE.create());
+                        generatedIds.add(generator.createNodeId());
                     }
                 } finally {
                     latch.countDown();
