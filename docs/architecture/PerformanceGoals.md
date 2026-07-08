@@ -1,6 +1,6 @@
 # Performance Goals
 
-Here is the performance matrix for the pg-api implementations provided in pg-heavy and pg-universe.
+Here is the performance matrix for the pg-api implementations provided in pg-global and pg-universe.
 
 **Variables Key:**
  * **V** = Total number of nodes
@@ -10,7 +10,7 @@ Here is the performance matrix for the pg-api implementations provided in pg-hea
  * **S** = Size of an incoming collection (for bulk operations)
 ### 1. Core Topology & Queries (Graph API)
 These operations leverage the zero-allocation, 4-pillar primitive integer routing architecture.
-| API Method | HeavyGraph Runtime | HeavyGraph Memory | Ephemeral / Universe (Est.) |
+| API Method | GlobalGraph Runtime | GlobalGraph Memory | Ephemeral / Universe (Est.) |
 |---|---|---|---|
 | nodes(), edges() | O(1) | O(1) | O(1) |
 | node(id), edge(id) | O(1) | O(1) | O(1) |
@@ -20,7 +20,7 @@ These operations leverage the zero-allocation, 4-pillar primitive integer routin
 *Note: edges(n, direction) is O(1) memory only if it returns an unmodifiable view of the internal inEdges/outEdges map. If it allocates a new EdgeSet snapshot, memory becomes O(D).*
 ### 2. Structural Mutations (Graph API)
 These bounds are dictated by the HashMap registry and the cascading topological invariants.
-| API Method | HeavyGraph Runtime | HeavyGraph Memory | Ephemeral / Universe (Est.) |
+| API Method | GlobalGraph Runtime | GlobalGraph Memory | Ephemeral / Universe (Est.) |
 |---|---|---|---|
 | addNode(n) | O(1) amortized | O(1) per node | *Depends on mutability* |
 | linkEdge(e) | O(1) amortized | O(1) per edge | *Depends on mutability* |
@@ -30,7 +30,7 @@ These bounds are dictated by the HashMap registry and the cascading topological 
 *Note: removeNode is O(D) because maintaining mathematical graph purity requires a cascading removal of all incident edges to prevent ghost topology.*
 ### 3. Set-Theoretic Algebra & Traversals (Graph API)
 Because your API explicitly mandates that these operations yield *new, induced subgraphs* to preserve the immutable query algebra, they cannot be zero-allocation.
-| API Method | HeavyGraph Runtime | HeavyGraph Memory | Ephemeral / Universe (Est.) |
+| API Method | GlobalGraph Runtime | GlobalGraph Memory | Ephemeral / Universe (Est.) |
 |---|---|---|---|
 | forward(n), between(n, n) | O(V_sub + E_sub) | O(V_sub + E_sub) | O(V_sub + E_sub) |
 | union(Graph) | O(V + E + S) | O(V_sub + E_sub) | O(V + E + S) |

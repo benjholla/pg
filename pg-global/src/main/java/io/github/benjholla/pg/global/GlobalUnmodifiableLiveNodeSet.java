@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.universe.ephemeral;
+package io.github.benjholla.pg.global;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,15 +16,15 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
-public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
+public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
-    private final Map<Integer, EphemeralNode> nodes;
+    private final Map<Integer, GlobalNode> nodes;
 
-    public EphemeralUnmodifiableLiveNodeSet(
-            Map<Integer, EphemeralNode> nodes,
-            Map<Integer, EphemeralEdge> edges,
-            Map<Integer, EphemeralEdgeSet> inEdges,
-            Map<Integer, EphemeralEdgeSet> outEdges) {
+    public GlobalUnmodifiableLiveNodeSet(
+            Map<Integer, GlobalNode> nodes,
+            Map<Integer, GlobalEdge> edges,
+            Map<Integer, GlobalEdgeSet> inEdges,
+            Map<Integer, GlobalEdgeSet> outEdges) {
         this.nodes = Objects.requireNonNull(nodes);
     }
 
@@ -35,20 +35,20 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet filter(String attribute) {
-        EphemeralNodeSet result = new EphemeralNodeSet();
-        for (EphemeralNode node : nodes.values()) {
+        GlobalNodeSet result = new GlobalNodeSet();
+        for (GlobalNode node : nodes.values()) {
             if (node.attributes().containsKey(attribute)) {
                 result.add(node);
             }
         }
-        return new EphemeralImmutableNodeSet(result);
+        return new GlobalImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet filter(String attribute, AttributeValue... values) {
-        EphemeralNodeSet result = new EphemeralNodeSet();
+        GlobalNodeSet result = new GlobalNodeSet();
         if (attribute != null && values != null) {
-            for (EphemeralNode node : nodes.values()) {
+            for (GlobalNode node : nodes.values()) {
                 AttributeValue attributeValue = node.attributes().get(attribute);
                 if (attributeValue != null) {
                     for (AttributeValue value : values) {
@@ -62,45 +62,45 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
                 }
             }
         }
-        return new EphemeralImmutableNodeSet(result);
+        return new GlobalImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        EphemeralNodeSet result = new EphemeralNodeSet();
+        GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
-            return new EphemeralImmutableNodeSet(result);
+            return new GlobalImmutableNodeSet(result);
         }
-        for (EphemeralNode node : nodes.values()) {
+        for (GlobalNode node : nodes.values()) {
             if (other.contains(node)) {
                 result.add(node);
             }
         }
-        return new EphemeralImmutableNodeSet(result);
+        return new GlobalImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        EphemeralNodeSet result = new EphemeralNodeSet();
-        for (EphemeralNode node : nodes.values()) {
+        GlobalNodeSet result = new GlobalNodeSet();
+        for (GlobalNode node : nodes.values()) {
             if (other == null || !other.contains(node)) {
                 result.add(node);
             }
         }
-        return new EphemeralImmutableNodeSet(result);
+        return new GlobalImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        EphemeralNodeSet result = new EphemeralNodeSet(); result.addAll(nodes.values());
+        GlobalNodeSet result = new GlobalNodeSet(); result.addAll(nodes.values());
         if (other != null) {
             for (Node n : other) {
-                if (n instanceof EphemeralNode) {
+                if (n instanceof GlobalNode) {
                     result.add(n);
                 }
             }
         }
-        return new EphemeralImmutableNodeSet(result);
+        return new GlobalImmutableNodeSet(result);
     }
 
     @Override
@@ -120,8 +120,8 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralNode gn)) return false;
-        return nodes.containsKey(gn.id()) && nodes.get(gn.id()).equals(gn);
+        if (!(obj instanceof GlobalNode gn)) return false;
+        return nodes.containsKey(gn.id());
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public Iterator<Node> iterator() {
         return new Iterator<Node>() {
-            private final Iterator<EphemeralNode> it = nodes.values().iterator();
+            private final Iterator<GlobalNode> it = nodes.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -250,7 +250,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public int hashCode() {
         int h = 0;
-        for (EphemeralNode node : nodes.values()) {
+        for (GlobalNode node : nodes.values()) {
             if (node != null) {
                 h += node.hashCode();
             }

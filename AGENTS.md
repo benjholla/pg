@@ -5,7 +5,7 @@ You are an expert Java systems engineer tasked with implementing a custom, high-
 This library handles the static analysis of massive datasets (e.g., millions of nodes representing ASTs or CFGs). Standard Java graph implementations suffer from severe object-header bloat and pointer-chasing overhead, causing JVM heap exhaustion at scale.
 To solve this, our library uses a **Central Registry Pattern** backed by primitive integer mapping and bitwise arithmetic, ensuring maximum performance and near-zero allocation overhead.
 
-The library fills a critical void between heavy database drivers (like TinkerPop) and purely academic algorithmic libraries (like JGraphT). It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine. It successfully decouples the mathematical contract from the mechanical storage: downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, engines are executing queries using highly defensive, zero-allocation primitive integer maps. The architecture incorporates strict pipeline defenses (e.g., violently rejecting missing anchors or foreign types and avoiding auto-vivification in the core pipeline) to guarantee that if a graph instantiates successfully, its topology is mathematically sound, preventing silent data corruption in complex polyglot environments.
+The library fills a critical void between global database drivers (like TinkerPop) and purely academic algorithmic libraries (like JGraphT). It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine. It successfully decouples the mathematical contract from the mechanical storage: downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, engines are executing queries using highly defensive, zero-allocation primitive integer maps. The architecture incorporates strict pipeline defenses (e.g., violently rejecting missing anchors or foreign types and avoiding auto-vivification in the core pipeline) to guarantee that if a graph instantiates successfully, its topology is mathematically sound, preventing silent data corruption in complex polyglot environments.
 
 **The Long-Term Vision (CHPG & Semantic Projections):** This "Flat Graph" library is the foundational storage engine intended to support advanced program analysis, specifically the discovery and exploitation of "natural projections" (naming conventions, architectural boundaries) as semantic coordinate systems. To support this, the core graph must remain strictly decoupled from any schemas, tag hierarchies, or containment rules. A future "Compound Hierarchical Property Graph" (CHPG) will act as a Semantic Wrapper around this flat graph. The flat graph handles raw state and speed; the future wrapper handles logic and meaning.
 
@@ -14,12 +14,12 @@ The library fills a critical void between heavy database drivers (like TinkerPop
 ## 2. The Multi-Module Ecosystem
 To support both everyday development and massive-scale analysis, the project is divided into four strict modules:
  * **pg-api:** The pure interface layer (Graph, Node, Edge, ElementSet, and the sealed AttributeValue). Contains zero implementation logic and defines identity purely as int id() without prescribing how to assign ids.
- * **pg-heavy:** Depends on pg-api. A heavyweight reference implementation using adjacency lists and standard Java collections.
+ * **pg-global:** Depends on pg-api. A globalweight reference implementation using adjacency lists and standard Java collections.
  * **pg-universe:** Depends on pg-api. The high-scale bitwise engine, Central Registry, Flyweights, and the transactional EphemeralGraph. Manages its own dual-polarity ID generation.
  * **pg-io:** Depends on pg-api. The interoperability hub providing universal importers/exporters. It translates pure graph state into formats like JSON or DOT, and acts as the strict boundary where external presentation logic (like visualization highlighting) is married to the graph data.
 
 ## 3. The Core Architecture: The Universe
-The pg-universe module is centralized. We do not use standalone Graph objects that act as heavy containers.
+The pg-universe module is centralized. We do not use standalone Graph objects that act as global containers.
  * **The Universe (Scoped Registry):** The absolute source of truth. Instantiated normally (new Universe()), allowing multiple isolated universes per JVM.
  * **The Dual-Polarity IdGenerator:** An internal engine owned by the Universe. Issues universally unique integer IDs (positive for persistent, negative for ephemeral). It is strictly hidden from pg-api.
  * **Global Inverted Indices (BitSets):** The Universe maintains global indices for tags and attributes using java.util.BitSet.
@@ -28,7 +28,7 @@ The pg-universe module is centralized. We do not use standalone Graph objects th
 ## 4. Elements, Identity, & The Flyweight Pattern
  * **Interfaces over Base Classes:** Node and Edge are strictly interfaces extending GraphElement.
  * **Two Flavors (Memory Layouts):** Implementations are split to guarantee zero memory bloat during read operations.
-   * **Heavyweights (EphemeralNode / EphemeralEdge):** Hold local HashMaps and HashSets for state tracking.
+   * **Globalweights (EphemeralNode / EphemeralEdge):** Hold local HashMaps and HashSets for state tracking.
    * **Flyweights (UniverseNode / UniverseEdge):** Created dynamically during the read-phase. Ultra-lean wrappers containing solely final int id and final Universe universe. Zero local collections.
  * **Primitive Identity Enforcement:** The identity of any element is strictly a primitive int. **Do not wrap the ID in a record, class, or ElementId object.** This is mandatory to prevent object-header bloat and to allow zero-allocation IntStream processing.
  * **ID Polarity as State:** The sign bit of the primitive int acts as the state discriminator. Positive IDs are Persistent/Universe elements. Negative IDs are Transactional/Ephemeral elements.
@@ -103,8 +103,8 @@ Clean up after yourself! Before opening a PR/MR, ensure no temporary or incident
 
 ### ⚙️ SYSTEM ARCHITECTURE & BOUNDARY CONSTRAINTS FOR pg GRAPH ECOSYSTEM
 **1. Architecture & Cross-Contamination Prevention**
-The engine uses primitive ID-based routing, not standard object references. The generic Node and Edge interfaces from pg-api are shared across both the pg-heavy (lightweight, globally unique IDs) and pg-universe (bitwise, locally scoped IDs) implementations.
- * **Strict Type Borders:** You must use explicit instanceof checks (e.g., node instanceof HeavyNode) to actively reject foreign implementations before extracting primitive IDs for internal maps or arrays.
+The engine uses primitive ID-based routing, not standard object references. The generic Node and Edge interfaces from pg-api are shared across both the pg-global (lightweight, globally unique IDs) and pg-universe (bitwise, locally scoped IDs) implementations.
+ * **Strict Type Borders:** You must use explicit instanceof checks (e.g., node instanceof GlobalNode) to actively reject foreign implementations before extracting primitive IDs for internal maps or arrays.
  * **Avoid Generics:** Do not introduce generics to pg-api to solve type safety. Keep the API monomorphic and rely on runtime type checks. Modern JVM polymorphic inline caches (PICs) will optimize these checks away in hot loops.
 **2. Standardizing Collections (Composition over Inheritance)**
 When implementing custom interfaces like NodeSet or EdgeSet, you must use **composition** (wrapping a strictly-typed java.util.HashSet or java.util.BitSet) rather than extending standard collections.
@@ -119,14 +119,14 @@ Graph traversals generate immense Garbage Collection (GC) pressure via nested lo
  * **Direct Iterator Delegation:** When implementing iterator(), do not instantiate anonymous wrapper classes. Because the boundary checks on .add() mathematically guarantee internal type safety, you must use a double-cast (e.g., @SuppressWarnings("unchecked") return (Iterator<Node>) (Iterator<?>) internalSet.iterator();) to hand the developer the JDK's internal iterator directly, ensuring zero object allocation in hot loops.
 
 ### ⚙️ SYSTEM ARCHITECTURE & BOUNDARY CONSTRAINTS FOR GRAPH IMPLEMENTATIONS (UPDATED)
-This brief governs the internal data structures, ID-based routing, and boundary validation philosophy for concrete Graph implementations (e.g., HeavyGraph, EphemeralGraph) within the pg ecosystem.
+This brief governs the internal data structures, ID-based routing, and boundary validation philosophy for concrete Graph implementations (e.g., GlobalGraph, EphemeralGraph) within the pg ecosystem.
 #### 1. Internal Structure & Primitive Routing (The ID Mandate)
 Concrete graph engines discard object wrappers and route entirely via primitive integer IDs to achieve O(1) performance and prepare for serialization (e.g., pg-io).
- * **The 4-Pillar Adjacency Structure (e.g., HeavyGraph):** Internally, the graph must map primitive IDs to their corresponding elements. Do not use generic Node or Edge objects as keys.
-   * Map<Integer, HeavyNode> nodes (Global Node Registry)
-   * Map<Integer, HeavyEdge> edges (Global Edge Registry)
-   * Map<Integer, HeavyEdgeSet> outEdges (Outbound Adjacency)
-   * Map<Integer, HeavyEdgeSet> inEdges (Inbound Adjacency)
+ * **The 4-Pillar Adjacency Structure (e.g., GlobalGraph):** Internally, the graph must map primitive IDs to their corresponding elements. Do not use generic Node or Edge objects as keys.
+   * Map<Integer, GlobalNode> nodes (Global Node Registry)
+   * Map<Integer, GlobalEdge> edges (Global Edge Registry)
+   * Map<Integer, GlobalEdgeSet> outEdges (Outbound Adjacency)
+   * Map<Integer, GlobalEdgeSet> inEdges (Inbound Adjacency)
  * **Primitive Extraction:** The engine must actively validate an element's type *before* extracting its .id() to prevent silent routing failures or ID collisions.
 #### 2. The API Philosophy: Command-Query Separation
 Graph boundaries follow a strict rule to ensure standard Java collection compatibility while protecting internal adjacency lists: **Reads are safe; Writes and Anchors are strict.**
@@ -135,12 +135,12 @@ Graph boundaries follow a strict rule to ensure standard Java collection compati
  * **Traversal Anchors (Violent Fail):** Operations that anchor a topological search (e.g., forwardStep, outEdges, neighbors). The anchor element is a precondition, not a query parameter. Supplying a foreign anchor must immediately throw an IllegalArgumentException to prevent logic masking in downstream algorithms.
 #### 3. Differentiated Engine Guardrails
 Validation strictness scales based on the ID generation strategy of the specific engine module.
- * **pg-heavy (Type Validation Only):** Because HeavyGraph utilizes a globally unique static singleton for ID generation, cross-instance collisions are impossible. Methods only require a strict type check (e.g., instanceof HeavyNode) to reject cross-engine contamination.
+ * **pg-global (Type Validation Only):** Because GlobalGraph utilizes a globally unique static singleton for ID generation, cross-instance collisions are impossible. Methods only require a strict type check (e.g., instanceof GlobalNode) to reject cross-engine contamination.
  * **pg-universe (Type + Instance Validation):** Because EphemeralGraph generates locally scoped negative IDs (starting at -1), different instances will issue identical IDs. Methods must strictly validate type (instanceof EphemeralNode) **and** instance ownership (node.graph() == this) to prevent cross-universe adjacency corruption.
 #### 4. Encapsulation & Shielded Views
 The Graph is the absolute source of truth for topology and must heavily encapsulate its integer-backed maps.
  * **No Raw Leaks:** When satisfying API contracts like graph.nodes() or returning the result of a traversal, the graph must never return its internal java.util.Collection or java.util.Map.values().
- * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., HeavyNodeSet, HeavyEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the graph's internal state.
+ * **Safe Wrapping:** Internal values must be dynamically wrapped and returned as the module's strictly bounded custom sets (e.g., GlobalNodeSet, GlobalEdgeSet). This preserves the pg-api interface while preventing API consumers from using standard Java collection methods to bypass validation and corrupt the graph's internal state.
 
 #### 5. Graph Collection Wrappers (Immutable vs Live)
 The Graph API uses distinct terminology to clarify behavior when returning collections:
