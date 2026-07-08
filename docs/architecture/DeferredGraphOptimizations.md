@@ -10,7 +10,7 @@ If your AST nodes track an estimatedSize (e.g., |A \cup B| \approx |A| + |B|; |A
 In set math, the empty set acts like multiplying by zero. If your cardinality tracking determines that an intermediate step yields exactly zero elements, the entire downstream query can be aborted.
  * If a filter is applied and results in an empty set, the AST node becomes an EmptyGraphOp.
  * Any operation against an EmptyGraphOp—whether it is .forward(), .intersection(), or .between()—is instantly collapsed into EmptyGraphOp.
- * When materialize() is finally called, the engine doesn't even touch the pg-universe backend; it instantly returns an empty HeavyGraph or EphemeralGraph.
+ * When materialize() is finally called, the engine doesn't even touch the pg-universe backend; it instantly returns an empty GlobalGraph or EphemeralGraph.
 ### 3. Algebraic Simplification
 The AST builder can inspect the immediate parent node and collapse redundant operations before they ever make it into the execution plan.
  * **Idempotence:** graph.union(A).union(A) is collapsed to graph.union(A).
@@ -18,7 +18,7 @@ The AST builder can inspect the immediate parent node and collapse redundant ope
  * **Trivial Identity:** A.intersection(A) becomes A. A.difference(EmptySet) becomes A.
 ### 4. Zero-Overhead Memory Pre-Allocation
 This is a massive Java-specific optimization that tracking sizes unlocks.
-When materialize() is called and the engine decides to stamp out a new HeavyGraph (which is backed by HashMaps/HashSets), it normally starts with standard JDK default sizes. If your query results in 500,000 nodes, the JDK will violently halt your program dozens of times to rehash and resize those internal arrays.
+When materialize() is called and the engine decides to stamp out a new GlobalGraph (which is backed by HashMaps/HashSets), it normally starts with standard JDK default sizes. If your query results in 500,000 nodes, the JDK will violently halt your program dozens of times to rehash and resize those internal arrays.
 Because your DeferredGraph tracked the estimatedSize up the AST, when it calls GraphFactory.createGraph(), it can pass that integer down. The factory pre-allocates the exact required contiguous memory block (size / 0.75 load factor) on day one, completely eliminating rehashing overhead.
 ### 5. Filter Pushdown
 If the AST contains a structural traversal followed by a filter (e.g., graph.nodes().filter(hasTag("vulnerable")).forward()), the optimizer can push that filter as far up the execution tree as mathematically possible. It forces the engine to apply the cheap boolean checks *before* it calculates the expensive topological .forward() steps.
@@ -95,7 +95,7 @@ public NodeSet finalizeSet(Set<Node> temporaryBuffer) {
     if (temporaryBuffer.size() == 1) {
         return new SingletonNodeSet(temporaryBuffer.iterator().next());
     }
-    return new HeavyNodeSet(temporaryBuffer);
+    return new GlobalNodeSet(temporaryBuffer);
 }
 
 ```
