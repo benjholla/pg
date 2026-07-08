@@ -9,7 +9,7 @@ The EphemeralGraph is designed as an infinitely scalable, high-speed mutation sc
 Because nodes lack a parent reference, the engine protects the topology by validating the origin of the elements at the macro-graph level during set algebra.
  * **Zero-Cloning Subgraphs:** When an operation like forward() or induce() spawns a subgraph, the elements are not cloned. The origin graph simply passes its EphemeralIdGenerator reference into the subgraph's private constructor, perfectly preserving the ID lineage.
  * **The Lineage Validator:** A centralized internal method (validateLineage(Graph... graphs)) intercepts all multi-graph algebra (e.g., union(), intersection()).
- * **Hard Isolation:** The validator blocks operations between disparate engines (e.g., throwing an exception if an analyst tries to union an EphemeralGraph directly with a HeavyGraph), and blocks operations between independent ephemeral sandboxes by verifying this.idGenerator == other.idGenerator.
+ * **Hard Isolation:** The validator blocks operations between disparate engines (e.g., throwing an exception if an analyst tries to union an EphemeralGraph directly with a GlobalGraph), and blocks operations between independent ephemeral sandboxes by verifying this.idGenerator == other.idGenerator.
 ## 3. Final Justification: The Rejection of Bit-Packing
 Initially, bit-packing (embedding a unique "Sandbox ID" into the upper bits of the 32-bit integer) was considered to physically prevent single-element cross-sandbox contamination. This approach was officially rejected in favor of pure, unbounded negative counters for the following critical reasons:
 ### A. The Scalability Bottleneck (The Fatal Flaw)

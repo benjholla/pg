@@ -1,4 +1,4 @@
-package io.github.benjholla.pg.universe.ephemeral;
+package io.github.benjholla.pg.global;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,15 +16,15 @@ import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeSet;
 
-public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
+public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
-    private final Map<Integer, EphemeralEdge> edges;
+    private final Map<Integer, GlobalEdge> edges;
 
-    public EphemeralUnmodifiableLiveEdgeSet(
-            Map<Integer, EphemeralNode> nodes,
-            Map<Integer, EphemeralEdge> edges,
-            Map<Integer, EphemeralEdgeSet> inEdges,
-            Map<Integer, EphemeralEdgeSet> outEdges) {
+    public GlobalUnmodifiableLiveEdgeSet(
+            Map<Integer, GlobalNode> nodes,
+            Map<Integer, GlobalEdge> edges,
+            Map<Integer, GlobalEdgeSet> inEdges,
+            Map<Integer, GlobalEdgeSet> outEdges) {
         this.edges = Objects.requireNonNull(edges);
     }
 
@@ -35,20 +35,20 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet filter(String attribute) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (EphemeralEdge edge : edges.values()) {
+        GlobalEdgeSet result = new GlobalEdgeSet();
+        for (GlobalEdge edge : edges.values()) {
             if (edge.attributes().containsKey(attribute)) {
                 result.add(edge);
             }
         }
-        return new EphemeralImmutableEdgeSet(result);
+        return new GlobalImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet filter(String attribute, AttributeValue... values) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        GlobalEdgeSet result = new GlobalEdgeSet();
         if (attribute != null && values != null) {
-            for (EphemeralEdge edge : edges.values()) {
+            for (GlobalEdge edge : edges.values()) {
                 AttributeValue attributeValue = edge.attributes().get(attribute);
                 if (attributeValue != null) {
                     for (AttributeValue value : values) {
@@ -62,45 +62,45 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new EphemeralImmutableEdgeSet(result);
+        return new GlobalImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        GlobalEdgeSet result = new GlobalEdgeSet();
         if (other == null || other.isEmpty()) {
-            return new EphemeralImmutableEdgeSet(result);
+            return new GlobalImmutableEdgeSet(result);
         }
-        for (EphemeralEdge edge : edges.values()) {
+        for (GlobalEdge edge : edges.values()) {
             if (other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return new EphemeralImmutableEdgeSet(result);
+        return new GlobalImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (EphemeralEdge edge : edges.values()) {
+        GlobalEdgeSet result = new GlobalEdgeSet();
+        for (GlobalEdge edge : edges.values()) {
             if (other == null || !other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return new EphemeralImmutableEdgeSet(result);
+        return new GlobalImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
+        GlobalEdgeSet result = new GlobalEdgeSet(); result.addAll(edges.values());
         if (other != null) {
             for (Edge e : other) {
-                if (e instanceof EphemeralEdge) {
+                if (e instanceof GlobalEdge) {
                     result.add(e);
                 }
             }
         }
-        return new EphemeralImmutableEdgeSet(result);
+        return new GlobalImmutableEdgeSet(result);
     }
 
     @Override
@@ -120,8 +120,8 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralEdge ge)) return false;
-        return edges.containsKey(ge.id()) && edges.get(ge.id()).equals(ge);
+        if (!(obj instanceof GlobalEdge ge)) return false;
+        return edges.containsKey(ge.id());
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     @Override
     public Iterator<Edge> iterator() {
         return new Iterator<Edge>() {
-            private final Iterator<EphemeralEdge> it = edges.values().iterator();
+            private final Iterator<GlobalEdge> it = edges.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -250,7 +250,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     @Override
     public int hashCode() {
         int h = 0;
-        for (EphemeralEdge edge : edges.values()) {
+        for (GlobalEdge edge : edges.values()) {
             if (edge != null) {
                 h += edge.hashCode();
             }
