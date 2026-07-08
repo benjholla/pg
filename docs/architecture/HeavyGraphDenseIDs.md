@@ -83,3 +83,27 @@ By manually managing primitive arrays (or utilizing primitive collection librari
 1.  **Infinite Mutability:** Analysts can add nodes and edges dynamically forever without pre-calculating sizes.
 2.  **Zero Boxing:** Adjacency checks and ID storage remain pure primitive math.
 3.  **Perfect Density:** The arrays remain contiguous, 0-indexed, and perfectly packed for the CPU cache, preserving maximum traversal speed.
+
+## Clarification: Taxonomy and the Multi-Universe Ecosystem
+
+To resolve semantic drift and create a clear mental model, the terminology around `HeavyGraph` and the module structure is redefined as follows:
+
+### 1. `pg-global`: The Unified Baseline
+
+*   **Renaming:** `HeavyGraph` (in `pg-heavy`) will transition to `GlobalGraph` (in `pg-global`).
+*   **Global is implicitly 1 universe:** A developer immediately understands that if they instantiate two `GlobalGraph`s, they are pulling from the same global sequence. Unions will never collide, merging is effortless, and they don't need to worry about lineage validation.
+*   **The Split Singleton:** It still respects the domain boundary (separate global Node and Edge counters), but remains the forgiving, easy-to-use, object-oriented baseline.
+
+### 2. `pg-universe`: The Multi-Universe Engine
+
+This perfectly frames `pg-universe` as the domain of strict, high-performance isolation. If a developer needs highly parallelized graph construction, isolated namespaces, or multi-stage semantic projections, they graduate from `pg-global` to `pg-universe`.
+
+### 3. The Array-Backed Ephemeral Variant
+
+Inside `pg-universe`, we can add another variant of `EphemeralGraph` that uses arrays. This bridges the gap between temporary mutations and raw speed, offering dynamic primitive array performance while remaining strictly within the isolated universe lifecycle.
+
+*   **Array Index Masking:** Because standard `EphemeralGraph` IDs are negative (-1, -2, -3), you cannot plug them directly into a Java array. You apply a mathematical mask to convert the negative ID into a 0-based array index.
+    *   **The Math:** `int arrayIndex = Math.abs(id) - 1;`
+    *   **The Result:** ID -1 routes to array index 0. ID -2 routes to array index 1. ID -100 routes to array index 99.
+
+This absolute-value math provides the L1 cache speed of primitive arrays while maintaining the strict negative-ID firewall that protects the UniverseGraph from contamination. The specific class name for this new array variant (e.g., `DenseEphemeralGraph` or managed via an enum/flag on the factory) will align with the factory-driven creation patterns of the ecosystem.
