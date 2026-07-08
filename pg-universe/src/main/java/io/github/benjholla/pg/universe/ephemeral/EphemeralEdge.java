@@ -13,11 +13,11 @@ public final class EphemeralEdge implements Edge {
     private Node from;
     private Node to;
 
-    public EphemeralEdge(Node from, Node to) {
+    public EphemeralEdge(int id, Node from, Node to) {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Edge endpoints cannot be null.");
         }
-        this.id = EphemeralIdGenerator.INSTANCE.create();
+        this.id = id;
         this.tags = new EphemeralTagSet();
         this.attributes = new EphemeralAttributeMap();
         this.from = from;

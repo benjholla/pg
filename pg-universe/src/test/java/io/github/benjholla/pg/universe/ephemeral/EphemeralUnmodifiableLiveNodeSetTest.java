@@ -15,12 +15,13 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testUnsupportedOperations() {
+        EphemeralGraph graph = new EphemeralGraph();
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
         EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
-        EphemeralNode n = new EphemeralNode();
+        EphemeralNode n = graph.createNode();
 
         assertThrows(UnsupportedOperationException.class, () -> set.add(n));
         assertThrows(UnsupportedOperationException.class, () -> set.remove(n));
@@ -40,23 +41,24 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testDelegatedMethods() {
+        EphemeralGraph graph = new EphemeralGraph();
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
-        EphemeralNode n1 = new EphemeralNode();
+        EphemeralNode n1 = graph.createNode();
         map.put(n1.id(), n1);
         EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
 
         assertTrue(set.contains(n1));
-        assertFalse(set.contains(new EphemeralNode()));
+        assertFalse(set.contains(graph.createNode()));
         assertFalse(set.contains(new Object()));
 
         assertEquals(1, set.size());
         assertFalse(set.isEmpty());
         assertTrue(set.containsAll(Collections.singletonList(n1)));
 
-        EphemeralNode missing = new EphemeralNode();
+        EphemeralNode missing = graph.createNode();
         assertFalse(set.containsAll(Arrays.asList(n1, missing)));
 
         assertEquals(n1, set.iterator().next());
@@ -100,14 +102,15 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testSetTheoreticAndFilteringMethods() {
+        EphemeralGraph graph = new EphemeralGraph();
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
-        EphemeralNode n1 = new EphemeralNode();
+        EphemeralNode n1 = graph.createNode();
         n1.attributes().put("type", "A");
         n1.attributes().put("val", 1);
-        EphemeralNode n2 = new EphemeralNode();
+        EphemeralNode n2 = graph.createNode();
         n2.attributes().put("type", "B");
         n2.attributes().put("val", 2);
 
@@ -145,7 +148,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         NodeSet unionEmpty = set.union(null);
         assertEquals(2, unionEmpty.size());
 
-        EphemeralNode n3 = new EphemeralNode();
+        EphemeralNode n3 = graph.createNode();
         NodeSet union = set.union(Collections.singletonList(n3));
         assertEquals(3, union.size());
         assertTrue(union.contains(n3));

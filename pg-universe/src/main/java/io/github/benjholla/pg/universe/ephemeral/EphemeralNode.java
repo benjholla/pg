@@ -10,8 +10,8 @@ public final class EphemeralNode implements Node {
     private final TagSet tags;
     private final AttributeMap attributes;
 
-    public EphemeralNode() {
-        this.id = EphemeralIdGenerator.INSTANCE.create();
+    public EphemeralNode(int id) {
+        this.id = id;
         this.tags = new EphemeralTagSet();
         this.attributes = new EphemeralAttributeMap();
     }
