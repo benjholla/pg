@@ -17,7 +17,7 @@ public final class HeavyEdge implements Edge {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Edge endpoints cannot be null.");
         }
-        this.id = HeavyIdGenerator.INSTANCE.create();
+        this.id = HeavyIdGenerator.INSTANCE.createEdgeId();
         this.tags = new HeavyTagSet();
         this.attributes = new HeavyAttributeMap();
         this.from = from;
