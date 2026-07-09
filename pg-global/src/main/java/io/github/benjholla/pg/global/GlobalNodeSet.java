@@ -61,7 +61,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
     }
 
     @Override
@@ -82,21 +82,21 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
-            return new GlobalImmutableNodeSet(result);
+            return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
         }
         for (GlobalNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
     }
 
     @Override
@@ -121,7 +121,7 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
     }
 
     @Override

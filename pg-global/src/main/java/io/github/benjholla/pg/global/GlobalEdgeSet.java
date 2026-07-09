@@ -61,7 +61,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
     }
 
     @Override
@@ -82,21 +82,21 @@ public final class GlobalEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (other == null || other.isEmpty()) {
-            return new GlobalImmutableEdgeSet(result);
+            return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
         }
         for (GlobalEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
     }
 
     @Override
@@ -121,7 +121,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 }
             }
         }
-        return new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
     }
 
     @Override
