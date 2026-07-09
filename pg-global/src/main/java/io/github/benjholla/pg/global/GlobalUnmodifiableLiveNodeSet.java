@@ -29,6 +29,15 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet toImmutable() {
+        if (nodes.isEmpty()) return NodeSet.empty();
+        if (nodes.size() == 1) return new GlobalImmutableSingletonNodeSet(nodes.values().iterator().next());
+        GlobalNodeSet copy = new GlobalNodeSet();
+        copy.addAll(nodes.values());
+        return new GlobalImmutableNodeSet(copy);
+    }
+
+    @Override
     public Optional<Node> one() {
         return nodes.values().stream().map(n -> (Node) n).findAny();
     }

@@ -21,6 +21,11 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        return this;
+    }
+
+    @Override
     public int size() {
         return 1;
     }
@@ -45,7 +50,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
-        return new GlobalImmutableEdgeSet(new GlobalEdgeSet()); // return empty edge set
+        return EdgeSet.empty(); // return empty edge set
     }
 
     @Override
@@ -58,7 +63,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
                 }
             }
         }
-        return new GlobalImmutableEdgeSet(new GlobalEdgeSet()); // return empty edge set
+        return EdgeSet.empty(); // return empty edge set
     }
 
     @Override
@@ -66,13 +71,13 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
         if (other.contains(element)) {
             return this;
         }
-        return new GlobalImmutableEdgeSet(new GlobalEdgeSet());
+        return EdgeSet.empty();
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
         if (other.contains(element)) {
-            return new GlobalImmutableEdgeSet(new GlobalEdgeSet());
+            return EdgeSet.empty();
         }
         return this;
     }

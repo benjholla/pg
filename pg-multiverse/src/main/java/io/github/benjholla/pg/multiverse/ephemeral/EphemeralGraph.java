@@ -22,7 +22,7 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public final class EphemeralGraph implements Graph, EphemeralFactory {
 
-	private static final EdgeSet EMPTY_EDGES = new EphemeralImmutableEdgeSet(new EphemeralEdgeSet());
+	private static final EdgeSet EMPTY_EDGES = EdgeSet.empty();
 
 	private Map<Integer, EphemeralNode> nodes;
 	private Map<Integer, EphemeralEdge> edges;
