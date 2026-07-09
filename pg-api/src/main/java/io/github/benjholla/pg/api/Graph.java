@@ -492,10 +492,6 @@ public interface Graph {
      */
     public Graph induce(EdgeSet edges);
 
-    /**
-     * A convenience method for nodes(String... tags)
-     */
-    public NodeSet nodes(String... tags);
 
     /**
      * Returns the set of nodes from this graph that are tagged with all of the
@@ -509,10 +505,6 @@ public interface Graph {
      */
     public NodeSet nodesTaggedWithAll(String... tags);
 
-    /**
-     * A convenience method for edges(String... tags)
-     */
-    public EdgeSet edges(String... tags);
 
     /**
      * Returns the set of edges from this graph that are tagged with any of the
@@ -526,29 +518,9 @@ public interface Graph {
      */
     public EdgeSet edgesTaggedWithAll(String... tags);
 
-    /**
-     * Select subgraph containing edges that have the given attribute key defined,
-     * with any value.
-     */
-    public EdgeSet selectEdges(String attribute);
 
-    /**
-     * Select subgraph contain edges that have the given attribute key with any
-     * value specified in the given values.
-     */
-    public EdgeSet selectEdges(String attribute, AttributeValue... values);
 
-    /**
-     * Select subgraph containing nodes that have a given key defined, with any
-     * value.
-     */
-    public NodeSet selectNodes(String attribute);
 
-    /**
-     * Select subgraph containing nodes that have a given key with any value
-     * specified in the given values.
-     */
-    public NodeSet selectNodes(String attribute, AttributeValue... values);
 
     /**
      * Returns true if there is at least one edge originating at the source and terminating at the target.

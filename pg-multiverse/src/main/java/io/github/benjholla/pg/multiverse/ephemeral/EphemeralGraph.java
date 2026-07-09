@@ -945,32 +945,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 		return result;
 	}
 
-	@Override
-	public EdgeSet selectEdges(String attribute){
-		return edges().filter(attribute);
-	}
-
-	@Override
-	public EdgeSet selectEdges(String attribute, AttributeValue... values){
-		return edges().filter(attribute, values);
-	}
-
-	@Override
-	public NodeSet selectNodes(String attribute){
-		return nodes().filter(attribute);
-	}
-
-	@Override
-	public NodeSet selectNodes(String attribute, AttributeValue... values){
-		return nodes().filter(attribute, values);
-	}
-
-	@Override
-	public NodeSet nodes(String... tags){
-		return nodesTaggedWithAny(tags);
-	}
-
-	@Override
+@Override
 	public NodeSet nodesTaggedWithAny(String... tags){
         NodeSet result = new EphemeralNodeSet();
         for(Node node : nodes()){
@@ -1002,12 +977,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return result;
 	}
 
-	@Override
-	public EdgeSet edges(String... tags){
-	    return edgesTaggedWithAny(tags);
-	}
-
-	@Override
+@Override
 	public EdgeSet edgesTaggedWithAny(String... tags){
         EdgeSet result = new EphemeralEdgeSet();
         for(Edge edge : edges.values()){
