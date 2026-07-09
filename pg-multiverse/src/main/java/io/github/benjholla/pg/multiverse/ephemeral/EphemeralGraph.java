@@ -1040,8 +1040,18 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	}
 
 	@Override
+	public NodeSet singleton(Node node) {
+		return new EphemeralImmutableSingletonNodeSet((EphemeralNode) node);
+	}
+
+	@Override
 	public EphemeralNode createNode() {
 		return new EphemeralNode(idGenerator.createNodeId());
+	}
+
+	@Override
+	public EdgeSet singleton(Edge edge) {
+		return new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) edge);
 	}
 
 	@Override
@@ -1085,7 +1095,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 				result.add(e);
 			}
 		}
-		return result.isEmpty() ? EMPTY_EDGES : new EphemeralImmutableEdgeSet(result);
+		return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
 	}
 
 	@Override
