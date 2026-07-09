@@ -1,6 +1,6 @@
 # Performance Goals
 
-Here is the performance matrix for the pg-api implementations provided in pg-global and pg-universe.
+Here is the performance matrix for the pg-api implementations provided in pg-global and pg-multiverse.
 
 **Variables Key:**
  * **V** = Total number of nodes

@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = 'pg'
-include 'pg-api', 'pg-global', 'pg-universe'
+include 'pg-api', 'pg-global', 'pg-multiverse'

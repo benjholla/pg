@@ -15,11 +15,11 @@ The library fills a critical void between heavy database drivers (like TinkerPop
 To support both everyday development and massive-scale analysis, the project is divided into four strict modules:
  * **pg-api:** The pure interface layer (Graph, Node, Edge, ElementSet, and the sealed AttributeValue). Contains zero implementation logic and defines identity purely as int id() without prescribing how to assign ids.
  * **pg-global:** Depends on pg-api. A heavyweight reference implementation using adjacency lists and standard Java collections.
- * **pg-universe:** Depends on pg-api. The high-scale bitwise engine, Central Registry, Flyweights, and the transactional EphemeralGraph. Manages its own dual-polarity ID generation.
+ * **pg-multiverse:** Depends on pg-api. The high-scale bitwise engine, Central Registry, Flyweights, and the transactional EphemeralGraph. Manages its own dual-polarity ID generation.
  * **pg-io:** Depends on pg-api. The interoperability hub providing universal importers/exporters. It translates pure graph state into formats like JSON or DOT, and acts as the strict boundary where external presentation logic (like visualization highlighting) is married to the graph data.
 
 ## 3. The Core Architecture: The Universe
-The pg-universe module is centralized. We do not use standalone Graph objects that act as heavy containers.
+The pg-multiverse module is centralized. We do not use standalone Graph objects that act as heavy containers.
  * **The Universe (Scoped Registry):** The absolute source of truth. Instantiated normally (new Universe()), allowing multiple isolated universes per JVM.
  * **The Dual-Polarity IdGenerator:** An internal engine owned by the Universe. Issues universally unique integer IDs (positive for persistent, negative for ephemeral). It is strictly hidden from pg-api.
  * **Global Inverted Indices (BitSets):** The Universe maintains global indices for tags and attributes using java.util.BitSet.
@@ -66,7 +66,7 @@ Querying relies on a fluent, domain-specific language bridging bitwise math and 
  * **Stream Integration:** Supports .stream() and .parallelStream(). Enforces modCount validation.
 
 ## 8. Serialization & The pgv Visualization Pipeline
- * **Zero-Copy Snapshots (pg-universe):** The internal binary serializer lives inside pg-universe. It uses java.nio.channels.FileChannel to dump raw long[] arrays directly from the Universe BitSets to disk. Positive IDs are preserved; ephemeral IDs are dropped.
+ * **Zero-Copy Snapshots (pg-multiverse):** The internal binary serializer lives inside pg-multiverse. It uses java.nio.channels.FileChannel to dump raw long[] arrays directly from the Universe BitSets to disk. Positive IDs are preserved; ephemeral IDs are dropped.
  * **Interactive Visualization (pgv & pg-io):** The library supports a separate TypeScript visualizer (pgv) intended for embedding in Jupyter Notebooks, VSCode, and web apps.
    * The pure graph elements (pg-api) have strictly **zero knowledge** of UI, colors, or presentation logic.
    * The domain-specific analysis code running the queries defines a "Highlight Scheme" (e.g., CSS-like rules mapping tags/attributes to colors and shapes).
@@ -103,7 +103,7 @@ Clean up after yourself! Before opening a PR/MR, ensure no temporary or incident
 
 ### ⚙️ SYSTEM ARCHITECTURE & BOUNDARY CONSTRAINTS FOR pg GRAPH ECOSYSTEM
 **1. Architecture & Cross-Contamination Prevention**
-The engine uses primitive ID-based routing, not standard object references. The generic Node and Edge interfaces from pg-api are shared across both the pg-global (lightweight, globally unique IDs) and pg-universe (bitwise, locally scoped IDs) implementations.
+The engine uses primitive ID-based routing, not standard object references. The generic Node and Edge interfaces from pg-api are shared across both the pg-global (lightweight, globally unique IDs) and pg-multiverse (bitwise, locally scoped IDs) implementations.
  * **Strict Type Borders:** You must use explicit instanceof checks (e.g., node instanceof GlobalNode) to actively reject foreign implementations before extracting primitive IDs for internal maps or arrays.
  * **Avoid Generics:** Do not introduce generics to pg-api to solve type safety. Keep the API monomorphic and rely on runtime type checks. Modern JVM polymorphic inline caches (PICs) will optimize these checks away in hot loops.
 **2. Standardizing Collections (Composition over Inheritance)**
@@ -136,7 +136,7 @@ Graph boundaries follow a strict rule to ensure standard Java collection compati
 #### 3. Differentiated Engine Guardrails
 Validation strictness scales based on the ID generation strategy of the specific engine module.
  * **pg-global (Type Validation Only):** Because GlobalGraph utilizes a globally unique static singleton for ID generation, cross-instance collisions are impossible. Methods only require a strict type check (e.g., instanceof GlobalNode) to reject cross-engine contamination.
- * **pg-universe (Type + Instance Validation):** Because EphemeralGraph generates locally scoped negative IDs (starting at -1), different instances will issue identical IDs. Methods must strictly validate type (instanceof EphemeralNode) **and** instance ownership (node.graph() == this) to prevent cross-universe adjacency corruption.
+ * **pg-multiverse (Type + Instance Validation):** Because EphemeralGraph generates locally scoped negative IDs (starting at -1), different instances will issue identical IDs. Methods must strictly validate type (instanceof EphemeralNode) **and** instance ownership (node.graph() == this) to prevent cross-universe adjacency corruption.
 #### 4. Encapsulation & Shielded Views
 The Graph is the absolute source of truth for topology and must heavily encapsulate its integer-backed maps.
  * **No Raw Leaks:** When satisfying API contracts like graph.nodes() or returning the result of a traversal, the graph must never return its internal java.util.Collection or java.util.Map.values().
