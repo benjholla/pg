@@ -29,6 +29,15 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        if (edges.isEmpty()) return EdgeSet.empty();
+        if (edges.size() == 1) return new GlobalImmutableSingletonEdgeSet(edges.values().iterator().next());
+        GlobalEdgeSet copy = new GlobalEdgeSet();
+        copy.addAll(edges.values());
+        return new GlobalImmutableEdgeSet(copy);
+    }
+
+    @Override
     public Optional<Edge> one() {
         return edges.values().stream().map(e -> (Edge) e).findAny();
     }

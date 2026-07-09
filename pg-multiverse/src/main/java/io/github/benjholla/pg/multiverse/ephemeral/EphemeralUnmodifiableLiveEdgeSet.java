@@ -29,6 +29,15 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        if (edges.isEmpty()) return EdgeSet.empty();
+        if (edges.size() == 1) return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next());
+        EphemeralEdgeSet copy = new EphemeralEdgeSet();
+        copy.addAll(edges.values());
+        return new EphemeralImmutableEdgeSet(copy);
+    }
+
+    @Override
     public Optional<Edge> one() {
         return edges.values().stream().map(e -> (Edge) e).findAny();
     }

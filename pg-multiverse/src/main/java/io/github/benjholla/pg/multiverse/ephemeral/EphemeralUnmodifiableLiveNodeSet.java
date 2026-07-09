@@ -29,6 +29,15 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet toImmutable() {
+        if (nodes.isEmpty()) return NodeSet.empty();
+        if (nodes.size() == 1) return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next());
+        EphemeralNodeSet copy = new EphemeralNodeSet();
+        copy.addAll(nodes.values());
+        return new EphemeralImmutableNodeSet(copy);
+    }
+
+    @Override
     public Optional<Node> one() {
         return nodes.values().stream().map(n -> (Node) n).findAny();
     }

@@ -21,6 +21,11 @@ public class GlobalImmutableNodeSet implements NodeSet {
         this.nodes = nodes;
     }
 
+    @Override
+    public NodeSet toImmutable() {
+        return this;
+    }
+
     public Optional<Node> one() {
         return nodes.one();
     }

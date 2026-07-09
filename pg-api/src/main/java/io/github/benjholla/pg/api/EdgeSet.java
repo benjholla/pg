@@ -5,6 +5,15 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface EdgeSet extends Set<Edge> {
+
+    EdgeSet EMPTY = new ImmutableEmptyEdgeSet();
+
+    static EdgeSet empty() {
+        return EMPTY;
+    }
+
+    EdgeSet toImmutable();
+
     Optional<Edge> one();
     EdgeSet filter(String attribute);
     EdgeSet filter(String attribute, AttributeValue... values);

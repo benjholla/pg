@@ -21,6 +21,11 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        return this;
+    }
+
+    @Override
     public int size() {
         return 1;
     }
@@ -45,7 +50,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
-        return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet()); // return empty edge set
+        return EdgeSet.empty(); // return empty edge set
     }
 
     @Override
@@ -58,7 +63,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
                 }
             }
         }
-        return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet()); // return empty edge set
+        return EdgeSet.empty(); // return empty edge set
     }
 
     @Override
@@ -66,13 +71,13 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         if (other.contains(element)) {
             return this;
         }
-        return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet());
+        return EdgeSet.empty();
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
         if (other.contains(element)) {
-            return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet());
+            return EdgeSet.empty();
         }
         return this;
     }

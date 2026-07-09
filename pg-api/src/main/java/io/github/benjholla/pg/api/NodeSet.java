@@ -5,6 +5,15 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface NodeSet extends Set<Node> {
+
+    NodeSet EMPTY = new ImmutableEmptyNodeSet();
+
+    static NodeSet empty() {
+        return EMPTY;
+    }
+
+    NodeSet toImmutable();
+
     Optional<Node> one();
     NodeSet filter(String attribute);
     NodeSet filter(String attribute, AttributeValue... values);

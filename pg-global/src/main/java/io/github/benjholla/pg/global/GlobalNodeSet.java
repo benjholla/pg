@@ -49,6 +49,13 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet toImmutable() {
+        if (internalSet.isEmpty()) return NodeSet.empty();
+        if (internalSet.size() == 1) return new GlobalImmutableSingletonNodeSet(internalSet.iterator().next());
+        return new GlobalImmutableNodeSet(new GlobalNodeSet(this));
+    }
+
+    @Override
     public Optional<Node> one() {
         return internalSet.stream().map(e -> (Node) e).findAny();
     }
@@ -61,7 +68,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 
     @Override
@@ -82,21 +89,21 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
-            return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
         }
         for (GlobalNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 
     @Override
@@ -107,7 +114,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 
     @Override
@@ -121,7 +128,7 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 
     @Override

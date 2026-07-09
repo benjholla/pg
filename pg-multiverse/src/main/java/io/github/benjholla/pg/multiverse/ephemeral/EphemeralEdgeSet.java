@@ -50,6 +50,13 @@ public final class EphemeralEdgeSet implements EdgeSet {
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        if (internalSet.isEmpty()) return EdgeSet.empty();
+        if (internalSet.size() == 1) return new EphemeralImmutableSingletonEdgeSet(internalSet.iterator().next());
+        return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet(this));
+    }
+
+    @Override
     public Optional<Edge> one() {
         return internalSet.stream().map(e -> (Edge) e).findAny();
     }
@@ -62,7 +69,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
@@ -83,21 +90,21 @@ public final class EphemeralEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other == null || other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+            return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
         }
         for (EphemeralEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
@@ -108,7 +115,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
@@ -122,7 +129,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override

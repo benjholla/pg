@@ -21,6 +21,11 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
     }
 
     @Override
+    public NodeSet toImmutable() {
+        return this;
+    }
+
+    @Override
     public int size() {
         return 1;
     }
@@ -45,7 +50,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
-        return new EphemeralImmutableNodeSet(new EphemeralNodeSet()); // return empty node set
+        return NodeSet.empty(); // return empty node set
     }
 
     @Override
@@ -58,7 +63,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
                 }
             }
         }
-        return new EphemeralImmutableNodeSet(new EphemeralNodeSet()); // return empty node set
+        return NodeSet.empty(); // return empty node set
     }
 
     @Override
@@ -66,13 +71,13 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         if (other.contains(element)) {
             return this;
         }
-        return new EphemeralImmutableNodeSet(new EphemeralNodeSet());
+        return NodeSet.empty();
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
         if (other.contains(element)) {
-            return new EphemeralImmutableNodeSet(new EphemeralNodeSet());
+            return NodeSet.empty();
         }
         return this;
     }

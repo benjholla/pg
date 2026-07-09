@@ -50,6 +50,13 @@ public final class EphemeralNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet toImmutable() {
+        if (internalSet.isEmpty()) return NodeSet.empty();
+        if (internalSet.size() == 1) return new EphemeralImmutableSingletonNodeSet(internalSet.iterator().next());
+        return new EphemeralImmutableNodeSet(new EphemeralNodeSet(this));
+    }
+
+    @Override
     public Optional<Node> one() {
         return internalSet.stream().map(e -> (Node) e).findAny();
     }
@@ -62,7 +69,7 @@ public final class EphemeralNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
@@ -83,21 +90,21 @@ public final class EphemeralNodeSet implements NodeSet {
                 }
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (other == null || other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
         }
         for (EphemeralNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
@@ -108,7 +115,7 @@ public final class EphemeralNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
@@ -122,7 +129,7 @@ public final class EphemeralNodeSet implements NodeSet {
                 }
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override

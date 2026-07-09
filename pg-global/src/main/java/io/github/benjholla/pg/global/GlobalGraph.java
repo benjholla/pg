@@ -22,7 +22,7 @@ import io.github.benjholla.pg.api.NodeSet;
  */
 public final class GlobalGraph implements Graph, GlobalFactory {
 
-	private static final EdgeSet EMPTY_EDGES = new GlobalImmutableEdgeSet(new GlobalEdgeSet());
+	private static final EdgeSet EMPTY_EDGES = EdgeSet.empty();
 
 	private Map<Integer, GlobalNode> nodes;
 	private Map<Integer, GlobalEdge> edges;

@@ -21,6 +21,11 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
         this.edges = edges;
     }
 
+    @Override
+    public EdgeSet toImmutable() {
+        return this;
+    }
+
     public Optional<Edge> one() {
         return edges.one();
     }
