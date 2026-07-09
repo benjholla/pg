@@ -49,35 +49,36 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 ```java
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.Edge;
-import io.github.benjholla.pg.global.GlobalNode;
-import io.github.benjholla.pg.global.GlobalEdge;
+import io.github.benjholla.pg.global.GlobalFactory;
 import io.github.benjholla.pg.global.GlobalGraph;
 import io.github.benjholla.pg.api.Graph;
 
 public class Example {
     public static void main(String[] args) {
+        GlobalFactory factory = new GlobalGraph().factory();
+
         // Create nodes
-        Node alice = new GlobalNode();
+        Node alice = factory.createNode();
         alice.tags().add("Person");
         alice.attributes().put("name", "Alice");
 
-        Node bob = new GlobalNode();
+        Node bob = factory.createNode();
         bob.tags().add("Person");
         bob.attributes().put("name", "Bob");
 
-        Node charlie = new GlobalNode();
+        Node charlie = factory.createNode();
         charlie.tags().add("Person");
         charlie.attributes().put("name", "Charlie");
 
         // Create edges
-        Edge knows1 = new GlobalEdge(alice, bob);
+        Edge knows1 = factory.createEdge(alice, bob);
         knows1.tags().add("knows");
 
-        Edge knows2 = new GlobalEdge(bob, charlie);
+        Edge knows2 = factory.createEdge(bob, charlie);
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        GlobalGraph graph = new GlobalGraph(alice, bob, charlie);
+        Graph graph = factory.createGraph(alice, bob, charlie);
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 
