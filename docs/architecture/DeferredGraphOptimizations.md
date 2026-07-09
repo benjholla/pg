@@ -10,7 +10,7 @@ If your AST nodes track an estimatedSize (e.g., |A \cup B| \approx |A| + |B|; |A
 In set math, the empty set acts like multiplying by zero. If your cardinality tracking determines that an intermediate step yields exactly zero elements, the entire downstream query can be aborted.
  * If a filter is applied and results in an empty set, the AST node becomes an EmptyGraphOp.
  * Any operation against an EmptyGraphOp—whether it is .forward(), .intersection(), or .between()—is instantly collapsed into EmptyGraphOp.
- * When materialize() is finally called, the engine doesn't even touch the pg-universe backend; it instantly returns an empty GlobalGraph or EphemeralGraph.
+ * When materialize() is finally called, the engine doesn't even touch the pg-multiverse backend; it instantly returns an empty GlobalGraph or EphemeralGraph.
 ### 3. Algebraic Simplification
 The AST builder can inspect the immediate parent node and collapse redundant operations before they ever make it into the execution plan.
  * **Idempotence:** graph.union(A).union(A) is collapsed to graph.union(A).

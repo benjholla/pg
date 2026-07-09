@@ -1,7 +1,7 @@
 # Architectural Brief: The Deferred Query Engine (DeferredGraph)
 ## 1. Overview & Philosophy
 The foundational pg-api set-theoretic algebra is inherently **eager**: calling graph.forward(node) immediately computes the traversal and allocates memory for the resulting subgraph. While fast for localized operations, chaining complex, multi-step queries across massive datasets (e.g., full-program ASTs or CFGs) requires query optimization to prevent unnecessary memory allocations and redundant traversals.
-To solve this, the ecosystem supports a **Deferred Execution Layer (Lazy Evaluation)**. This layer implements the Decorator/Builder pattern over the core Graph interface. Instead of executing topological math immediately, it constructs an Abstract Syntax Tree (AST) of the query. The query is only optimized and executed against the underlying storage engine (pg-global or pg-universe) when a terminal operation demands the physical data.
+To solve this, the ecosystem supports a **Deferred Execution Layer (Lazy Evaluation)**. This layer implements the Decorator/Builder pattern over the core Graph interface. Instead of executing topological math immediately, it constructs an Abstract Syntax Tree (AST) of the query. The query is only optimized and executed against the underlying storage engine (pg-global or pg-multiverse) when a terminal operation demands the physical data.
 ## 2. The Core Mechanics
 The deferred execution model relies on the DeferredGraph, which perfectly masquerades as a standard Graph to the external caller.
  * **The AST Builder:** Calling intermediate algebraic methods (forward(), union(), difference()) on a DeferredGraph does not touch internal maps or bitsets. It simply returns a new DeferredGraph wrapping the next ASTNode (e.g., ForwardOp(sourceNode)).
@@ -39,5 +39,5 @@ Because chained deferred operations create a deeply nested AST, recursive evalua
  * **AST Compaction:** The builder inspects sequential operations during construction. It flattens repetitive, linear chains into singular, optimized nodes (e.g., collapsing 100 consecutive .forward() calls into a single ForwardOp(steps = 100)) to keep the AST shallow and prime it for batch evaluation algorithms.
 ## 6. Deployment Strategies
 This deferred execution engine can be injected at two distinct tiers of the architecture:
- * **Tier 1 (pg-query):** A purely topological lazy evaluator that sits alongside pg-global and pg-universe. It optimizes raw structural set-math.
+ * **Tier 1 (pg-query):** A purely topological lazy evaluator that sits alongside pg-global and pg-multiverse. It optimizes raw structural set-math.
  * **Tier 2 (chpg-core):** A semantic query engine. Because resolving semantic projections (e.g., architectural boundaries, naming conventions) is computationally expensive, deferring execution here allows the engine to wait until a complete semantic question is constructed before deciding which raw topological slices of the underlying flat graph to hydrate.
