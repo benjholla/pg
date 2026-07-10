@@ -74,4 +74,14 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     public int[] toIdArray() {
         return new int[0];
     }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        return this;
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        return this;
+    }
 }

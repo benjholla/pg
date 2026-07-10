@@ -105,4 +105,32 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     public int[] toIdArray() {
         return elements.stream().mapToInt(Edge::id).toArray();
     }
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        Set<Edge> filtered = elements.stream()
+            .filter(e -> {
+                if (tags == null || tags.length == 0) return false;
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) return true;
+                }
+                return false;
+            })
+            .collect(Collectors.toUnmodifiableSet());
+        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        Set<Edge> filtered = elements.stream()
+            .filter(e -> {
+                if (tags == null || tags.length == 0) return false;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) return false;
+                }
+                return true;
+            })
+            .collect(Collectors.toUnmodifiableSet());
+        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    }
 }

@@ -105,4 +105,32 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     public int[] toIdArray() {
         return elements.stream().mapToInt(Node::id).toArray();
     }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        Set<Node> filtered = elements.stream()
+            .filter(e -> {
+                if (tags == null || tags.length == 0) return false;
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) return true;
+                }
+                return false;
+            })
+            .collect(Collectors.toUnmodifiableSet());
+        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        Set<Node> filtered = elements.stream()
+            .filter(e -> {
+                if (tags == null || tags.length == 0) return false;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) return false;
+                }
+                return true;
+            })
+            .collect(Collectors.toUnmodifiableSet());
+        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    }
 }

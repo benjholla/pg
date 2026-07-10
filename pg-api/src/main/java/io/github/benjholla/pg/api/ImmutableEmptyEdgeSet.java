@@ -74,4 +74,14 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     public int[] toIdArray() {
         return new int[0];
     }
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        return this;
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        return this;
+    }
 }

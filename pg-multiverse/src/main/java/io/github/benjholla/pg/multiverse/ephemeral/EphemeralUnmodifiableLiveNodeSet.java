@@ -271,4 +271,40 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     public String toString() {
         return nodes.values().toString();
     }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (Node e : this) {
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) {
+                        result.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (Node e : this) {
+                boolean add = true;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    result.add(e);
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
 }

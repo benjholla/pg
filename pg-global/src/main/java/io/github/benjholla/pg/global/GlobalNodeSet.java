@@ -266,4 +266,40 @@ public final class GlobalNodeSet implements NodeSet {
     public int hashCode() {
         return internalSet.hashCode();
     }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        GlobalNodeSet result = new GlobalNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (GlobalNode e : internalSet) {
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) {
+                        result.internalSet.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        GlobalNodeSet result = new GlobalNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (GlobalNode e : internalSet) {
+                boolean add = true;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    result.internalSet.add(e);
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+    }
 }

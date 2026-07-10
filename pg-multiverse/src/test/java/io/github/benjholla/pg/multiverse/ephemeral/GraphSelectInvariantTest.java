@@ -59,7 +59,7 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectNodesByAttributeKeyOnly() {
-        NodeSet coloredNodes = graph.selectNodes("color");
+        NodeSet coloredNodes = graph.nodes().filter("color");
         assertEquals(2, coloredNodes.size(), "Should find all nodes with a 'color' attribute");
         assertTrue(coloredNodes.contains(a));
         assertTrue(coloredNodes.contains(b));
@@ -68,12 +68,12 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectNodesByAttributeKeyAndValue() {
-        NodeSet redNodes = graph.selectNodes("color", new AttributeValue.StringVal("red"));
+        NodeSet redNodes = graph.nodes().filter("color", new AttributeValue.StringVal("red"));
         assertEquals(1, redNodes.size(), "Should find only nodes with color='red'");
         assertTrue(redNodes.contains(a));
 
         // Test multiple values
-        NodeSet selectedNodes = graph.selectNodes("weight", new AttributeValue.IntVal(10), new AttributeValue.IntVal(20));
+        NodeSet selectedNodes = graph.nodes().filter("weight", new AttributeValue.IntVal(10), new AttributeValue.IntVal(20));
         assertEquals(2, selectedNodes.size());
         assertTrue(selectedNodes.contains(a));
         assertTrue(selectedNodes.contains(c));
@@ -81,7 +81,7 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectEdgesByAttributeKeyOnly() {
-        EdgeSet typedEdges = graph.selectEdges("type");
+        EdgeSet typedEdges = graph.edges().filter("type");
         assertEquals(2, typedEdges.size(), "Should find all edges with a 'type' attribute");
         assertTrue(typedEdges.contains(ab));
         assertTrue(typedEdges.contains(bc));
@@ -90,12 +90,12 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectEdgesByAttributeKeyAndValue() {
-        EdgeSet friendEdges = graph.selectEdges("type", new AttributeValue.StringVal("friend"));
+        EdgeSet friendEdges = graph.edges().filter("type", new AttributeValue.StringVal("friend"));
         assertEquals(1, friendEdges.size(), "Should find only edges with type='friend'");
         assertTrue(friendEdges.contains(ab));
 
         // Test multiple values
-        EdgeSet selectedEdges = graph.selectEdges("type", new AttributeValue.StringVal("friend"), new AttributeValue.StringVal("enemy"));
+        EdgeSet selectedEdges = graph.edges().filter("type", new AttributeValue.StringVal("friend"), new AttributeValue.StringVal("enemy"));
         assertEquals(2, selectedEdges.size());
         assertTrue(selectedEdges.contains(ab));
         assertTrue(selectedEdges.contains(bc));

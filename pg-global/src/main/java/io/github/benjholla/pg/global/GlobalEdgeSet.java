@@ -266,4 +266,40 @@ public final class GlobalEdgeSet implements EdgeSet {
     public int hashCode() {
         return internalSet.hashCode();
     }
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        GlobalEdgeSet result = new GlobalEdgeSet();
+        if (tags != null && tags.length > 0) {
+            for (GlobalEdge e : internalSet) {
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) {
+                        result.internalSet.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        GlobalEdgeSet result = new GlobalEdgeSet();
+        if (tags != null && tags.length > 0) {
+            for (GlobalEdge e : internalSet) {
+                boolean add = true;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    result.internalSet.add(e);
+                }
+            }
+        }
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+    }
 }

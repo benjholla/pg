@@ -271,4 +271,40 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     public String toString() {
         return edges.values().toString();
     }
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        if (tags != null && tags.length > 0) {
+            for (Edge e : this) {
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) {
+                        result.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        EphemeralEdgeSet result = new EphemeralEdgeSet();
+        if (tags != null && tags.length > 0) {
+            for (Edge e : this) {
+                boolean add = true;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    result.add(e);
+                }
+            }
+        }
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+    }
 }
