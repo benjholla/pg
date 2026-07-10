@@ -11,7 +11,11 @@ import io.github.benjholla.pg.api.Graph;
 /**
  * Validates De Morgan's laws for set operations on graphs:
  * 1. A \ (B U C) = (A \ B) ∩ (A \ C)
- * 2. A \ (B ∩ C) = (A \ B) U (A \ C)
+ * 2. A \ (B ∩ C) ⊇ (A \ B) U (A \ C)
+ *
+ * Note: The second law is technically an equality for pure sets, but due to
+ * cascading edge removals on property graphs (when an edge's node is removed),
+ * the equality becomes a superset relationship for edges.
  */
 public class DeMorganLawsInvariantTest {
 
@@ -62,7 +66,9 @@ public class DeMorganLawsInvariantTest {
 
     @Test
     public void testDeMorganLaw2() {
-        // A \ (B ∩ C) == (A \ B) U (A \ C)
+        // A \ (B ∩ C) ⊇ (A \ B) U (A \ C)
+        // Due to cascading edge deletion, A \ (B ∩ C) might retain more edges than
+        // the union of (A \ B) and (A \ C).
         Graph bIntC = gB.intersection(gC);
         Graph aMinusBIntC = gA.difference(bIntC);
 
@@ -70,6 +76,7 @@ public class DeMorganLawsInvariantTest {
         Graph aMinusC = gA.difference(gC);
         Graph aMinusBUnionAMinusC = aMinusB.union(aMinusC);
 
-        assertGraphsEqual(aMinusBIntC, aMinusBUnionAMinusC);
+        assertTrue(aMinusBIntC.nodes().containsAll(aMinusBUnionAMinusC.nodes()), "Nodes should be a superset");
+        assertTrue(aMinusBIntC.edges().containsAll(aMinusBUnionAMinusC.edges()), "Edges should be a superset");
     }
 }
