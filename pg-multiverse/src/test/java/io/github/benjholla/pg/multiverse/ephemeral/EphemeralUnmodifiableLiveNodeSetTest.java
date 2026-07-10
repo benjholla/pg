@@ -153,4 +153,110 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         assertEquals(3, union.size());
         assertTrue(union.contains(n3));
     }
+
+    @Test
+    public void testTaggedWithAny() {
+        Map<Integer, EphemeralNode> map = new HashMap<>();
+        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
+
+        EphemeralNode n1 = new EphemeralNode(-1);
+        n1.tags().add("tagA");
+        n1.tags().add("tagB");
+
+        EphemeralNode n2 = new EphemeralNode(-2);
+        n2.tags().add("tagB");
+        n2.tags().add("tagC");
+
+        EphemeralNode n3 = new EphemeralNode(-3);
+        n3.tags().add("tagC");
+        n3.tags().add("tagD");
+
+        map.put(n1.id(), n1);
+        map.put(n2.id(), n2);
+        map.put(n3.id(), n3);
+
+        EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
+
+        NodeSet result1 = set.taggedWithAny("tagA");
+        assertEquals(1, result1.size());
+        assertTrue(result1.contains(n1));
+
+        NodeSet result2 = set.taggedWithAny("tagB");
+        assertEquals(2, result2.size());
+        assertTrue(result2.contains(n1));
+        assertTrue(result2.contains(n2));
+
+        NodeSet result3 = set.taggedWithAny("tagA", "tagC");
+        assertEquals(3, result3.size());
+        assertTrue(result3.contains(n1));
+        assertTrue(result3.contains(n2));
+        assertTrue(result3.contains(n3));
+
+        NodeSet result4 = set.taggedWithAny("nonexistent");
+        assertEquals(0, result4.size());
+
+        NodeSet result5 = set.taggedWithAny((String[]) null);
+        assertEquals(0, result5.size());
+
+        NodeSet result6 = set.taggedWithAny(new String[0]);
+        assertEquals(0, result6.size());
+    }
+
+    @Test
+    public void testTaggedWithAll() {
+        Map<Integer, EphemeralNode> map = new HashMap<>();
+        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
+
+        EphemeralNode n1 = new EphemeralNode(-1);
+        n1.tags().add("tagA");
+        n1.tags().add("tagB");
+
+        EphemeralNode n2 = new EphemeralNode(-2);
+        n2.tags().add("tagB");
+        n2.tags().add("tagC");
+
+        EphemeralNode n3 = new EphemeralNode(-3);
+        n3.tags().add("tagA");
+        n3.tags().add("tagB");
+        n3.tags().add("tagC");
+
+        map.put(n1.id(), n1);
+        map.put(n2.id(), n2);
+        map.put(n3.id(), n3);
+
+        EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
+
+        NodeSet result1 = set.taggedWithAll("tagA");
+        assertEquals(2, result1.size());
+        assertTrue(result1.contains(n1));
+        assertTrue(result1.contains(n3));
+
+        NodeSet result2 = set.taggedWithAll("tagB");
+        assertEquals(3, result2.size());
+        assertTrue(result2.contains(n1));
+        assertTrue(result2.contains(n2));
+        assertTrue(result2.contains(n3));
+
+        NodeSet result3 = set.taggedWithAll("tagA", "tagB");
+        assertEquals(2, result3.size());
+        assertTrue(result3.contains(n1));
+        assertTrue(result3.contains(n3));
+
+        NodeSet result4 = set.taggedWithAll("tagA", "tagB", "tagC");
+        assertEquals(1, result4.size());
+        assertTrue(result4.contains(n3));
+
+        NodeSet result5 = set.taggedWithAll("nonexistent");
+        assertEquals(0, result5.size());
+
+        NodeSet result6 = set.taggedWithAll((String[]) null);
+        assertEquals(0, result6.size());
+
+        NodeSet result7 = set.taggedWithAll(new String[0]);
+        assertEquals(0, result7.size());
+    }
 }
