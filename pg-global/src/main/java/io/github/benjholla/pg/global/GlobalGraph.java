@@ -899,69 +899,21 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		return result;
 	}
 
-@Override
-	public NodeSet nodesTaggedWithAny(String... tags){
-        NodeSet result = new GlobalNodeSet();
-        for(Node node : nodes()){
-            for(String tag : tags){
-                if(node.tags().contains(tag)){
-                    result.add(node);
-                    break;
-                }
-            }
-        }
-        return result;
+	@Override
+	public EdgeSet selectEdges(String attribute){
+		return edges().filter(attribute);
 	}
 
 	@Override
-	public NodeSet nodesTaggedWithAll(String... tags){
-        NodeSet result = new GlobalNodeSet();
-        for(Node node : nodes()){
-            boolean add = true;
-            for(String tag : tags){
-                if(!node.tags().contains(tag)){
-                    add = false;
-                    break;
-                }
-            }
-            if(add){
-                result.add(node);
-            }
-        }
-        return result;
-	}
-
-@Override
-	public EdgeSet edgesTaggedWithAny(String... tags){
-        EdgeSet result = new GlobalEdgeSet();
-        for(Edge edge : edges.values()){
-            for(String tag : tags){
-                if(edge.tags().contains(tag)){
-                    result.add(edge);
-                    break;
-                }
-            }
-        }
-        return result;
+	public EdgeSet selectEdges(String attribute, AttributeValue... values){
+		return edges().filter(attribute, values);
 	}
 
 	@Override
-	public EdgeSet edgesTaggedWithAll(String... tags){
-        EdgeSet result = new GlobalEdgeSet();
-        for(Edge edge : edges.values()){
-            boolean add = true;
-            for(String tag : tags){
-                if(!edge.tags().contains(tag)){
-                    add = false;
-                    break;
-                }
-            }
-            if(add){
-                result.add(edge);
-            }
-        }
-        return result;
+	public NodeSet selectNodes(String attribute){
+		return nodes().filter(attribute);
 	}
+
 
 	@Override
 	public NodeSet singleton(Node node) {

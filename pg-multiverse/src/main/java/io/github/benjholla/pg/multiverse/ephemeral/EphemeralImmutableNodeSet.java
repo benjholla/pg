@@ -168,4 +168,14 @@ public class EphemeralImmutableNodeSet implements NodeSet {
         return nodes.toString();
     }
     
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        return nodes.taggedWithAny(tags);
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        return nodes.taggedWithAll(tags);
+    }
 }

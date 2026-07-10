@@ -378,24 +378,24 @@ public class EphemeralGraphTest {
 
     @Test
     public void testTags() {
-        NodeSet vowels = graph.nodesTaggedWithAny("vowel");
+        NodeSet vowels = graph.nodes().taggedWithAny("vowel");
         assertEquals(2, vowels.size());
         assertTrue(vowels.contains(a));
         assertTrue(vowels.contains(e));
 
-        NodeSet any = graph.nodesTaggedWithAny("vowel", "letter");
+        NodeSet any = graph.nodes().taggedWithAny("vowel", "letter");
         assertEquals(4, any.size()); // a, e, b, c
 
-        NodeSet all = graph.nodesTaggedWithAll("consonant", "letter");
+        NodeSet all = graph.nodes().taggedWithAll("consonant", "letter");
         assertEquals(2, all.size()); // b, c
 
-        EdgeSet paths = graph.edgesTaggedWithAny("path");
+        EdgeSet paths = graph.edges().taggedWithAny("path");
         assertEquals(4, paths.size());
 
-        EdgeSet anyE = graph.edgesTaggedWithAny("main", "back");
+        EdgeSet anyE = graph.edges().taggedWithAny("main", "back");
         assertEquals(2, anyE.size()); // bc, cb
 
-        EdgeSet allE = graph.edgesTaggedWithAll("path", "main");
+        EdgeSet allE = graph.edges().taggedWithAll("path", "main");
         assertEquals(1, allE.size()); // bc
     }
 }

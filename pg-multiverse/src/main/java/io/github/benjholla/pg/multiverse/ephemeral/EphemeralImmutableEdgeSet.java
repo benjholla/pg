@@ -168,4 +168,14 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
         return edges.toString();
     }
 
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        return edges.taggedWithAny(tags);
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        return edges.taggedWithAll(tags);
+    }
 }

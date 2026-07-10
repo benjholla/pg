@@ -16,7 +16,7 @@ import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeSet;
 
 /**
- * Validates the behavior of select operations via nodes().filter() and edges().filter().
+ * Validates the behavior of selectNodes and selectEdges operations.
  */
 public class GraphSelectInvariantTest {
     private static final EphemeralFactory factory = new EphemeralGraph().factory();

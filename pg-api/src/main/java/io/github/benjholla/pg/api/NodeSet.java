@@ -17,6 +17,8 @@ public interface NodeSet extends Set<Node> {
     Optional<Node> one();
     NodeSet filter(String attribute);
     NodeSet filter(String attribute, AttributeValue... values);
+    NodeSet taggedWithAny(String... tags);
+    NodeSet taggedWithAll(String... tags);
 
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.

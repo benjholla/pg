@@ -104,4 +104,29 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     public int[] toIdArray() {
         return new int[]{element.id()};
     }
+
+    @Override
+    public EdgeSet taggedWithAny(String... tags) {
+        if (tags != null && tags.length > 0) {
+            for (String tag : tags) {
+                if (element.tags().contains(tag)) {
+                    return this;
+                }
+            }
+        }
+        return EdgeSet.empty();
+    }
+
+    @Override
+    public EdgeSet taggedWithAll(String... tags) {
+        if (tags != null && tags.length > 0) {
+            for (String tag : tags) {
+                if (!element.tags().contains(tag)) {
+                    return EdgeSet.empty();
+                }
+            }
+            return this;
+        }
+        return EdgeSet.empty();
+    }
 }

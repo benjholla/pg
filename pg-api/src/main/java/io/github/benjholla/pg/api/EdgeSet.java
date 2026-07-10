@@ -17,6 +17,8 @@ public interface EdgeSet extends Set<Edge> {
     Optional<Edge> one();
     EdgeSet filter(String attribute);
     EdgeSet filter(String attribute, AttributeValue... values);
+    EdgeSet taggedWithAny(String... tags);
+    EdgeSet taggedWithAll(String... tags);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.

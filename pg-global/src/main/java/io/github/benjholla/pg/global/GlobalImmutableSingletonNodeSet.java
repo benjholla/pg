@@ -104,4 +104,29 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     public int[] toIdArray() {
         return new int[]{element.id()};
     }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        if (tags != null && tags.length > 0) {
+            for (String tag : tags) {
+                if (element.tags().contains(tag)) {
+                    return this;
+                }
+            }
+        }
+        return NodeSet.empty();
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        if (tags != null && tags.length > 0) {
+            for (String tag : tags) {
+                if (!element.tags().contains(tag)) {
+                    return NodeSet.empty();
+                }
+            }
+            return this;
+        }
+        return NodeSet.empty();
+    }
 }
