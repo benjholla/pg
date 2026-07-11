@@ -87,6 +87,7 @@ public class GlobalImmutableNodeSet implements NodeSet {
     }
 
     public Iterator<Node> iterator() {
+        // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Node>() {
             private final Iterator<Node> it = nodes.iterator();
 
