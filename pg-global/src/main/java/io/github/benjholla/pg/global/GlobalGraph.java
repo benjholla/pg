@@ -501,16 +501,20 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
 	@Override
 	public NodeSet predecessors(Node... origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
+		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
 		return predecessors(new GlobalNodeSet(origin));
 	}
 
 	@Override
 	public NodeSet predecessors(Graph origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
 		return predecessors(origin.nodes());
 	}
 
 	@Override
 	public NodeSet predecessors(NodeSet origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
 		NodeSet result = new GlobalNodeSet();
 		for(Node node : origin){
 			getInEdgesToNode(node).ifPresent(inEdges -> {
@@ -524,16 +528,20 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
 	@Override
 	public NodeSet successors(Node... origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
+		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
 		return successors(new GlobalNodeSet(origin));
 	}
 
 	@Override
 	public NodeSet successors(Graph origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
 		return successors(origin.nodes());
 	}
 
 	@Override
 	public NodeSet successors(NodeSet origin){
+		Objects.requireNonNull(origin, "origin cannot be null");
 		NodeSet result = new GlobalNodeSet();
 		for(Node node : origin){
 			getOutEdgesFromNode(node).ifPresent(outEdges -> {

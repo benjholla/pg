@@ -113,6 +113,22 @@ public class GraphNullHandlingTest {
     }
 
     @Test
+    public void testPredecessorsNullHandling() {
+        assertThrows(NullPointerException.class, () -> graph.predecessors((Node[]) null));
+        assertThrows(NullPointerException.class, () -> graph.predecessors(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> graph.predecessors((NodeSet) null));
+        assertThrows(NullPointerException.class, () -> graph.predecessors((Graph) null));
+    }
+
+    @Test
+    public void testSuccessorsNullHandling() {
+        assertThrows(NullPointerException.class, () -> graph.successors((Node[]) null));
+        assertThrows(NullPointerException.class, () -> graph.successors(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> graph.successors((NodeSet) null));
+        assertThrows(NullPointerException.class, () -> graph.successors((Graph) null));
+    }
+
+    @Test
     public void testBetweenNullHandling() {
         Node n = factory.createNode();
         Graph g = factory.createGraph();
