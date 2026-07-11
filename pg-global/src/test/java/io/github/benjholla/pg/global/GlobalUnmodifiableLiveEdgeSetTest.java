@@ -157,4 +157,116 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
         assertEquals(3, union.size());
         assertTrue(union.contains(e3));
     }
+
+    @Test
+    public void testTaggedWithAny() {
+        Map<Integer, GlobalEdge> map = new HashMap<>();
+        Map<Integer, GlobalNode> nodes = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> outEdges = new HashMap<>();
+
+        GlobalNode n1 = new GlobalNode();
+        GlobalNode n2 = new GlobalNode();
+
+        GlobalEdge e1 = new GlobalEdge(n1, n2);
+        e1.tags().add("tagA");
+        e1.tags().add("tagB");
+
+        GlobalEdge e2 = new GlobalEdge(n1, n2);
+        e2.tags().add("tagB");
+        e2.tags().add("tagC");
+
+        GlobalEdge e3 = new GlobalEdge(n1, n2);
+        e3.tags().add("tagC");
+        e3.tags().add("tagD");
+
+        map.put(e1.id(), e1);
+        map.put(e2.id(), e2);
+        map.put(e3.id(), e3);
+
+        GlobalUnmodifiableLiveEdgeSet set = new GlobalUnmodifiableLiveEdgeSet(nodes, map, inEdges, outEdges);
+
+        EdgeSet result1 = set.taggedWithAny("tagA");
+        assertEquals(1, result1.size());
+        assertTrue(result1.contains(e1));
+
+        EdgeSet result2 = set.taggedWithAny("tagB");
+        assertEquals(2, result2.size());
+        assertTrue(result2.contains(e1));
+        assertTrue(result2.contains(e2));
+
+        EdgeSet result3 = set.taggedWithAny("tagA", "tagC");
+        assertEquals(3, result3.size());
+        assertTrue(result3.contains(e1));
+        assertTrue(result3.contains(e2));
+        assertTrue(result3.contains(e3));
+
+        EdgeSet result4 = set.taggedWithAny("nonexistent");
+        assertEquals(0, result4.size());
+
+        EdgeSet result5 = set.taggedWithAny((String[]) null);
+        assertEquals(0, result5.size());
+
+        EdgeSet result6 = set.taggedWithAny(new String[0]);
+        assertEquals(0, result6.size());
+    }
+
+    @Test
+    public void testTaggedWithAll() {
+        Map<Integer, GlobalEdge> map = new HashMap<>();
+        Map<Integer, GlobalNode> nodes = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> outEdges = new HashMap<>();
+
+        GlobalNode n1 = new GlobalNode();
+        GlobalNode n2 = new GlobalNode();
+
+        GlobalEdge e1 = new GlobalEdge(n1, n2);
+        e1.tags().add("tagA");
+        e1.tags().add("tagB");
+
+        GlobalEdge e2 = new GlobalEdge(n1, n2);
+        e2.tags().add("tagB");
+        e2.tags().add("tagC");
+
+        GlobalEdge e3 = new GlobalEdge(n1, n2);
+        e3.tags().add("tagA");
+        e3.tags().add("tagB");
+        e3.tags().add("tagC");
+
+        map.put(e1.id(), e1);
+        map.put(e2.id(), e2);
+        map.put(e3.id(), e3);
+
+        GlobalUnmodifiableLiveEdgeSet set = new GlobalUnmodifiableLiveEdgeSet(nodes, map, inEdges, outEdges);
+
+        EdgeSet result1 = set.taggedWithAll("tagA");
+        assertEquals(2, result1.size());
+        assertTrue(result1.contains(e1));
+        assertTrue(result1.contains(e3));
+
+        EdgeSet result2 = set.taggedWithAll("tagB");
+        assertEquals(3, result2.size());
+        assertTrue(result2.contains(e1));
+        assertTrue(result2.contains(e2));
+        assertTrue(result2.contains(e3));
+
+        EdgeSet result3 = set.taggedWithAll("tagA", "tagB");
+        assertEquals(2, result3.size());
+        assertTrue(result3.contains(e1));
+        assertTrue(result3.contains(e3));
+
+        EdgeSet result4 = set.taggedWithAll("tagA", "tagB", "tagC");
+        assertEquals(1, result4.size());
+        assertTrue(result4.contains(e3));
+
+        EdgeSet result5 = set.taggedWithAll("nonexistent");
+        assertEquals(0, result5.size());
+
+        EdgeSet result6 = set.taggedWithAll((String[]) null);
+        assertEquals(0, result6.size());
+
+        EdgeSet result7 = set.taggedWithAll(new String[0]);
+        assertEquals(0, result7.size());
+    }
 }
