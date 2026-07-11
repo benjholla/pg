@@ -87,6 +87,7 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
     }
 
     public Iterator<Edge> iterator() {
+        // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Edge>() {
             private final Iterator<Edge> it = edges.iterator();
 
