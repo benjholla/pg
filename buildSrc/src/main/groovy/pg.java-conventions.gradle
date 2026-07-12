@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
 }
 
-group = 'io.github.benjholla.pg'
+group = 'dev.chpg'
 version = '1.0.0-SNAPSHOT'
 
 java {

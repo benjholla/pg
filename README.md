@@ -47,11 +47,11 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 *Note: This example is continuously validated by the executable test `ReadmeExampleTest.java` to ensure it remains synchronized with the implementation.*
 
 ```java
-import io.github.benjholla.pg.api.Node;
-import io.github.benjholla.pg.api.Edge;
-import io.github.benjholla.pg.global.GlobalFactory;
-import io.github.benjholla.pg.global.GlobalGraph;
-import io.github.benjholla.pg.api.Graph;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.Edge;
+import dev.chpg.pg.global.GlobalFactory;
+import dev.chpg.pg.global.GlobalGraph;
+import dev.chpg.pg.api.Graph;
 
 public class Example {
     public static void main(String[] args) {
