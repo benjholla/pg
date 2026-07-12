@@ -907,21 +907,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		return result;
 	}
 
-	@Override
-	public EdgeSet selectEdges(String attribute){
-		return edges().filter(attribute);
-	}
-
-	@Override
-	public EdgeSet selectEdges(String attribute, AttributeValue... values){
-		return edges().filter(attribute, values);
-	}
-
-	@Override
-	public NodeSet selectNodes(String attribute){
-		return nodes().filter(attribute);
-	}
-
 
 	@Override
 	public NodeSet singleton(Node node) {
