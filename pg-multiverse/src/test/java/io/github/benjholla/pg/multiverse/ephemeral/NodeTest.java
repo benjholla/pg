@@ -59,10 +59,10 @@ public class NodeTest {
         element.attributes().put("key1", "val1");
 
         assertTrue(element.attributes().containsKey("key1"));
-        assertEquals(new AttributeValue.StringVal("val1"), element.attributes().get("key1"));
+        assertEquals(AttributeValue.value("val1"), element.attributes().get("key1"));
 
         element.attributes().put("key1", "val2");
-        assertEquals(new AttributeValue.StringVal("val2"), element.attributes().get("key1"));
+        assertEquals(AttributeValue.value("val2"), element.attributes().get("key1"));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class NodeTest {
         assertTrue(element.attributes().containsKey("key1"));
 
         AttributeValue removed = element.attributes().remove("key1");
-        assertEquals(new AttributeValue.StringVal("val1"), removed);
+        assertEquals(AttributeValue.value("val1"), removed);
         assertFalse(element.attributes().containsKey("key1"));
         assertNull(element.attributes().get("key1"));
     }
@@ -110,7 +110,7 @@ public class NodeTest {
         String str = node.toString();
         assertTrue(str.startsWith("EphemeralNode ["));
         assertTrue(str.contains("attributes="));
-        assertTrue(str.contains("name=StringVal[value=test-node]"));
+        assertTrue(str.contains("name=StringValue[value=test-node]"));
         assertTrue(str.contains("tags="));
         assertTrue(str.contains("test-tag"));
         assertTrue(str.endsWith("]"));

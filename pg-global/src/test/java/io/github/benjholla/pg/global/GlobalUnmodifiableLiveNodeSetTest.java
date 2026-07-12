@@ -118,14 +118,14 @@ public class GlobalUnmodifiableLiveNodeSetTest {
 
         assertTrue(set.one().isPresent());
 
-        NodeSet filteredA = set.filter("type", new AttributeValue.StringVal("A"));
+        NodeSet filteredA = set.filter("type", AttributeValue.value("A"));
         assertEquals(1, filteredA.size());
         assertTrue(filteredA.contains(n1));
 
         NodeSet filteredVal = set.filter("val");
         assertEquals(2, filteredVal.size());
 
-        NodeSet filterNull = set.filter(null, new AttributeValue.StringVal("A"));
+        NodeSet filterNull = set.filter(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
         NodeSet intersectEmpty = set.intersect(null);

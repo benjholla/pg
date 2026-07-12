@@ -80,20 +80,20 @@ public class NodeSetTest {
 
     @Test
     public void testFilterByAttributeAndValues() {
-        NodeSet filteredTypeA = nodeSet.filter("type", new AttributeValue.StringVal("A"));
+        NodeSet filteredTypeA = nodeSet.filter("type", AttributeValue.value("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(n1));
         assertTrue(filteredTypeA.contains(n3));
 
-        NodeSet filteredVal = nodeSet.filter("val", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
+        NodeSet filteredVal = nodeSet.filter("val", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(n1));
         assertTrue(filteredVal.contains(n3));
 
-        NodeSet filteredNone = nodeSet.filter("type", new AttributeValue.StringVal("C"));
+        NodeSet filteredNone = nodeSet.filter("type", AttributeValue.value("C"));
         assertTrue(filteredNone.isEmpty());
 
-        NodeSet nullAttr = nodeSet.filter(null, new AttributeValue.StringVal("A"));
+        NodeSet nullAttr = nodeSet.filter(null, AttributeValue.value("A"));
         assertTrue(nullAttr.isEmpty());
 
         NodeSet nullVals = nodeSet.filter("type", (AttributeValue[]) null);

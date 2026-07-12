@@ -88,20 +88,20 @@ public class EdgeSetTest {
 
     @Test
     public void testFilterByAttributeAndValues() {
-        EdgeSet filteredTypeA = edgeSet.filter("type", new AttributeValue.StringVal("A"));
+        EdgeSet filteredTypeA = edgeSet.filter("type", AttributeValue.value("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(e1));
         assertTrue(filteredTypeA.contains(e3));
 
-        EdgeSet filteredVal = edgeSet.filter("val", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
+        EdgeSet filteredVal = edgeSet.filter("val", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(e1));
         assertTrue(filteredVal.contains(e3));
 
-        EdgeSet filteredNone = edgeSet.filter("type", new AttributeValue.StringVal("C"));
+        EdgeSet filteredNone = edgeSet.filter("type", AttributeValue.value("C"));
         assertTrue(filteredNone.isEmpty());
 
-        EdgeSet nullAttr = edgeSet.filter(null, new AttributeValue.StringVal("A"));
+        EdgeSet nullAttr = edgeSet.filter(null, AttributeValue.value("A"));
         assertTrue(nullAttr.isEmpty());
 
         EdgeSet nullVals = edgeSet.filter("type", (AttributeValue[]) null);

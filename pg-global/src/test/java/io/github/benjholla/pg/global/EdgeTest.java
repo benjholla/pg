@@ -63,10 +63,10 @@ public class EdgeTest {
         edge.attributes().put("key1", "val1");
 
         assertTrue(edge.attributes().containsKey("key1"));
-        assertEquals(new AttributeValue.StringVal("val1"), edge.attributes().get("key1"));
+        assertEquals(AttributeValue.value("val1"), edge.attributes().get("key1"));
 
         edge.attributes().put("key1", "val2");
-        assertEquals(new AttributeValue.StringVal("val2"), edge.attributes().get("key1"));
+        assertEquals(AttributeValue.value("val2"), edge.attributes().get("key1"));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class EdgeTest {
         assertTrue(edge.attributes().containsKey("key1"));
 
         AttributeValue removed = edge.attributes().remove("key1");
-        assertEquals(new AttributeValue.StringVal("val1"), removed);
+        assertEquals(AttributeValue.value("val1"), removed);
         assertFalse(edge.attributes().containsKey("key1"));
         assertNull(edge.attributes().get("key1"));
     }
@@ -127,7 +127,7 @@ public class EdgeTest {
         assertTrue(str.startsWith("GlobalEdge [from="));
         assertTrue(str.contains("to="));
         assertTrue(str.contains("attributes="));
-        assertTrue(str.contains("weight=IntVal[value=10]"));
+        assertTrue(str.contains("weight=IntegerValue[value=10]"));
         assertTrue(str.contains("tags="));
         assertTrue(str.contains("connection"));
         assertTrue(str.endsWith("]"));
