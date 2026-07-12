@@ -3,10 +3,15 @@ package io.github.benjholla.pg.io;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.Graph;
+import io.github.benjholla.pg.api.GraphElement;
 import io.github.benjholla.pg.api.Node;
 
 /**
@@ -20,9 +25,7 @@ import io.github.benjholla.pg.api.Node;
  * An 8MB chunk size is an exceptional sensible default. It perfectly hits the mechanical
  * sweet spot between minimizing operating system context switches and respecting CPU cache hierarchies.
  *
- * The chunking logic is split into strictly segregated `writeNodes()` and `writeEdges()`
- * methods. This segregates the strides (4 bytes for nodes, 12 bytes for edges) to avoid
- * branching overhead and safely hands off the ByteBuffer.
+ * The chunking logic is strictly controlled by ensureSpace() to handle dynamic metadata sizes.
  */
 public class DirectGraphBufferWriter {
 
@@ -35,6 +38,13 @@ public class DirectGraphBufferWriter {
     };
 
     private static final int DEFAULT_BUFFER_SIZE = 8 * 1024 * 1024; // 8MB
+
+    private static final byte TYPE_STRING = 0;
+    private static final byte TYPE_BOOLEAN = 1;
+    private static final byte TYPE_INT = 2;
+    private static final byte TYPE_LONG = 3;
+    private static final byte TYPE_DOUBLE = 4;
+    private static final byte TYPE_BYTE_ARRAY = 5;
 
     /**
      * Writes the given graph to the provided FileChannel using the default 8MB buffer size.
@@ -56,62 +66,153 @@ public class DirectGraphBufferWriter {
         Collection<? extends Node> nodes = graph.nodes();
         Collection<? extends Edge> edges = graph.edges();
 
-        // 1. Write Header
+        // 1. Pass 0: Harvesting
+        Map<String, Integer> dictionary = new LinkedHashMap<>();
+        harvestStrings(nodes, dictionary);
+        harvestStrings(edges, dictionary);
+
+        // 2. Write Header
+        ensureSpace(12, channel, buffer);
         buffer.putInt(MAGIC_HEADER);
         buffer.putInt(nodes.size());
         buffer.putInt(edges.size());
 
-        // 2. Nodes Block
-        writeNodes(nodes, channel, buffer);
+        // 3. Write Dictionary Block
+        writeDictionary(dictionary, channel, buffer);
 
-        // 3. Edges Block
-        writeEdges(edges, channel, buffer);
+        // 4. Nodes Block (Pass 1)
+        writeNodes(nodes, dictionary, channel, buffer);
 
-        // 4. Write Footer
+        // 5. Edges Block (Pass 2)
+        writeEdges(edges, dictionary, channel, buffer);
+
+        // 6. Write Footer
         writeFooter(channel, buffer);
     }
 
-    private static void writeNodes(Collection<? extends Node> nodes, FileChannel channel, ByteBuffer buffer) throws IOException {
-        for (Node node : nodes) {
-            if (buffer.remaining() < 4) {
-                buffer.flip();
-                while (buffer.hasRemaining()) {
-                    channel.write(buffer);
-                }
-                buffer.clear();
+    private static void harvestStrings(Collection<? extends GraphElement> elements, Map<String, Integer> dictionary) {
+        for (GraphElement element : elements) {
+            for (String tag : element.tags()) {
+                dictionary.putIfAbsent(tag, dictionary.size());
             }
-            buffer.putInt(node.id());
+            for (Map.Entry<String, AttributeValue> entry : element.attributes().entrySet()) {
+                dictionary.putIfAbsent(entry.getKey(), dictionary.size());
+                if (entry.getValue() instanceof AttributeValue.StringValue sv) {
+                    dictionary.putIfAbsent(sv.value(), dictionary.size());
+                }
+            }
         }
     }
 
-    private static void writeEdges(Collection<? extends Edge> edges, FileChannel channel, ByteBuffer buffer) throws IOException {
+    private static void writeDictionary(Map<String, Integer> dictionary, FileChannel channel, ByteBuffer buffer) throws IOException {
+        ensureSpace(4, channel, buffer);
+        buffer.putInt(dictionary.size());
+
+        for (String str : dictionary.keySet()) {
+            byte[] strBytes = str.getBytes(StandardCharsets.UTF_8);
+            ensureSpace(4 + strBytes.length, channel, buffer);
+            buffer.putInt(strBytes.length);
+            buffer.put(strBytes);
+        }
+    }
+
+    private static void writeNodes(Collection<? extends Node> nodes, Map<String, Integer> dictionary, FileChannel channel, ByteBuffer buffer) throws IOException {
+        for (Node node : nodes) {
+            ensureSpace(4, channel, buffer);
+            buffer.putInt(node.id());
+            writeTags(node, dictionary, channel, buffer);
+            writeAttributes(node, dictionary, channel, buffer);
+        }
+    }
+
+    private static void writeEdges(Collection<? extends Edge> edges, Map<String, Integer> dictionary, FileChannel channel, ByteBuffer buffer) throws IOException {
         for (Edge edge : edges) {
-            // 12 bytes required for 3 ints
-            if (buffer.remaining() < 12) {
-                buffer.flip();
-                while (buffer.hasRemaining()) {
-                    channel.write(buffer);
-                }
-                buffer.clear();
-            }
+            ensureSpace(12, channel, buffer);
             buffer.putInt(edge.id());
             buffer.putInt(edge.from().id());
             buffer.putInt(edge.to().id());
+            writeTags(edge, dictionary, channel, buffer);
+            writeAttributes(edge, dictionary, channel, buffer);
+        }
+    }
+
+    private static void writeTags(GraphElement element, Map<String, Integer> dictionary, FileChannel channel, ByteBuffer buffer) throws IOException {
+        ensureSpace(4, channel, buffer);
+        buffer.putInt(element.tags().size());
+        for (String tag : element.tags()) {
+            ensureSpace(4, channel, buffer);
+            buffer.putInt(dictionary.get(tag));
+        }
+    }
+
+    private static void writeAttributes(GraphElement element, Map<String, Integer> dictionary, FileChannel channel, ByteBuffer buffer) throws IOException {
+        ensureSpace(4, channel, buffer);
+        buffer.putInt(element.attributes().size());
+
+        for (Map.Entry<String, AttributeValue> entry : element.attributes().entrySet()) {
+            ensureSpace(4, channel, buffer);
+            buffer.putInt(dictionary.get(entry.getKey()));
+
+            AttributeValue val = entry.getValue();
+            if (val instanceof AttributeValue.StringValue sv) {
+                ensureSpace(5, channel, buffer);
+                buffer.put(TYPE_STRING);
+                buffer.putInt(dictionary.get(sv.value()));
+            } else if (val instanceof AttributeValue.BooleanValue bv) {
+                ensureSpace(2, channel, buffer);
+                buffer.put(TYPE_BOOLEAN);
+                buffer.put((byte) (bv.value() ? 1 : 0));
+            } else if (val instanceof AttributeValue.IntegerValue iv) {
+                ensureSpace(5, channel, buffer);
+                buffer.put(TYPE_INT);
+                buffer.putInt(iv.value());
+            } else if (val instanceof AttributeValue.LongValue lv) {
+                ensureSpace(9, channel, buffer);
+                buffer.put(TYPE_LONG);
+                buffer.putLong(lv.value());
+            } else if (val instanceof AttributeValue.DoubleValue dv) {
+                ensureSpace(9, channel, buffer);
+                buffer.put(TYPE_DOUBLE);
+                buffer.putDouble(dv.value());
+            } else if (val instanceof AttributeValue.ByteArrayValue bav) {
+                byte[] data = bav.value();
+                ensureSpace(5, channel, buffer);
+                buffer.put(TYPE_BYTE_ARRAY);
+                buffer.putInt(data.length);
+
+                if (data.length <= buffer.remaining()) {
+                    buffer.put(data);
+                } else if (data.length <= buffer.capacity()) {
+                    flushBuffer(channel, buffer);
+                    buffer.put(data);
+                } else {
+                    flushBuffer(channel, buffer);
+                    ByteBuffer direct = ByteBuffer.wrap(data);
+                    while (direct.hasRemaining()) {
+                        channel.write(direct);
+                    }
+                }
+            }
         }
     }
 
     private static void writeFooter(FileChannel channel, ByteBuffer buffer) throws IOException {
-        if (buffer.remaining() < MAGIC_FOOTER.length) {
-            buffer.flip();
-            channel.write(buffer);
-            buffer.clear();
-        }
+        ensureSpace(MAGIC_FOOTER.length, channel, buffer);
         buffer.put(MAGIC_FOOTER);
+        flushBuffer(channel, buffer);
+    }
 
-        // Flush any remaining data in the buffer
+    private static void ensureSpace(int requiredBytes, FileChannel channel, ByteBuffer buffer) throws IOException {
+        if (buffer.remaining() < requiredBytes) {
+            flushBuffer(channel, buffer);
+        }
+    }
+
+    private static void flushBuffer(FileChannel channel, ByteBuffer buffer) throws IOException {
         buffer.flip();
         while (buffer.hasRemaining()) {
             channel.write(buffer);
         }
+        buffer.clear();
     }
 }
