@@ -125,14 +125,14 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
 
         assertTrue(set.one().isPresent());
 
-        EdgeSet filteredA = set.filter("type", new AttributeValue.StringVal("A"));
+        EdgeSet filteredA = set.filter("type", AttributeValue.value("A"));
         assertEquals(1, filteredA.size());
         assertTrue(filteredA.contains(e1));
 
         EdgeSet filteredVal = set.filter("val");
         assertEquals(2, filteredVal.size());
 
-        EdgeSet filterNull = set.filter(null, new AttributeValue.StringVal("A"));
+        EdgeSet filterNull = set.filter(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
         EdgeSet intersectEmpty = set.intersect(null);

@@ -67,7 +67,7 @@ public class GlobalImmutableSingletonNodeSetTest {
 
     @Test
     public void testFilterByAttribute() {
-        node.attributes().put("key", new AttributeValue.StringVal("value"));
+        node.attributes().put("key", AttributeValue.value("value"));
 
         NodeSet filtered = singletonSet.filter("key");
         assertEquals(1, filtered.size());
@@ -79,20 +79,20 @@ public class GlobalImmutableSingletonNodeSetTest {
 
     @Test
     public void testFilterByAttributeAndValue() {
-        node.attributes().put("key", new AttributeValue.StringVal("value"));
+        node.attributes().put("key", AttributeValue.value("value"));
 
-        NodeSet filtered = singletonSet.filter("key", new AttributeValue.StringVal("value"));
+        NodeSet filtered = singletonSet.filter("key", AttributeValue.value("value"));
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(node));
 
-        NodeSet filteredMulti = singletonSet.filter("key", new AttributeValue.StringVal("other"), new AttributeValue.StringVal("value"));
+        NodeSet filteredMulti = singletonSet.filter("key", AttributeValue.value("other"), AttributeValue.value("value"));
         assertEquals(1, filteredMulti.size());
         assertTrue(filteredMulti.contains(node));
 
-        NodeSet empty = singletonSet.filter("key", new AttributeValue.StringVal("other"));
+        NodeSet empty = singletonSet.filter("key", AttributeValue.value("other"));
         assertEquals(0, empty.size());
 
-        NodeSet emptyMissing = singletonSet.filter("missing", new AttributeValue.StringVal("value"));
+        NodeSet emptyMissing = singletonSet.filter("missing", AttributeValue.value("value"));
         assertEquals(0, emptyMissing.size());
     }
 

@@ -31,23 +31,23 @@ public class GraphSelectInvariantTest {
         graph = factory.createGraph();
 
         a = factory.createNode();
-        a.attributes().put("color", new AttributeValue.StringVal("red"));
-        a.attributes().put("weight", new AttributeValue.IntVal(10));
+        a.attributes().put("color", AttributeValue.value("red"));
+        a.attributes().put("weight", AttributeValue.value(10));
 
         b = factory.createNode();
-        b.attributes().put("color", new AttributeValue.StringVal("blue"));
+        b.attributes().put("color", AttributeValue.value("blue"));
 
         c = factory.createNode();
-        c.attributes().put("weight", new AttributeValue.IntVal(20));
+        c.attributes().put("weight", AttributeValue.value(20));
 
         ab = factory.createEdge(a, b);
-        ab.attributes().put("type", new AttributeValue.StringVal("friend"));
+        ab.attributes().put("type", AttributeValue.value("friend"));
 
         bc = factory.createEdge(b, c);
-        bc.attributes().put("type", new AttributeValue.StringVal("enemy"));
+        bc.attributes().put("type", AttributeValue.value("enemy"));
 
         ca = factory.createEdge(c, a);
-        ca.attributes().put("distance", new AttributeValue.IntVal(50));
+        ca.attributes().put("distance", AttributeValue.value(50));
 
         graph.addNode(a);
         graph.addNode(b);
@@ -68,12 +68,12 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectNodesByAttributeKeyAndValue() {
-        NodeSet redNodes = graph.nodes().filter("color", new AttributeValue.StringVal("red"));
+        NodeSet redNodes = graph.nodes().filter("color", AttributeValue.value("red"));
         assertEquals(1, redNodes.size(), "Should find only nodes with color='red'");
         assertTrue(redNodes.contains(a));
 
         // Test multiple values
-        NodeSet selectedNodes = graph.nodes().filter("weight", new AttributeValue.IntVal(10), new AttributeValue.IntVal(20));
+        NodeSet selectedNodes = graph.nodes().filter("weight", AttributeValue.value(10), AttributeValue.value(20));
         assertEquals(2, selectedNodes.size());
         assertTrue(selectedNodes.contains(a));
         assertTrue(selectedNodes.contains(c));
@@ -90,12 +90,12 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectEdgesByAttributeKeyAndValue() {
-        EdgeSet friendEdges = graph.selectEdges("type", new AttributeValue.StringVal("friend"));
+        EdgeSet friendEdges = graph.selectEdges("type", AttributeValue.value("friend"));
         assertEquals(1, friendEdges.size(), "Should find only edges with type='friend'");
         assertTrue(friendEdges.contains(ab));
 
         // Test multiple values
-        EdgeSet selectedEdges = graph.selectEdges("type", new AttributeValue.StringVal("friend"), new AttributeValue.StringVal("enemy"));
+        EdgeSet selectedEdges = graph.selectEdges("type", AttributeValue.value("friend"), AttributeValue.value("enemy"));
         assertEquals(2, selectedEdges.size());
         assertTrue(selectedEdges.contains(ab));
         assertTrue(selectedEdges.contains(bc));
@@ -141,7 +141,7 @@ public class GraphSelectInvariantTest {
 
     @Test
     public void testSelectEdgesNullKeyAndValues() {
-        EdgeSet emptySet = graph.selectEdges(null, new AttributeValue.StringVal("friend"));
+        EdgeSet emptySet = graph.selectEdges(null, AttributeValue.value("friend"));
         assertTrue(emptySet.isEmpty(), "Selecting edges with null key but valid value should return empty set safely");
 
         EdgeSet emptySet2 = graph.selectEdges("type", (AttributeValue[]) null);

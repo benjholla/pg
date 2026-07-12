@@ -70,7 +70,7 @@ public class GlobalImmutableSingletonEdgeSetTest {
 
     @Test
     public void testFilterByAttribute() {
-        edge.attributes().put("key", new AttributeValue.StringVal("value"));
+        edge.attributes().put("key", AttributeValue.value("value"));
 
         EdgeSet filtered = singletonSet.filter("key");
         assertEquals(1, filtered.size());
@@ -82,20 +82,20 @@ public class GlobalImmutableSingletonEdgeSetTest {
 
     @Test
     public void testFilterByAttributeAndValue() {
-        edge.attributes().put("key", new AttributeValue.StringVal("value"));
+        edge.attributes().put("key", AttributeValue.value("value"));
 
-        EdgeSet filtered = singletonSet.filter("key", new AttributeValue.StringVal("value"));
+        EdgeSet filtered = singletonSet.filter("key", AttributeValue.value("value"));
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(edge));
 
-        EdgeSet filteredMulti = singletonSet.filter("key", new AttributeValue.StringVal("other"), new AttributeValue.StringVal("value"));
+        EdgeSet filteredMulti = singletonSet.filter("key", AttributeValue.value("other"), AttributeValue.value("value"));
         assertEquals(1, filteredMulti.size());
         assertTrue(filteredMulti.contains(edge));
 
-        EdgeSet empty = singletonSet.filter("key", new AttributeValue.StringVal("other"));
+        EdgeSet empty = singletonSet.filter("key", AttributeValue.value("other"));
         assertEquals(0, empty.size());
 
-        EdgeSet emptyMissing = singletonSet.filter("missing", new AttributeValue.StringVal("value"));
+        EdgeSet emptyMissing = singletonSet.filter("missing", AttributeValue.value("value"));
         assertEquals(0, emptyMissing.size());
     }
 

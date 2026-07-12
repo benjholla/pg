@@ -363,14 +363,14 @@ public class EphemeralGraphTest {
         NodeSet weighted = graph.nodes().filter("name");
         assertEquals(7, weighted.size());
 
-        NodeSet bNode = graph.nodes().filter("name", new AttributeValue.StringVal("b"));
+        NodeSet bNode = graph.nodes().filter("name", AttributeValue.value("b"));
         assertEquals(1, bNode.size());
         assertTrue(bNode.contains(b));
 
         EdgeSet weightedEdges = graph.edges().filter("weight");
         assertEquals(6, weightedEdges.size());
 
-        EdgeSet w1 = graph.edges().filter("weight", new AttributeValue.IntVal(1), new AttributeValue.IntVal(3));
+        EdgeSet w1 = graph.edges().filter("weight", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, w1.size());
         assertTrue(w1.contains(ab));
         assertTrue(w1.contains(cb));
