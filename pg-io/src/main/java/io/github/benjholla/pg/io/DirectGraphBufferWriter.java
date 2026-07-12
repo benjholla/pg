@@ -75,7 +75,9 @@ public class DirectGraphBufferWriter {
         for (Node node : nodes) {
             if (buffer.remaining() < 4) {
                 buffer.flip();
-                channel.write(buffer);
+                while (buffer.hasRemaining()) {
+                    channel.write(buffer);
+                }
                 buffer.clear();
             }
             buffer.putInt(node.id());
@@ -87,7 +89,9 @@ public class DirectGraphBufferWriter {
             // 12 bytes required for 3 ints
             if (buffer.remaining() < 12) {
                 buffer.flip();
-                channel.write(buffer);
+                while (buffer.hasRemaining()) {
+                    channel.write(buffer);
+                }
                 buffer.clear();
             }
             buffer.putInt(edge.id());
