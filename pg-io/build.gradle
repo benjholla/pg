@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
     api project(':pg-api')
+    testImplementation project(':pg-global')
 }
