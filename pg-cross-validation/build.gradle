@@ -1,0 +1,11 @@
+plugins {
+    id 'pg.java-conventions'
+}
+
+dependencies {
+    testImplementation project(':pg-api')
+    testImplementation project(':pg-global')
+    testImplementation project(':pg-multiverse')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+}
