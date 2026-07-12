@@ -1,0 +1,306 @@
+package dev.chpg.pg.multiverse.ephemeral;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import dev.chpg.pg.api.AttributeValue;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.NodeSet;
+
+public final class EphemeralNodeSet implements NodeSet {
+
+    private final HashSet<EphemeralNode> internalSet;
+
+    public EphemeralNodeSet() {
+        this.internalSet = new HashSet<>();
+    }
+
+    public EphemeralNodeSet(Node initialNode) {
+        this();
+        add(initialNode);
+    }
+
+    public EphemeralNodeSet(Node... initialNodes) {
+        this();
+        Objects.requireNonNull(initialNodes, "Node array cannot be null");
+        addAll(Arrays.asList(initialNodes));
+    }
+
+    public EphemeralNodeSet(Collection<Node> initialNodes) {
+        this();
+        Objects.requireNonNull(initialNodes, "Node collection cannot be null");
+        addAll(initialNodes);
+    }
+
+    private EphemeralNode validate(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
+        if (!(node instanceof EphemeralNode impl)) {
+            throw new IllegalArgumentException(
+                "Cross-graph contamination: Expected EphemeralNode, got " + node.getClass().getSimpleName()
+            );
+        }
+        EphemeralGuardrails.requireLocalId(impl.id());
+        return impl;
+    }
+
+    @Override
+    public NodeSet toImmutable() {
+        if (internalSet.isEmpty()) return NodeSet.empty();
+        if (internalSet.size() == 1) return new EphemeralImmutableSingletonNodeSet(internalSet.iterator().next());
+        return new EphemeralImmutableNodeSet(new EphemeralNodeSet(this));
+    }
+
+    @Override
+    public Optional<Node> one() {
+        return internalSet.stream().map(e -> (Node) e).findAny();
+    }
+
+    @Override
+    public NodeSet filter(String attribute) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode node : internalSet) {
+           if (node.attributes().containsKey(attribute)) {
+                result.internalSet.add(node);
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet filter(String attribute, AttributeValue... values) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (attribute != null && values != null) {
+            for (EphemeralNode node : internalSet) {
+               AttributeValue attributeValue = node.attributes().get(attribute);
+                if (attributeValue != null) {
+                    for (AttributeValue value : values) {
+                        if (value != null) {
+                            if (Objects.equals(attributeValue, value)) {
+                                result.internalSet.add(node);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet intersect(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (other == null || other.isEmpty()) {
+            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+        }
+        for (EphemeralNode node : internalSet) {
+            if (other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet difference(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode node : internalSet) {
+            if (other == null || !other.contains(node)) {
+                result.internalSet.add(node);
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet union(Collection<? extends Node> other) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        result.internalSet.addAll(this.internalSet);
+        if (other != null) {
+            for (Node n : other) {
+                if (n instanceof EphemeralNode en) {
+                    result.internalSet.add(en);
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public Set<Integer> ids() {
+        return internalSet.stream().map(Node::id).collect(Collectors.toSet());
+    }
+
+    @Override
+    public int[] toIdArray() {
+        return internalSet.stream().mapToInt(Node::id).toArray();
+    }
+
+    @Override
+    public boolean add(Node node) {
+        return internalSet.add(validate(node));
+    }
+
+    @Override
+    public boolean contains(Object obj) {
+        if (!(obj instanceof Node node)) return false;
+        try {
+            return internalSet.contains(validate(node));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean remove(Object obj) {
+        if (!(obj instanceof Node node)) return false;
+        try {
+            return internalSet.remove(validate(node));
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public int size() {
+        return internalSet.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return internalSet.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        internalSet.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Iterator<Node> iterator() {
+        return (Iterator<Node>) (Iterator<?>) internalSet.iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return internalSet.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return internalSet.toArray(a);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        for (Object obj : c) {
+            if (!contains(obj)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Node> c) {
+        Objects.requireNonNull(c, "Node collection cannot be null");
+        for (Node e : c) {
+            validate(e);
+        }
+        boolean modified = false;
+        for (Node e : c) {
+            modified |= internalSet.add((EphemeralNode) e);
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        boolean modified = false;
+        Iterator<EphemeralNode> it = internalSet.iterator();
+        while (it.hasNext()) {
+            if (!c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        boolean modified = false;
+        for (Object obj : c) {
+            modified |= this.remove(obj);
+        }
+        return modified;
+    }
+
+    @Override
+    public String toString() {
+        String joined = internalSet.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "[", "]"));
+        return "EphemeralNodeSet [nodes=" + joined + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        // Standard Java semantics: safely compares sizes and elements,
+        // evaluating to true for empty sets of different types,
+        // while deferring to elements for populated sets.
+        return internalSet.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return internalSet.hashCode();
+    }
+
+    @Override
+    public NodeSet taggedWithAny(String... tags) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (EphemeralNode e : internalSet) {
+                for (String tag : tags) {
+                    if (e.tags().contains(tag)) {
+                        result.internalSet.add(e);
+                        break;
+                    }
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+
+    @Override
+    public NodeSet taggedWithAll(String... tags) {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        if (tags != null && tags.length > 0) {
+            for (EphemeralNode e : internalSet) {
+                boolean add = true;
+                for (String tag : tags) {
+                    if (!e.tags().contains(tag)) {
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    result.internalSet.add(e);
+                }
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+    }
+}
