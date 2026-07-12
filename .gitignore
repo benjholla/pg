@@ -35,3 +35,4 @@ build/
 .project
 .settings/
 bin/
+node_modules/
