@@ -105,6 +105,11 @@ For deeper insights into the design, performance characteristics, and query opti
 * [Ephemeral Graph Memory & ID Management](docs/architecture/EphemeralGraph.md)
 * [GlobalGraph Dense IDs](docs/architecture/GlobalGraphDenseIDs.md)
 
+### Planning & Design
+
+Documents for future planning and design discussions can be found here:
+* [Deferred Execution Engine](docs/design/DeferredGraph.md)
+* [Deferred Graph Optimizations](docs/design/DeferredGraphOptimizations.md)
 
 ## Installation
 
