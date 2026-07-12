@@ -3,12 +3,15 @@ package io.github.benjholla.pg.io;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
 
+import io.github.benjholla.pg.api.AttributeValue;
 import io.github.benjholla.pg.api.Edge;
 import io.github.benjholla.pg.api.EdgeFactory;
 import io.github.benjholla.pg.api.Graph;
+import io.github.benjholla.pg.api.GraphElement;
 import io.github.benjholla.pg.api.Node;
 import io.github.benjholla.pg.api.NodeFactory;
 
@@ -21,14 +24,18 @@ import io.github.benjholla.pg.api.NodeFactory;
  * An 8MB chunk size perfectly hits the mechanical sweet spot, allowing the Linux kernel
  * read-ahead prefetcher to run flawlessly while remaining within the CPU L3 cache.
  *
- * The chunking logic is strictly segregated into `readNodes()` and `readEdges()` helper
- * methods. Because they consume memory at entirely different mathematical strides (4 bytes vs 12 bytes),
- * segregating them keeps the state machine clean. The exact same ByteBuffer instance is
- * safely handed between them without clearing or resetting position, avoiding the handoff trap.
+ * The chunking logic is strictly controlled by ensureBytes() to handle dynamic metadata sizes.
  */
 public class DirectGraphBufferReader {
 
     private static final int DEFAULT_BUFFER_SIZE = 8 * 1024 * 1024; // 8MB
+
+    private static final byte TYPE_STRING = 0;
+    private static final byte TYPE_BOOLEAN = 1;
+    private static final byte TYPE_INT = 2;
+    private static final byte TYPE_LONG = 3;
+    private static final byte TYPE_DOUBLE = 4;
+    private static final byte TYPE_BYTE_ARRAY = 5;
 
     /**
      * Reads a DirectGraphBuffer from the channel into the target graph using the default 8MB buffer size.
@@ -64,61 +71,78 @@ public class DirectGraphBufferReader {
         buffer.clear();
         fillBuffer(channel, buffer);
 
-        if (buffer.remaining() < 12) {
-            throw new CorruptedGraphBufferException("File is too small to contain a valid header.");
-        }
+        ensureBytes(12, channel, buffer);
 
         int header = buffer.getInt();
         if (header != DirectGraphBufferWriter.MAGIC_HEADER) {
-            throw new CorruptedGraphBufferException("Invalid magic header. Not a DirectGraphBuffer.");
+            throw new CorruptedGraphBufferException(
+                String.format("Invalid magic header. Expected 0x%08X but found 0x%08X. This is not a valid DirectGraphBuffer file.",
+                              DirectGraphBufferWriter.MAGIC_HEADER, header)
+            );
         }
 
         int totalNodes = buffer.getInt();
         int totalEdges = buffer.getInt();
 
+        // 3. Read Dictionary
+        String[] dictionary = readDictionary(channel, buffer);
+
         // Pre-allocate custom IntIntMap
         IntIntMap translationMap = new IntIntMap(totalNodes);
 
-        // 3. Node Phase (Pass 1)
-        readNodes(channel, buffer, targetGraph, nodeFactory, totalNodes, translationMap);
+        // 4. Node Phase (Pass 1)
+        readNodes(channel, buffer, targetGraph, nodeFactory, totalNodes, dictionary, translationMap);
 
-        // 4. Edge Phase (Pass 2)
-        readEdges(channel, buffer, targetGraph, edgeFactory, totalEdges, translationMap);
+        // 5. Edge Phase (Pass 2)
+        readEdges(channel, buffer, targetGraph, edgeFactory, totalEdges, dictionary, translationMap);
     }
 
-    private static void readNodes(FileChannel channel, ByteBuffer buffer, Graph targetGraph, NodeFactory nodeFactory, int totalNodes, IntIntMap translationMap) throws IOException {
-        for (int i = 0; i < totalNodes; i++) {
-            // Check stride for node (4 bytes)
-            if (buffer.remaining() < 4) {
-                compactAndRefill(channel, buffer);
-                if (buffer.remaining() < 4) {
-                    throw new CorruptedGraphBufferException("Unexpected end of file while reading nodes.");
-                }
-            }
+    private static String[] readDictionary(FileChannel channel, ByteBuffer buffer) throws IOException {
+        ensureBytes(4, channel, buffer);
+        int dictionarySize = buffer.getInt();
+        String[] dictionary = new String[dictionarySize];
 
+        for (int i = 0; i < dictionarySize; i++) {
+            ensureBytes(4, channel, buffer);
+            int strLen = buffer.getInt();
+            ensureBytes(strLen, channel, buffer);
+            byte[] strBytes = new byte[strLen];
+            buffer.get(strBytes);
+            dictionary[i] = new String(strBytes, StandardCharsets.UTF_8);
+        }
+        return dictionary;
+    }
+
+    private static void readNodes(FileChannel channel, ByteBuffer buffer, Graph targetGraph, NodeFactory nodeFactory, int totalNodes, String[] dictionary, IntIntMap translationMap) throws IOException {
+        for (int i = 0; i < totalNodes; i++) {
+            ensureBytes(4, channel, buffer);
             int fileNodeId = buffer.getInt();
+
             Node newNode = nodeFactory.createNode();
+
+            readTagsAndAttributes(channel, buffer, newNode, dictionary, fileNodeId);
+
             targetGraph.addNode(newNode);
             translationMap.put(fileNodeId, newNode.id());
         }
     }
 
-    private static void readEdges(FileChannel channel, ByteBuffer buffer, Graph targetGraph, EdgeFactory edgeFactory, int totalEdges, IntIntMap translationMap) throws IOException {
+    private static void readEdges(FileChannel channel, ByteBuffer buffer, Graph targetGraph, EdgeFactory edgeFactory, int totalEdges, String[] dictionary, IntIntMap translationMap) throws IOException {
         for (int i = 0; i < totalEdges; i++) {
-            // Check stride for edge (12 bytes)
-            if (buffer.remaining() < 12) {
-                compactAndRefill(channel, buffer);
-                if (buffer.remaining() < 12) {
-                    throw new CorruptedGraphBufferException("Unexpected end of file while reading edges.");
-                }
-            }
-
+            ensureBytes(12, channel, buffer);
             int fileEdgeId = buffer.getInt();
             int fileFromId = buffer.getInt();
             int fileToId = buffer.getInt();
 
             int actualFromId = translationMap.get(fileFromId);
+            if (actualFromId == -1) {
+                throw new CorruptedGraphBufferException("Edge ID " + fileEdgeId + " references missing source node ID: " + fileFromId);
+            }
+
             int actualToId = translationMap.get(fileToId);
+            if (actualToId == -1) {
+                throw new CorruptedGraphBufferException("Edge ID " + fileEdgeId + " references missing target node ID: " + fileToId);
+            }
 
             Optional<Node> fromNodeOpt = targetGraph.node(actualFromId);
             Optional<Node> toNodeOpt = targetGraph.node(actualToId);
@@ -128,7 +152,97 @@ public class DirectGraphBufferReader {
             }
 
             Edge newEdge = edgeFactory.createEdge(fromNodeOpt.get(), toNodeOpt.get());
+
+            readTagsAndAttributes(channel, buffer, newEdge, dictionary, fileEdgeId);
+
             targetGraph.addEdge(newEdge);
+        }
+    }
+
+    private static void readTagsAndAttributes(FileChannel channel, ByteBuffer buffer, GraphElement element, String[] dictionary, int elementId) throws IOException {
+        ensureBytes(4, channel, buffer);
+        int tagCount = buffer.getInt();
+        for (int j = 0; j < tagCount; j++) {
+            ensureBytes(4, channel, buffer);
+            int dictId = buffer.getInt();
+            if (dictId < 0 || dictId >= dictionary.length) {
+                throw new CorruptedGraphBufferException("Dictionary ID out of bounds: " + dictId + ". The dictionary only contains " + dictionary.length + " entries. The .dgb file is corrupted while parsing tags for element ID: " + elementId);
+            }
+            element.tags().add(dictionary[dictId]);
+        }
+
+        ensureBytes(4, channel, buffer);
+        int attrCount = buffer.getInt();
+        for (int j = 0; j < attrCount; j++) {
+            ensureBytes(5, channel, buffer); // key dictId (4) + type marker (1)
+            int keyDictId = buffer.getInt();
+            if (keyDictId < 0 || keyDictId >= dictionary.length) {
+                throw new CorruptedGraphBufferException("Dictionary ID out of bounds: " + keyDictId + ". The dictionary only contains " + dictionary.length + " entries. The .dgb file is corrupted while parsing attributes for element ID: " + elementId);
+            }
+            String key = dictionary[keyDictId];
+
+            byte marker = buffer.get();
+            AttributeValue attrValue;
+
+            if (marker == TYPE_STRING) {
+                ensureBytes(4, channel, buffer);
+                int valDictId = buffer.getInt();
+                if (valDictId < 0 || valDictId >= dictionary.length) {
+                    throw new CorruptedGraphBufferException("Dictionary ID out of bounds: " + valDictId + ". The dictionary only contains " + dictionary.length + " entries. The .dgb file is corrupted while parsing attributes for element ID: " + elementId);
+                }
+                attrValue = AttributeValue.value(dictionary[valDictId]);
+            } else if (marker == TYPE_BOOLEAN) {
+                ensureBytes(1, channel, buffer);
+                byte b = buffer.get();
+                attrValue = AttributeValue.value(b != 0);
+            } else if (marker == TYPE_INT) {
+                ensureBytes(4, channel, buffer);
+                attrValue = AttributeValue.value(buffer.getInt());
+            } else if (marker == TYPE_LONG) {
+                ensureBytes(8, channel, buffer);
+                attrValue = AttributeValue.value(buffer.getLong());
+            } else if (marker == TYPE_DOUBLE) {
+                ensureBytes(8, channel, buffer);
+                attrValue = AttributeValue.value(buffer.getDouble());
+            } else if (marker == TYPE_BYTE_ARRAY) {
+                ensureBytes(4, channel, buffer);
+                int len = buffer.getInt();
+
+                byte[] data = new byte[len];
+                int offset = 0;
+                while (offset < len) {
+                    int remainingInBuffer = buffer.remaining();
+                    if (remainingInBuffer == 0) {
+                        compactAndRefill(channel, buffer);
+                        remainingInBuffer = buffer.remaining();
+                        if (remainingInBuffer == 0) {
+                            throw new CorruptedGraphBufferException("Unexpected end of file while reading byte array for element ID: " + elementId);
+                        }
+                    }
+                    int bytesToRead = Math.min(len - offset, remainingInBuffer);
+                    buffer.get(data, offset, bytesToRead);
+                    offset += bytesToRead;
+                }
+                attrValue = AttributeValue.value(data);
+            } else {
+                throw new CorruptedGraphBufferException("Invalid attribute type marker detected: " + marker + ". Expected a value between 0 and 5 while parsing attributes for GraphElement ID: " + elementId);
+            }
+
+            element.attributes().put(key, attrValue);
+        }
+    }
+
+    private static void ensureBytes(int requiredBytes, FileChannel channel, ByteBuffer buffer) throws IOException {
+        if (buffer.remaining() < requiredBytes) {
+            compactAndRefill(channel, buffer);
+            if (buffer.remaining() < requiredBytes) {
+                // If the channel has reached EOF and we STILL don't have enough bytes,
+                // it is mathematically guaranteed that the file was truncated mid-payload.
+                throw new CorruptedGraphBufferException(
+                    "Unexpected end of file. Required " + requiredBytes + " bytes but only " +
+                    buffer.remaining() + " were available. The .dgb file is truncated."
+                );
+            }
         }
     }
 
