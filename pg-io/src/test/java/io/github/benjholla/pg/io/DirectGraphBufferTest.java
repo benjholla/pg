@@ -26,7 +26,6 @@ public class DirectGraphBufferTest {
     public void testDefaultConstructors() {
         new DirectGraphBufferWriter();
         new DirectGraphBufferReader();
-        new ExportPGV();
     }
 
     @Test
@@ -641,5 +640,44 @@ public class DirectGraphBufferTest {
         assertTrue(foundTier1);
         assertTrue(foundTier2);
         assertTrue(foundTier3);
+    }
+
+    @Test
+    public void testRoundTripSerialization(@TempDir Path tempDir) throws IOException {
+        Path file = tempDir.resolve("test.dgb");
+
+        // 1. Create source graph
+        GlobalGraph sourceGraph = new GlobalGraph();
+        NodeFactory nf = sourceGraph.factory();
+        EdgeFactory ef = sourceGraph.factory();
+
+        Node n1 = nf.createNode();
+        Node n2 = nf.createNode();
+        Node n3 = nf.createNode();
+
+        sourceGraph.addNode(n1);
+        sourceGraph.addNode(n2);
+        sourceGraph.addNode(n3);
+
+        Edge e1 = ef.createEdge(n1, n2);
+        Edge e2 = ef.createEdge(n2, n3);
+
+        sourceGraph.addEdge(e1);
+        sourceGraph.addEdge(e2);
+
+        // 2. Write graph
+        try (FileChannel channel = FileChannel.open(file, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ)) {
+            DirectGraphBufferWriter.write(sourceGraph, channel, 1024); // Use small buffer to test chunking
+        }
+
+        // 3. Read graph
+        GlobalGraph targetGraph = new GlobalGraph();
+        try (FileChannel channel = FileChannel.open(file, StandardOpenOption.READ)) {
+            DirectGraphBufferReader.read(channel, targetGraph, nf, ef, 1024);
+        }
+
+        // 4. Verify
+        assertEquals(3, targetGraph.nodes().size(), "Should have 3 nodes");
+        assertEquals(2, targetGraph.edges().size(), "Should have 2 edges");
     }
 }
