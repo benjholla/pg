@@ -207,22 +207,7 @@ public class DirectGraphBufferReader {
             } else if (marker == TYPE_BYTE_ARRAY) {
                 ensureBytes(4, channel, buffer);
                 int len = buffer.getInt();
-
-                byte[] data = new byte[len];
-                int offset = 0;
-                while (offset < len) {
-                    int remainingInBuffer = buffer.remaining();
-                    if (remainingInBuffer == 0) {
-                        compactAndRefill(channel, buffer);
-                        remainingInBuffer = buffer.remaining();
-                        if (remainingInBuffer == 0) {
-                            throw new CorruptedGraphBufferException("Unexpected end of file while reading byte array for element ID: " + elementId);
-                        }
-                    }
-                    int bytesToRead = Math.min(len - offset, remainingInBuffer);
-                    buffer.get(data, offset, bytesToRead);
-                    offset += bytesToRead;
-                }
+                byte[] data = readByteArrayTieredStrategy(len, channel, buffer, elementId);
                 attrValue = AttributeValue.value(data);
             } else {
                 throw new CorruptedGraphBufferException("Invalid attribute type marker detected: " + marker + ". Expected a value between 0 and 5 while parsing attributes for GraphElement ID: " + elementId);
@@ -232,6 +217,35 @@ public class DirectGraphBufferReader {
         }
     }
 
+    /**
+     * Reads a byte array using a chunked strategy.
+     * Continuously pulls from the buffer and refills it until the entire array is read,
+     * cleanly handling data boundaries that span across chunks.
+     */
+    private static byte[] readByteArrayTieredStrategy(int len, FileChannel channel, ByteBuffer buffer, int elementId) throws IOException {
+        byte[] data = new byte[len];
+        int offset = 0;
+        while (offset < len) {
+            int remainingInBuffer = buffer.remaining();
+            if (remainingInBuffer == 0) {
+                compactAndRefill(channel, buffer);
+                remainingInBuffer = buffer.remaining();
+                if (remainingInBuffer == 0) {
+                    throw new CorruptedGraphBufferException("Unexpected end of file while reading byte array for element ID: " + elementId);
+                }
+            }
+            int bytesToRead = Math.min(len - offset, remainingInBuffer);
+            buffer.get(data, offset, bytesToRead);
+            offset += bytesToRead;
+        }
+        return data;
+    }
+
+    /**
+     * Guarantees that the buffer has at least requiredBytes available for reading.
+     * If not, it compacts the remaining unread bytes to the front and refills the buffer from the channel.
+     * This strictly controls the chunking logic to handle dynamic metadata sizes without clearing state.
+     */
     private static void ensureBytes(int requiredBytes, FileChannel channel, ByteBuffer buffer) throws IOException {
         if (buffer.remaining() < requiredBytes) {
             compactAndRefill(channel, buffer);
@@ -253,6 +267,10 @@ public class DirectGraphBufferReader {
         buffer.flip();
     }
 
+    /**
+     * Preserves unread bytes across read boundaries by compacting them to the beginning of the buffer,
+     * then refilling the remaining capacity from the file channel.
+     */
     private static void compactAndRefill(FileChannel channel, ByteBuffer buffer) throws IOException {
         buffer.compact();
         while (buffer.hasRemaining() && channel.read(buffer) != -1) {

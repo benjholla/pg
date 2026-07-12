@@ -29,7 +29,8 @@ public class IntIntMap {
      * @param expectedSize The maximum number of entries (nodes) this map will hold.
      */
     public IntIntMap(int expectedSize) {
-        // Find the next power of 2 that guarantees at least a 0.5 load factor
+        // Find the next power of 2 that guarantees at least a 0.5 load factor.
+        // A load factor of <= 0.5 is critical to prevent linear probing performance degradation.
         int targetCapacity = Math.max(2, expectedSize * 2);
         int powerOfTwo = 2;
         while (powerOfTwo < targetCapacity) {
@@ -37,12 +38,12 @@ public class IntIntMap {
         }
 
         this.capacity = powerOfTwo;
-        this.mask = this.capacity - 1; // Used for ultra-fast bitwise modulo
+        this.mask = this.capacity - 1; // Used for ultra-fast bitwise modulo (e.g., hash & mask)
 
         this.keys = new int[this.capacity];
         this.values = new int[this.capacity];
 
-        // Make 0 a legal ID by filling the keys array with -1
+        // Ensure 0 is a valid key (since Node IDs often start at 0) by using -1 as the empty marker
         Arrays.fill(this.keys, EMPTY);
     }
 
@@ -85,7 +86,14 @@ public class IntIntMap {
     }
 
     /**
-     * A simple hash function to spread out keys.
+     * A highly avalanching integer hash function based on MurmurHash3's finalizer.
+     *
+     * Rationale:
+     * Graph node IDs are often highly sequential (e.g., 0, 1, 2, 3).
+     * Sequential keys can cluster badly in open-addressed maps. This finalizer
+     * uses the MurmurHash3 mix constants (0x85ebca6b and 0xc2b2ae35) to fiercely
+     * scatter sequential integers across the available bucket space, drastically
+     * reducing linear probing collision chains.
      */
     private int hash(int key) {
         int h = key;
@@ -94,6 +102,6 @@ public class IntIntMap {
         h ^= h >>> 13;
         h *= 0xc2b2ae35;
         h ^= h >>> 16;
-        return h; // No need to strip the sign bit; the bitwise mask handles it safely
+        return h; // No need to strip the sign bit; the power-of-two bitwise mask handles it safely
     }
 }

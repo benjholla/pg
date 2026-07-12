@@ -180,18 +180,33 @@ public class DirectGraphBufferWriter {
                 buffer.put(TYPE_BYTE_ARRAY);
                 buffer.putInt(data.length);
 
-                if (data.length <= buffer.remaining()) {
-                    buffer.put(data);
-                } else if (data.length <= buffer.capacity()) {
-                    flushBuffer(channel, buffer);
-                    buffer.put(data);
-                } else {
-                    flushBuffer(channel, buffer);
-                    ByteBuffer direct = ByteBuffer.wrap(data);
-                    while (direct.hasRemaining()) {
-                        channel.write(direct);
-                    }
-                }
+                writeByteArrayTieredStrategy(data, channel, buffer);
+            }
+        }
+    }
+
+    /**
+     * Executes a 3-tier strategy for writing byte arrays to maximize throughput and minimize memory copies.
+     *
+     * Tier 1: Fits directly in the current chunk space. We write it into the buffer to be flushed later.
+     * Tier 2: Does not fit in remaining space, but fits within the total buffer capacity. We flush the chunk and write it.
+     * Tier 3: Massive payload exceeding buffer capacity completely. We flush the chunk, wrap the byte array,
+     *         and write it directly to the FileChannel, bypassing the 8MB buffer limit completely.
+     */
+    private static void writeByteArrayTieredStrategy(byte[] data, FileChannel channel, ByteBuffer buffer) throws IOException {
+        if (data.length <= buffer.remaining()) {
+            // Tier 1: Dump directly if it fits in the current chunk space
+            buffer.put(data);
+        } else if (data.length <= buffer.capacity()) {
+            // Tier 2: Flush current chunk and dump if the payload fits in total capacity but not remaining space
+            flushBuffer(channel, buffer);
+            buffer.put(data);
+        } else {
+            // Tier 3: Flush chunk and wrap the array to write directly to the FileChannel
+            flushBuffer(channel, buffer);
+            ByteBuffer direct = ByteBuffer.wrap(data);
+            while (direct.hasRemaining()) {
+                channel.write(direct);
             }
         }
     }
@@ -202,6 +217,11 @@ public class DirectGraphBufferWriter {
         flushBuffer(channel, buffer);
     }
 
+    /**
+     * Guarantees that the buffer has at least requiredBytes of space remaining.
+     * If not, it flushes the current contents to the channel.
+     * This strictly controls the chunking logic to handle dynamic metadata sizes.
+     */
     private static void ensureSpace(int requiredBytes, FileChannel channel, ByteBuffer buffer) throws IOException {
         if (buffer.remaining() < requiredBytes) {
             flushBuffer(channel, buffer);
