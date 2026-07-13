@@ -43,7 +43,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute) {
+    public EdgeSet withAttribute(String attribute) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         for (GlobalEdge edge : edges.values()) {
             if (edge.attributes().containsKey(attribute)) {
@@ -54,7 +54,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (attribute != null && values != null) {
             for (GlobalEdge edge : edges.values()) {
@@ -274,7 +274,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
+    public EdgeSet withAnyTag(String... tags) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (tags != null && tags.length > 0) {
             for (Edge e : this) {
@@ -290,7 +290,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
+    public EdgeSet withAllTags(String... tags) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (tags != null && tags.length > 0) {
             for (Edge e : this) {

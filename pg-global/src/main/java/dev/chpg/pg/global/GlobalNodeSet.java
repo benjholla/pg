@@ -61,7 +61,7 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet attributedWith(String attribute) {
+    public NodeSet withAttribute(String attribute) {
         GlobalNodeSet result = new GlobalNodeSet();
         for (GlobalNode node : internalSet) {
            if (node.attributes().containsKey(attribute)) {
@@ -72,7 +72,7 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (attribute != null && values != null) {
             for (GlobalNode node : internalSet) {
@@ -268,7 +268,7 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
+    public NodeSet withAnyTag(String... tags) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (tags != null && tags.length > 0) {
             for (GlobalNode e : internalSet) {
@@ -284,7 +284,7 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
+    public NodeSet withAllTags(String... tags) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (tags != null && tags.length > 0) {
             for (GlobalNode e : internalSet) {

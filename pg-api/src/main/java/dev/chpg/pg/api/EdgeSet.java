@@ -2,9 +2,7 @@ package dev.chpg.pg.api;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public interface EdgeSet extends Set<Edge> {
 
@@ -17,83 +15,48 @@ public interface EdgeSet extends Set<Edge> {
     EdgeSet toImmutable();
 
     Optional<Edge> one();
-    /**
-     * Filters this set to include only edges with the specified attribute.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines (e.g., {@code graph.nodes().taggedWithAny("A").attributedWith("B")}). It also allows
-     * high-performance implementations to override these methods and exploit internal indices
-     * (like bitmaps) for O(1) or O(log N) set intersections without full iteration.
-     */
-    default EdgeSet attributedWith(String attribute) {
-        Set<Edge> filtered = stream()
-            .filter(e -> e.attributes().containsKey(attribute))
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    default EdgeSet withAttribute(String attribute) {
+        return new DeferredEdgeSet(this, e -> e.attributes().containsKey(attribute));
     }
-    /**
-     * Filters this set to include only edges with the specified attribute and value(s).
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices for faster set intersections without full iteration.
-     */
-    default EdgeSet attributedWith(String attribute, AttributeValue... values) {
-        Set<Edge> filtered = stream()
-            .filter(e -> {
-                AttributeValue val = e.attributes().get(attribute);
-                if (val == null || values == null || values.length == 0) return false;
-                for (AttributeValue v : values) {
-                    if (Objects.equals(val, v)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    default EdgeSet withAttribute(String attribute, AttributeValue... values) {
+        return new DeferredEdgeSet(this, e -> {
+            AttributeValue val = e.attributes().get(attribute);
+            if (val == null || values == null || values.length == 0) return false;
+            for (AttributeValue v : values) {
+                if (java.util.Objects.equals(val, v)) return true;
+            }
+            return false;
+        });
     }
-    /**
-     * Filters this set to include only edges tagged with any of the specified tags.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices (like bitmaps) for faster set intersections without full iteration.
-     */
-    default EdgeSet taggedWithAny(String... tags) {
-        Set<Edge> filtered = stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    default EdgeSet withAnyTag(String... tags) {
+        return new DeferredEdgeSet(this, e -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (e.tags().contains(tag)) return true;
+            }
+            return false;
+        });
     }
-    /**
-     * Filters this set to include only edges tagged with all of the specified tags.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices (like bitmaps) for faster set intersections without full iteration.
-     */
-    default EdgeSet taggedWithAll(String... tags) {
-        Set<Edge> filtered = stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) return false;
-                }
-                return true;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
+    default EdgeSet withAllTags(String... tags) {
+        return new DeferredEdgeSet(this, e -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (!e.tags().contains(tag)) return false;
+            }
+            return true;
+        });
     }
 
+
+    /**
+     * Forces eager evaluation of the deferred pipeline, materializing
+     * the final IDs into a high-performance array in memory.
+     * Note: This incurs an allocation and iteration cost.
+     */
+    default EdgeSet materialize() {
+        Set<Edge> materialized = stream().collect(java.util.stream.Collectors.toUnmodifiableSet());
+        return materialized.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(materialized);
+    }
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.
      */

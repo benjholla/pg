@@ -125,14 +125,14 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
 
         assertTrue(set.one().isPresent());
 
-        EdgeSet filteredA = set.attributedWith("type", AttributeValue.value("A"));
+        EdgeSet filteredA = set.withAttribute("type", AttributeValue.value("A"));
         assertEquals(1, filteredA.size());
         assertTrue(filteredA.contains(e1));
 
-        EdgeSet filteredVal = set.attributedWith("val");
+        EdgeSet filteredVal = set.withAttribute("val");
         assertEquals(2, filteredVal.size());
 
-        EdgeSet filterNull = set.attributedWith(null, AttributeValue.value("A"));
+        EdgeSet filterNull = set.withAttribute(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
         EdgeSet intersectEmpty = set.intersect(null);
@@ -186,28 +186,28 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
 
         GlobalUnmodifiableLiveEdgeSet set = new GlobalUnmodifiableLiveEdgeSet(nodes, map, inEdges, outEdges);
 
-        EdgeSet result1 = set.taggedWithAny("tagA");
+        EdgeSet result1 = set.withAnyTag("tagA");
         assertEquals(1, result1.size());
         assertTrue(result1.contains(e1));
 
-        EdgeSet result2 = set.taggedWithAny("tagB");
+        EdgeSet result2 = set.withAnyTag("tagB");
         assertEquals(2, result2.size());
         assertTrue(result2.contains(e1));
         assertTrue(result2.contains(e2));
 
-        EdgeSet result3 = set.taggedWithAny("tagA", "tagC");
+        EdgeSet result3 = set.withAnyTag("tagA", "tagC");
         assertEquals(3, result3.size());
         assertTrue(result3.contains(e1));
         assertTrue(result3.contains(e2));
         assertTrue(result3.contains(e3));
 
-        EdgeSet result4 = set.taggedWithAny("nonexistent");
+        EdgeSet result4 = set.withAnyTag("nonexistent");
         assertEquals(0, result4.size());
 
-        EdgeSet result5 = set.taggedWithAny((String[]) null);
+        EdgeSet result5 = set.withAnyTag((String[]) null);
         assertEquals(0, result5.size());
 
-        EdgeSet result6 = set.taggedWithAny(new String[0]);
+        EdgeSet result6 = set.withAnyTag(new String[0]);
         assertEquals(0, result6.size());
     }
 
@@ -240,33 +240,33 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
 
         GlobalUnmodifiableLiveEdgeSet set = new GlobalUnmodifiableLiveEdgeSet(nodes, map, inEdges, outEdges);
 
-        EdgeSet result1 = set.taggedWithAll("tagA");
+        EdgeSet result1 = set.withAllTags("tagA");
         assertEquals(2, result1.size());
         assertTrue(result1.contains(e1));
         assertTrue(result1.contains(e3));
 
-        EdgeSet result2 = set.taggedWithAll("tagB");
+        EdgeSet result2 = set.withAllTags("tagB");
         assertEquals(3, result2.size());
         assertTrue(result2.contains(e1));
         assertTrue(result2.contains(e2));
         assertTrue(result2.contains(e3));
 
-        EdgeSet result3 = set.taggedWithAll("tagA", "tagB");
+        EdgeSet result3 = set.withAllTags("tagA", "tagB");
         assertEquals(2, result3.size());
         assertTrue(result3.contains(e1));
         assertTrue(result3.contains(e3));
 
-        EdgeSet result4 = set.taggedWithAll("tagA", "tagB", "tagC");
+        EdgeSet result4 = set.withAllTags("tagA", "tagB", "tagC");
         assertEquals(1, result4.size());
         assertTrue(result4.contains(e3));
 
-        EdgeSet result5 = set.taggedWithAll("nonexistent");
+        EdgeSet result5 = set.withAllTags("nonexistent");
         assertEquals(0, result5.size());
 
-        EdgeSet result6 = set.taggedWithAll((String[]) null);
+        EdgeSet result6 = set.withAllTags((String[]) null);
         assertEquals(0, result6.size());
 
-        EdgeSet result7 = set.taggedWithAll(new String[0]);
+        EdgeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
 }

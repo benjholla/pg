@@ -2,9 +2,7 @@ package dev.chpg.pg.api;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public interface NodeSet extends Set<Node> {
 
@@ -17,83 +15,48 @@ public interface NodeSet extends Set<Node> {
     NodeSet toImmutable();
 
     Optional<Node> one();
-    /**
-     * Filters this set to include only nodes with the specified attribute.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines (e.g., {@code graph.nodes().taggedWithAny("A").attributedWith("B")}). It also allows
-     * high-performance implementations to override these methods and exploit internal indices
-     * (like bitmaps) for O(1) or O(log N) set intersections without full iteration.
-     */
-    default NodeSet attributedWith(String attribute) {
-        Set<Node> filtered = stream()
-            .filter(n -> n.attributes().containsKey(attribute))
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    default NodeSet withAttribute(String attribute) {
+        return new DeferredNodeSet(this, n -> n.attributes().containsKey(attribute));
     }
-    /**
-     * Filters this set to include only nodes with the specified attribute and value(s).
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices for faster set intersections without full iteration.
-     */
-    default NodeSet attributedWith(String attribute, AttributeValue... values) {
-        Set<Node> filtered = stream()
-            .filter(n -> {
-                AttributeValue val = n.attributes().get(attribute);
-                if (val == null || values == null || values.length == 0) return false;
-                for (AttributeValue v : values) {
-                    if (Objects.equals(val, v)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    default NodeSet withAttribute(String attribute, AttributeValue... values) {
+        return new DeferredNodeSet(this, n -> {
+            AttributeValue val = n.attributes().get(attribute);
+            if (val == null || values == null || values.length == 0) return false;
+            for (AttributeValue v : values) {
+                if (java.util.Objects.equals(val, v)) return true;
+            }
+            return false;
+        });
     }
-    /**
-     * Filters this set to include only nodes tagged with any of the specified tags.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices (like bitmaps) for faster set intersections without full iteration.
-     */
-    default NodeSet taggedWithAny(String... tags) {
-        Set<Node> filtered = stream()
-            .filter(n -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (n.tags().contains(tag)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    default NodeSet withAnyTag(String... tags) {
+        return new DeferredNodeSet(this, n -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (n.tags().contains(tag)) return true;
+            }
+            return false;
+        });
     }
-    /**
-     * Filters this set to include only nodes tagged with all of the specified tags.
-     * <p>
-     * <b>Architectural Rationale:</b>
-     * Anchoring filtering operations directly on the set (rather than the Graph) enables fluent query
-     * pipelines. It also allows high-performance implementations to override these methods and
-     * exploit internal indices (like bitmaps) for faster set intersections without full iteration.
-     */
-    default NodeSet taggedWithAll(String... tags) {
-        Set<Node> filtered = stream()
-            .filter(n -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (!n.tags().contains(tag)) return false;
-                }
-                return true;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
+    default NodeSet withAllTags(String... tags) {
+        return new DeferredNodeSet(this, n -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (!n.tags().contains(tag)) return false;
+            }
+            return true;
+        });
     }
 
+
+    /**
+     * Forces eager evaluation of the deferred pipeline, materializing
+     * the final IDs into a high-performance array in memory.
+     * Note: This incurs an allocation and iteration cost.
+     */
+    default NodeSet materialize() {
+        Set<Node> materialized = stream().collect(java.util.stream.Collectors.toUnmodifiableSet());
+        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(materialized);
+    }
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.
      */

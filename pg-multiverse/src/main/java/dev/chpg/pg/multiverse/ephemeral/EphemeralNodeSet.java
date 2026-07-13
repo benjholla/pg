@@ -62,7 +62,7 @@ public final class EphemeralNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet attributedWith(String attribute) {
+    public NodeSet withAttribute(String attribute) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         for (EphemeralNode node : internalSet) {
            if (node.attributes().containsKey(attribute)) {
@@ -73,7 +73,7 @@ public final class EphemeralNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (attribute != null && values != null) {
             for (EphemeralNode node : internalSet) {
@@ -269,7 +269,7 @@ public final class EphemeralNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
+    public NodeSet withAnyTag(String... tags) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (tags != null && tags.length > 0) {
             for (EphemeralNode e : internalSet) {
@@ -285,7 +285,7 @@ public final class EphemeralNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
+    public NodeSet withAllTags(String... tags) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (tags != null && tags.length > 0) {
             for (EphemeralNode e : internalSet) {

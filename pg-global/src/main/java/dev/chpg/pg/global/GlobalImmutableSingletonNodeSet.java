@@ -21,6 +21,11 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
+    public NodeSet materialize() {
+        return this;
+    }
+
+    @Override
     public NodeSet toImmutable() {
         return this;
     }
@@ -46,7 +51,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet attributedWith(String attribute) {
+    public NodeSet withAttribute(String attribute) {
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
@@ -54,7 +59,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
         if (element.attributes().containsKey(attribute)) {
             AttributeValue attrValue = element.attributes().get(attribute);
             for (AttributeValue v : values) {
@@ -106,7 +111,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
+    public NodeSet withAnyTag(String... tags) {
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
                 if (element.tags().contains(tag)) {
@@ -118,7 +123,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
+    public NodeSet withAllTags(String... tags) {
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
                 if (!element.tags().contains(tag)) {

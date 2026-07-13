@@ -72,11 +72,11 @@ public class EphemeralImmutableSingletonEdgeSetTest {
     public void testFilterByAttribute() {
         edge.attributes().put("key", AttributeValue.value("value"));
 
-        EdgeSet filtered = singletonSet.attributedWith("key");
+        EdgeSet filtered = singletonSet.withAttribute("key");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(edge));
 
-        EdgeSet empty = singletonSet.attributedWith("otherKey");
+        EdgeSet empty = singletonSet.withAttribute("otherKey");
         assertEquals(0, empty.size());
     }
 
@@ -84,18 +84,18 @@ public class EphemeralImmutableSingletonEdgeSetTest {
     public void testFilterByAttributeAndValue() {
         edge.attributes().put("key", AttributeValue.value("value"));
 
-        EdgeSet filtered = singletonSet.attributedWith("key", AttributeValue.value("value"));
+        EdgeSet filtered = singletonSet.withAttribute("key", AttributeValue.value("value"));
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(edge));
 
-        EdgeSet filteredMulti = singletonSet.attributedWith("key", AttributeValue.value("other"), AttributeValue.value("value"));
+        EdgeSet filteredMulti = singletonSet.withAttribute("key", AttributeValue.value("other"), AttributeValue.value("value"));
         assertEquals(1, filteredMulti.size());
         assertTrue(filteredMulti.contains(edge));
 
-        EdgeSet empty = singletonSet.attributedWith("key", AttributeValue.value("other"));
+        EdgeSet empty = singletonSet.withAttribute("key", AttributeValue.value("other"));
         assertEquals(0, empty.size());
 
-        EdgeSet emptyMissing = singletonSet.attributedWith("missing", AttributeValue.value("value"));
+        EdgeSet emptyMissing = singletonSet.withAttribute("missing", AttributeValue.value("value"));
         assertEquals(0, emptyMissing.size());
     }
 

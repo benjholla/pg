@@ -121,14 +121,14 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
         assertTrue(set.one().isPresent());
 
-        NodeSet filteredA = set.attributedWith("type", AttributeValue.value("A"));
+        NodeSet filteredA = set.withAttribute("type", AttributeValue.value("A"));
         assertEquals(1, filteredA.size());
         assertTrue(filteredA.contains(n1));
 
-        NodeSet filteredVal = set.attributedWith("val");
+        NodeSet filteredVal = set.withAttribute("val");
         assertEquals(2, filteredVal.size());
 
-        NodeSet filterNull = set.attributedWith(null, AttributeValue.value("A"));
+        NodeSet filterNull = set.withAttribute(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
         NodeSet intersectEmpty = set.intersect(null);
@@ -179,28 +179,28 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
         EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
 
-        NodeSet result1 = set.taggedWithAny("tagA");
+        NodeSet result1 = set.withAnyTag("tagA");
         assertEquals(1, result1.size());
         assertTrue(result1.contains(n1));
 
-        NodeSet result2 = set.taggedWithAny("tagB");
+        NodeSet result2 = set.withAnyTag("tagB");
         assertEquals(2, result2.size());
         assertTrue(result2.contains(n1));
         assertTrue(result2.contains(n2));
 
-        NodeSet result3 = set.taggedWithAny("tagA", "tagC");
+        NodeSet result3 = set.withAnyTag("tagA", "tagC");
         assertEquals(3, result3.size());
         assertTrue(result3.contains(n1));
         assertTrue(result3.contains(n2));
         assertTrue(result3.contains(n3));
 
-        NodeSet result4 = set.taggedWithAny("nonexistent");
+        NodeSet result4 = set.withAnyTag("nonexistent");
         assertEquals(0, result4.size());
 
-        NodeSet result5 = set.taggedWithAny((String[]) null);
+        NodeSet result5 = set.withAnyTag((String[]) null);
         assertEquals(0, result5.size());
 
-        NodeSet result6 = set.taggedWithAny(new String[0]);
+        NodeSet result6 = set.withAnyTag(new String[0]);
         assertEquals(0, result6.size());
     }
 
@@ -230,33 +230,33 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
         EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
 
-        NodeSet result1 = set.taggedWithAll("tagA");
+        NodeSet result1 = set.withAllTags("tagA");
         assertEquals(2, result1.size());
         assertTrue(result1.contains(n1));
         assertTrue(result1.contains(n3));
 
-        NodeSet result2 = set.taggedWithAll("tagB");
+        NodeSet result2 = set.withAllTags("tagB");
         assertEquals(3, result2.size());
         assertTrue(result2.contains(n1));
         assertTrue(result2.contains(n2));
         assertTrue(result2.contains(n3));
 
-        NodeSet result3 = set.taggedWithAll("tagA", "tagB");
+        NodeSet result3 = set.withAllTags("tagA", "tagB");
         assertEquals(2, result3.size());
         assertTrue(result3.contains(n1));
         assertTrue(result3.contains(n3));
 
-        NodeSet result4 = set.taggedWithAll("tagA", "tagB", "tagC");
+        NodeSet result4 = set.withAllTags("tagA", "tagB", "tagC");
         assertEquals(1, result4.size());
         assertTrue(result4.contains(n3));
 
-        NodeSet result5 = set.taggedWithAll("nonexistent");
+        NodeSet result5 = set.withAllTags("nonexistent");
         assertEquals(0, result5.size());
 
-        NodeSet result6 = set.taggedWithAll((String[]) null);
+        NodeSet result6 = set.withAllTags((String[]) null);
         assertEquals(0, result6.size());
 
-        NodeSet result7 = set.taggedWithAll(new String[0]);
+        NodeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
 }

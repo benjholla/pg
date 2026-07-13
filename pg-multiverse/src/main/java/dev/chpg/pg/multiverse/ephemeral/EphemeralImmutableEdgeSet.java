@@ -22,6 +22,11 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
     }
 
     @Override
+    public EdgeSet materialize() {
+        return this;
+    }
+
+    @Override
     public EdgeSet toImmutable() {
         return this;
     }
@@ -30,16 +35,16 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
         return edges.one();
     }
 
-    public EdgeSet attributedWith(String attribute) {
-        return edges.attributedWith(attribute);
+    public EdgeSet withAttribute(String attribute) {
+        return edges.withAttribute(attribute);
     }
 
     public void forEach(Consumer<? super Edge> action) {
         edges.forEach(action);
     }
 
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
-        return edges.attributedWith(attribute, values);
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
+        return edges.withAttribute(attribute, values);
     }
 
     public EdgeSet intersect(Collection<? extends Edge> other) {
@@ -171,12 +176,12 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
 
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
-        return edges.taggedWithAny(tags);
+    public EdgeSet withAnyTag(String... tags) {
+        return edges.withAnyTag(tags);
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
-        return edges.taggedWithAll(tags);
+    public EdgeSet withAllTags(String... tags) {
+        return edges.withAllTags(tags);
     }
 }

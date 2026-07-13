@@ -17,6 +17,11 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
+    public EdgeSet materialize() {
+        return this;
+    }
+
+    @Override
     public EdgeSet toImmutable() {
         return this;
     }
@@ -42,7 +47,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute) {
+    public EdgeSet withAttribute(String attribute) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> e.attributes().containsKey(attribute))
             .collect(Collectors.toUnmodifiableSet());
@@ -50,7 +55,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> {
                 AttributeValue val = e.attributes().get(attribute);
@@ -107,7 +112,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
+    public EdgeSet withAnyTag(String... tags) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> {
                 if (tags == null || tags.length == 0) return false;
@@ -121,7 +126,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
+    public EdgeSet withAllTags(String... tags) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> {
                 if (tags == null || tags.length == 0) return false;

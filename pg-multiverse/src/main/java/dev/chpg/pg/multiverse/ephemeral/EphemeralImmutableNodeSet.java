@@ -22,6 +22,11 @@ public class EphemeralImmutableNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet materialize() {
+        return this;
+    }
+
+    @Override
     public NodeSet toImmutable() {
         return this;
     }
@@ -30,16 +35,16 @@ public class EphemeralImmutableNodeSet implements NodeSet {
         return nodes.one();
     }
 
-    public NodeSet attributedWith(String attribute) {
-        return nodes.attributedWith(attribute);
+    public NodeSet withAttribute(String attribute) {
+        return nodes.withAttribute(attribute);
     }
 
     public void forEach(Consumer<? super Node> action) {
         nodes.forEach(action);
     }
 
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
-        return nodes.attributedWith(attribute, values);
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
+        return nodes.withAttribute(attribute, values);
     }
 
     public NodeSet intersect(Collection<? extends Node> other) {
@@ -171,12 +176,12 @@ public class EphemeralImmutableNodeSet implements NodeSet {
     
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
-        return nodes.taggedWithAny(tags);
+    public NodeSet withAnyTag(String... tags) {
+        return nodes.withAnyTag(tags);
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
-        return nodes.taggedWithAll(tags);
+    public NodeSet withAllTags(String... tags) {
+        return nodes.withAllTags(tags);
     }
 }

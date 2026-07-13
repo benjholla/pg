@@ -10,6 +10,11 @@ import java.util.Set;
 public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
+    public EdgeSet materialize() {
+        return this;
+    }
+
+    @Override
     public EdgeSet toImmutable() {
         return this;
     }
@@ -35,12 +40,12 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute) {
+    public EdgeSet withAttribute(String attribute) {
         return this;
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return this;
     }
 
@@ -76,12 +81,12 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     }
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
+    public EdgeSet withAnyTag(String... tags) {
         return this;
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
+    public EdgeSet withAllTags(String... tags) {
         return this;
     }
 }

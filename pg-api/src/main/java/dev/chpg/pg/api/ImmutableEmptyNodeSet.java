@@ -10,6 +10,11 @@ import java.util.Set;
 public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override
+    public NodeSet materialize() {
+        return this;
+    }
+
+    @Override
     public NodeSet toImmutable() {
         return this;
     }
@@ -35,12 +40,12 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     }
 
     @Override
-    public NodeSet attributedWith(String attribute) {
+    public NodeSet withAttribute(String attribute) {
         return this;
     }
 
     @Override
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
         return this;
     }
 
@@ -76,12 +81,12 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     }
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
+    public NodeSet withAnyTag(String... tags) {
         return this;
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
+    public NodeSet withAllTags(String... tags) {
         return this;
     }
 }

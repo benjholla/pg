@@ -61,7 +61,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute) {
+    public EdgeSet withAttribute(String attribute) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         for (GlobalEdge edge : internalSet) {
            if (edge.attributes().containsKey(attribute)) {
@@ -72,7 +72,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (attribute != null && values != null) {
             for (GlobalEdge edge : internalSet) {
@@ -268,7 +268,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
+    public EdgeSet withAnyTag(String... tags) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (tags != null && tags.length > 0) {
             for (GlobalEdge e : internalSet) {
@@ -284,7 +284,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
+    public EdgeSet withAllTags(String... tags) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (tags != null && tags.length > 0) {
             for (GlobalEdge e : internalSet) {

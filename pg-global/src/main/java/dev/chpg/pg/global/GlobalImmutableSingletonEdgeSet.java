@@ -21,6 +21,11 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
+    public EdgeSet materialize() {
+        return this;
+    }
+
+    @Override
     public EdgeSet toImmutable() {
         return this;
     }
@@ -46,7 +51,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute) {
+    public EdgeSet withAttribute(String attribute) {
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
@@ -54,7 +59,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
-    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
         if (element.attributes().containsKey(attribute)) {
             AttributeValue attrValue = element.attributes().get(attribute);
             for (AttributeValue v : values) {
@@ -106,7 +111,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
-    public EdgeSet taggedWithAny(String... tags) {
+    public EdgeSet withAnyTag(String... tags) {
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
                 if (element.tags().contains(tag)) {
@@ -118,7 +123,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
     }
 
     @Override
-    public EdgeSet taggedWithAll(String... tags) {
+    public EdgeSet withAllTags(String... tags) {
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
                 if (!element.tags().contains(tag)) {

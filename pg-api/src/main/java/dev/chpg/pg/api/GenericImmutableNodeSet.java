@@ -17,6 +17,11 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
+    public NodeSet materialize() {
+        return this;
+    }
+
+    @Override
     public NodeSet toImmutable() {
         return this;
     }
@@ -42,7 +47,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet attributedWith(String attribute) {
+    public NodeSet withAttribute(String attribute) {
         Set<Node> filtered = elements.stream()
             .filter(n -> n.attributes().containsKey(attribute))
             .collect(Collectors.toUnmodifiableSet());
@@ -50,7 +55,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+    public NodeSet withAttribute(String attribute, AttributeValue... values) {
         Set<Node> filtered = elements.stream()
             .filter(n -> {
                 AttributeValue val = n.attributes().get(attribute);
@@ -107,7 +112,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet taggedWithAny(String... tags) {
+    public NodeSet withAnyTag(String... tags) {
         Set<Node> filtered = elements.stream()
             .filter(e -> {
                 if (tags == null || tags.length == 0) return false;
@@ -121,7 +126,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet taggedWithAll(String... tags) {
+    public NodeSet withAllTags(String... tags) {
         Set<Node> filtered = elements.stream()
             .filter(e -> {
                 if (tags == null || tags.length == 0) return false;
