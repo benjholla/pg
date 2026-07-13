@@ -46,17 +46,20 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return this;
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return this;
     }
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         if (other instanceof NodeSet) {

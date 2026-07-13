@@ -68,6 +68,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return this;
         }
@@ -76,6 +77,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return EdgeSet.empty();
         }
@@ -84,6 +86,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         result.add(element);
         for (Edge e : other) {

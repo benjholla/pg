@@ -68,6 +68,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return this;
         }
@@ -76,6 +77,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return NodeSet.empty();
         }
@@ -84,6 +86,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralNodeSet result = new EphemeralNodeSet();
         result.add(element);
         for (Node n : other) {

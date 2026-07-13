@@ -76,8 +76,9 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
-        if (other == null || other.isEmpty()) {
+        if (other.isEmpty()) {
             return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
         }
         for (EphemeralEdge edge : edges.values()) {
@@ -90,9 +91,10 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         for (EphemeralEdge edge : edges.values()) {
-            if (other == null || !other.contains(edge)) {
+            if (!other.contains(edge)) {
                 result.add(edge);
             }
         }
@@ -101,8 +103,9 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
-        if (other != null) {
+        if (true) {
             for (Edge e : other) {
                 if (e instanceof EphemeralEdge) {
                     result.add(e);

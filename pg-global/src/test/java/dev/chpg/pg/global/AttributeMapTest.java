@@ -136,4 +136,42 @@ public class AttributeMapTest {
         assertEquals(val1.hashCode(), val2.hashCode());
         assertNotEquals(val1.hashCode(), val3.hashCode());
     }
+
+    @Test
+    public void testComputeMethods() {
+        assertThrows(NullPointerException.class, () -> attributeMap.compute(null, (k, v) -> AttributeValue.value("v")));
+        assertThrows(NullPointerException.class, () -> attributeMap.compute("k", null));
+
+        assertThrows(NullPointerException.class, () -> attributeMap.computeIfAbsent(null, k -> AttributeValue.value("v")));
+        assertThrows(NullPointerException.class, () -> attributeMap.computeIfAbsent("k", null));
+
+        assertThrows(NullPointerException.class, () -> attributeMap.computeIfPresent(null, (k, v) -> AttributeValue.value("v")));
+        assertThrows(NullPointerException.class, () -> attributeMap.computeIfPresent("k", null));
+
+        assertThrows(NullPointerException.class, () -> attributeMap.merge(null, AttributeValue.value("v"), (v1, v2) -> AttributeValue.value("v3")));
+        assertThrows(NullPointerException.class, () -> attributeMap.merge("k", null, (v1, v2) -> AttributeValue.value("v3")));
+        assertThrows(NullPointerException.class, () -> attributeMap.merge("k", AttributeValue.value("v"), null));
+
+        assertThrows(NullPointerException.class, () -> attributeMap.replaceAll(null));
+
+        attributeMap.compute("key1", (k, v) -> AttributeValue.value("val1"));
+        assertEquals(AttributeValue.value("val1"), attributeMap.get("key1"));
+
+        attributeMap.computeIfAbsent("key2", k -> AttributeValue.value("val2"));
+        assertEquals(AttributeValue.value("val2"), attributeMap.get("key2"));
+
+        attributeMap.computeIfPresent("key1", (k, v) -> AttributeValue.value("val1-mod"));
+        assertEquals(AttributeValue.value("val1-mod"), attributeMap.get("key1"));
+
+        attributeMap.merge("key3", AttributeValue.value("val3"), (v1, v2) -> AttributeValue.value("merged"));
+        assertEquals(AttributeValue.value("val3"), attributeMap.get("key3"));
+
+        attributeMap.merge("key3", AttributeValue.value("val3-new"), (v1, v2) -> AttributeValue.value("merged"));
+        assertEquals(AttributeValue.value("merged"), attributeMap.get("key3"));
+
+        attributeMap.replaceAll((k, v) -> AttributeValue.value("replaced"));
+        assertEquals(AttributeValue.value("replaced"), attributeMap.get("key1"));
+        assertEquals(AttributeValue.value("replaced"), attributeMap.get("key2"));
+        assertEquals(AttributeValue.value("replaced"), attributeMap.get("key3"));
+    }
 }

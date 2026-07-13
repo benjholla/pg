@@ -135,22 +135,19 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
         EdgeSet filterNull = set.filter(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
-        EdgeSet intersectEmpty = set.intersect(null);
-        assertEquals(0, intersectEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.intersect(null));
 
         EdgeSet intersect = set.intersect(Collections.singletonList(e1));
         assertEquals(1, intersect.size());
         assertTrue(intersect.contains(e1));
 
-        EdgeSet diffEmpty = set.difference(null);
-        assertEquals(2, diffEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.difference(null));
 
         EdgeSet diff = set.difference(Collections.singletonList(e1));
         assertEquals(1, diff.size());
         assertTrue(diff.contains(e2));
 
-        EdgeSet unionEmpty = set.union(null);
-        assertEquals(2, unionEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.union(null));
 
         GlobalEdge e3 = new GlobalEdge(n3, n1);
         EdgeSet union = set.union(Collections.singletonList(e3));

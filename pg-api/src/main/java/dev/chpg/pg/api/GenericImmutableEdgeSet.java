@@ -66,7 +66,8 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return EdgeSet.empty();
         }
         Set<Edge> intersected = elements.stream()
@@ -77,7 +78,8 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         Set<Edge> differenced = elements.stream()
@@ -88,7 +90,8 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         Set<Edge> unioned = java.util.stream.Stream.concat(elements.stream(), other.stream())

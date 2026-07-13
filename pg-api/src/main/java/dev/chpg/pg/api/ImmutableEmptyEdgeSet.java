@@ -46,17 +46,20 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return this;
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return this;
     }
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         if (other instanceof EdgeSet) {
