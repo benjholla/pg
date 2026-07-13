@@ -103,15 +103,16 @@ public interface AttributeMap extends Map<String, AttributeValue> {
             AttributeValue newValue = function.apply(k, v);
             java.util.Objects.requireNonNull(newValue, "Attribute value cannot be null");
 
-            try {
-                entry.setValue(newValue);
-            } catch (UnsupportedOperationException e) {
-                // Abort inline updates and switch to the safe fallback mechanism
-                requiresFallback = true;
-                if (fallbackUpdates == null) {
-                    fallbackUpdates = new java.util.HashMap<>();
-                }
+            if (requiresFallback) {
                 fallbackUpdates.put(k, newValue);
+            } else {
+                try {
+                    entry.setValue(newValue);
+                } catch (UnsupportedOperationException e) {
+                    requiresFallback = true;
+                    fallbackUpdates = new java.util.HashMap<>();
+                    fallbackUpdates.put(k, newValue);
+                }
             }
         }
 
