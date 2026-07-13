@@ -42,6 +42,6 @@ These methods govern the disconnected snapshot boundaries.
 | API Method | Runtime | Memory | Implementation Driver |
 |---|---|---|---|
 | one() | O(1) | O(1) | Extracts the first valid iterator element. |
-| filter(attribute) | O(V) | O(K) | Must scan the live view and allocate a snapshot for matches. |
+| withAttribute(attribute) | O(V) | O(K) | Must scan the live view and allocate a snapshot for matches. |
 | intersect(S), union(S) | O(V + S) | O(K) | Allocates a new disconnected snapshot for safe traversal. |
 | ids() | O(V) | O(V) | Iterates the set to box/extract the integer routing keys. |

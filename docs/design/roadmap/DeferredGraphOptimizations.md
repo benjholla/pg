@@ -21,7 +21,7 @@ This is a massive Java-specific optimization that tracking sizes unlocks.
 When materialize() is called and the engine decides to stamp out a new GlobalGraph (which is backed by HashMaps/HashSets), it normally starts with standard JDK default sizes. If your query results in 500,000 nodes, the JDK will violently halt your program dozens of times to rehash and resize those internal arrays.
 Because your DeferredGraph tracked the estimatedSize up the AST, when it calls GraphFactory.createGraph(), it can pass that integer down. The factory pre-allocates the exact required contiguous memory block (size / 0.75 load factor) on day one, completely eliminating rehashing overhead.
 ### 5. Filter Pushdown
-If the AST contains a structural traversal followed by a filter (e.g., graph.nodes().filter(hasTag("vulnerable")).forward()), the optimizer can push that filter as far up the execution tree as mathematically possible. It forces the engine to apply the cheap boolean checks *before* it calculates the expensive topological .forward() steps.
+If the AST contains a structural traversal followed by a filter (e.g., graph.nodes().withAttribute(hasTag("vulnerable")).forward()), the optimizer can push that filter as far up the execution tree as mathematically possible. It forces the engine to apply the cheap boolean checks *before* it calculates the expensive topological .forward() steps.
 By implementing these generic rules, your DeferredGraph becomes fiercely intelligent without ever needing to know if it's analyzing a Linux kernel, a Java AST, or a geospatial map.
 To make cardinality estimation work, we need a way to track it. Should the estimatedSize() be a method explicitly added to the Graph, NodeSet, and EdgeSet interfaces, or should it be an internal mechanic hidden entirely within the ASTNode wrappers of the pg-query module?
 
@@ -84,7 +84,7 @@ public interface NodeFactory {
 ```
 If an analyst calls graph.forward(factory.nodes().singleton(entryNode)), the AST optimizer immediately knows it is dealing with a single element and can choose the fastest possible routing algorithm for the very first hop.
 ### 2. Auto-Singletonification (The Engine's Guardrail)
-Even if the user starts with a massive dataset, operations deep inside the query might drastically reduce the size. If a user runs .forward().filter("isVulnerable") and the filter whittles a 50,000-node set down to exactly one node, the user has no control over that intermediate allocation.
+Even if the user starts with a massive dataset, operations deep inside the query might drastically reduce the size. If a user runs .forward().withAttribute("isVulnerable") and the filter whittles a 50,000-node set down to exactly one node, the user has no control over that intermediate allocation.
 This is where the internal engine takes over. At the end of any set-algebra execution or filter phase, the engine inspects the cardinality before passing the result to the next AST node:
 ```java
 // Inside the evaluation phase of the engine

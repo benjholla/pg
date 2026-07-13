@@ -107,19 +107,19 @@ public class GlobalEdgeSetTest {
     }
 
     @Test
-    public void testFilter() {
+    public void testwithAttribute() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1, e2, e3);
 
-        EdgeSet attr1Set = set.filter("attr1");
+        EdgeSet attr1Set = set.withAttribute("attr1");
         assertEquals(1, attr1Set.size());
         assertTrue(attr1Set.contains(e1));
 
-        EdgeSet commonSet = set.filter("common_attr");
+        EdgeSet commonSet = set.withAttribute("common_attr");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(e1));
         assertTrue(commonSet.contains(e2));
 
-        EdgeSet missingSet = set.filter("missing_attr");
+        EdgeSet missingSet = set.withAttribute("missing_attr");
         assertTrue(missingSet.isEmpty());
     }
 
@@ -127,24 +127,24 @@ public class GlobalEdgeSetTest {
     public void testFilterWithValues() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1, e2, e3);
 
-        EdgeSet val1Set = set.filter("attr1", AttributeValue.value("val1"));
+        EdgeSet val1Set = set.withAttribute("attr1", AttributeValue.value("val1"));
         assertEquals(1, val1Set.size());
         assertTrue(val1Set.contains(e1));
 
-        EdgeSet val2Set = set.filter("attr2", AttributeValue.value("val2"), AttributeValue.value("other"));
+        EdgeSet val2Set = set.withAttribute("attr2", AttributeValue.value("val2"), AttributeValue.value("other"));
         assertEquals(1, val2Set.size());
         assertTrue(val2Set.contains(e2));
 
-        EdgeSet missingSet = set.filter("attr1", AttributeValue.value("missing"));
+        EdgeSet missingSet = set.withAttribute("attr1", AttributeValue.value("missing"));
         assertTrue(missingSet.isEmpty());
 
-        EdgeSet nullAttrSet = set.filter(null, AttributeValue.value("val1"));
+        EdgeSet nullAttrSet = set.withAttribute(null, AttributeValue.value("val1"));
         assertTrue(nullAttrSet.isEmpty());
 
-        EdgeSet nullValsSet = set.filter("attr1", (AttributeValue[]) null);
+        EdgeSet nullValsSet = set.withAttribute("attr1", (AttributeValue[]) null);
         assertTrue(nullValsSet.isEmpty());
 
-        EdgeSet withNullValSet = set.filter("attr1", new AttributeValue[]{null});
+        EdgeSet withNullValSet = set.withAttribute("attr1", new AttributeValue[]{null});
         assertTrue(withNullValSet.isEmpty());
     }
 
@@ -310,57 +310,57 @@ public class GlobalEdgeSetTest {
     }
 
     @Test
-    public void testTaggedWithAny() {
+    public void testwithAnyTag() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1, e2, e3);
 
-        EdgeSet test1Set = set.taggedWithAny("test1");
+        EdgeSet test1Set = set.withAnyTag("test1");
         assertEquals(1, test1Set.size());
         assertTrue(test1Set.contains(e1));
 
-        EdgeSet commonSet = set.taggedWithAny("common");
+        EdgeSet commonSet = set.withAnyTag("common");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(e1));
         assertTrue(commonSet.contains(e2));
 
-        EdgeSet multiTagSet = set.taggedWithAny("test1", "test3");
+        EdgeSet multiTagSet = set.withAnyTag("test1", "test3");
         assertEquals(2, multiTagSet.size());
         assertTrue(multiTagSet.contains(e1));
         assertTrue(multiTagSet.contains(e3));
 
-        EdgeSet missingSet = set.taggedWithAny("missing");
+        EdgeSet missingSet = set.withAnyTag("missing");
         assertTrue(missingSet.isEmpty());
 
-        EdgeSet nullTagsSet = set.taggedWithAny((String[]) null);
+        EdgeSet nullTagsSet = set.withAnyTag((String[]) null);
         assertTrue(nullTagsSet.isEmpty());
 
-        EdgeSet emptyTagsSet = set.taggedWithAny();
+        EdgeSet emptyTagsSet = set.withAnyTag();
         assertTrue(emptyTagsSet.isEmpty());
     }
 
     @Test
-    public void testTaggedWithAll() {
+    public void testwithAllTags() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1, e2, e3);
 
-        EdgeSet test1Set = set.taggedWithAll("test1");
+        EdgeSet test1Set = set.withAllTags("test1");
         assertEquals(1, test1Set.size());
         assertTrue(test1Set.contains(e1));
 
-        EdgeSet commonSet = set.taggedWithAll("common");
+        EdgeSet commonSet = set.withAllTags("common");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(e1));
         assertTrue(commonSet.contains(e2));
 
-        EdgeSet bothSet = set.taggedWithAll("test1", "common");
+        EdgeSet bothSet = set.withAllTags("test1", "common");
         assertEquals(1, bothSet.size());
         assertTrue(bothSet.contains(e1));
 
-        EdgeSet missingSet = set.taggedWithAll("test1", "missing");
+        EdgeSet missingSet = set.withAllTags("test1", "missing");
         assertTrue(missingSet.isEmpty());
 
-        EdgeSet nullTagsSet = set.taggedWithAll((String[]) null);
+        EdgeSet nullTagsSet = set.withAllTags((String[]) null);
         assertTrue(nullTagsSet.isEmpty());
 
-        EdgeSet emptyTagsSet = set.taggedWithAll();
+        EdgeSet emptyTagsSet = set.withAllTags();
         assertTrue(emptyTagsSet.isEmpty());
     }
 

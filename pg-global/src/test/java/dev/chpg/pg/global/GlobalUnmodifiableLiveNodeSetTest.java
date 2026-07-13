@@ -149,7 +149,7 @@ public class GlobalUnmodifiableLiveNodeSetTest {
     }
 
     @Test
-    public void testTaggedWithAny() {
+    public void testwithAnyTag() {
         Map<Integer, GlobalNode> map = new HashMap<>();
         Map<Integer, GlobalEdge> edges = new HashMap<>();
         Map<Integer, GlobalEdgeSet> inEdges = new HashMap<>();
@@ -199,7 +199,7 @@ public class GlobalUnmodifiableLiveNodeSetTest {
     }
 
     @Test
-    public void testTaggedWithAll() {
+    public void testwithAllTags() {
         Map<Integer, GlobalNode> map = new HashMap<>();
         Map<Integer, GlobalEdge> edges = new HashMap<>();
         Map<Integer, GlobalEdgeSet> inEdges = new HashMap<>();

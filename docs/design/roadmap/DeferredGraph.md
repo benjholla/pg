@@ -5,7 +5,7 @@ To solve this, the ecosystem supports a **Deferred Execution Layer (Lazy Evaluat
 ## 2. The Core Mechanics
 The deferred execution model relies on the DeferredGraph, which perfectly masquerades as a standard Graph to the external caller.
  * **The AST Builder:** Calling intermediate algebraic methods (forward(), union(), difference()) on a DeferredGraph does not touch internal maps or bitsets. It simply returns a new DeferredGraph wrapping the next ASTNode (e.g., ForwardOp(sourceNode)).
- * **The Query Optimizer:** Before execution, the engine traverses the AST to reorder operations for maximum efficiency. For example, the optimizer can move a highly restrictive .filter("isVulnerable") operation to execute *before* a massive transitive .forward() traversal, drastically reducing the intermediate memory footprint.
+ * **The Query Optimizer:** Before execution, the engine traverses the AST to reorder operations for maximum efficiency. For example, the optimizer can move a highly restrictive .withAttribute("isVulnerable") operation to execute *before* a massive transitive .forward() traversal, drastically reducing the intermediate memory footprint.
  * **The Factory Anchor:** The DeferredGraph inherits and securely holds a reference to the GraphFactory that initiated the query. When it eventually compiles and executes the AST, it uses this exact factory to stamp out the final, concrete result graph, guaranteeing memory layout consistency and preventing cross-engine contamination.
 ## 3. The Operation Boundaries
 The API strictly separates operations into two categories to dictate exactly when execution occurs.

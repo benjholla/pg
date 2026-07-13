@@ -98,19 +98,19 @@ public class GlobalNodeSetCoverageTest {
     }
 
     @Test
-    public void testFilter() {
+    public void testwithAttribute() {
         GlobalNodeSet set = new GlobalNodeSet(n1, n2, n3);
 
-        NodeSet attr1Set = set.filter("attr1");
+        NodeSet attr1Set = set.withAttribute("attr1");
         assertEquals(1, attr1Set.size());
         assertTrue(attr1Set.contains(n1));
 
-        NodeSet commonSet = set.filter("common_attr");
+        NodeSet commonSet = set.withAttribute("common_attr");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(n1));
         assertTrue(commonSet.contains(n2));
 
-        NodeSet missingSet = set.filter("missing_attr");
+        NodeSet missingSet = set.withAttribute("missing_attr");
         assertTrue(missingSet.isEmpty());
     }
 
@@ -118,24 +118,24 @@ public class GlobalNodeSetCoverageTest {
     public void testFilterWithValues() {
         GlobalNodeSet set = new GlobalNodeSet(n1, n2, n3);
 
-        NodeSet val1Set = set.filter("attr1", AttributeValue.value("val1"));
+        NodeSet val1Set = set.withAttribute("attr1", AttributeValue.value("val1"));
         assertEquals(1, val1Set.size());
         assertTrue(val1Set.contains(n1));
 
-        NodeSet val2Set = set.filter("attr2", AttributeValue.value("val2"), AttributeValue.value("other"));
+        NodeSet val2Set = set.withAttribute("attr2", AttributeValue.value("val2"), AttributeValue.value("other"));
         assertEquals(1, val2Set.size());
         assertTrue(val2Set.contains(n2));
 
-        NodeSet missingSet = set.filter("attr1", AttributeValue.value("missing"));
+        NodeSet missingSet = set.withAttribute("attr1", AttributeValue.value("missing"));
         assertTrue(missingSet.isEmpty());
 
-        NodeSet nullAttrSet = set.filter(null, AttributeValue.value("val1"));
+        NodeSet nullAttrSet = set.withAttribute(null, AttributeValue.value("val1"));
         assertTrue(nullAttrSet.isEmpty());
 
-        NodeSet nullValsSet = set.filter("attr1", (AttributeValue[]) null);
+        NodeSet nullValsSet = set.withAttribute("attr1", (AttributeValue[]) null);
         assertTrue(nullValsSet.isEmpty());
 
-        NodeSet withNullValSet = set.filter("attr1", new AttributeValue[]{null});
+        NodeSet withNullValSet = set.withAttribute("attr1", new AttributeValue[]{null});
         assertTrue(withNullValSet.isEmpty());
     }
 
@@ -293,57 +293,57 @@ public class GlobalNodeSetCoverageTest {
     }
 
     @Test
-    public void testTaggedWithAny() {
+    public void testwithAnyTag() {
         GlobalNodeSet set = new GlobalNodeSet(n1, n2, n3);
 
-        NodeSet test1Set = set.taggedWithAny("test1");
+        NodeSet test1Set = set.withAnyTag("test1");
         assertEquals(1, test1Set.size());
         assertTrue(test1Set.contains(n1));
 
-        NodeSet commonSet = set.taggedWithAny("common");
+        NodeSet commonSet = set.withAnyTag("common");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(n1));
         assertTrue(commonSet.contains(n2));
 
-        NodeSet multiTagSet = set.taggedWithAny("test1", "test3");
+        NodeSet multiTagSet = set.withAnyTag("test1", "test3");
         assertEquals(2, multiTagSet.size());
         assertTrue(multiTagSet.contains(n1));
         assertTrue(multiTagSet.contains(n3));
 
-        NodeSet missingSet = set.taggedWithAny("missing");
+        NodeSet missingSet = set.withAnyTag("missing");
         assertTrue(missingSet.isEmpty());
 
-        NodeSet nullTagsSet = set.taggedWithAny((String[]) null);
+        NodeSet nullTagsSet = set.withAnyTag((String[]) null);
         assertTrue(nullTagsSet.isEmpty());
 
-        NodeSet emptyTagsSet = set.taggedWithAny();
+        NodeSet emptyTagsSet = set.withAnyTag();
         assertTrue(emptyTagsSet.isEmpty());
     }
 
     @Test
-    public void testTaggedWithAll() {
+    public void testwithAllTags() {
         GlobalNodeSet set = new GlobalNodeSet(n1, n2, n3);
 
-        NodeSet test1Set = set.taggedWithAll("test1");
+        NodeSet test1Set = set.withAllTags("test1");
         assertEquals(1, test1Set.size());
         assertTrue(test1Set.contains(n1));
 
-        NodeSet commonSet = set.taggedWithAll("common");
+        NodeSet commonSet = set.withAllTags("common");
         assertEquals(2, commonSet.size());
         assertTrue(commonSet.contains(n1));
         assertTrue(commonSet.contains(n2));
 
-        NodeSet bothSet = set.taggedWithAll("test1", "common");
+        NodeSet bothSet = set.withAllTags("test1", "common");
         assertEquals(1, bothSet.size());
         assertTrue(bothSet.contains(n1));
 
-        NodeSet missingSet = set.taggedWithAll("test1", "missing");
+        NodeSet missingSet = set.withAllTags("test1", "missing");
         assertTrue(missingSet.isEmpty());
 
-        NodeSet nullTagsSet = set.taggedWithAll((String[]) null);
+        NodeSet nullTagsSet = set.withAllTags((String[]) null);
         assertTrue(nullTagsSet.isEmpty());
 
-        NodeSet emptyTagsSet = set.taggedWithAll();
+        NodeSet emptyTagsSet = set.withAllTags();
         assertTrue(emptyTagsSet.isEmpty());
     }
 

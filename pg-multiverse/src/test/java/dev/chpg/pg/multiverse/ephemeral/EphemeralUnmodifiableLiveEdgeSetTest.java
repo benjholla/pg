@@ -159,7 +159,7 @@ public class EphemeralUnmodifiableLiveEdgeSetTest {
     }
 
     @Test
-    public void testTaggedWithAny() {
+    public void testwithAnyTag() {
         Map<Integer, EphemeralEdge> map = new HashMap<>();
         Map<Integer, EphemeralNode> nodes = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
@@ -212,7 +212,7 @@ public class EphemeralUnmodifiableLiveEdgeSetTest {
     }
 
     @Test
-    public void testTaggedWithAll() {
+    public void testwithAllTags() {
         Map<Integer, EphemeralEdge> map = new HashMap<>();
         Map<Integer, EphemeralNode> nodes = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
