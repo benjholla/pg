@@ -491,18 +491,7 @@ public interface Graph {
      * graph.
      */
     public Graph induce(EdgeSet edges);
-/**
-     * Returns the set of nodes from this graph that are tagged with all of the
-     * given tags
-     */
-
-
     /**
-     * Returns the set of nodes from this graph that are tagged with any of the
-     * given tags
-     */
-
-/**
      * Select subgraph containing edges that have the given attribute key defined,
      * with any value.
      */
