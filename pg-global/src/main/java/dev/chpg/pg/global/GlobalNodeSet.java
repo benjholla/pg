@@ -61,38 +61,6 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet filter(String attribute) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        for (GlobalNode node : internalSet) {
-           if (node.attributes().containsKey(attribute)) {
-                result.internalSet.add(node);
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
-    }
-
-    @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (attribute != null && values != null) {
-            for (GlobalNode node : internalSet) {
-               AttributeValue attributeValue = node.attributes().get(attribute);
-                if (attributeValue != null) {
-                    for (AttributeValue value : values) {
-                        if (value != null) {
-                            if (Objects.equals(attributeValue, value)) {
-                                result.internalSet.add(node);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
-    }
-
-    @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
@@ -165,8 +133,11 @@ public final class GlobalNodeSet implements NodeSet {
             return false;
         }
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return internalSet.size();
     }
@@ -265,41 +236,5 @@ public final class GlobalNodeSet implements NodeSet {
     @Override
     public int hashCode() {
         return internalSet.hashCode();
-    }
-
-    @Override
-    public NodeSet taggedWithAny(String... tags) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (tags != null && tags.length > 0) {
-            for (GlobalNode e : internalSet) {
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) {
-                        result.internalSet.add(e);
-                        break;
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
-    }
-
-    @Override
-    public NodeSet taggedWithAll(String... tags) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (tags != null && tags.length > 0) {
-            for (GlobalNode e : internalSet) {
-                boolean add = true;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    result.internalSet.add(e);
-                }
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 }

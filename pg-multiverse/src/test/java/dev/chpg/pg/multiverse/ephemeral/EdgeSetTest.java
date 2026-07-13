@@ -78,39 +78,39 @@ public class EdgeSetTest {
     @Test
     public void testFilterByAttributePresent() {
         e1.attributes().put("unique", true);
-        EdgeSet filtered = edgeSet.filter("unique");
+        EdgeSet filtered = edgeSet.withAttribute("unique");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(e1));
 
-        EdgeSet filteredType = edgeSet.filter("type");
+        EdgeSet filteredType = edgeSet.withAttribute("type");
         assertEquals(3, filteredType.size());
     }
 
     @Test
     public void testFilterByAttributeAndValues() {
-        EdgeSet filteredTypeA = edgeSet.filter("type", AttributeValue.value("A"));
+        EdgeSet filteredTypeA = edgeSet.withAttribute("type", AttributeValue.value("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(e1));
         assertTrue(filteredTypeA.contains(e3));
 
-        EdgeSet filteredVal = edgeSet.filter("val", AttributeValue.value(1), AttributeValue.value(3));
+        EdgeSet filteredVal = edgeSet.withAttribute("val", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(e1));
         assertTrue(filteredVal.contains(e3));
 
-        EdgeSet filteredNone = edgeSet.filter("type", AttributeValue.value("C"));
+        EdgeSet filteredNone = edgeSet.withAttribute("type", AttributeValue.value("C"));
         assertTrue(filteredNone.isEmpty());
 
-        EdgeSet nullAttr = edgeSet.filter(null, AttributeValue.value("A"));
+        EdgeSet nullAttr = edgeSet.withAttribute(null, AttributeValue.value("A"));
         assertTrue(nullAttr.isEmpty());
 
-        EdgeSet nullVals = edgeSet.filter("type", (AttributeValue[]) null);
+        EdgeSet nullVals = edgeSet.withAttribute("type", (AttributeValue[]) null);
         assertTrue(nullVals.isEmpty());
 
-        EdgeSet nullAttrOnly = edgeSet.filter((String) null);
+        EdgeSet nullAttrOnly = edgeSet.withAttribute((String) null);
         assertTrue(nullAttrOnly.isEmpty());
 
-        EdgeSet nullAttrAndNullVals = edgeSet.filter(null, (AttributeValue[]) null);
+        EdgeSet nullAttrAndNullVals = edgeSet.withAttribute(null, (AttributeValue[]) null);
         assertTrue(nullAttrAndNullVals.isEmpty());
     }
 

@@ -17,11 +17,19 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet toImmutable() {
+    public NodeSet materialize() {
         return this;
     }
 
     @Override
+    public NodeSet toImmutable() {
+        return this;
+    }
+    @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return elements.size();
     }
@@ -39,29 +47,6 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     @Override
     public Optional<Node> one() {
         return elements.stream().findAny();
-    }
-
-    @Override
-    public NodeSet filter(String attribute) {
-        Set<Node> filtered = elements.stream()
-            .filter(n -> n.attributes().containsKey(attribute))
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
-    }
-
-    @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
-        Set<Node> filtered = elements.stream()
-            .filter(n -> {
-                AttributeValue val = n.attributes().get(attribute);
-                if (val == null) return false;
-                for (AttributeValue v : values) {
-                    if (Objects.equals(val, v)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
     }
 
     @Override
@@ -107,33 +92,5 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     @Override
     public int[] toIdArray() {
         return elements.stream().mapToInt(Node::id).toArray();
-    }
-
-    @Override
-    public NodeSet taggedWithAny(String... tags) {
-        Set<Node> filtered = elements.stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
-    }
-
-    @Override
-    public NodeSet taggedWithAll(String... tags) {
-        Set<Node> filtered = elements.stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) return false;
-                }
-                return true;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(filtered);
     }
 }

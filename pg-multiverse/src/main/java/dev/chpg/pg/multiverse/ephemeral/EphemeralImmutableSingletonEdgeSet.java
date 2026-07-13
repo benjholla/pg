@@ -24,8 +24,16 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
     public EdgeSet toImmutable() {
         return this;
     }
+    @Override
+public EdgeSet materialize() {
+        return this;
+    }
 
     @Override
+    public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return 1;
     }
@@ -45,26 +53,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         return Optional.of(element);
     }
 
-    @Override
-    public EdgeSet filter(String attribute) {
-        if (element.attributes().containsKey(attribute)) {
-            return this;
-        }
-        return EdgeSet.empty(); // return empty edge set
-    }
 
-    @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        if (element.attributes().containsKey(attribute)) {
-            AttributeValue attrValue = element.attributes().get(attribute);
-            for (AttributeValue v : values) {
-                if (attrValue.equals(v)) {
-                    return this;
-                }
-            }
-        }
-        return EdgeSet.empty(); // return empty edge set
-    }
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
@@ -108,28 +97,5 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         return new int[]{element.id()};
     }
 
-    @Override
-    public EdgeSet taggedWithAny(String... tags) {
-        if (tags != null && tags.length > 0) {
-            for (String tag : tags) {
-                if (element.tags().contains(tag)) {
-                    return this;
-                }
-            }
-        }
-        return EdgeSet.empty();
-    }
 
-    @Override
-    public EdgeSet taggedWithAll(String... tags) {
-        if (tags != null && tags.length > 0) {
-            for (String tag : tags) {
-                if (!element.tags().contains(tag)) {
-                    return EdgeSet.empty();
-                }
-            }
-            return this;
-        }
-        return EdgeSet.empty();
-    }
 }

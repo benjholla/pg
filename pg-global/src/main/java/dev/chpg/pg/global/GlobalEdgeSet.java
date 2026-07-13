@@ -61,38 +61,6 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
-        GlobalEdgeSet result = new GlobalEdgeSet();
-        for (GlobalEdge edge : internalSet) {
-           if (edge.attributes().containsKey(attribute)) {
-                result.internalSet.add(edge);
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
-    }
-
-    @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        GlobalEdgeSet result = new GlobalEdgeSet();
-        if (attribute != null && values != null) {
-            for (GlobalEdge edge : internalSet) {
-               AttributeValue attributeValue = edge.attributes().get(attribute);
-                if (attributeValue != null) {
-                    for (AttributeValue value : values) {
-                        if (value != null) {
-                            if (Objects.equals(attributeValue, value)) {
-                                result.internalSet.add(edge);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
-    }
-
-    @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (other == null || other.isEmpty()) {
@@ -165,8 +133,11 @@ public final class GlobalEdgeSet implements EdgeSet {
             return false;
         }
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return internalSet.size();
     }
@@ -265,41 +236,5 @@ public final class GlobalEdgeSet implements EdgeSet {
     @Override
     public int hashCode() {
         return internalSet.hashCode();
-    }
-
-    @Override
-    public EdgeSet taggedWithAny(String... tags) {
-        GlobalEdgeSet result = new GlobalEdgeSet();
-        if (tags != null && tags.length > 0) {
-            for (GlobalEdge e : internalSet) {
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) {
-                        result.internalSet.add(e);
-                        break;
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
-    }
-
-    @Override
-    public EdgeSet taggedWithAll(String... tags) {
-        GlobalEdgeSet result = new GlobalEdgeSet();
-        if (tags != null && tags.length > 0) {
-            for (GlobalEdge e : internalSet) {
-                boolean add = true;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    result.internalSet.add(e);
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
     }
 }

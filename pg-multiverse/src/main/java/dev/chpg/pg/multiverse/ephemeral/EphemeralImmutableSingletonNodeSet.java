@@ -24,8 +24,16 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
     public NodeSet toImmutable() {
         return this;
     }
+    @Override
+public NodeSet materialize() {
+        return this;
+    }
 
     @Override
+    public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return 1;
     }
@@ -45,26 +53,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         return Optional.of(element);
     }
 
-    @Override
-    public NodeSet filter(String attribute) {
-        if (element.attributes().containsKey(attribute)) {
-            return this;
-        }
-        return NodeSet.empty(); // return empty node set
-    }
 
-    @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
-        if (element.attributes().containsKey(attribute)) {
-            AttributeValue attrValue = element.attributes().get(attribute);
-            for (AttributeValue v : values) {
-                if (attrValue.equals(v)) {
-                    return this;
-                }
-            }
-        }
-        return NodeSet.empty(); // return empty node set
-    }
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
@@ -108,28 +97,5 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         return new int[]{element.id()};
     }
 
-    @Override
-    public NodeSet taggedWithAny(String... tags) {
-        if (tags != null && tags.length > 0) {
-            for (String tag : tags) {
-                if (element.tags().contains(tag)) {
-                    return this;
-                }
-            }
-        }
-        return NodeSet.empty();
-    }
 
-    @Override
-    public NodeSet taggedWithAll(String... tags) {
-        if (tags != null && tags.length > 0) {
-            for (String tag : tags) {
-                if (!element.tags().contains(tag)) {
-                    return NodeSet.empty();
-                }
-            }
-            return this;
-        }
-        return NodeSet.empty();
-    }
 }

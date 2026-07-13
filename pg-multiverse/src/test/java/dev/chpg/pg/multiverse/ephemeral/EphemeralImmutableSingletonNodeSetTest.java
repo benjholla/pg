@@ -69,11 +69,11 @@ public class EphemeralImmutableSingletonNodeSetTest {
     public void testFilterByAttribute() {
         node.attributes().put("key", AttributeValue.value("value"));
 
-        NodeSet filtered = singletonSet.filter("key");
+        NodeSet filtered = singletonSet.withAttribute("key");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(node));
 
-        NodeSet empty = singletonSet.filter("otherKey");
+        NodeSet empty = singletonSet.withAttribute("otherKey");
         assertEquals(0, empty.size());
     }
 
@@ -81,18 +81,18 @@ public class EphemeralImmutableSingletonNodeSetTest {
     public void testFilterByAttributeAndValue() {
         node.attributes().put("key", AttributeValue.value("value"));
 
-        NodeSet filtered = singletonSet.filter("key", AttributeValue.value("value"));
+        NodeSet filtered = singletonSet.withAttribute("key", AttributeValue.value("value"));
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(node));
 
-        NodeSet filteredMulti = singletonSet.filter("key", AttributeValue.value("other"), AttributeValue.value("value"));
+        NodeSet filteredMulti = singletonSet.withAttribute("key", AttributeValue.value("other"), AttributeValue.value("value"));
         assertEquals(1, filteredMulti.size());
         assertTrue(filteredMulti.contains(node));
 
-        NodeSet empty = singletonSet.filter("key", AttributeValue.value("other"));
+        NodeSet empty = singletonSet.withAttribute("key", AttributeValue.value("other"));
         assertEquals(0, empty.size());
 
-        NodeSet emptyMissing = singletonSet.filter("missing", AttributeValue.value("value"));
+        NodeSet emptyMissing = singletonSet.withAttribute("missing", AttributeValue.value("value"));
         assertEquals(0, emptyMissing.size());
     }
 

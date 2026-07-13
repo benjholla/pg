@@ -22,6 +22,11 @@ public class GlobalImmutableEdgeSet implements EdgeSet {
     }
 
     @Override
+    public EdgeSet materialize() {
+        return this;
+    }
+
+    @Override
     public EdgeSet toImmutable() {
         return this;
     }
@@ -30,16 +35,8 @@ public class GlobalImmutableEdgeSet implements EdgeSet {
         return edges.one();
     }
 
-    public EdgeSet filter(String attribute) {
-        return edges.filter(attribute);
-    }
-
     public void forEach(Consumer<? super Edge> action) {
         edges.forEach(action);
-    }
-
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        return edges.filter(attribute, values);
     }
 
     public EdgeSet intersect(Collection<? extends Edge> other) {
@@ -75,6 +72,11 @@ public class GlobalImmutableEdgeSet implements EdgeSet {
 
     public boolean remove(Object obj) {
         throw new UnsupportedOperationException();
+    }
+
+        @Override
+    public boolean isMaterialized() {
+        return true;
     }
 
     public int size() {
@@ -170,16 +172,5 @@ public class GlobalImmutableEdgeSet implements EdgeSet {
 
     public String toString() {
         return edges.toString();
-    }
-
-
-    @Override
-    public EdgeSet taggedWithAny(String... tags) {
-        return edges.taggedWithAny(tags);
-    }
-
-    @Override
-    public EdgeSet taggedWithAll(String... tags) {
-        return edges.taggedWithAll(tags);
     }
 }

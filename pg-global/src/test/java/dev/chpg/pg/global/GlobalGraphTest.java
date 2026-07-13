@@ -358,17 +358,17 @@ public class GlobalGraphTest {
 
     @Test
     public void testSelectNodesAndEdges() {
-        NodeSet weighted = graph.nodes().filter("name");
+        NodeSet weighted = graph.nodes().withAttribute("name");
         assertEquals(7, weighted.size());
 
-        NodeSet bNode = graph.nodes().filter("name", AttributeValue.value("b"));
+        NodeSet bNode = graph.nodes().withAttribute("name", AttributeValue.value("b"));
         assertEquals(1, bNode.size());
         assertTrue(bNode.contains(b));
 
-        EdgeSet weightedEdges = graph.edges().filter("weight");
+        EdgeSet weightedEdges = graph.edges().withAttribute("weight");
         assertEquals(6, weightedEdges.size());
 
-        EdgeSet w1 = graph.edges().filter("weight", AttributeValue.value(1), AttributeValue.value(3));
+        EdgeSet w1 = graph.edges().withAttribute("weight", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, w1.size());
         assertTrue(w1.contains(ab));
         assertTrue(w1.contains(cb));
@@ -376,24 +376,24 @@ public class GlobalGraphTest {
 
     @Test
     public void testTags() {
-        NodeSet vowels = graph.nodes().taggedWithAny("vowel");
+        NodeSet vowels = graph.nodes().withAnyTag("vowel");
         assertEquals(2, vowels.size());
         assertTrue(vowels.contains(a));
         assertTrue(vowels.contains(e));
 
-        NodeSet any = graph.nodes().taggedWithAny("vowel", "letter");
+        NodeSet any = graph.nodes().withAnyTag("vowel", "letter");
         assertEquals(4, any.size()); // a, e, b, c
 
-        NodeSet all = graph.nodes().taggedWithAll("consonant", "letter");
+        NodeSet all = graph.nodes().withAllTags("consonant", "letter");
         assertEquals(2, all.size()); // b, c
 
-        EdgeSet paths = graph.edges().taggedWithAny("path");
+        EdgeSet paths = graph.edges().withAnyTag("path");
         assertEquals(4, paths.size());
 
-        EdgeSet anyE = graph.edges().taggedWithAny("main", "back");
+        EdgeSet anyE = graph.edges().withAnyTag("main", "back");
         assertEquals(2, anyE.size()); // bc, cb
 
-        EdgeSet allE = graph.edges().taggedWithAll("path", "main");
+        EdgeSet allE = graph.edges().withAllTags("path", "main");
         assertEquals(1, allE.size()); // bc
     }
 }

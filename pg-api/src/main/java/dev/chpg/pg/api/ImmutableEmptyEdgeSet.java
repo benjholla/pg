@@ -10,11 +10,19 @@ import java.util.Set;
 public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
-    public EdgeSet toImmutable() {
+    public EdgeSet materialize() {
         return this;
     }
 
     @Override
+    public EdgeSet toImmutable() {
+        return this;
+    }
+    @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return 0;
     }
@@ -32,16 +40,6 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     @Override
     public Optional<Edge> one() {
         return Optional.empty();
-    }
-
-    @Override
-    public EdgeSet filter(String attribute) {
-        return this;
-    }
-
-    @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        return this;
     }
 
     @Override
@@ -76,15 +74,5 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     @Override
     public int[] toIdArray() {
         return new int[0];
-    }
-
-    @Override
-    public EdgeSet taggedWithAny(String... tags) {
-        return this;
-    }
-
-    @Override
-    public EdgeSet taggedWithAll(String... tags) {
-        return this;
     }
 }

@@ -22,6 +22,11 @@ public class GlobalImmutableNodeSet implements NodeSet {
     }
 
     @Override
+    public NodeSet materialize() {
+        return this;
+    }
+
+    @Override
     public NodeSet toImmutable() {
         return this;
     }
@@ -30,16 +35,8 @@ public class GlobalImmutableNodeSet implements NodeSet {
         return nodes.one();
     }
 
-    public NodeSet filter(String attribute) {
-        return nodes.filter(attribute);
-    }
-
     public void forEach(Consumer<? super Node> action) {
         nodes.forEach(action);
-    }
-
-    public NodeSet filter(String attribute, AttributeValue... values) {
-        return nodes.filter(attribute, values);
     }
 
     public NodeSet intersect(Collection<? extends Node> other) {
@@ -75,6 +72,11 @@ public class GlobalImmutableNodeSet implements NodeSet {
 
     public boolean remove(Object obj) {
         throw new UnsupportedOperationException();
+    }
+
+        @Override
+    public boolean isMaterialized() {
+        return true;
     }
 
     public int size() {
@@ -170,16 +172,5 @@ public class GlobalImmutableNodeSet implements NodeSet {
     
     public String toString() {
         return nodes.toString();
-    }
-    
-
-    @Override
-    public NodeSet taggedWithAny(String... tags) {
-        return nodes.taggedWithAny(tags);
-    }
-
-    @Override
-    public NodeSet taggedWithAll(String... tags) {
-        return nodes.taggedWithAll(tags);
     }
 }

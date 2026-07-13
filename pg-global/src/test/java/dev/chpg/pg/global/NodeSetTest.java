@@ -70,39 +70,39 @@ public class NodeSetTest {
     @Test
     public void testFilterByAttributePresent() {
         n1.attributes().put("unique", true);
-        NodeSet filtered = nodeSet.filter("unique");
+        NodeSet filtered = nodeSet.withAttribute("unique");
         assertEquals(1, filtered.size());
         assertTrue(filtered.contains(n1));
 
-        NodeSet filteredType = nodeSet.filter("type");
+        NodeSet filteredType = nodeSet.withAttribute("type");
         assertEquals(3, filteredType.size());
     }
 
     @Test
     public void testFilterByAttributeAndValues() {
-        NodeSet filteredTypeA = nodeSet.filter("type", AttributeValue.value("A"));
+        NodeSet filteredTypeA = nodeSet.withAttribute("type", AttributeValue.value("A"));
         assertEquals(2, filteredTypeA.size());
         assertTrue(filteredTypeA.contains(n1));
         assertTrue(filteredTypeA.contains(n3));
 
-        NodeSet filteredVal = nodeSet.filter("val", AttributeValue.value(1), AttributeValue.value(3));
+        NodeSet filteredVal = nodeSet.withAttribute("val", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, filteredVal.size());
         assertTrue(filteredVal.contains(n1));
         assertTrue(filteredVal.contains(n3));
 
-        NodeSet filteredNone = nodeSet.filter("type", AttributeValue.value("C"));
+        NodeSet filteredNone = nodeSet.withAttribute("type", AttributeValue.value("C"));
         assertTrue(filteredNone.isEmpty());
 
-        NodeSet nullAttr = nodeSet.filter(null, AttributeValue.value("A"));
+        NodeSet nullAttr = nodeSet.withAttribute(null, AttributeValue.value("A"));
         assertTrue(nullAttr.isEmpty());
 
-        NodeSet nullVals = nodeSet.filter("type", (AttributeValue[]) null);
+        NodeSet nullVals = nodeSet.withAttribute("type", (AttributeValue[]) null);
         assertTrue(nullVals.isEmpty());
 
-        NodeSet nullAttrOnly = nodeSet.filter((String) null);
+        NodeSet nullAttrOnly = nodeSet.withAttribute((String) null);
         assertTrue(nullAttrOnly.isEmpty());
 
-        NodeSet nullAttrAndNullVals = nodeSet.filter(null, (AttributeValue[]) null);
+        NodeSet nullAttrAndNullVals = nodeSet.withAttribute(null, (AttributeValue[]) null);
         assertTrue(nullAttrAndNullVals.isEmpty());
     }
 

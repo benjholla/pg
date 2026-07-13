@@ -15,11 +15,48 @@ public interface NodeSet extends Set<Node> {
     NodeSet toImmutable();
 
     Optional<Node> one();
-    NodeSet filter(String attribute);
-    NodeSet filter(String attribute, AttributeValue... values);
-    NodeSet taggedWithAny(String... tags);
-    NodeSet taggedWithAll(String... tags);
+    default NodeSet withAttribute(String attribute) {
+        return new DeferredNodeSet(this, n -> n.attributes().containsKey(attribute));
+    }
+    default NodeSet withAttribute(String attribute, AttributeValue... values) {
+        return new DeferredNodeSet(this, n -> {
+            AttributeValue val = n.attributes().get(attribute);
+            if (val == null || values == null || values.length == 0) return false;
+            for (AttributeValue v : values) {
+                if (java.util.Objects.equals(val, v)) return true;
+            }
+            return false;
+        });
+    }
+    default NodeSet withAnyTag(String... tags) {
+        return new DeferredNodeSet(this, n -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (n.tags().contains(tag)) return true;
+            }
+            return false;
+        });
+    }
+    default NodeSet withAllTags(String... tags) {
+        return new DeferredNodeSet(this, n -> {
+            if (tags == null || tags.length == 0) return false;
+            for (String tag : tags) {
+                if (!n.tags().contains(tag)) return false;
+            }
+            return true;
+        });
+    }
 
+
+    /**
+     * Forces eager evaluation of the deferred pipeline, materializing
+     * the final IDs into a high-performance array in memory.
+     * Note: This incurs an allocation and iteration cost.
+     */
+    default NodeSet materialize() {
+        Set<Node> materialized = stream().collect(java.util.stream.Collectors.toUnmodifiableSet());
+        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(materialized);
+    }
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.
      */
@@ -34,6 +71,13 @@ public interface NodeSet extends Set<Node> {
      * Returns a new immutable NodeSet snapshot containing all elements from this set and the specified collection.
      */
     NodeSet union(Collection<? extends Node> other);
+
+    /**
+     * Returns true if this set is already backed by a flat, allocated
+     * memory structure. Returns false if this set requires computation
+     * (lazy evaluation) during iteration.
+     */
+    boolean isMaterialized();
 
     /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
