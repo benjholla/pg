@@ -153,6 +153,11 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
 
     @Override
+    public boolean isMaterialized() {
+        return false;
+    }
+
+    @Override
     public boolean isEmpty() {
         return !iterator().hasNext();
     }

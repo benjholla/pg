@@ -35,16 +35,8 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
         return edges.one();
     }
 
-    public EdgeSet withAttribute(String attribute) {
-        return edges.withAttribute(attribute);
-    }
-
     public void forEach(Consumer<? super Edge> action) {
         edges.forEach(action);
-    }
-
-    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
-        return edges.withAttribute(attribute, values);
     }
 
     public EdgeSet intersect(Collection<? extends Edge> other) {
@@ -77,6 +69,11 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
 
     public boolean remove(Object obj) {
         throw new UnsupportedOperationException();
+    }
+
+        @Override
+    public boolean isMaterialized() {
+        return true;
     }
 
     public int size() {
@@ -172,16 +169,5 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
 
     public String toString() {
         return edges.toString();
-    }
-
-
-    @Override
-    public EdgeSet withAnyTag(String... tags) {
-        return edges.withAnyTag(tags);
-    }
-
-    @Override
-    public EdgeSet withAllTags(String... tags) {
-        return edges.withAllTags(tags);
     }
 }

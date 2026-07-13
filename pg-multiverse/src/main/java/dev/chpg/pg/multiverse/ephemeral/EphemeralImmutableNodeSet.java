@@ -35,16 +35,8 @@ public class EphemeralImmutableNodeSet implements NodeSet {
         return nodes.one();
     }
 
-    public NodeSet withAttribute(String attribute) {
-        return nodes.withAttribute(attribute);
-    }
-
     public void forEach(Consumer<? super Node> action) {
         nodes.forEach(action);
-    }
-
-    public NodeSet withAttribute(String attribute, AttributeValue... values) {
-        return nodes.withAttribute(attribute, values);
     }
 
     public NodeSet intersect(Collection<? extends Node> other) {
@@ -77,6 +69,11 @@ public class EphemeralImmutableNodeSet implements NodeSet {
 
     public boolean remove(Object obj) {
         throw new UnsupportedOperationException();
+    }
+
+        @Override
+    public boolean isMaterialized() {
+        return true;
     }
 
     public int size() {
@@ -172,16 +169,5 @@ public class EphemeralImmutableNodeSet implements NodeSet {
     
     public String toString() {
         return nodes.toString();
-    }
-    
-
-    @Override
-    public NodeSet withAnyTag(String... tags) {
-        return nodes.withAnyTag(tags);
-    }
-
-    @Override
-    public NodeSet withAllTags(String... tags) {
-        return nodes.withAllTags(tags);
     }
 }

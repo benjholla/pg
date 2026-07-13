@@ -73,6 +73,13 @@ public interface NodeSet extends Set<Node> {
     NodeSet union(Collection<? extends Node> other);
 
     /**
+     * Returns true if this set is already backed by a flat, allocated
+     * memory structure. Returns false if this set requires computation
+     * (lazy evaluation) during iteration.
+     */
+    boolean isMaterialized();
+
+    /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
      */
     Set<Integer> ids();

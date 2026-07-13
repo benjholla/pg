@@ -153,6 +153,11 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
 
     @Override
+    public boolean isMaterialized() {
+        return false;
+    }
+
+    @Override
     public boolean isEmpty() {
         return !iterator().hasNext();
     }

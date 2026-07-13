@@ -62,38 +62,6 @@ public final class EphemeralEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet withAttribute(String attribute) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (EphemeralEdge edge : internalSet) {
-           if (edge.attributes().containsKey(attribute)) {
-                result.internalSet.add(edge);
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
-    }
-
-    @Override
-    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        if (attribute != null && values != null) {
-            for (EphemeralEdge edge : internalSet) {
-               AttributeValue attributeValue = edge.attributes().get(attribute);
-                if (attributeValue != null) {
-                    for (AttributeValue value : values) {
-                        if (value != null) {
-                            if (Objects.equals(attributeValue, value)) {
-                                result.internalSet.add(edge);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
-    }
-
-    @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other == null || other.isEmpty()) {
@@ -166,8 +134,11 @@ public final class EphemeralEdgeSet implements EdgeSet {
             return false;
         }
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return internalSet.size();
     }
@@ -266,41 +237,5 @@ public final class EphemeralEdgeSet implements EdgeSet {
     @Override
     public int hashCode() {
         return internalSet.hashCode();
-    }
-
-    @Override
-    public EdgeSet withAnyTag(String... tags) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        if (tags != null && tags.length > 0) {
-            for (EphemeralEdge e : internalSet) {
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) {
-                        result.internalSet.add(e);
-                        break;
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
-    }
-
-    @Override
-    public EdgeSet withAllTags(String... tags) {
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        if (tags != null && tags.length > 0) {
-            for (EphemeralEdge e : internalSet) {
-                boolean add = true;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    result.internalSet.add(e);
-                }
-            }
-        }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 }

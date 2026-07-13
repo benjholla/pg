@@ -18,8 +18,11 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     public NodeSet toImmutable() {
         return this;
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return 0;
     }
@@ -37,16 +40,6 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     @Override
     public Optional<Node> one() {
         return Optional.empty();
-    }
-
-    @Override
-    public NodeSet withAttribute(String attribute) {
-        return this;
-    }
-
-    @Override
-    public NodeSet withAttribute(String attribute, AttributeValue... values) {
-        return this;
     }
 
     @Override
@@ -78,15 +71,5 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     @Override
     public int[] toIdArray() {
         return new int[0];
-    }
-
-    @Override
-    public NodeSet withAnyTag(String... tags) {
-        return this;
-    }
-
-    @Override
-    public NodeSet withAllTags(String... tags) {
-        return this;
     }
 }

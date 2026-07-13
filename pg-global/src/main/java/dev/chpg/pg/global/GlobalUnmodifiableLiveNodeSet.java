@@ -43,38 +43,6 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet withAttribute(String attribute) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        for (GlobalNode node : nodes.values()) {
-            if (node.attributes().containsKey(attribute)) {
-                result.add(node);
-            }
-        }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
-    }
-
-    @Override
-    public NodeSet withAttribute(String attribute, AttributeValue... values) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (attribute != null && values != null) {
-            for (GlobalNode node : nodes.values()) {
-                AttributeValue attributeValue = node.attributes().get(attribute);
-                if (attributeValue != null) {
-                    for (AttributeValue value : values) {
-                        if (value != null) {
-                            if (Objects.equals(attributeValue, value)) {
-                                result.add(node);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
-    }
-
-    @Override
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
@@ -137,8 +105,11 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     public boolean remove(Object obj) {
         throw new UnsupportedOperationException();
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return nodes.size();
     }
@@ -271,41 +242,5 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public String toString() {
         return nodes.values().toString();
-    }
-
-    @Override
-    public NodeSet withAnyTag(String... tags) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (tags != null && tags.length > 0) {
-            for (Node e : this) {
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) {
-                        result.add(e);
-                        break;
-                    }
-                }
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
-    }
-
-    @Override
-    public NodeSet withAllTags(String... tags) {
-        GlobalNodeSet result = new GlobalNodeSet();
-        if (tags != null && tags.length > 0) {
-            for (Node e : this) {
-                boolean add = true;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) {
-                        add = false;
-                        break;
-                    }
-                }
-                if (add) {
-                    result.add(e);
-                }
-            }
-        }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
     }
 }

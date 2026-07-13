@@ -73,6 +73,13 @@ public interface EdgeSet extends Set<Edge> {
     EdgeSet union(Collection<? extends Edge> other);
 
     /**
+     * Returns true if this set is already backed by a flat, allocated
+     * memory structure. Returns false if this set requires computation
+     * (lazy evaluation) during iteration.
+     */
+    boolean isMaterialized();
+
+    /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
      */
     Set<Integer> ids();

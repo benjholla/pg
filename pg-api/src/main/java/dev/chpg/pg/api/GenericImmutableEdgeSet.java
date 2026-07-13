@@ -25,8 +25,11 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     public EdgeSet toImmutable() {
         return this;
     }
-
     @Override
+public boolean isMaterialized() {
+        return true;
+    }
+
     public int size() {
         return elements.size();
     }
@@ -44,29 +47,6 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     @Override
     public Optional<Edge> one() {
         return elements.stream().findAny();
-    }
-
-    @Override
-    public EdgeSet withAttribute(String attribute) {
-        Set<Edge> filtered = elements.stream()
-            .filter(e -> e.attributes().containsKey(attribute))
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
-    }
-
-    @Override
-    public EdgeSet withAttribute(String attribute, AttributeValue... values) {
-        Set<Edge> filtered = elements.stream()
-            .filter(e -> {
-                AttributeValue val = e.attributes().get(attribute);
-                if (val == null) return false;
-                for (AttributeValue v : values) {
-                    if (Objects.equals(val, v)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
     }
 
     @Override
@@ -109,33 +89,5 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     @Override
     public int[] toIdArray() {
         return elements.stream().mapToInt(Edge::id).toArray();
-    }
-
-    @Override
-    public EdgeSet withAnyTag(String... tags) {
-        Set<Edge> filtered = elements.stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (e.tags().contains(tag)) return true;
-                }
-                return false;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
-    }
-
-    @Override
-    public EdgeSet withAllTags(String... tags) {
-        Set<Edge> filtered = elements.stream()
-            .filter(e -> {
-                if (tags == null || tags.length == 0) return false;
-                for (String tag : tags) {
-                    if (!e.tags().contains(tag)) return false;
-                }
-                return true;
-            })
-            .collect(Collectors.toUnmodifiableSet());
-        return filtered.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(filtered);
     }
 }
