@@ -66,7 +66,8 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return NodeSet.empty();
         }
         Set<Node> intersected = elements.stream()
@@ -77,7 +78,8 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         Set<Node> differenced = elements.stream()
@@ -88,7 +90,8 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        if (other == null || other.isEmpty()) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
+        if (other.isEmpty()) {
             return this;
         }
         Set<Node> unioned = java.util.stream.Stream.concat(elements.stream(), other.stream())

@@ -76,8 +76,9 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalNodeSet result = new GlobalNodeSet();
-        if (other == null || other.isEmpty()) {
+        if (other.isEmpty()) {
             return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
         }
         for (GlobalNode node : nodes.values()) {
@@ -90,9 +91,10 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalNodeSet result = new GlobalNodeSet();
         for (GlobalNode node : nodes.values()) {
-            if (other == null || !other.contains(node)) {
+            if (!other.contains(node)) {
                 result.add(node);
             }
         }
@@ -101,8 +103,9 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalNodeSet result = new GlobalNodeSet(); result.addAll(nodes.values());
-        if (other != null) {
+        if (true) {
             for (Node n : other) {
                 if (n instanceof GlobalNode) {
                     result.add(n);

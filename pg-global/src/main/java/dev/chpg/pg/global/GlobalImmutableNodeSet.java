@@ -43,14 +43,17 @@ public class GlobalImmutableNodeSet implements NodeSet {
     }
 
     public NodeSet intersect(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return nodes.intersect(other);
     }
 
     public NodeSet difference(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return nodes.difference(other);
     }
 
     public NodeSet union(Collection<? extends Node> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return nodes.union(other);
     }
 

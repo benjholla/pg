@@ -666,6 +666,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	@Override
 	public Graph union(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
+		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		// union operations commute, so we order all graphs including this graph
 		// by largest to smallest so that we start with the largest set and minimize add operations
@@ -700,6 +701,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	@Override
 	public Graph difference(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
+		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		// sorting the graphs to difference from this graph by largest to smallest
 		// in order to remove the most information up front
@@ -732,6 +734,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	@Override
 	public Graph differenceEdges(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
+		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		// sorting the graphs to difference from this graph by largest to smallest
 		// in order to remove the most information up front
@@ -768,6 +771,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	@Override
 	public Graph intersection(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
+		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		// intersections commute, so we order the given graphs including this graph
 		// by the smallest to largest graph in order to start with the smallest set
@@ -933,6 +937,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	@Override
 	public Graph induce(Graph... graphs){
 		Objects.requireNonNull(graphs, "graphs cannot be null");
+		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		EdgeSet inducibleEdges = new EphemeralEdgeSet();
 		for(Graph graph : graphs){

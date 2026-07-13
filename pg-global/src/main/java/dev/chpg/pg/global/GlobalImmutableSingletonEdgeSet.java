@@ -68,6 +68,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return this;
         }
@@ -76,6 +77,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         if (other.contains(element)) {
             return EdgeSet.empty();
         }
@@ -84,6 +86,7 @@ public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> imp
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalEdgeSet result = new GlobalEdgeSet();
         result.add(element);
         for (Edge e : other) {

@@ -131,22 +131,19 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         NodeSet filterNull = set.filter(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
-        NodeSet intersectEmpty = set.intersect(null);
-        assertEquals(0, intersectEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.intersect(null));
 
         NodeSet intersect = set.intersect(Collections.singletonList(n1));
         assertEquals(1, intersect.size());
         assertTrue(intersect.contains(n1));
 
-        NodeSet diffEmpty = set.difference(null);
-        assertEquals(2, diffEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.difference(null));
 
         NodeSet diff = set.difference(Collections.singletonList(n1));
         assertEquals(1, diff.size());
         assertTrue(diff.contains(n2));
 
-        NodeSet unionEmpty = set.union(null);
-        assertEquals(2, unionEmpty.size());
+        assertThrows(NullPointerException.class, () -> set.union(null));
 
         EphemeralNode n3 = graph.createNode();
         NodeSet union = set.union(Collections.singletonList(n3));

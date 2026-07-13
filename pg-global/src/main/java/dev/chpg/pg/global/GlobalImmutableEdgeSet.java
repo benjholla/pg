@@ -43,14 +43,17 @@ public class GlobalImmutableEdgeSet implements EdgeSet {
     }
 
     public EdgeSet intersect(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return edges.intersect(other);
     }
 
     public EdgeSet difference(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return edges.difference(other);
     }
 
     public EdgeSet union(Collection<? extends Edge> other) {
+        java.util.Objects.requireNonNull(other, "other cannot be null");
         return edges.union(other);
     }
 
