@@ -32,10 +32,7 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
             this.combinedPredicate.and(node -> {
                 AttributeValue val = node.attributes().get(attribute);
                 if (val == null || values == null || values.length == 0) return false;
-                for (AttributeValue v : values) {
-                    if (java.util.Objects.equals(val, v)) return true;
-                }
-                return false;
+                return java.util.Arrays.asList(values).contains(val);
             })
         );
     }
@@ -86,12 +83,18 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        return materialize().intersect(other);
+        return new DeferredNodeSet(
+            this.source,
+            this.combinedPredicate.and(other::contains)
+        );
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        return materialize().difference(other);
+        return new DeferredNodeSet(
+            this.source,
+            this.combinedPredicate.and(n -> !other.contains(n))
+        );
     }
 
     @Override
@@ -107,6 +110,13 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
     @Override
     public int[] toIdArray() {
         return stream().mapToInt(Node::id).toArray();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        if (!(o instanceof Node)) return false;
+        Node e = (Node) o;
+        return source.contains(e) && combinedPredicate.test(e);
     }
 
     @Override
@@ -141,6 +151,17 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
         };
     }
 
+
+    @Override
+    public boolean isEmpty() {
+        return !iterator().hasNext();
+    }
+    /**
+     * Computes the size of this deferred set by evaluating the pipeline.
+     * <p>
+     * <b>Warning:</b> This is an O(N) operation that iterates the source and tests the predicate.
+     * Do not use in a loop condition (e.g. {@code for (int i = 0; i < set.size(); i++)}).
+     */
     @Override
     public int size() {
         int count = 0;
