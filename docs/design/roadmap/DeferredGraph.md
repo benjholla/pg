@@ -12,7 +12,7 @@ The API strictly separates operations into two categories to dictate exactly whe
 ### Intermediate Operations (AST Builders)
 These methods construct the execution plan. They return composable elements and trigger absolutely zero computation against the backend.
  * **Graph Algebra:** forward(), reverse(), union(), intersection(), between()
- * **Set Selectors:** nodes(), edges(), selectNodes(), filter()
+ * **Set Selectors:** nodes(), edges()
 ### Terminal Operations (Execution Triggers)
 Any method that breaks out of the composable Graph/NodeSet/EdgeSet abstractions and requests a standard Java type or primitive forces the engine to compile the AST and evaluate the topology.
  * **Existence Checks:** containsNode(), containsEdge(), adjacent()
