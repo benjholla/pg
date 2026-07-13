@@ -93,16 +93,31 @@ public interface AttributeMap extends Map<String, AttributeValue> {
     @Override
     default void replaceAll(java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> function) {
         java.util.Objects.requireNonNull(function, "Function cannot be null");
+
+        boolean requiresFallback = false;
+        java.util.Map<String, AttributeValue> fallbackUpdates = null;
+
         for (Map.Entry<String, AttributeValue> entry : entrySet()) {
             String k = entry.getKey();
             AttributeValue v = entry.getValue();
             AttributeValue newValue = function.apply(k, v);
             java.util.Objects.requireNonNull(newValue, "Attribute value cannot be null");
+
             try {
                 entry.setValue(newValue);
             } catch (UnsupportedOperationException e) {
-                put(k, newValue);
+                // Abort inline updates and switch to the safe fallback mechanism
+                requiresFallback = true;
+                if (fallbackUpdates == null) {
+                    fallbackUpdates = new java.util.HashMap<>();
+                }
+                fallbackUpdates.put(k, newValue);
             }
+        }
+
+        // Apply fallback updates strictly AFTER the iterator has closed
+        if (requiresFallback) {
+            putAll(fallbackUpdates);
         }
     }
 }
