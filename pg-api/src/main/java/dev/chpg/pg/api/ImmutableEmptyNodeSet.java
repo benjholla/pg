@@ -35,12 +35,12 @@ public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements No
     }
 
     @Override
-    public NodeSet filter(String attribute) {
+    public NodeSet attributedWith(String attribute) {
         return this;
     }
 
     @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
         return this;
     }
 

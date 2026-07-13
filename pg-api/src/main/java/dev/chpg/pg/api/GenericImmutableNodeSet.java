@@ -42,7 +42,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet filter(String attribute) {
+    public NodeSet attributedWith(String attribute) {
         Set<Node> filtered = elements.stream()
             .filter(n -> n.attributes().containsKey(attribute))
             .collect(Collectors.toUnmodifiableSet());
@@ -50,7 +50,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     }
 
     @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
         Set<Node> filtered = elements.stream()
             .filter(n -> {
                 AttributeValue val = n.attributes().get(attribute);

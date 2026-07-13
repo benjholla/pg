@@ -61,7 +61,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
+    public EdgeSet attributedWith(String attribute) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         for (GlobalEdge edge : internalSet) {
            if (edge.attributes().containsKey(attribute)) {
@@ -72,7 +72,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (attribute != null && values != null) {
             for (GlobalEdge edge : internalSet) {

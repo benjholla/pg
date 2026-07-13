@@ -43,7 +43,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
+    public EdgeSet attributedWith(String attribute) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         for (EphemeralEdge edge : edges.values()) {
             if (edge.attributes().containsKey(attribute)) {
@@ -54,7 +54,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     }
 
     @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (attribute != null && values != null) {
             for (EphemeralEdge edge : edges.values()) {

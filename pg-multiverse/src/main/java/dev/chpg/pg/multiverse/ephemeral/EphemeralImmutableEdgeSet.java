@@ -30,16 +30,16 @@ public class EphemeralImmutableEdgeSet implements EdgeSet {
         return edges.one();
     }
 
-    public EdgeSet filter(String attribute) {
-        return edges.filter(attribute);
+    public EdgeSet attributedWith(String attribute) {
+        return edges.attributedWith(attribute);
     }
 
     public void forEach(Consumer<? super Edge> action) {
         edges.forEach(action);
     }
 
-    public EdgeSet filter(String attribute, AttributeValue... values) {
-        return edges.filter(attribute, values);
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
+        return edges.attributedWith(attribute, values);
     }
 
     public EdgeSet intersect(Collection<? extends Edge> other) {

@@ -360,17 +360,17 @@ public class EphemeralGraphTest {
 
     @Test
     public void testSelectNodesAndEdges() {
-        NodeSet weighted = graph.nodes().filter("name");
+        NodeSet weighted = graph.nodes().attributedWith("name");
         assertEquals(7, weighted.size());
 
-        NodeSet bNode = graph.nodes().filter("name", AttributeValue.value("b"));
+        NodeSet bNode = graph.nodes().attributedWith("name", AttributeValue.value("b"));
         assertEquals(1, bNode.size());
         assertTrue(bNode.contains(b));
 
-        EdgeSet weightedEdges = graph.edges().filter("weight");
+        EdgeSet weightedEdges = graph.edges().attributedWith("weight");
         assertEquals(6, weightedEdges.size());
 
-        EdgeSet w1 = graph.edges().filter("weight", AttributeValue.value(1), AttributeValue.value(3));
+        EdgeSet w1 = graph.edges().attributedWith("weight", AttributeValue.value(1), AttributeValue.value(3));
         assertEquals(2, w1.size());
         assertTrue(w1.contains(ab));
         assertTrue(w1.contains(cb));

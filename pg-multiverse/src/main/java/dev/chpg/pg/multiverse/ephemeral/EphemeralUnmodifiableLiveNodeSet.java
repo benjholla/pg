@@ -43,7 +43,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet filter(String attribute) {
+    public NodeSet attributedWith(String attribute) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         for (EphemeralNode node : nodes.values()) {
             if (node.attributes().containsKey(attribute)) {
@@ -54,7 +54,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (attribute != null && values != null) {
             for (EphemeralNode node : nodes.values()) {

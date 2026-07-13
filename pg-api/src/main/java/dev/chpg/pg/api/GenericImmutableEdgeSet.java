@@ -42,7 +42,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
+    public EdgeSet attributedWith(String attribute) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> e.attributes().containsKey(attribute))
             .collect(Collectors.toUnmodifiableSet());
@@ -50,7 +50,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     }
 
     @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
         Set<Edge> filtered = elements.stream()
             .filter(e -> {
                 AttributeValue val = e.attributes().get(attribute);

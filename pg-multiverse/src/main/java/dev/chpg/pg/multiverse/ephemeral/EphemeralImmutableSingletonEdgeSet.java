@@ -46,7 +46,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
+    public EdgeSet attributedWith(String attribute) {
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
@@ -54,7 +54,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
     }
 
     @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
         if (element.attributes().containsKey(attribute)) {
             AttributeValue attrValue = element.attributes().get(attribute);
             for (AttributeValue v : values) {

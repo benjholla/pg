@@ -43,7 +43,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet filter(String attribute) {
+    public NodeSet attributedWith(String attribute) {
         GlobalNodeSet result = new GlobalNodeSet();
         for (GlobalNode node : nodes.values()) {
             if (node.attributes().containsKey(attribute)) {
@@ -54,7 +54,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     }
 
     @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (attribute != null && values != null) {
             for (GlobalNode node : nodes.values()) {

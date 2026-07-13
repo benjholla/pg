@@ -128,14 +128,14 @@ public class EphemeralUnmodifiableLiveEdgeSetTest {
 
         assertTrue(set.one().isPresent());
 
-        EdgeSet filteredA = set.filter("type", AttributeValue.value("A"));
+        EdgeSet filteredA = set.attributedWith("type", AttributeValue.value("A"));
         assertEquals(1, filteredA.size());
         assertTrue(filteredA.contains(e1));
 
-        EdgeSet filteredVal = set.filter("val");
+        EdgeSet filteredVal = set.attributedWith("val");
         assertEquals(2, filteredVal.size());
 
-        EdgeSet filterNull = set.filter(null, AttributeValue.value("A"));
+        EdgeSet filterNull = set.attributedWith(null, AttributeValue.value("A"));
         assertEquals(0, filterNull.size());
 
         EdgeSet intersectEmpty = set.intersect(null);

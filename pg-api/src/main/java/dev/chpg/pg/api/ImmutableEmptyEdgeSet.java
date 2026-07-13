@@ -35,12 +35,12 @@ public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements Ed
     }
 
     @Override
-    public EdgeSet filter(String attribute) {
+    public EdgeSet attributedWith(String attribute) {
         return this;
     }
 
     @Override
-    public EdgeSet filter(String attribute, AttributeValue... values) {
+    public EdgeSet attributedWith(String attribute, AttributeValue... values) {
         return this;
     }
 

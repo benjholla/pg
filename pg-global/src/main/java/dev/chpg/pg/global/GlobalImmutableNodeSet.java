@@ -30,16 +30,16 @@ public class GlobalImmutableNodeSet implements NodeSet {
         return nodes.one();
     }
 
-    public NodeSet filter(String attribute) {
-        return nodes.filter(attribute);
+    public NodeSet attributedWith(String attribute) {
+        return nodes.attributedWith(attribute);
     }
 
     public void forEach(Consumer<? super Node> action) {
         nodes.forEach(action);
     }
 
-    public NodeSet filter(String attribute, AttributeValue... values) {
-        return nodes.filter(attribute, values);
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
+        return nodes.attributedWith(attribute, values);
     }
 
     public NodeSet intersect(Collection<? extends Node> other) {

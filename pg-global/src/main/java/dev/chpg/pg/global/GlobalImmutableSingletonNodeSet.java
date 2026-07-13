@@ -46,7 +46,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet filter(String attribute) {
+    public NodeSet attributedWith(String attribute) {
         if (element.attributes().containsKey(attribute)) {
             return this;
         }
@@ -54,7 +54,7 @@ public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> imp
     }
 
     @Override
-    public NodeSet filter(String attribute, AttributeValue... values) {
+    public NodeSet attributedWith(String attribute, AttributeValue... values) {
         if (element.attributes().containsKey(attribute)) {
             AttributeValue attrValue = element.attributes().get(attribute);
             for (AttributeValue v : values) {
