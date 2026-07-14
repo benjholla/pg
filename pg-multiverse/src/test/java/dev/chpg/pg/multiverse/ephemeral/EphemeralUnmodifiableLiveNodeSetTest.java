@@ -256,4 +256,38 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         NodeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
+
+
+    @Test
+    public void testToImmutable() {
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralNode> map = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> outEdges = new HashMap<>();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveNodeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
+
+        // Empty
+        NodeSet immutableEmpty = set.toImmutable();
+        assertTrue(immutableEmpty.isEmpty());
+        assertTrue(immutableEmpty.isMaterialized());
+
+        // Singleton
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        map.put(n1.id(), n1);
+        NodeSet immutableSingleton = set.toImmutable();
+        assertEquals(1, immutableSingleton.size());
+        assertTrue(immutableSingleton.contains(n1));
+        assertTrue(immutableSingleton.isMaterialized());
+
+        // Multiple
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        map.put(n2.id(), n2);
+        NodeSet immutableMultiple = set.toImmutable();
+        assertEquals(2, immutableMultiple.size());
+        assertTrue(immutableMultiple.contains(n1));
+        assertTrue(immutableMultiple.contains(n2));
+        assertTrue(immutableMultiple.isMaterialized());
+    }
+
 }

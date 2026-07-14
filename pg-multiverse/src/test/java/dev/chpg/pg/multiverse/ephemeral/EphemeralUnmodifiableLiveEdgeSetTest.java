@@ -269,4 +269,39 @@ public class EphemeralUnmodifiableLiveEdgeSetTest {
         EdgeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
+
+
+    @Test
+    public void testToImmutable() {
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralNode> nodesMap = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdge> map = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> outEdges = new HashMap<>();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveEdgeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveEdgeSet(nodesMap, map, inEdges, outEdges);
+
+        // Empty
+        EdgeSet immutableEmpty = set.toImmutable();
+        assertTrue(immutableEmpty.isEmpty());
+        assertTrue(immutableEmpty.isMaterialized());
+
+        // Singleton
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdge e1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralEdge) g.factory().createEdge(n1, n1);
+        map.put(e1.id(), e1);
+        EdgeSet immutableSingleton = set.toImmutable();
+        assertEquals(1, immutableSingleton.size());
+        assertTrue(immutableSingleton.contains(e1));
+        assertTrue(immutableSingleton.isMaterialized());
+
+        // Multiple
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdge e2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralEdge) g.factory().createEdge(n1, n1);
+        map.put(e2.id(), e2);
+        EdgeSet immutableMultiple = set.toImmutable();
+        assertEquals(2, immutableMultiple.size());
+        assertTrue(immutableMultiple.contains(e1));
+        assertTrue(immutableMultiple.contains(e2));
+        assertTrue(immutableMultiple.isMaterialized());
+    }
+
 }

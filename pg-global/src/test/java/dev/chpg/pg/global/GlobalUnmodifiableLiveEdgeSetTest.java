@@ -266,4 +266,38 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
         EdgeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
+
+
+    @Test
+    public void testToImmutable() {
+        Map<Integer, GlobalNode> nodesMap = new HashMap<>();
+        Map<Integer, GlobalEdge> map = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> inEdges = new HashMap<>();
+        Map<Integer, GlobalEdgeSet> outEdges = new HashMap<>();
+        GlobalUnmodifiableLiveEdgeSet set = new GlobalUnmodifiableLiveEdgeSet(nodesMap, map, inEdges, outEdges);
+
+        // Empty
+        EdgeSet immutableEmpty = set.toImmutable();
+        assertTrue(immutableEmpty.isEmpty());
+        assertTrue(immutableEmpty.isMaterialized());
+
+        // Singleton
+        GlobalNode n1 = new GlobalNode();
+        GlobalEdge e1 = new GlobalEdge(n1, n1);
+        map.put(e1.id(), e1);
+        EdgeSet immutableSingleton = set.toImmutable();
+        assertEquals(1, immutableSingleton.size());
+        assertTrue(immutableSingleton.contains(e1));
+        assertTrue(immutableSingleton.isMaterialized());
+
+        // Multiple
+        GlobalEdge e2 = new GlobalEdge(n1, n1);
+        map.put(e2.id(), e2);
+        EdgeSet immutableMultiple = set.toImmutable();
+        assertEquals(2, immutableMultiple.size());
+        assertTrue(immutableMultiple.contains(e1));
+        assertTrue(immutableMultiple.contains(e2));
+        assertTrue(immutableMultiple.isMaterialized());
+    }
+
 }
