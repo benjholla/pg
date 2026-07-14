@@ -1,0 +1,30 @@
+// Note: This module intentionally excludes the pg.java-conventions.gradle plugin.
+// It is a standalone adapter meant to be integrated into legacy systems and must
+// be strictly compiled for Java 8 compatibility.
+
+plugins {
+    id 'java-library'
+}
+
+group = 'dev.chpg'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit 5.9.3 is the last 5.x version that supports Java 8 runtime.
+    testImplementation platform('org.junit:junit-bom:5.9.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
