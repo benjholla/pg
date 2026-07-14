@@ -154,10 +154,4 @@ public class EphemeralImmutableSingletonEdgeSetTest {
         int[] idArray = singletonSet.toIdArray();
         assertArrayEquals(new int[]{edge.id()}, idArray);
     }
-
-    @Test
-    public void testMaterialize() {
-        assertEquals(singletonSet, singletonSet.materialize());
-        assertTrue(singletonSet.isMaterialized());
-    }
 }

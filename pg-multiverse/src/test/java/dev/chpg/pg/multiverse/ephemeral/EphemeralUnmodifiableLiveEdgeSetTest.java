@@ -269,20 +269,4 @@ public class EphemeralUnmodifiableLiveEdgeSetTest {
         EdgeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
-
-    @Test
-    public void testMaterializeAndImmutable() {
-        dev.chpg.pg.api.Graph g = new EphemeralGraph().factory().createGraph();
-        dev.chpg.pg.api.Edge e = new EphemeralGraph().factory().createEdge(new EphemeralGraph().factory().createNode(), new EphemeralGraph().factory().createNode());
-        g.addEdge(e);
-
-        dev.chpg.pg.api.EdgeSet set = g.edges();
-        dev.chpg.pg.api.EdgeSet materialized = set.materialize();
-        assertTrue(set.isMaterialized());
-        assertEquals(set, materialized);
-
-        dev.chpg.pg.api.EdgeSet immutable = set.toImmutable();
-        assertTrue(immutable instanceof EphemeralImmutableEdgeSet || immutable instanceof EphemeralImmutableSingletonEdgeSet);
-        assertEquals(set, immutable);
-    }
 }

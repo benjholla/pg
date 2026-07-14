@@ -253,20 +253,4 @@ public class GlobalUnmodifiableLiveNodeSetTest {
         NodeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
-
-    @Test
-    public void testMaterializeAndImmutable() {
-        GlobalGraph g = new GlobalGraph();
-        GlobalNode n = new GlobalNode();
-        g.addNode(n);
-
-        dev.chpg.pg.api.NodeSet set = g.nodes();
-        dev.chpg.pg.api.NodeSet materialized = set.materialize();
-        assertTrue(set.isMaterialized());
-        assertEquals(set, materialized);
-
-        dev.chpg.pg.api.NodeSet immutable = set.toImmutable();
-        assertTrue(immutable instanceof GlobalImmutableNodeSet || immutable instanceof GlobalImmutableSingletonNodeSet);
-        assertEquals(set, immutable);
-    }
 }

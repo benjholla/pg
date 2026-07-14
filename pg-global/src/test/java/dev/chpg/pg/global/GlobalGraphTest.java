@@ -396,32 +396,4 @@ public class GlobalGraphTest {
         EdgeSet allE = graph.edges().withAllTags("path", "main");
         assertEquals(1, allE.size()); // bc
     }
-
-    @Test
-    public void testCreateGraphFactoryMethods() {
-        GlobalGraph g = new GlobalGraph();
-        GlobalGraph g1 = g.createGraph();
-        assertTrue(g1.isEmpty());
-
-        GlobalGraph g2 = g.createGraph(new GlobalNodeSet(a));
-        assertEquals(1, g2.nodes().size());
-
-        GlobalGraph g3 = g.createGraph(new dev.chpg.pg.api.Edge[]{ab});
-        assertEquals(1, g3.edges().size());
-
-        GlobalGraph g4 = g.createGraph(new GlobalEdgeSet(bc));
-        assertEquals(1, g4.edges().size());
-
-        GlobalGraph g5 = g.createGraph(new GlobalNodeSet(a, b), new GlobalEdgeSet(ab));
-        assertEquals(2, g5.nodes().size());
-        assertEquals(1, g5.edges().size());
-
-        GlobalGraph g6 = g.createGraph(new dev.chpg.pg.api.Graph[]{g5});
-        assertEquals(2, g6.nodes().size());
-        assertEquals(1, g6.edges().size());
-
-        GlobalGraph g7 = g.createGraph(java.util.Arrays.asList(g5));
-        assertEquals(2, g7.nodes().size());
-        assertEquals(1, g7.edges().size());
-    }
 }

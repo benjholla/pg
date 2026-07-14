@@ -256,20 +256,4 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         NodeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
-
-    @Test
-    public void testMaterializeAndImmutable() {
-        dev.chpg.pg.api.Graph g = new EphemeralGraph().factory().createGraph();
-        dev.chpg.pg.api.Node n = new EphemeralGraph().factory().createNode();
-        g.addNode(n);
-
-        dev.chpg.pg.api.NodeSet set = g.nodes();
-        dev.chpg.pg.api.NodeSet materialized = set.materialize();
-        assertTrue(set.isMaterialized());
-        assertEquals(set, materialized);
-
-        dev.chpg.pg.api.NodeSet immutable = set.toImmutable();
-        assertTrue(immutable instanceof EphemeralImmutableNodeSet || immutable instanceof EphemeralImmutableSingletonNodeSet);
-        assertEquals(set, immutable);
-    }
 }

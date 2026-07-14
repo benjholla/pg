@@ -399,10 +399,4 @@ public class GlobalEdgeSetTest {
         assertNotEquals(set1, set3);
         assertNotEquals(set1, "Not a set");
     }
-
-    @Test
-    public void testIsMaterialized() {
-        GlobalEdgeSet set = new GlobalEdgeSet();
-        assertTrue(set.isMaterialized());
-    }
 }

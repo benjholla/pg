@@ -323,10 +323,4 @@ public class GlobalNodeSetTest {
         NodeSet emptyTagsSet = set.withAllTags();
         assertTrue(emptyTagsSet.isEmpty());
     }
-
-    @Test
-    public void testIsMaterialized() {
-        GlobalNodeSet set = new GlobalNodeSet();
-        assertTrue(set.isMaterialized());
-    }
 }

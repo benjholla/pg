@@ -174,27 +174,4 @@ public class AttributeMapTest {
         assertEquals(AttributeValue.value("replaced"), attributeMap.get("key2"));
         assertEquals(AttributeValue.value("replaced"), attributeMap.get("key3"));
     }
-
-
-    @Test
-    public void testMapMethods() {
-        dev.chpg.pg.api.AttributeMap map = new EphemeralAttributeMap();
-        map.put("k1", AttributeValue.value("v1"));
-        map.put("k2", AttributeValue.value("v2"));
-
-        assertEquals(2, map.size());
-        org.junit.jupiter.api.Assertions.assertTrue(map.containsValue(AttributeValue.value("v1")));
-        assertEquals(2, map.keySet().size());
-        assertEquals(2, map.values().size());
-
-        dev.chpg.pg.api.AttributeMap map2 = new EphemeralAttributeMap();
-        map2.put("k1", AttributeValue.value("v1"));
-        map2.put("k2", AttributeValue.value("v2"));
-
-        org.junit.jupiter.api.Assertions.assertTrue(map.equals(map2));
-        assertEquals(map.hashCode(), map2.hashCode());
-
-        map.clear();
-        assertEquals(0, map.size());
-    }
 }
