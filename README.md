@@ -128,3 +128,17 @@ After the command completes successfully, you can view the HTML coverage report 
 ```
 pg-global/build/reports/jacoco/test/html/index.html
 ```
+
+## Benchmarking
+
+`pg` includes a JMH (Java Microbenchmark Harness) performance benchmark suite targeting core set operations (e.g., filtering, union, difference) at realistic scales (e.g., ~10,000 elements) to prevent performance regressions.
+
+The benchmark suite executes seamlessly during the standard test lifecycle. To run them and generate reports:
+
+```bash
+./gradlew :pg-global:test --tests "*BenchmarkTest"
+```
+
+The benchmark results will be saved automatically in JSON format, which can be visualized using standard JMH profiler tools (like [JMH Visualizer](https://jmh.morethan.io/)). The report files are located at:
+* `pg-global/build/reports/benchmarks/nodeset-benchmark-results.json`
+* `pg-global/build/reports/benchmarks/edgeset-benchmark-results.json`

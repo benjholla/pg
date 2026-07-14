@@ -10,7 +10,9 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
+import org.openjdk.jmh.results.format.ResultFormatType;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
@@ -121,6 +123,9 @@ public class EdgeSetBenchmarkTest {
             return;
         }
 
+        String reportDir = "build/reports/benchmarks";
+        new File(reportDir).mkdirs();
+
         Options opt = new OptionsBuilder()
                 .include(EdgeSetBenchmarkTest.class.getName())
                 .warmupIterations(1)
@@ -129,6 +134,8 @@ public class EdgeSetBenchmarkTest {
                 .measurementTime(TimeValue.seconds(1))
                 .forks(1)
                 .shouldFailOnError(true)
+                .resultFormat(ResultFormatType.JSON)
+                .result(reportDir + "/edgeset-benchmark-results.json")
                 .build();
 
         new Runner(opt).run();
