@@ -53,4 +53,41 @@ public class GlobalImmutableEdgeSetTest {
         assertTrue(set.equals(internalSet));
         assertTrue(set.equals(set));
     }
+
+    @Test
+    public void testToImmutable() {
+        dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();
+        dev.chpg.pg.global.GlobalEdge e1 = new dev.chpg.pg.global.GlobalEdge(n1, n1);
+        dev.chpg.pg.global.GlobalEdge e2 = new dev.chpg.pg.global.GlobalEdge(n1, n1);
+
+        dev.chpg.pg.global.GlobalEdgeSet set = new dev.chpg.pg.global.GlobalEdgeSet(e1, e2);
+        dev.chpg.pg.global.GlobalImmutableEdgeSet immutableSet = new dev.chpg.pg.global.GlobalImmutableEdgeSet(set);
+
+        assertSame(immutableSet, immutableSet.toImmutable());
+    }
+
+    @Test
+    public void testSetAlgebra() {
+        dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();
+        dev.chpg.pg.global.GlobalEdge e1 = new dev.chpg.pg.global.GlobalEdge(n1, n1);
+        dev.chpg.pg.global.GlobalEdge e2 = new dev.chpg.pg.global.GlobalEdge(n1, n1);
+        dev.chpg.pg.global.GlobalEdge e3 = new dev.chpg.pg.global.GlobalEdge(n1, n1);
+
+        dev.chpg.pg.global.GlobalEdgeSet set = new dev.chpg.pg.global.GlobalEdgeSet(e1, e2);
+        dev.chpg.pg.global.GlobalImmutableEdgeSet immutableSet = new dev.chpg.pg.global.GlobalImmutableEdgeSet(set);
+
+        dev.chpg.pg.api.EdgeSet intersect = immutableSet.intersect(java.util.Collections.singletonList(e2));
+        assertEquals(1, intersect.size());
+        assertTrue(intersect.contains(e2));
+
+        dev.chpg.pg.api.EdgeSet difference = immutableSet.difference(java.util.Collections.singletonList(e1));
+        assertEquals(1, difference.size());
+        assertTrue(difference.contains(e2));
+
+        dev.chpg.pg.api.EdgeSet union = immutableSet.union(java.util.Collections.singletonList(e3));
+        assertEquals(3, union.size());
+        assertTrue(union.contains(e1));
+        assertTrue(union.contains(e2));
+        assertTrue(union.contains(e3));
+    }
 }

@@ -55,4 +55,41 @@ public class EphemeralImmutableNodeSetTest {
         assertTrue(set.equals(internalSet));
         assertTrue(set.equals(set));
     }
+
+    @Test
+    public void testToImmutable() {
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet(n1, n2);
+        dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableNodeSet immutableSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableNodeSet(set);
+
+        assertSame(immutableSet, immutableSet.toImmutable());
+    }
+
+    @Test
+    public void testSetAlgebra() {
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n3 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet(n1, n2);
+        dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableNodeSet immutableSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableNodeSet(set);
+
+        dev.chpg.pg.api.NodeSet intersect = immutableSet.intersect(java.util.Collections.singletonList(n2));
+        assertEquals(1, intersect.size());
+        assertTrue(intersect.contains(n2));
+
+        dev.chpg.pg.api.NodeSet difference = immutableSet.difference(java.util.Collections.singletonList(n1));
+        assertEquals(1, difference.size());
+        assertTrue(difference.contains(n2));
+
+        dev.chpg.pg.api.NodeSet union = immutableSet.union(java.util.Collections.singletonList(n3));
+        assertEquals(3, union.size());
+        assertTrue(union.contains(n1));
+        assertTrue(union.contains(n2));
+        assertTrue(union.contains(n3));
+    }
 }

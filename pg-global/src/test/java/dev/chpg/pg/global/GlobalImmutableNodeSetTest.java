@@ -51,4 +51,39 @@ public class GlobalImmutableNodeSetTest {
         assertTrue(set.equals(internalSet));
         assertTrue(set.equals(set));
     }
+
+    @Test
+    public void testToImmutable() {
+        dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();
+        dev.chpg.pg.global.GlobalNode n2 = new dev.chpg.pg.global.GlobalNode();
+
+        dev.chpg.pg.global.GlobalNodeSet set = new dev.chpg.pg.global.GlobalNodeSet(n1, n2);
+        dev.chpg.pg.global.GlobalImmutableNodeSet immutableSet = new dev.chpg.pg.global.GlobalImmutableNodeSet(set);
+
+        assertSame(immutableSet, immutableSet.toImmutable());
+    }
+
+    @Test
+    public void testSetAlgebra() {
+        dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();
+        dev.chpg.pg.global.GlobalNode n2 = new dev.chpg.pg.global.GlobalNode();
+        dev.chpg.pg.global.GlobalNode n3 = new dev.chpg.pg.global.GlobalNode();
+
+        dev.chpg.pg.global.GlobalNodeSet set = new dev.chpg.pg.global.GlobalNodeSet(n1, n2);
+        dev.chpg.pg.global.GlobalImmutableNodeSet immutableSet = new dev.chpg.pg.global.GlobalImmutableNodeSet(set);
+
+        dev.chpg.pg.api.NodeSet intersect = immutableSet.intersect(java.util.Collections.singletonList(n2));
+        assertEquals(1, intersect.size());
+        assertTrue(intersect.contains(n2));
+
+        dev.chpg.pg.api.NodeSet difference = immutableSet.difference(java.util.Collections.singletonList(n1));
+        assertEquals(1, difference.size());
+        assertTrue(difference.contains(n2));
+
+        dev.chpg.pg.api.NodeSet union = immutableSet.union(java.util.Collections.singletonList(n3));
+        assertEquals(3, union.size());
+        assertTrue(union.contains(n1));
+        assertTrue(union.contains(n2));
+        assertTrue(union.contains(n3));
+    }
 }
