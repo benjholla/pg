@@ -2,6 +2,8 @@ package dev.chpg.pg.api;
 
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -86,11 +88,20 @@ public boolean isMaterialized() {
 
     @Override
     public Set<Integer> ids() {
-        return elements.stream().map(Edge::id).collect(Collectors.toUnmodifiableSet());
+        Set<Integer> ids = new HashSet<>((int) (elements.size() / 0.75f) + 1);
+        for (Edge edge : elements) {
+            ids.add(edge.id());
+        }
+        return Collections.unmodifiableSet(ids);
     }
 
     @Override
     public int[] toIdArray() {
-        return elements.stream().mapToInt(Edge::id).toArray();
+        int[] ids = new int[elements.size()];
+        int idx = 0;
+        for (Edge edge : elements) {
+            ids[idx++] = edge.id();
+        }
+        return ids;
     }
 }

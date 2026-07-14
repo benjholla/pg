@@ -90,7 +90,12 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public int[] toIdArray() {
-        return edges.keySet().stream().mapToInt(Integer::intValue).toArray();
+        int[] ids = new int[edges.size()];
+        int idx = 0;
+        for (Integer id : edges.keySet()) {
+            ids[idx++] = id;
+        }
+        return ids;
     }
 
     @Override

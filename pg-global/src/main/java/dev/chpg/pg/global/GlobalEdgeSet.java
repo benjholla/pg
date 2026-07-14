@@ -101,12 +101,21 @@ public final class GlobalEdgeSet implements EdgeSet {
 
     @Override
     public Set<Integer> ids() {
-        return internalSet.stream().map(Edge::id).collect(Collectors.toSet());
+        Set<Integer> ids = new HashSet<>((int) (internalSet.size() / 0.75f) + 1);
+        for (GlobalEdge edge : internalSet) {
+            ids.add(edge.id());
+        }
+        return ids;
     }
 
     @Override
     public int[] toIdArray() {
-        return internalSet.stream().mapToInt(Edge::id).toArray();
+        int[] ids = new int[internalSet.size()];
+        int idx = 0;
+        for (GlobalEdge edge : internalSet) {
+            ids[idx++] = edge.id();
+        }
+        return ids;
     }
 
     @Override
