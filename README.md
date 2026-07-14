@@ -113,7 +113,29 @@ Documents for future planning and design discussions can be found here:
 
 ## Installation
 
-Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven configurations (e.g. from Maven Central or your local repository if published).
+Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven configurations (e.g. from Maven Central or your local repository if published). Note that the artifact coordinates use the `dev.chpg` namespace.
+
+**Gradle:**
+```groovy
+dependencies {
+    implementation 'dev.chpg:pg-api:1.0.0'
+    implementation 'dev.chpg:pg-global:1.0.0'
+}
+```
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>dev.chpg</groupId>
+    <artifactId>pg-api</artifactId>
+    <version>1.0.0</version>
+</dependency>
+<dependency>
+    <groupId>dev.chpg</groupId>
+    <artifactId>pg-global</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ## Test Coverage
 

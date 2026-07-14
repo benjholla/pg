@@ -3,16 +3,24 @@ package dev.chpg.pg.api;
 /**
  * Represents a vertex within a property graph.
  * <p>
- * A {@code Node} serves as a fundamental building block of the graph, connecting to other nodes via
- * directed {@link Edge}s. Like all {@link GraphElement}s, it possesses a primitive {@code int} identity,
- * a {@link TagSet} for labeling, and an {@link AttributeMap} for property storage.
+ * <b>What it represents:</b> A foundational entity in a property graph, representing a single point, concept, or data item that can be connected by edges.
  * <p>
- * <b>Usage:</b> Nodes are created via a {@link GraphFactory} and added to a {@link Graph}.
- * Filtering or querying nodes is typically done using functional operators on a {@link NodeSet}.
+ * <b>Why it exists:</b> To provide a structural basis for graph data.
  * <p>
- * <b>Thread Safety:</b> The interfaces within {@code pg-api} do not define thread safety guarantees.
- * Thread safety is determined by the specific concrete implementation (e.g., {@code GlobalGraph} vs. {@code EphemeralGraph}).
- * Assume nodes are not safe for concurrent mutation unless explicitly documented by the backing engine.
+ * <b>When to use it:</b> Use {@code Node}s to represent distinct entities in your domain model that participate in relationships (edges).
+ * <p>
+ * <b>Common usage patterns:</b>
+ * <ul>
+ * <li>Created via a {@link GraphFactory} and subsequently added to a {@link Graph}.</li>
+ * <li>Decorated with boolean markers via its {@link TagSet} (e.g., {@code node.tags().add("Person")}).</li>
+ * <li>Decorated with key-value data via its {@link AttributeMap} (e.g., {@code node.attributes().put("name", "Alice")}).</li>
+ * </ul>
+ * <p>
+ * <b>Important invariants:</b> Like all {@link GraphElement}s, it possesses a primitive {@code int} identity. Identity is strictly defined by the combination of its implementation type and this primitive ID.
+ * <p>
+ * <b>Thread safety:</b> The interfaces within {@code pg-api} do not define thread safety guarantees. Assume nodes are not safe for concurrent mutation unless explicitly documented by the backing implementation (e.g., {@code GlobalGraph} vs. {@code EphemeralGraph}).
+ * <p>
+ * <b>Performance characteristics:</b> Node instances themselves are often lightweight flyweights or strictly primitive wrappers to reduce heap pressure. Property access is optimized based on the backend storage engine.
  */
 public interface Node extends GraphElement {
 

@@ -4,6 +4,28 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * A specialized set for managing collections of {@link Edge}s.
+ * <p>
+ * <b>What it represents:</b> A distinct collection of graph edges, supporting set-theoretic math and fluent filtering.
+ * <p>
+ * <b>Why it exists:</b> To provide a zero-allocation, functional query pipeline for graph analysis, enabling operations like filtering without intermediate collection allocation.
+ * <p>
+ * <b>When to use it:</b> Use {@code EdgeSet} whenever dealing with aggregate collections of edges, especially when extracting properties or executing declarative filters.
+ * <p>
+ * <b>Common usage patterns:</b>
+ * <ul>
+ * <li>Filtering edges via fluent predicates (e.g., {@code edges.withAnyTag("knows")}).</li>
+ * <li>Extracting primitive ID arrays for bulk operations (e.g., {@code edges.toIdArray()}).</li>
+ * <li>Forcing eager materialization of deferred pipelines via {@code materialize()}.</li>
+ * </ul>
+ * <p>
+ * <b>Important invariants:</b> {@code EdgeSet} implementations may be "live" (dynamically reflecting changes in the underlying graph) or "snapshot" based. Many filtering methods return a deferred evaluation pipeline that only executes when terminal operations (like {@code size()} or {@code toIdArray()}) are invoked.
+ * <p>
+ * <b>Thread safety:</b> Thread safety guarantees depend heavily on the concrete implementation. Modifying the underlying graph while iterating a live EdgeSet will likely produce a {@code ConcurrentModificationException}.
+ * <p>
+ * <b>Performance characteristics:</b> The fluent filtering API (e.g., {@code withAttribute}) returns a deferred, zero-allocation wrapper. Terminal operations on deferred sets evaluate the pipeline and take O(N) time.
+ */
 public interface EdgeSet extends Set<Edge> {
 
     EdgeSet EMPTY = new ImmutableEmptyEdgeSet();
