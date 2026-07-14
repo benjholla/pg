@@ -109,7 +109,12 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override
     public int[] toIdArray() {
-        return stream().mapToInt(Node::id).toArray();
+        int[] result = new int[size()];
+        int i = 0;
+        for (Node node : this) {
+            result[i++] = node.id();
+        }
+        return result;
     }
 
     @Override

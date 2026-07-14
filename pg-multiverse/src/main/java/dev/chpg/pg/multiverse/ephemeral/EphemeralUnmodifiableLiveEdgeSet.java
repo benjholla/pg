@@ -90,7 +90,12 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public int[] toIdArray() {
-        return edges.keySet().stream().mapToInt(Integer::intValue).toArray();
+        int[] result = new int[edges.size()];
+        int i = 0;
+        for (Integer id : edges.keySet()) {
+            result[i++] = id;
+        }
+        return result;
     }
 
     @Override

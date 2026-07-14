@@ -107,7 +107,12 @@ public final class EphemeralNodeSet implements NodeSet {
 
     @Override
     public int[] toIdArray() {
-        return internalSet.stream().mapToInt(Node::id).toArray();
+        int[] result = new int[internalSet.size()];
+        int i = 0;
+        for (Node node : internalSet) {
+            result[i++] = node.id();
+        }
+        return result;
     }
 
     @Override
