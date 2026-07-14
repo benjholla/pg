@@ -109,7 +109,12 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
     public int[] toIdArray() {
-        return stream().mapToInt(Edge::id).toArray();
+        int[] result = new int[size()];
+        int i = 0;
+        for (Edge edge : this) {
+            result[i++] = edge.id();
+        }
+        return result;
     }
 
     @Override

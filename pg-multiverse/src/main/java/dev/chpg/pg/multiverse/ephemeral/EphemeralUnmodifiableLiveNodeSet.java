@@ -90,7 +90,12 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public int[] toIdArray() {
-        return nodes.keySet().stream().mapToInt(Integer::intValue).toArray();
+        int[] result = new int[nodes.size()];
+        int i = 0;
+        for (Integer id : nodes.keySet()) {
+            result[i++] = id;
+        }
+        return result;
     }
 
     @Override

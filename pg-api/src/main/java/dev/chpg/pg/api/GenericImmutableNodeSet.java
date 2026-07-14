@@ -91,6 +91,11 @@ public boolean isMaterialized() {
 
     @Override
     public int[] toIdArray() {
-        return elements.stream().mapToInt(Node::id).toArray();
+        int[] result = new int[elements.size()];
+        int i = 0;
+        for (Node node : elements) {
+            result[i++] = node.id();
+        }
+        return result;
     }
 }
