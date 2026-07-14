@@ -1,5 +1,6 @@
 package dev.chpg.pg.global;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -90,7 +91,15 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public int[] toIdArray() {
-        return nodes.keySet().stream().mapToInt(Integer::intValue).toArray();
+        int[] ids = new int[nodes.size()];
+        int idx = 0;
+        for (Integer id : nodes.keySet()) {
+            if (idx == ids.length) {
+                ids = Arrays.copyOf(ids, ids.length * 2 + 1);
+            }
+            ids[idx++] = id;
+        }
+        return idx == ids.length ? ids : Arrays.copyOf(ids, idx);
     }
 
     @Override

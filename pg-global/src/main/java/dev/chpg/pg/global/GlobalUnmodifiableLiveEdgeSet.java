@@ -1,5 +1,6 @@
 package dev.chpg.pg.global;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,9 +94,12 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
         int[] ids = new int[edges.size()];
         int idx = 0;
         for (Integer id : edges.keySet()) {
+            if (idx == ids.length) {
+                ids = Arrays.copyOf(ids, ids.length * 2 + 1);
+            }
             ids[idx++] = id;
         }
-        return ids;
+        return idx == ids.length ? ids : Arrays.copyOf(ids, idx);
     }
 
     @Override
