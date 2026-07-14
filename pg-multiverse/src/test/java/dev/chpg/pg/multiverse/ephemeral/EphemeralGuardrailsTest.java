@@ -1,10 +1,11 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EphemeralGuardrailsTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
 
     @Test
     public void testRequireLocalId() {

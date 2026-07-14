@@ -1,9 +1,5 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.api.AttributeValue;
-import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.api.EdgeSet;
-
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +7,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import dev.chpg.pg.api.Edge;
+import dev.chpg.pg.api.EdgeSet;
 
 public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 

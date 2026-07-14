@@ -1,10 +1,13 @@
 package dev.chpg.pg.global;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -217,6 +220,7 @@ public class GlobalNodeSetCoverageTest {
         assertTrue(ids[1] == n1.id() || ids[1] == n2.id());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         GlobalNodeSet set = new GlobalNodeSet(n1);
@@ -233,6 +237,7 @@ public class GlobalNodeSetCoverageTest {
         assertFalse(set.contains(new InvalidNode()));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         GlobalNodeSet set = new GlobalNodeSet(n1, n2);

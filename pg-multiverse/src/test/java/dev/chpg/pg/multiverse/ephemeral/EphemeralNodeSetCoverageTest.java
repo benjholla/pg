@@ -1,6 +1,10 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -218,6 +222,7 @@ public class EphemeralNodeSetCoverageTest {
         assertTrue(ids[1] == n1.id() || ids[1] == n2.id());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         EphemeralNodeSet set = new EphemeralNodeSet(n1);
@@ -234,6 +239,7 @@ public class EphemeralNodeSetCoverageTest {
         assertFalse(set.contains(new InvalidNode()));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         EphemeralNodeSet set = new EphemeralNodeSet(n1, n2);

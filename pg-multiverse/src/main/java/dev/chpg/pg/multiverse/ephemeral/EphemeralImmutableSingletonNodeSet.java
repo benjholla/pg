@@ -1,9 +1,5 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.api.AttributeValue;
-import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.NodeSet;
-
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +7,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.NodeSet;
 
 public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> implements NodeSet {
 

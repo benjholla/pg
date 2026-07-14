@@ -1,10 +1,9 @@
 package dev.chpg.pg.global;
 
-import dev.chpg.pg.api.AttributeValue;
-import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.api.EdgeSet;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +11,12 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import dev.chpg.pg.api.AttributeValue;
+import dev.chpg.pg.api.Edge;
+import dev.chpg.pg.api.EdgeSet;
 
 public class GlobalImmutableSingletonEdgeSetTest {
 

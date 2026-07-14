@@ -1,13 +1,15 @@
 package dev.chpg.pg.io;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 // In pg-io, we use mock factories or anonymous classes to avoid specific backend references like GlobalGraph.
 // However, the test only checks the first failure in read(), so passing nulls is enough if it fails early!

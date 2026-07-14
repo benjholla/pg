@@ -1,10 +1,17 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.api.Node;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
 import java.util.Collections;
+
+import org.junit.jupiter.api.Test;
+
+import dev.chpg.pg.api.Node;
 
 public class EphemeralImmutableNodeSetTest {
     private static final EphemeralFactory factory = new EphemeralGraph().factory();

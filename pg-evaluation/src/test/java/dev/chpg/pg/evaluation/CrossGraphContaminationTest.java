@@ -1,14 +1,18 @@
 package dev.chpg.pg.evaluation;
 
-import dev.chpg.pg.api.*;
-import dev.chpg.pg.global.GlobalGraph;
-import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import dev.chpg.pg.api.Edge;
+import dev.chpg.pg.api.EdgeSet;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.NodeSet;
+import dev.chpg.pg.global.GlobalGraph;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 
 public class CrossGraphContaminationTest {
 

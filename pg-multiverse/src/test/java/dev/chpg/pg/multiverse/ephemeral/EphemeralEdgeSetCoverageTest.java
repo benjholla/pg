@@ -1,6 +1,10 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -227,6 +231,7 @@ public class EphemeralEdgeSetCoverageTest {
         assertTrue(ids[1] == e1.id() || ids[1] == e2.id());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         EphemeralEdgeSet set = new EphemeralEdgeSet(e1);
@@ -245,6 +250,7 @@ public class EphemeralEdgeSetCoverageTest {
         assertFalse(set.contains(new InvalidEdge()));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         EphemeralEdgeSet set = new EphemeralEdgeSet(e1, e2);

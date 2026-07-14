@@ -1,13 +1,12 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.api.Graph;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Node.NodeDirection;
 import dev.chpg.pg.api.NodeSet;

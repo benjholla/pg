@@ -15,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import dev.chpg.pg.api.TagSet;
 
 public class TagSetTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
-
 
     private TagSet tagSet;
 

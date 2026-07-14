@@ -1,15 +1,23 @@
 package dev.chpg.pg.evaluation;
 
+import java.util.concurrent.TimeUnit;
+
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.infra.Blackhole;
+
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.infra.Blackhole;
-
-import java.util.concurrent.TimeUnit;
-import java.util.Collection;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)

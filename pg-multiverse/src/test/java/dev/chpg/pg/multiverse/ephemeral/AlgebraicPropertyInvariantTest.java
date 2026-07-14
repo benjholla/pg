@@ -9,9 +9,9 @@ import java.util.Random;
 
 import org.junit.jupiter.api.RepeatedTest;
 
+import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Edge;
 
 /**
  * Validates fundamental set-theoretic algebraic properties of Graph operations

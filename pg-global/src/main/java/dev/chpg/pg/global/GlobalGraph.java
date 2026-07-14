@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Graph;

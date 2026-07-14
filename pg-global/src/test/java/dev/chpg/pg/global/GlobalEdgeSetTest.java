@@ -1,11 +1,13 @@
 package dev.chpg.pg.global;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -230,6 +232,7 @@ public class GlobalEdgeSetTest {
         assertTrue(ids[1] == e1.id() || ids[1] == e2.id());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1);
@@ -248,6 +251,7 @@ public class GlobalEdgeSetTest {
         assertFalse(set.contains(new InvalidEdge()));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         GlobalEdgeSet set = new GlobalEdgeSet(e1, e2);

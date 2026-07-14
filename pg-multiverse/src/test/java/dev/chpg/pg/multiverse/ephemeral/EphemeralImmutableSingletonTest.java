@@ -1,10 +1,12 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.api.NodeSet;
-import dev.chpg.pg.api.EdgeSet;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import dev.chpg.pg.api.EdgeSet;
+import dev.chpg.pg.api.NodeSet;
 
 public class EphemeralImmutableSingletonTest {
 
