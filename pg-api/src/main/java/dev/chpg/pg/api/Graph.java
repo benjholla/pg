@@ -8,21 +8,27 @@ import dev.chpg.pg.api.Node.NodeDirection;
 /**
  * Represents a mathematical directed property graph.
  * <p>
- * A {@code Graph} acts as the primary container and query engine for {@link Node}s and {@link Edge}s.
- * This library embraces a <b>set-theoretic</b> approach to graph operations. Rather than modifying
- * a single monolithic graph during analysis, operations like {@link #union(Graph...)},
- * {@link #intersection(Graph...)}, and traversals like {@link #forward(Node...)} typically yield
- * <i>new</i> graphs (subgraphs) representing the result of the query.
+ * <b>What it represents:</b> A container and query engine managing a collection of {@link Node}s and {@link Edge}s representing topological and property data.
  * <p>
- * <b>Important Characteristics:</b>
+ * <b>Why it exists:</b> To provide a set-theoretic algebra for manipulating property graphs. Rather than mutating a single monolithic graph, this library focuses on producing new subgraphs via algebraic operations (e.g., union, intersection).
+ * <p>
+ * <b>When to use it:</b> Use {@code Graph} when you need to construct, manipulate, query, or traverse connected data using set theory and relational algebra.
+ * <p>
+ * <b>Common usage patterns:</b>
  * <ul>
- * <li><b>Cascading Edge Removal:</b> Because an edge cannot exist without its endpoints, removing a
- * node from the graph automatically removes any incident edges.
- * <i>Note: This domain-specific behavior means graph set difference operations do not strictly adhere
- * to all standard set-theoretic algebraic laws.</i></li>
- * <li><b>Element Identity:</b> Graphs manage topology and rely on the primitive {@code int} identity
- * of {@link GraphElement}s for fast O(1) routing and adjacency lookups.</li>
+ * <li>Creating subgraphs via traversals (e.g., {@code graph.forward(node)}).</li>
+ * <li>Combining or filtering results using set logic (e.g., {@code graph1.union(graph2)}).</li>
  * </ul>
+ * <p>
+ * <b>Important invariants:</b>
+ * <ul>
+ * <li><b>Cascading Edge Removal:</b> An edge cannot exist without its endpoints. Removing a node implicitly and cascades to remove all incident edges.</li>
+ * <li><b>Element Identity:</b> Graph topology relies on the primitive {@code int} identity of {@link GraphElement}s for O(1) operations. Elements must be consistent in identity to be evaluated correctly.</li>
+ * </ul>
+ * <p>
+ * <b>Thread safety:</b> The interface itself defines no thread safety guarantees. Refer to specific implementations (e.g., {@code GlobalGraph}, {@code EphemeralGraph}) for thread safety characteristics.
+ * <p>
+ * <b>Performance characteristics:</b> Operations like traversal and set algebra are heavily optimized based on primitive IDs. Query outputs are often deferred pipelines (zero-allocation) until strictly evaluated.
  */
 public interface Graph {
 	

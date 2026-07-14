@@ -3,7 +3,25 @@ package dev.chpg.pg.api;
 import java.util.Map;
 
 /**
- * Attributes map arbitrary keys to attribute values.
+ * A specialized map for managing key-value properties on a {@link GraphElement}.
+ * <p>
+ * <b>What it represents:</b> A property dictionary mapping string keys to strongly-typed {@link AttributeValue}s.
+ * <p>
+ * <b>Why it exists:</b> To allow graph elements to hold arbitrary data payloads while enforcing a restricted, memory-safe type system that easily serializes to JSON or binary formats.
+ * <p>
+ * <b>When to use it:</b> Use {@code AttributeMap} when you need to store metadata, weights, coordinates, or domain-specific properties directly on nodes and edges.
+ * <p>
+ * <b>Common usage patterns:</b>
+ * <ul>
+ * <li>Adding properties via overloaded convenience methods (e.g., {@code node.attributes().put("weight", 1.5)}).</li>
+ * <li>Retrieving properties (e.g., {@code AttributeValue val = node.attributes().get("name")}).</li>
+ * </ul>
+ * <p>
+ * <b>Important invariants:</b> The map strictly enforces null-safety. Null keys or values are not permitted. Values must conform to the permitted types defined by the sealed {@link AttributeValue} interface.
+ * <p>
+ * <b>Thread safety:</b> Thread safety guarantees depend on the backing graph implementation. Assume it is not safe for concurrent mutation unless explicitly documented by the backend (e.g., {@code EphemeralGraph}).
+ * <p>
+ * <b>Performance characteristics:</b> Standard implementations (like Ephemeral) use standard hash maps (O(1) access). The overloaded primitives methods auto-box values into {@link AttributeValue} records to satisfy the interface.
  */
 public interface AttributeMap extends Map<String, AttributeValue> {
 
