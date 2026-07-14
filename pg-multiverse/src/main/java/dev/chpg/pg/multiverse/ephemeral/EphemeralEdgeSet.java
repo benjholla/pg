@@ -111,12 +111,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
 
     @Override
     public int[] toIdArray() {
-        int[] ids = new int[internalSet.size()];
-        int idx = 0;
-        for (EphemeralEdge edge : internalSet) {
-            ids[idx++] = edge.id();
-        }
-        return ids;
+        return internalSet.stream().mapToInt(Edge::id).toArray();
     }
 
     @Override

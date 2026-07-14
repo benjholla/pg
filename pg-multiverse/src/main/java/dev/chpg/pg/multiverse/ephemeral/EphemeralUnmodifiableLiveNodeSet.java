@@ -1,6 +1,5 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -91,15 +90,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public int[] toIdArray() {
-        int[] ids = new int[nodes.size()];
-        int idx = 0;
-        for (Integer id : nodes.keySet()) {
-            if (idx == ids.length) {
-                ids = Arrays.copyOf(ids, ids.length * 2 + 1);
-            }
-            ids[idx++] = id;
-        }
-        return idx == ids.length ? ids : Arrays.copyOf(ids, idx);
+        return nodes.keySet().stream().mapToInt(Integer::intValue).toArray();
     }
 
     @Override

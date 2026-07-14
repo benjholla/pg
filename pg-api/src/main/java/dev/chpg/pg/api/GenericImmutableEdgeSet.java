@@ -97,11 +97,6 @@ public boolean isMaterialized() {
 
     @Override
     public int[] toIdArray() {
-        int[] ids = new int[elements.size()];
-        int idx = 0;
-        for (Edge edge : elements) {
-            ids[idx++] = edge.id();
-        }
-        return ids;
+        return elements.stream().mapToInt(Edge::id).toArray();
     }
 }
