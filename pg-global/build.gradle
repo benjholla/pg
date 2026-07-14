@@ -1,13 +1,7 @@
 plugins {
     id 'pg.java-conventions'
-    id "io.morethan.jmhreport" version "0.9.0"
 }
 
 dependencies {
     api project(':pg-api')
-}
-
-jmhReport {
-    jmhResultPath = project.file('build/reports/benchmarks/jmh-benchmark-results.json')
-    jmhReportOutput = project.file('build/reports/benchmarks')
 }

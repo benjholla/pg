@@ -1,4 +1,4 @@
-package dev.chpg.pg.global;
+package dev.chpg.pg.evaluation;
 
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;

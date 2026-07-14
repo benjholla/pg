@@ -44,7 +44,7 @@ tasks.register('benchmark', JavaExec) {
     group = 'verification'
     description = 'Executes JMH benchmarks'
     classpath = sourceSets.benchmark.runtimeClasspath
-    mainClass = 'dev.chpg.pg.global.BenchmarkRunner'
+    mainClass = 'dev.chpg.pg.evaluation.BenchmarkRunner'
     // Ignore fail status for modules that do not contain a BenchmarkRunner class
     ignoreExitValue = true
 }
