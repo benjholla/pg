@@ -18,13 +18,35 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    benchmark {
+        java.srcDir 'src/benchmark/java'
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    benchmarkImplementation.extendsFrom implementation
+    benchmarkRuntimeOnly.extendsFrom runtimeOnly
+}
+
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'org.openjdk.jmh:jmh-core:1.37'
-    testAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+    benchmarkImplementation 'org.openjdk.jmh:jmh-core:1.37'
+    benchmarkAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+}
+
+tasks.register('benchmark', JavaExec) {
+    group = 'verification'
+    description = 'Executes JMH benchmarks'
+    classpath = sourceSets.benchmark.runtimeClasspath
+    mainClass = 'dev.chpg.pg.global.BenchmarkRunner'
+    // Ignore fail status for modules that do not contain a BenchmarkRunner class
+    ignoreExitValue = true
 }
 
 checkstyle {

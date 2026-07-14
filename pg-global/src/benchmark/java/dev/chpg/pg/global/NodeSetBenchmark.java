@@ -2,22 +2,15 @@ package dev.chpg.pg.global;
 
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
-import org.openjdk.jmh.results.format.ResultFormatType;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class NodeSetBenchmarkTest {
+public class NodeSetBenchmark {
 
     private GlobalGraph graph;
     private GlobalGraph otherGraph;
