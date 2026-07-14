@@ -1,4 +1,4 @@
-package dev.chpg.pg.crossvalidation;
+package dev.chpg.pg.evaluation;
 
 import dev.chpg.pg.api.*;
 import dev.chpg.pg.global.GlobalGraph;
