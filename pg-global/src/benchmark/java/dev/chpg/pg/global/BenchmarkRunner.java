@@ -1,6 +1,5 @@
 package dev.chpg.pg.global;
 
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -9,15 +8,14 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.io.File;
 
-public class BenchmarkRunnerTest {
+public class BenchmarkRunner {
 
-    @Test
-    public void runAllBenchmarks() throws Exception {
+    public static void main(String[] args) throws Exception {
         String reportDir = "build/reports/benchmarks";
         new File(reportDir).mkdirs();
 
         Options opt = new OptionsBuilder()
-                .include(".*BenchmarkTest") // Runs all JMH benchmarks
+                .include(".*Benchmark") // Runs all JMH benchmarks
                 .warmupIterations(1)
                 .warmupTime(TimeValue.seconds(1))
                 .measurementIterations(2)

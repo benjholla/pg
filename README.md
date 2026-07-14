@@ -133,13 +133,13 @@ pg-global/build/reports/jacoco/test/html/index.html
 
 `pg` includes a JMH (Java Microbenchmark Harness) performance benchmark suite targeting core set operations (e.g., filtering, union, difference) at realistic scales (e.g., ~10,000 elements) to prevent performance regressions.
 
-The benchmark suite executes seamlessly during the standard test lifecycle. To run them and generate reports:
+The benchmark suite executes entirely independently from standard unit tests to ensure high-fidelity measurements. To run them and generate reports:
 
 ```bash
-./gradlew :pg-global:test --tests "*BenchmarkRunnerTest"
+./gradlew benchmark
 ```
 
-The benchmark results will be saved automatically in JSON format to `pg-global/build/reports/benchmarks/jmh-benchmark-results.json`.
+The benchmark results will be saved automatically in JSON format to `build/reports/benchmarks/jmh-benchmark-results.json`.
 
 To automatically generate a beautiful, interactive HTML visualizer report from the JSON, run the jmhReport task:
 
