@@ -101,7 +101,11 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public Set<Integer> ids() {
-        return internalSet.stream().map(Node::id).collect(Collectors.toSet());
+        Set<Integer> ids = new HashSet<>((int) (internalSet.size() / 0.75f) + 1);
+        for (GlobalNode node : internalSet) {
+            ids.add(node.id());
+        }
+        return ids;
     }
 
     @Override
