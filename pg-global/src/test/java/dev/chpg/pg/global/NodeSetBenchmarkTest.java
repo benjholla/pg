@@ -107,28 +107,4 @@ public class NodeSetBenchmarkTest {
         bh.consume(nodes.difference(otherNodes));
     }
 
-    @Test
-    public void runBenchmarks() throws Exception {
-        // Prevent JMH generated subclasses from running this test
-        if (this.getClass() != NodeSetBenchmarkTest.class) {
-            return;
-        }
-
-        String reportDir = "build/reports/benchmarks";
-        new File(reportDir).mkdirs();
-
-        Options opt = new OptionsBuilder()
-                .include(NodeSetBenchmarkTest.class.getName())
-                .warmupIterations(1)
-                .warmupTime(TimeValue.seconds(1))
-                .measurementIterations(2)
-                .measurementTime(TimeValue.seconds(1))
-                .forks(1)
-                .shouldFailOnError(true)
-                .resultFormat(ResultFormatType.JSON)
-                .result(reportDir + "/nodeset-benchmark-results.json")
-                .build();
-
-        new Runner(opt).run();
-    }
 }

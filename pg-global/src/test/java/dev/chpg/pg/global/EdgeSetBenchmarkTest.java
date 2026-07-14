@@ -117,27 +117,4 @@ public class EdgeSetBenchmarkTest {
         bh.consume(edges.difference(otherEdges));
     }
 
-    @Test
-    public void runBenchmarks() throws Exception {
-        if (this.getClass() != EdgeSetBenchmarkTest.class) {
-            return;
-        }
-
-        String reportDir = "build/reports/benchmarks";
-        new File(reportDir).mkdirs();
-
-        Options opt = new OptionsBuilder()
-                .include(EdgeSetBenchmarkTest.class.getName())
-                .warmupIterations(1)
-                .warmupTime(TimeValue.seconds(1))
-                .measurementIterations(2)
-                .measurementTime(TimeValue.seconds(1))
-                .forks(1)
-                .shouldFailOnError(true)
-                .resultFormat(ResultFormatType.JSON)
-                .result(reportDir + "/edgeset-benchmark-results.json")
-                .build();
-
-        new Runner(opt).run();
-    }
 }

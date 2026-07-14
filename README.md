@@ -136,9 +136,19 @@ pg-global/build/reports/jacoco/test/html/index.html
 The benchmark suite executes seamlessly during the standard test lifecycle. To run them and generate reports:
 
 ```bash
-./gradlew :pg-global:test --tests "*BenchmarkTest"
+./gradlew :pg-global:test --tests "*BenchmarkRunnerTest"
 ```
 
-The benchmark results will be saved automatically in JSON format, which can be visualized using standard JMH profiler tools (like [JMH Visualizer](https://jmh.morethan.io/)). The report files are located at:
-* `pg-global/build/reports/benchmarks/nodeset-benchmark-results.json`
-* `pg-global/build/reports/benchmarks/edgeset-benchmark-results.json`
+The benchmark results will be saved automatically in JSON format to `pg-global/build/reports/benchmarks/jmh-benchmark-results.json`.
+
+To automatically generate a beautiful, interactive HTML visualizer report from the JSON, run the jmhReport task:
+
+```bash
+./gradlew :pg-global:jmhReport
+```
+
+You can then open the generated HTML report in your browser:
+
+```
+pg-global/build/reports/benchmarks/index.html
+```
