@@ -407,10 +407,11 @@ public class DirectGraphBufferTest {
 
         GlobalGraph targetGraph = new GlobalGraph();
         try (FileChannel channel = FileChannel.open(file, StandardOpenOption.READ)) {
-            CorruptedGraphBufferException ex = assertThrows(CorruptedGraphBufferException.class, () -> {
+            // It now throws a SecurityException because 100 > the remaining bytes available in the file
+            SecurityException ex = assertThrows(SecurityException.class, () -> {
                 DirectGraphBufferReader.read(channel, targetGraph, targetGraph.factory(), targetGraph.factory());
             });
-            assertTrue(ex.getMessage().contains("Unexpected end of file") || ex.getMessage().contains("truncated"));
+            assertTrue(ex.getMessage().contains("exceeds available bytes in the physical file"));
         }
     }
 

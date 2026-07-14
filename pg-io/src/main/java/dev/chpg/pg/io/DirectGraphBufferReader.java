@@ -100,11 +100,40 @@ public class DirectGraphBufferReader {
     private static String[] readDictionary(FileChannel channel, ByteBuffer buffer) throws IOException {
         ensureBytes(4, channel, buffer);
         int dictionarySize = buffer.getInt();
+
+        long remainingBytes = buffer.remaining() + (channel.size() - channel.position());
+        if (dictionarySize < 0) {
+            throw new SecurityException("Dictionary size cannot be negative: " + dictionarySize);
+        }
+        if (dictionarySize * 4L > remainingBytes) {
+            throw new SecurityException("Dictionary size " + dictionarySize + " implies more bytes than exist in the physical file.");
+        }
+
         String[] dictionary = new String[dictionarySize];
 
         for (int i = 0; i < dictionarySize; i++) {
             ensureBytes(4, channel, buffer);
             int strLen = buffer.getInt();
+
+            if (strLen < 0) {
+                throw new SecurityException("String length cannot be negative: " + strLen);
+            }
+            if (strLen > 1024 * 1024) {
+                throw new SecurityException("String length " + strLen + " bytes exceeds the 1MB ceiling limit.");
+            }
+            // Optimization: avoid channel.size() and channel.position() syscalls on every loop iteration
+            // We know we can read up to `strLen` bytes safely without querying the channel size again
+            // if we just verify the total bytes we've read so far vs the total file size (which is an
+            // optimization we can apply by checking remainingBytes when it doesn't fit in the buffer).
+            // Actually, a simpler way is just to check if strLen > buffer.remaining() + channel.size() - channel.position()
+            // ONLY if strLen > buffer.remaining(), because if it fits in the buffer, it must be safe!
+            if (strLen > buffer.remaining()) {
+                long currentRemainingBytes = buffer.remaining() + (channel.size() - channel.position());
+                if (strLen > currentRemainingBytes) {
+                    throw new SecurityException("String length " + strLen + " exceeds available bytes in the physical file.");
+                }
+            }
+
             ensureBytes(strLen, channel, buffer);
             byte[] strBytes = new byte[strLen];
             buffer.get(strBytes);
@@ -223,6 +252,17 @@ public class DirectGraphBufferReader {
      * cleanly handling data boundaries that span across chunks.
      */
     private static byte[] readByteArrayTieredStrategy(int len, FileChannel channel, ByteBuffer buffer, int elementId) throws IOException {
+        long remainingBytes = buffer.remaining() + (channel.size() - channel.position());
+        if (len < 0) {
+            throw new SecurityException("Byte array length cannot be negative: " + len + " for element ID: " + elementId);
+        }
+        if (len > 16 * 1024 * 1024) {
+            throw new SecurityException("Byte array length " + len + " bytes exceeds the 16MB ceiling limit for element ID: " + elementId);
+        }
+        if (len > remainingBytes) {
+            throw new SecurityException("Byte array length " + len + " exceeds available bytes in the physical file for element ID: " + elementId);
+        }
+
         byte[] data = new byte[len];
         int offset = 0;
         while (offset < len) {
