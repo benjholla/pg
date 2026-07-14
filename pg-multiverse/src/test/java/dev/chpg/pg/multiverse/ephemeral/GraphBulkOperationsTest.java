@@ -105,4 +105,57 @@ public class GraphBulkOperationsTest {
         changed = graph.removeAllEdges(Arrays.asList(e1, e3));
         assertFalse(changed);
     }
+
+    @Test
+    public void testContainsAllNodes() {
+        graph.addNode(n1);
+        graph.addNode(n2);
+        assertTrue(graph.containsAllNodes(java.util.Arrays.asList(n1, n2)));
+        assertFalse(graph.containsAllNodes(java.util.Arrays.asList(n1, n3)));
+        assertTrue(graph.containsAllNodes(java.util.Arrays.asList())); // Empty collection
+
+        // Null checks
+        try {
+            graph.containsAllNodes(null);
+            org.junit.jupiter.api.Assertions.fail("Expected NullPointerException");
+        } catch (NullPointerException e) {}
+    }
+
+    @Test
+    public void testContainsAllEdges() {
+        graph.addEdge(e1);
+        graph.addEdge(e2);
+        assertTrue(graph.containsAllEdges(java.util.Arrays.asList(e1, e2)));
+        assertFalse(graph.containsAllEdges(java.util.Arrays.asList(e1, e3)));
+        assertTrue(graph.containsAllEdges(java.util.Arrays.asList())); // Empty collection
+
+        // Null checks
+        try {
+            graph.containsAllEdges(null);
+            org.junit.jupiter.api.Assertions.fail("Expected NullPointerException");
+        } catch (NullPointerException e) {}
+    }
+
+    @Test
+    public void testLinkAllEdges() {
+        graph.addNode(n1);
+        graph.addNode(n2);
+        graph.addNode(n3);
+        graph.addNode(n4);
+
+        boolean changed = graph.linkAllEdges(java.util.Arrays.asList(e1, e2));
+        assertTrue(changed);
+        assertTrue(graph.containsEdge(e1));
+        assertTrue(graph.containsEdge(e2));
+
+        boolean changedAgain = graph.linkAllEdges(java.util.Arrays.asList(e1));
+        assertFalse(changedAgain);
+
+        // Test linking an edge where nodes are missing
+        Edge foreignEdge = factory.createEdge(factory.createNode(), factory.createNode());
+        try {
+            graph.linkAllEdges(java.util.Arrays.asList(foreignEdge));
+            org.junit.jupiter.api.Assertions.fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {}
+    }
 }

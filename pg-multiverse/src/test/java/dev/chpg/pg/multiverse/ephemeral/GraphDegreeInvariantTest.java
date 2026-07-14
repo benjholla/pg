@@ -63,4 +63,28 @@ public class GraphDegreeInvariantTest {
         assertEquals(0, totalOutDegree);
         assertEquals(0, emptyGraph.edges().size());
     }
+
+    @Test
+    public void testDegreeMethod() {
+        assertEquals(2, graph.degree(a, NodeDirection.IN));
+        assertEquals(2, graph.degree(a, NodeDirection.OUT));
+        assertEquals(4, graph.degree(a, NodeDirection.BOTH));
+
+        assertEquals(2, graph.degree(b, NodeDirection.IN));
+        assertEquals(1, graph.degree(b, NodeDirection.OUT));
+        assertEquals(3, graph.degree(b, NodeDirection.BOTH));
+
+        Node isolated = factory.createNode();
+        graph.addNode(isolated);
+        assertEquals(0, graph.degree(isolated, NodeDirection.IN));
+        assertEquals(0, graph.degree(isolated, NodeDirection.OUT));
+        assertEquals(0, graph.degree(isolated, NodeDirection.BOTH));
+
+        Node foreign = new dev.chpg.pg.api.Node() {
+            @Override public int id() { return 999; }
+            @Override public dev.chpg.pg.api.TagSet tags() { return null; }
+            @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+        assertEquals(0, graph.degree(foreign, NodeDirection.IN));
+    }
 }

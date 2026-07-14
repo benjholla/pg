@@ -266,4 +266,20 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
         EdgeSet result7 = set.withAllTags(new String[0]);
         assertEquals(0, result7.size());
     }
+
+    @Test
+    public void testMaterializeAndImmutable() {
+        GlobalGraph g = new GlobalGraph();
+        GlobalEdge e = new GlobalEdge(new GlobalNode(), new GlobalNode());
+        g.addEdge(e);
+
+        dev.chpg.pg.api.EdgeSet set = g.edges();
+        dev.chpg.pg.api.EdgeSet materialized = set.materialize();
+        assertTrue(set.isMaterialized());
+        assertEquals(set, materialized);
+
+        dev.chpg.pg.api.EdgeSet immutable = set.toImmutable();
+        assertTrue(immutable instanceof GlobalImmutableEdgeSet || immutable instanceof GlobalImmutableSingletonEdgeSet);
+        assertEquals(set, immutable);
+    }
 }

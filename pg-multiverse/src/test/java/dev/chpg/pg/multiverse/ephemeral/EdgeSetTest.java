@@ -133,4 +133,10 @@ public class EdgeSetTest {
         assertTrue(str.contains(e1.toString()));
         assertTrue(str.endsWith("]"));
     }
+
+    @Test
+    public void testIsMaterialized() {
+        EphemeralEdgeSet set = new EphemeralEdgeSet();
+        assertTrue(set.isMaterialized());
+    }
 }

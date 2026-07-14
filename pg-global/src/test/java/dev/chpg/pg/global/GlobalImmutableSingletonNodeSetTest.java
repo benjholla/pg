@@ -148,4 +148,10 @@ public class GlobalImmutableSingletonNodeSetTest {
         int[] idArray = singletonSet.toIdArray();
         assertArrayEquals(new int[]{node.id()}, idArray);
     }
+
+    @Test
+    public void testMaterialize() {
+        assertEquals(singletonSet, singletonSet.materialize());
+        assertTrue(singletonSet.isMaterialized());
+    }
 }

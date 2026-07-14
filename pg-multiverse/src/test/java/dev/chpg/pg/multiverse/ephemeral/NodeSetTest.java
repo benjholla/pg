@@ -127,4 +127,10 @@ public class NodeSetTest {
         assertTrue(str.contains(n1.toString()));
         assertTrue(str.endsWith("]"));
     }
+
+    @Test
+    public void testIsMaterialized() {
+        EphemeralNodeSet set = new EphemeralNodeSet();
+        assertTrue(set.isMaterialized());
+    }
 }
