@@ -15,10 +15,26 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/** Unmodifiable live view of an EphemeralEdgeSet. */
+/** Unmodifiable live view of an EphemeralEdgeSet. */
 public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     private final Map<Integer, EphemeralEdge> edges;
 
+    /**
+     * Constructs a new EphemeralUnmodifiableLiveEdgeSet.
+     * @param nodes the nodes map
+     * @param edges the edges map
+     * @param inEdges the incoming edges map
+     * @param outEdges the outgoing edges map
+     */
+    /**
+     * Constructs a new EphemeralUnmodifiableLiveEdgeSet.
+     * @param nodes the nodes map
+     * @param edges the edges map
+     * @param inEdges the incoming edges map
+     * @param outEdges the outgoing edges map
+     */
     public EphemeralUnmodifiableLiveEdgeSet(
             Map<Integer, EphemeralNode> nodes,
             Map<Integer, EphemeralEdge> edges,

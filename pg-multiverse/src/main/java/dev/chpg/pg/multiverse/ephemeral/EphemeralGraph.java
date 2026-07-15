@@ -74,6 +74,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return new EphemeralGraph(this.idGenerator, graphs);
     }
 
+	/**
+	 * Constructs a new empty graph.
+	 */
+	/**
+	 * Constructs a new empty graph.
+	 */
 	public EphemeralGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();
@@ -115,6 +121,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         }
     }
 
+    /**
+     * Gets the graph factory.
+     * @return the factory
+     */
+    /**
+     * Gets the graph factory.
+     * @return the factory
+     */
     public EphemeralFactory factory() {
         return this;
     }
@@ -204,6 +218,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
 	 * Gets incoming edges to node
 	 * @return The set of incoming edges to the given node
+	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getInEdgesToNode(Node node){
 		if (!(node instanceof EphemeralNode en)) return Optional.empty();
@@ -213,6 +228,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 	/**
 	 * Gets out-coming edges from node
 	 * @return The set of out-coming edges from the given node
+	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
 		if (!(node instanceof EphemeralNode en)) return Optional.empty();
