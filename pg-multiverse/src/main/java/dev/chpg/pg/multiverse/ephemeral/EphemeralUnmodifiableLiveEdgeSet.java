@@ -38,7 +38,8 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public Optional<Edge> one() {
-        return edges.values().stream().map(e -> (Edge) e).findAny();
+        if (edges.isEmpty()) return Optional.empty();
+        return Optional.of(edges.values().iterator().next());
     }
 
     @Override

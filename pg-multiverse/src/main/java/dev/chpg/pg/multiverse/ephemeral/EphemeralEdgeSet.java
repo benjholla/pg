@@ -57,7 +57,8 @@ public final class EphemeralEdgeSet implements EdgeSet {
 
     @Override
     public Optional<Edge> one() {
-        return internalSet.stream().map(e -> (Edge) e).findAny();
+        if (internalSet.isEmpty()) return Optional.empty();
+        return Optional.of(internalSet.iterator().next());
     }
 
     @Override

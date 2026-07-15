@@ -38,7 +38,8 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public Optional<Node> one() {
-        return nodes.values().stream().map(n -> (Node) n).findAny();
+        if (nodes.isEmpty()) return Optional.empty();
+        return Optional.of(nodes.values().iterator().next());
     }
 
     @Override

@@ -78,7 +78,9 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
     public java.util.Optional<Edge> one() {
-        return stream().findAny();
+        Iterator<Edge> it = iterator();
+        if (it.hasNext()) return java.util.Optional.of(it.next());
+        return java.util.Optional.empty();
     }
 
     @Override
@@ -104,7 +106,11 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
     public Set<Integer> ids() {
-        return stream().map(Edge::id).collect(Collectors.toUnmodifiableSet());
+        Set<Integer> ids = new java.util.HashSet<>((int) (size() / 0.75f) + 1);
+        for (Edge edge : this) {
+            ids.add(edge.id());
+        }
+        return java.util.Collections.unmodifiableSet(ids);
     }
 
     @Override

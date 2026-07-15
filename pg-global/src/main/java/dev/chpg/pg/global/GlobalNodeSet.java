@@ -56,7 +56,8 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public Optional<Node> one() {
-        return internalSet.stream().map(e -> (Node) e).findAny();
+        if (internalSet.isEmpty()) return Optional.empty();
+        return Optional.of(internalSet.iterator().next());
     }
 
     @Override

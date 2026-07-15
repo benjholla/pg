@@ -47,7 +47,8 @@ public boolean isMaterialized() {
 
     @Override
     public Optional<Edge> one() {
-        return elements.stream().findAny();
+        if (elements.isEmpty()) return Optional.empty();
+        return Optional.of(elements.iterator().next());
     }
 
     @Override
