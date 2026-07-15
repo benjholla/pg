@@ -38,36 +38,48 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     @Override
     public GlobalGraph createGraph(Node... nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
         return new GlobalGraph(nodes);
     }
 
     @Override
     public GlobalGraph createGraph(NodeSet nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
         return new GlobalGraph(nodes);
     }
 
     @Override
     public GlobalGraph createGraph(Edge... edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
+        for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
         return new GlobalGraph(edges);
     }
 
     @Override
     public GlobalGraph createGraph(EdgeSet edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
         return new GlobalGraph(edges);
     }
 
     @Override
     public GlobalGraph createGraph(NodeSet nodes, EdgeSet edges) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        Objects.requireNonNull(edges, "edges cannot be null");
         return new GlobalGraph(nodes, edges);
     }
 
     @Override
     public GlobalGraph createGraph(Graph... graphs) {
+        Objects.requireNonNull(graphs, "graphs cannot be null");
+        for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         return new GlobalGraph(graphs);
     }
 
     @Override
     public GlobalGraph createGraph(Collection<Graph> graphs) {
+        Objects.requireNonNull(graphs, "graphs cannot be null");
+        for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         return new GlobalGraph(graphs);
     }
 
