@@ -39,37 +39,49 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 
     @Override
     public EphemeralGraph createGraph(Node... nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
         return new EphemeralGraph(this.idGenerator, nodes);
     }
 
     @Override
     public EphemeralGraph createGraph(NodeSet nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
         return new EphemeralGraph(this.idGenerator, nodes);
     }
 
     @Override
     public EphemeralGraph createGraph(Edge... edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
+        for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
         return new EphemeralGraph(this.idGenerator, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(EdgeSet edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
         return new EphemeralGraph(this.idGenerator, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(NodeSet nodes, EdgeSet edges) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        Objects.requireNonNull(edges, "edges cannot be null");
         return new EphemeralGraph(this.idGenerator, nodes, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(Graph... graphs) {
+        Objects.requireNonNull(graphs, "graphs cannot be null");
+        for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         validateLineage(graphs);
         return new EphemeralGraph(this.idGenerator, graphs);
     }
 
     @Override
     public EphemeralGraph createGraph(Collection<Graph> graphs) {
+        Objects.requireNonNull(graphs, "graphs cannot be null");
+        for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         validateLineage(graphs.toArray(new Graph[0]));
         return new EphemeralGraph(this.idGenerator, graphs);
     }
