@@ -1,5 +1,20 @@
 package dev.chpg.pg.evaluation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.junit.jupiter.api.Test;
+
 import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
@@ -11,20 +26,6 @@ import dev.chpg.pg.exporter.ExportGraph;
 import dev.chpg.pg.exporter.ExportNode;
 import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.io.DirectGraphBufferReader;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ExporterIoIntegrationTest {
 

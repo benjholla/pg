@@ -34,6 +34,7 @@ public class GlobalImmutableEdgeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         GlobalEdgeSet internalSet = new GlobalEdgeSet();

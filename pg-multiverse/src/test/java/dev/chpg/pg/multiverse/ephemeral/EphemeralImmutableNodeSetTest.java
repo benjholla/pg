@@ -38,6 +38,7 @@ public class EphemeralImmutableNodeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         EphemeralNodeSet internalSet = new EphemeralNodeSet();

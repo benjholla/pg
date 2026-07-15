@@ -47,6 +47,7 @@ public class GlobalUnmodifiableLiveEdgeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         Map<Integer, GlobalNode> nodes = new HashMap<>();

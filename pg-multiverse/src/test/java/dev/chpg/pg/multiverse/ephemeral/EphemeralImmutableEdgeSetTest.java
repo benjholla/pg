@@ -39,6 +39,7 @@ public class EphemeralImmutableEdgeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         EphemeralEdgeSet internalSet = new EphemeralEdgeSet();

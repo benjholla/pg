@@ -34,6 +34,7 @@ public class GlobalImmutableNodeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         GlobalNodeSet internalSet = new GlobalNodeSet();

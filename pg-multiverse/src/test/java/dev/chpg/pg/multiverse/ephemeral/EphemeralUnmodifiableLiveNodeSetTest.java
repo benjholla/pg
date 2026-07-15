@@ -46,6 +46,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         });
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
         EphemeralGraph graph = new EphemeralGraph();

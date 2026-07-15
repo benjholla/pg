@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 public class DgbExporter {
 
@@ -140,9 +141,12 @@ public class DgbExporter {
 
     private int countIterable(Iterable<?> it) {
         if (it == null) return 0;
-        if (it instanceof java.util.Collection) return ((java.util.Collection<?>) it).size();
-        int count = 0;
-        for (Object o : it) count++;
-        return count;
+        // This handles both the Collection optimization and the fallback loop
+        // automatically
+        // When you call it.spliterator(), Java is smart enough to check if the Iterable
+        // is actually a Collection. If it is, the resulting stream is automatically
+        // sized, and .count() will return the size in O(1) time without actually
+        // iterating.
+        return (int) StreamSupport.stream(it.spliterator(), false).count();
     }
 }
