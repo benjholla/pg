@@ -39,7 +39,7 @@ public class SecurityLimitTest {
         }
 
         try (FileChannel channel = FileChannel.open(tempFile.toPath(), StandardOpenOption.READ)) {
-            SecurityException ex = assertThrows(SecurityException.class, () -> {
+            dev.chpg.pg.io.CorruptedGraphBufferException ex = assertThrows(dev.chpg.pg.io.CorruptedGraphBufferException.class, () -> {
                 DirectGraphBufferReader.read(channel, null, null, null);
             });
             assertTrue(ex.getMessage().contains("implies more bytes than exist"));
@@ -70,7 +70,7 @@ public class SecurityLimitTest {
         }
 
         try (FileChannel channel = FileChannel.open(tempFile.toPath(), StandardOpenOption.READ)) {
-            SecurityException ex = assertThrows(SecurityException.class, () -> {
+            dev.chpg.pg.io.CorruptedGraphBufferException ex = assertThrows(dev.chpg.pg.io.CorruptedGraphBufferException.class, () -> {
                 DirectGraphBufferReader.read(channel, null, null, null);
             });
             assertTrue(ex.getMessage().contains("exceeds the 1MB ceiling limit"));

@@ -103,10 +103,10 @@ public class DirectGraphBufferReader {
 
         long remainingBytes = buffer.remaining() + (channel.size() - channel.position());
         if (dictionarySize < 0) {
-            throw new SecurityException("Dictionary size cannot be negative: " + dictionarySize);
+            throw new CorruptedGraphBufferException("Dictionary size cannot be negative: " + dictionarySize);
         }
         if (dictionarySize * 4L > remainingBytes) {
-            throw new SecurityException("Dictionary size " + dictionarySize + " implies more bytes than exist in the physical file.");
+            throw new CorruptedGraphBufferException("Dictionary size " + dictionarySize + " implies more bytes than exist in the physical file.");
         }
 
         String[] dictionary = new String[dictionarySize];
@@ -116,10 +116,10 @@ public class DirectGraphBufferReader {
             int strLen = buffer.getInt();
 
             if (strLen < 0) {
-                throw new SecurityException("String length cannot be negative: " + strLen);
+                throw new CorruptedGraphBufferException("String length cannot be negative: " + strLen);
             }
             if (strLen > 1024 * 1024) {
-                throw new SecurityException("String length " + strLen + " bytes exceeds the 1MB ceiling limit.");
+                throw new CorruptedGraphBufferException("String length " + strLen + " bytes exceeds the 1MB ceiling limit.");
             }
             // Optimization: avoid channel.size() and channel.position() syscalls on every loop iteration
             // We know we can read up to `strLen` bytes safely without querying the channel size again
@@ -130,7 +130,7 @@ public class DirectGraphBufferReader {
             if (strLen > buffer.remaining()) {
                 long currentRemainingBytes = buffer.remaining() + (channel.size() - channel.position());
                 if (strLen > currentRemainingBytes) {
-                    throw new SecurityException("String length " + strLen + " exceeds available bytes in the physical file.");
+                    throw new CorruptedGraphBufferException("String length " + strLen + " exceeds available bytes in the physical file.");
                 }
             }
 
@@ -254,13 +254,13 @@ public class DirectGraphBufferReader {
     private static byte[] readByteArrayTieredStrategy(int len, FileChannel channel, ByteBuffer buffer, int elementId) throws IOException {
         long remainingBytes = buffer.remaining() + (channel.size() - channel.position());
         if (len < 0) {
-            throw new SecurityException("Byte array length cannot be negative: " + len + " for element ID: " + elementId);
+            throw new CorruptedGraphBufferException("Byte array length cannot be negative: " + len + " for element ID: " + elementId);
         }
         if (len > 16 * 1024 * 1024) {
-            throw new SecurityException("Byte array length " + len + " bytes exceeds the 16MB ceiling limit for element ID: " + elementId);
+            throw new CorruptedGraphBufferException("Byte array length " + len + " bytes exceeds the 16MB ceiling limit for element ID: " + elementId);
         }
         if (len > remainingBytes) {
-            throw new SecurityException("Byte array length " + len + " exceeds available bytes in the physical file for element ID: " + elementId);
+            throw new CorruptedGraphBufferException("Byte array length " + len + " exceeds available bytes in the physical file for element ID: " + elementId);
         }
 
         byte[] data = new byte[len];
