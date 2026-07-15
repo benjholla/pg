@@ -57,10 +57,13 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return EdgeSet.empty();
         }
-        Set<Edge> intersected = elements.stream()
-            .filter(other::contains)
-            .collect(Collectors.toUnmodifiableSet());
-        return intersected.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(intersected);
+        Set<Edge> intersected = new HashSet<>();
+        for (Edge e : elements) {
+            if (other.contains(e)) {
+                intersected.add(e);
+            }
+        }
+        return intersected.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(Collections.unmodifiableSet(intersected));
     }
 
     @Override
@@ -69,10 +72,13 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return this;
         }
-        Set<Edge> differenced = elements.stream()
-            .filter(e -> !other.contains(e))
-            .collect(Collectors.toUnmodifiableSet());
-        return differenced.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(differenced);
+        Set<Edge> differenced = new HashSet<>();
+        for (Edge e : elements) {
+            if (!other.contains(e)) {
+                differenced.add(e);
+            }
+        }
+        return differenced.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(Collections.unmodifiableSet(differenced));
     }
 
     @Override
@@ -81,9 +87,10 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return this;
         }
-        Set<Edge> unioned = java.util.stream.Stream.concat(elements.stream(), other.stream())
-            .collect(Collectors.toUnmodifiableSet());
-        return new GenericImmutableEdgeSet(unioned);
+        Set<Edge> unioned = new HashSet<>((int) ((elements.size() + other.size()) / 0.75f) + 1);
+        unioned.addAll(elements);
+        unioned.addAll(other);
+        return new GenericImmutableEdgeSet(Collections.unmodifiableSet(unioned));
     }
 
     @Override

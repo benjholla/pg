@@ -76,8 +76,11 @@ public interface EdgeSet extends Set<Edge> {
      * Note: This incurs an allocation and iteration cost.
      */
     default EdgeSet materialize() {
-        Set<Edge> materialized = stream().collect(java.util.stream.Collectors.toUnmodifiableSet());
-        return materialized.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(materialized);
+        Set<Edge> materialized = new java.util.HashSet<>();
+        for (Edge e : this) {
+            materialized.add(e);
+        }
+        return materialized.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(java.util.Collections.unmodifiableSet(materialized));
     }
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.
