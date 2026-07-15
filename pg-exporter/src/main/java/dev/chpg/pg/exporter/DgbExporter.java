@@ -4,23 +4,22 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DgbExporter {
 
     public void export(ExportGraph graph, String outputPath) throws Exception {
-        Map<String, Integer> dictionary = new HashMap<>();
-        int[] nextId = {0}; // Array used to allow mutation inside lambdas/helpers
+        Map<String, Integer> dictionary = new LinkedHashMap<>();
 
         // ==========================================
         // PASS 1: COMPUTE DICTIONARY
         // ==========================================
         for (ExportNode node : graph.nodes()) {
-            harvestStrings(node.tags(), node.attributes(), dictionary, nextId);
+            harvestStrings(node.tags(), node.attributes(), dictionary);
         }
         for (ExportEdge edge : graph.edges()) {
-            harvestStrings(edge.tags(), edge.attributes(), dictionary, nextId);
+            harvestStrings(edge.tags(), edge.attributes(), dictionary);
         }
 
         // ==========================================
@@ -30,27 +29,21 @@ public class DgbExporter {
                 new BufferedOutputStream(new FileOutputStream(outputPath), 1024 * 1024))) { // 1MB Buffer
 
             // 1. Header
-            out.writeUTF("DGB");
-            out.writeInt(1); // Version
+            out.writeInt(0x44474201); // MAGIC_HEADER
+            int nodeCount = countIterable(graph.nodes());
+            int edgeCount = countIterable(graph.edges());
+            out.writeInt(nodeCount);
+            out.writeInt(edgeCount);
 
             // 2. Write Dictionary
             out.writeInt(dictionary.size());
-            String[] reverseDict = new String[dictionary.size()];
-            for (Map.Entry<String, Integer> entry : dictionary.entrySet()) {
-                reverseDict[entry.getValue()] = entry.getKey();
-            }
-            for (String str : reverseDict) {
+            for (String str : dictionary.keySet()) {
                 byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
                 out.writeInt(bytes.length);
                 out.write(bytes);
             }
 
             // 3. Write Nodes
-            // (Note: To write the count, the adapter either needs to provide it,
-            // or we count during Pass 1. Assuming a standard Iterable for now).
-            int nodeCount = countIterable(graph.nodes());
-            out.writeInt(nodeCount);
-
             for (ExportNode node : graph.nodes()) {
                 out.writeInt(node.id());
                 writeTags(node.tags(), dictionary, out);
@@ -58,9 +51,6 @@ public class DgbExporter {
             }
 
             // 4. Write Edges
-            int edgeCount = countIterable(graph.edges());
-            out.writeInt(edgeCount);
-
             for (ExportEdge edge : graph.edges()) {
                 out.writeInt(edge.id());
                 out.writeInt(edge.sourceId());
@@ -68,28 +58,31 @@ public class DgbExporter {
                 writeTags(edge.tags(), dictionary, out);
                 writeAttributes(edge.attributes(), dictionary, out);
             }
+
+            // 5. Write Footer
+            out.write(new byte[]{0x45, 0x4F, 0x46, 0x44, 0x47, 0x42});
         }
     }
 
     // --- Helper Methods to keep the code clean ---
 
     private void harvestStrings(Iterable<String> tags, Map<String, ExportAttributeValue> attributes,
-                                Map<String, Integer> dict, int[] nextId) {
+                                Map<String, Integer> dict) {
         if (tags != null) {
             for (String tag : tags) {
-                if (!dict.containsKey(tag)) { dict.put(tag, nextId[0]++); }
+                dict.putIfAbsent(tag, dict.size());
             }
         }
         if (attributes != null) {
             for (Map.Entry<String, ExportAttributeValue> entry : attributes.entrySet()) {
                 String key = entry.getKey();
-                if (!dict.containsKey(key)) { dict.put(key, nextId[0]++); }
+                dict.putIfAbsent(key, dict.size());
 
                 // Only String values go into the dictionary pool
                 ExportAttributeValue val = entry.getValue();
                 if (val != null && val.getType() == ExportAttributeValue.Type.STRING) {
                     String strVal = (String) val.getValue();
-                    if (!dict.containsKey(strVal)) { dict.put(strVal, nextId[0]++); }
+                    dict.putIfAbsent(strVal, dict.size());
                 }
             }
         }
@@ -131,7 +124,7 @@ public class DgbExporter {
                     out.writeLong((Long) val.getValue());
                     break;
                 case BOOLEAN:
-                    out.writeBoolean((Boolean) val.getValue());
+                    out.writeByte(((Boolean) val.getValue()) ? 1 : 0);
                     break;
                 case DOUBLE:
                     out.writeDouble((Double) val.getValue());

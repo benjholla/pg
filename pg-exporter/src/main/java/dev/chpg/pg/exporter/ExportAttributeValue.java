@@ -5,9 +5,9 @@ public final class ExportAttributeValue {
     // The byte IDs must perfectly match your Java 17 pg-io reader specification
     public enum Type {
         STRING((byte) 0),
-        INTEGER((byte) 1),
-        LONG((byte) 2),
-        BOOLEAN((byte) 3),
+        BOOLEAN((byte) 1),
+        INTEGER((byte) 2),
+        LONG((byte) 3),
         DOUBLE((byte) 4),
         BYTE_ARRAY((byte) 5);
 
