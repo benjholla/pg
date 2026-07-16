@@ -47,6 +47,9 @@ tasks.register('benchmark', JavaExec) {
     mainClass = 'dev.chpg.pg.evaluation.BenchmarkRunner'
     // Ignore fail status for modules that do not contain a BenchmarkRunner class
     ignoreExitValue = true
+    onlyIf {
+        !sourceSets.benchmark.allJava.isEmpty()
+    }
 }
 
 checkstyle {
