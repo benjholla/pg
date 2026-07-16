@@ -67,8 +67,11 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
     public EdgeSet materialize() {
-        Set<Edge> materialized = stream().collect(Collectors.toUnmodifiableSet());
-        return materialized.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(materialized);
+        Set<Edge> materialized = new java.util.HashSet<>();
+        for (Edge e : this) {
+            materialized.add(e);
+        }
+        return materialized.isEmpty() ? EdgeSet.empty() : new GenericImmutableEdgeSet(java.util.Collections.unmodifiableSet(materialized));
     }
 
     @Override

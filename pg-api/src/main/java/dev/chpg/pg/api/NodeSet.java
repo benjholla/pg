@@ -76,8 +76,11 @@ public interface NodeSet extends Set<Node> {
      * Note: This incurs an allocation and iteration cost.
      */
     default NodeSet materialize() {
-        Set<Node> materialized = stream().collect(java.util.stream.Collectors.toUnmodifiableSet());
-        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(materialized);
+        Set<Node> materialized = new java.util.HashSet<>();
+        for (Node n : this) {
+            materialized.add(n);
+        }
+        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(java.util.Collections.unmodifiableSet(materialized));
     }
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.

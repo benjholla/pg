@@ -67,8 +67,11 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override
     public NodeSet materialize() {
-        Set<Node> materialized = stream().collect(Collectors.toUnmodifiableSet());
-        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(materialized);
+        Set<Node> materialized = new java.util.HashSet<>();
+        for (Node n : this) {
+            materialized.add(n);
+        }
+        return materialized.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(java.util.Collections.unmodifiableSet(materialized));
     }
 
     @Override

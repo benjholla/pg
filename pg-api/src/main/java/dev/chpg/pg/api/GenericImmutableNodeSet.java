@@ -57,10 +57,13 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return NodeSet.empty();
         }
-        Set<Node> intersected = elements.stream()
-            .filter(other::contains)
-            .collect(Collectors.toUnmodifiableSet());
-        return intersected.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(intersected);
+        Set<Node> intersected = new HashSet<>();
+        for (Node n : elements) {
+            if (other.contains(n)) {
+                intersected.add(n);
+            }
+        }
+        return intersected.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(Collections.unmodifiableSet(intersected));
     }
 
     @Override
@@ -69,10 +72,13 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return this;
         }
-        Set<Node> differenced = elements.stream()
-            .filter(n -> !other.contains(n))
-            .collect(Collectors.toUnmodifiableSet());
-        return differenced.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(differenced);
+        Set<Node> differenced = new HashSet<>();
+        for (Node n : elements) {
+            if (!other.contains(n)) {
+                differenced.add(n);
+            }
+        }
+        return differenced.isEmpty() ? NodeSet.empty() : new GenericImmutableNodeSet(Collections.unmodifiableSet(differenced));
     }
 
     @Override
@@ -81,9 +87,10 @@ public boolean isMaterialized() {
         if (other.isEmpty()) {
             return this;
         }
-        Set<Node> unioned = java.util.stream.Stream.concat(elements.stream(), other.stream())
-            .collect(Collectors.toUnmodifiableSet());
-        return new GenericImmutableNodeSet(unioned);
+        Set<Node> unioned = new HashSet<>((int) ((elements.size() + other.size()) / 0.75f) + 1);
+        unioned.addAll(elements);
+        unioned.addAll(other);
+        return new GenericImmutableNodeSet(Collections.unmodifiableSet(unioned));
     }
 
     @Override
