@@ -406,28 +406,42 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public boolean removeNode(Node node) {
         // 1. Silent Ignore
-        if (!(node instanceof GlobalNode gn) || !nodes.containsKey(gn.id())) {
+        if (!(node instanceof GlobalNode gn)) {
             return false;
         }
 
         int targetId = gn.id();
 
-        // 2. Cascading Teardown: Scrub Outbound Edges
-        for (Edge out : outEdges.get(targetId)) {
-            edges.remove(out.id()); // Remove from global registry
-            inEdges.get(out.to().id()).remove(out); // Disconnect from neighbor
+        // 2. Collapse the pillars for this ID
+        if (nodes.remove(targetId) == null) {
+            return false;
         }
 
-        // 3. Cascading Teardown: Scrub Inbound Edges
-        for (Edge in : inEdges.get(targetId)) {
-            edges.remove(in.id()); // Remove from global registry
-            outEdges.get(in.from().id()).remove(in); // Disconnect from neighbor
+        GlobalEdgeSet outSet = outEdges.remove(targetId);
+        GlobalEdgeSet inSet = inEdges.remove(targetId);
+
+        // 3. Cascading Teardown: Scrub Outbound Edges
+        if (outSet != null) {
+            for (Edge out : outSet) {
+                edges.remove(out.id()); // Remove from global registry
+                int toId = out.to().id();
+                if (toId != targetId) { // Skip self-loops, pillar already collapsed
+                    inEdges.get(toId).remove(out); // Disconnect from neighbor
+                }
+            }
         }
 
-        // 4. Collapse the pillars for this ID
-        outEdges.remove(targetId);
-        inEdges.remove(targetId);
-        nodes.remove(targetId);
+        // 4. Cascading Teardown: Scrub Inbound Edges
+        if (inSet != null) {
+            for (Edge in : inSet) {
+                int fromId = in.from().id();
+                if (fromId != targetId) { // Skip self-loops, handled in outbound pass
+                    edges.remove(in.id()); // Remove from global registry
+                    outEdges.get(fromId).remove(in); // Disconnect from neighbor
+                }
+            }
+        }
+
         return true;
 	}
 	
