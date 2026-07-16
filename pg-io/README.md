@@ -6,6 +6,104 @@ The `pg-io` module handles binary serialization and deserialization of property 
 
 The primary format supported is the **DirectGraphBuffer** (`.dgb`). It is a blistering fast, bare-metal binary serialization format designed for mechanical sympathy and minimum overhead.
 
+### File Format Specification
+
+Below is a detailed specification of the exact byte layout of the `.dgb` file format, allowing external tools to read/write `.dgb` files independently.
+
+```mermaid
+classDiagram
+    class DirectGraphBufferFile {
+        +HeaderBlock header
+        +DictionaryBlock dictionary
+        +NodesBlock nodes
+        +EdgesBlock edges
+        +FooterBlock footer
+    }
+
+    class HeaderBlock {
+        +int32 magic (0x44474201)
+        +int32 totalNodes
+        +int32 totalEdges
+    }
+
+    class DictionaryBlock {
+        +int32 dictionarySize
+        +DictionaryEntry[] entries
+    }
+
+    class DictionaryEntry {
+        +int32 strLen
+        +byte[] stringUtf8
+    }
+
+    class NodesBlock {
+        +NodeEntry[] nodes
+    }
+
+    class NodeEntry {
+        +int32 nodeId
+        +Tags tags
+        +Attributes attributes
+    }
+
+    class EdgesBlock {
+        +EdgeEntry[] edges
+    }
+
+    class EdgeEntry {
+        +int32 edgeId
+        +int32 sourceId
+        +int32 targetId
+        +Tags tags
+        +Attributes attributes
+    }
+
+    class Tags {
+        +int32 tagCount
+        +int32[] dictIds
+    }
+
+    class Attributes {
+        +int32 attrCount
+        +AttributeEntry[] entries
+    }
+
+    class AttributeEntry {
+        +int32 keyDictId
+        +byte typeMarker
+        +Payload payload
+    }
+
+    class Payload {
+        <<union>>
+        +Type 0 String (int32 valDictId)
+        +Type 1 Boolean (byte 1=true, 0=false)
+        +Type 2 Int (int32 value)
+        +Type 3 Long (int64 value)
+        +Type 4 Double (float64 value)
+        +Type 5 ByteArray (int32 length, byte[] data)
+    }
+
+    class FooterBlock {
+        +byte[6] magic (0x45 0x4F 0x46 0x44 0x47 0x42)
+    }
+
+    DirectGraphBufferFile *-- HeaderBlock
+    DirectGraphBufferFile *-- DictionaryBlock
+    DirectGraphBufferFile *-- NodesBlock
+    DirectGraphBufferFile *-- EdgesBlock
+    DirectGraphBufferFile *-- FooterBlock
+    DictionaryBlock *-- DictionaryEntry
+    NodesBlock *-- NodeEntry
+    EdgesBlock *-- EdgeEntry
+    NodeEntry *-- Tags
+    NodeEntry *-- Attributes
+    EdgeEntry *-- Tags
+    EdgeEntry *-- Attributes
+    Attributes *-- AttributeEntry
+    AttributeEntry *-- Payload
+```
+
 ### Architectural Constraints and Principles
 
 1. **Interface Driven**: The serializer (`DirectGraphBufferWriter`) and deserializer (`DirectGraphBufferReader`) strictly interact with standard `Graph`, `Node`, and `Edge` interfaces.
