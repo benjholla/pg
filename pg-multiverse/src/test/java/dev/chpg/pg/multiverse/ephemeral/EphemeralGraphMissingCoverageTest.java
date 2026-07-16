@@ -179,13 +179,13 @@ public class EphemeralGraphMissingCoverageTest {
         graph.addEdge(ab);
 
         dev.chpg.pg.api.NodeSet unmodNodes = graph.nodes();
-        dev.chpg.pg.api.NodeSet unmodNodesIntersect = unmodNodes.intersect(otherNodeSet);
+        unmodNodes.intersect(otherNodeSet);
 
         dev.chpg.pg.api.EdgeSet unmodEdges = graph.edges();
-        dev.chpg.pg.api.EdgeSet unmodEdgesIntersect = unmodEdges.intersect(otherEdgeSet);
+        unmodEdges.intersect(otherEdgeSet);
 
-        dev.chpg.pg.api.NodeSet unmodNodesUnion = unmodNodes.union(otherNodeSet);
-        dev.chpg.pg.api.EdgeSet unmodEdgesUnion = unmodEdges.union(otherEdgeSet);
+        unmodNodes.union(otherNodeSet);
+        unmodEdges.union(otherEdgeSet);
 
         dev.chpg.pg.api.NodeSet emptyNodeSet = nodeSet.intersect(dev.chpg.pg.api.NodeSet.empty());
         assertEquals(0, emptyNodeSet.size());

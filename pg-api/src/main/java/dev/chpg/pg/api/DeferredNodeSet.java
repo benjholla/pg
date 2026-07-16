@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
     private final NodeSet source;

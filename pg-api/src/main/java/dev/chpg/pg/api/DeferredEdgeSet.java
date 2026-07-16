@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
     private final EdgeSet source;

@@ -205,13 +205,13 @@ public class GlobalGraphMissingCoverageTest {
         graph.addEdge(ab);
 
         NodeSet unmodNodes = graph.nodes();
-        NodeSet unmodNodesIntersect = unmodNodes.intersect(otherNodeSet);
+        unmodNodes.intersect(otherNodeSet);
 
         EdgeSet unmodEdges = graph.edges();
-        EdgeSet unmodEdgesIntersect = unmodEdges.intersect(otherEdgeSet);
+        unmodEdges.intersect(otherEdgeSet);
 
-        NodeSet unmodNodesUnion = unmodNodes.union(otherNodeSet);
-        EdgeSet unmodEdgesUnion = unmodEdges.union(otherEdgeSet);
+        unmodNodes.union(otherNodeSet);
+        unmodEdges.union(otherEdgeSet);
 
         NodeSet emptyNodeSet = nodeSet.intersect(NodeSet.empty());
         assertEquals(0, emptyNodeSet.size());
