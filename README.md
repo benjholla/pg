@@ -166,11 +166,11 @@ The benchmark results will be saved automatically in JSON format to `build/repor
 To automatically generate a beautiful, interactive HTML visualizer report from the JSON, run the jmhReport task:
 
 ```bash
-./gradlew :pg-global:jmhReport
+./gradlew jmhReport
 ```
 
 You can then open the generated HTML report in your browser:
 
 ```
-pg-global/build/reports/benchmarks/index.html
+pg-evaluation\build\reports\benchmarks/index.html
 ```
