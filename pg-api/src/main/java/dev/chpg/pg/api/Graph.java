@@ -29,7 +29,8 @@ import dev.chpg.pg.api.Node.NodeDirection;
  * <b>Thread safety:</b> The interface itself defines no thread safety guarantees. Refer to specific implementations (e.g., {@code GlobalGraph}, {@code EphemeralGraph}) for thread safety characteristics.
  * <p>
  * <b>Performance characteristics:</b> Operations like traversal and set algebra are heavily optimized based on primitive IDs. Query outputs are often deferred pipelines (zero-allocation) until strictly evaluated.
- */
+		 * @param node the node
+	 */
 public interface Graph {
 	
     public static final java.util.Comparator<Graph> SIZE_COMPARATOR = new java.util.Comparator<Graph>() {
@@ -46,31 +47,37 @@ public interface Graph {
     
 	/**
 	 * Returns true if the graph contains the specified node.
+		 * @param node the node
 	 */
 	public boolean containsNode(Node node);
 
 	/**
 	 * Returns true if the graph contains the specified edge.
+		 * @param edge the edge
 	 */
 	public boolean containsEdge(Edge edge);
 
 	/**
 	 * Returns true if the graph contains all of the specified nodes.
+		 * @param nodes the nodes
 	 */
 	public boolean containsAllNodes(Collection<? extends Node> nodes);
 
 	/**
 	 * Returns true if the graph contains all of the specified edges.
+		 * @param edges the edges
 	 */
 	public boolean containsAllEdges(Collection<? extends Edge> edges);
 
 	/**
 	 * Returns the node denoted by the given id if one exists
+		 * @param id the ID
 	 */
 	public Optional<Node> node(int id);
 	
 	/**
 	 * Returns the edge denoted by the given id if one exists
+		 * @param id the ID
 	 */
 	public Optional<Edge> edge(int id);
 	
@@ -78,6 +85,7 @@ public interface Graph {
 	 * Add a node to the graph
 	 * 
 	 * @return Returns true if the graph changed as a result of the operation
+		 * @param node the node
 	 */
 	public boolean addNode(Node node);
 	
@@ -85,12 +93,14 @@ public interface Graph {
      * Add a edge to the graph
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param edge the edge
      */
     public boolean addEdge(Edge edge);
 	/**
 	 * Add an edge to the graph. Will fail if the terminal nodes are not present.
 	 *
 	 * @return Returns true if the graph changed as a result of the operation
+		 * @param edge the edge
 	 */
 	public boolean linkEdge(Edge edge);
 	
@@ -98,6 +108,7 @@ public interface Graph {
 	 * Add edges to the graph. Will fail if the terminal nodes are not present.
 	 *
 	 * @return Returns true if the graph changed as a result of the operation
+		 * @param edges the edges
 	 */
 	public boolean linkAllEdges(Collection<? extends Edge> edges);
 
@@ -105,6 +116,7 @@ public interface Graph {
      * Add nodes to the graph
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param nodes the nodes
      */
 	public boolean addAllNodes(Collection<? extends Node> nodes);
 	
@@ -112,11 +124,13 @@ public interface Graph {
      * Add edges to the graph
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param edges the edges
      */
     public boolean addAllEdges(Collection<? extends Edge> edges);
     
     /**
      * Remove a node from the graph if the given node exists in this graph
+          * @param node the node
      */
     public boolean removeNode(Node node);
     
@@ -124,11 +138,13 @@ public interface Graph {
      * Remove a edge from the graph if the given node exists in this graph
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param edge the edge
      */
     public boolean removeEdge(Edge edge);
     
     /**
      * Remove all nodes from the graph if the given nodes exist in this graph
+          * @param nodes the nodes
      */
     public boolean removeAllNodes(Collection<? extends Node> nodes);
     
@@ -136,6 +152,7 @@ public interface Graph {
      * Remove all edges from the graph if the given edges exist in this graph
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param edges the edges
      */
     public boolean removeAllEdges(Collection<? extends Edge> edges);
     
@@ -148,6 +165,7 @@ public interface Graph {
      * <i>intersection</i> of the two sets.
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param nodes the nodes
      */
     public boolean retainAllNodes(Collection<? extends Node> nodes);
     
@@ -160,43 +178,47 @@ public interface Graph {
      * <i>intersection</i> of the two sets.
      * 
      * @return Returns true if the graph changed as a result of the operation
+          * @param edges the edges
      */
     public boolean retainAllEdges(Collection<? extends Edge> edges);
     
     /**
      * Removes all of the edge elements from this graph (leaving only nodes if they
      * exist).
-     */
+          */
     public void clearEdges();
     
     /**
      * Removes all of the node and edge elements from this graph. The graph will be
      * empty after this call returns.
-     */
+          */
     public void clear();
     
 	/**
 	 * Return an immutable set of nodes in the graph
-	 */
+		 */
 	public NodeSet nodes();
 
 	/**
      * Return an immutable set of edges in the graph
-     */
+          */
 	public EdgeSet edges();
 	
 	/**
 	 * Returns true if the graph empty (has no nodes)
-	 */
+		 */
 	public boolean isEmpty();
 	
 	/**
 	 * Gets the node's predecessor or successor edges in this graph
+		 * @param node the node
+	 * @param direction the direction
 	 */
 	public EdgeSet edges(Node node, NodeDirection direction);
 	
 	/**
 	 * Returns the nodes in the graph without edges from the given direction
+		 * @param direction the direction
 	 */
 	public NodeSet limit(NodeDirection direction);
 	
@@ -204,20 +226,21 @@ public interface Graph {
 	 * Selects the nodes of this graph that have no successors
 	 * 
 	 * Convenience for limit(NodeDirection.OUT)
-	 */
+		 */
 	public NodeSet leaves();
 	
 	/**
 	 * Selects the nodes of this graph that have no predecessors
 	 * 
 	 * Convenience for limit(NodeDirection.IN)
-	 */
+		 */
 	public NodeSet roots();
 	
 	/**
 	 * Gets the predecessor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from incoming edges to the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet predecessors(Node... origin);
 	
@@ -225,6 +248,7 @@ public interface Graph {
 	 * Gets the predecessor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from incoming edges to the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet predecessors(Graph origin);
 	
@@ -232,6 +256,7 @@ public interface Graph {
 	 * Gets the predecessor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from incoming edges to the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet predecessors(NodeSet origin);
 	
@@ -239,6 +264,7 @@ public interface Graph {
 	 * Gets the successor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from outgoing edges from the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet successors(Node... origin);
 	
@@ -246,6 +272,7 @@ public interface Graph {
 	 * Gets the successor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from outgoing edges from the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet successors(Graph origin);
 	
@@ -253,6 +280,7 @@ public interface Graph {
 	 * Gets the successor nodes of the given node for this graph's edges
 	 * 
 	 * @return The set of nodes reachable from outgoing edges from the given nodes
+		 * @param origin the origin element
 	 */
 	public NodeSet successors(NodeSet origin);
 	
@@ -262,6 +290,7 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph forwardStep(Node... origin);
 	
@@ -271,6 +300,7 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph forwardStep(Graph origin);
 	
@@ -280,6 +310,7 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph forwardStep(NodeSet origin);
 	
@@ -289,6 +320,7 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph reverseStep(Node... origin);
 	
@@ -298,6 +330,7 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph reverseStep(Graph origin);
 	
@@ -307,16 +340,19 @@ public interface Graph {
 	 * 
 	 * The final result includes the given nodes, the traversed edges, and the
 	 * reachable nodes.
+		 * @param origin the origin element
 	 */
 	public Graph reverseStep(NodeSet origin);
 	
 	/**
 	 * Yields the union of this graph and a new graph formed by the given nodes.
+		 * @param nodes the nodes
 	 */
 	public Graph union(Node... nodes);
 	
 	/**
 	 * Yields the union of this graph and a new graph formed by the given edges.
+		 * @param edges the edges
 	 */
 	public Graph union(Edge... edges);
 	
@@ -324,6 +360,7 @@ public interface Graph {
 	 * Yields the union of this graph and the given graphs. That is, the
 	 * resulting graph's nodes are the union of all nodes, and likewise for
 	 * edges.
+		 * @param graphs the graphs
 	 */
 	public Graph union(Graph... graphs);
 	
@@ -331,6 +368,7 @@ public interface Graph {
 	 * Select this graph, excluding the given nodes. Note that, because
 	 * an edge is only in a graph if it's nodes are in a graph, removing a node
 	 * will necessarily remove the edges it connects as well.
+		 * @param nodes the nodes
 	 */
 	public Graph difference(Node... nodes);
 	
@@ -346,6 +384,7 @@ public interface Graph {
 	 * because b is removed, so b -> c is also removed. In general, this
 	 * operation is useful for removing nodes from a graph, but may not be as
 	 * useful for operating on edges.
+		 * @param edges the edges
 	 */
 	public Graph difference(Edge... edges);
 	
@@ -362,17 +401,20 @@ public interface Graph {
 	 * operation is useful for removing nodes from a graph, but may not be as
 	 * useful for operating on edges.
 	 * 
+		 * @param graphs the graphs
 	 */
 	public Graph difference(Graph... graphs);
 	
 	/**
 	 * Select this graph, excluding the given edges.
+		 * @param edges the edges
 	 */
 	public Graph differenceEdges(Edge... edges);
 	
     /**
      * Select this graph, excluding the edges from the given graphs.
      * 
+          * @param graphs the graphs
      */
     public Graph differenceEdges(Graph... graphs);
 
@@ -380,6 +422,7 @@ public interface Graph {
      * Yields the intersection of this graph and a new graph formed by the given
      * nodes. That is, the resulting graph's nodes are the intersection of all node
      * sets, and likewise for edges.
+          * @param nodes the nodes
      */
     public Graph intersection(Node... nodes);
 
@@ -388,6 +431,7 @@ public interface Graph {
      * edges. That is, the resulting graph's nodes are the intersection of all node
      * sets, and likewise for edges.
      * 
+          * @param edges the edges
      */
     public Graph intersection(Edge... edges);
 
@@ -395,12 +439,15 @@ public interface Graph {
      * Yields the intersection of this graph and the given graphs. That is, the
      * resulting graph's nodes are the intersection of all node sets, and likewise
      * for edges.
+          * @param graphs the graphs
      */
     public Graph intersection(Graph... graphs);
 
     /**
      * From this graph, selects the subgraph such that the given nodes in to are
      * reachable from the nodes in from in a single step
+          * @param from the source element
+     * @param to the target element
      */
     public Graph betweenStep(Node from, Node to);
 
@@ -408,12 +455,16 @@ public interface Graph {
      * From this graph, selects the subgraph such that the given nodes in to are
      * reachable from the nodes in from in a single step
      * 
+          * @param from the source element
+     * @param to the target element
      */
     public Graph betweenStep(Graph from, Graph to);
 
     /**
      * From this graph, selects the subgraph such that the given nodes in to are
      * reachable from the nodes in from in a single step
+          * @param from the source element
+     * @param to the target element
      */
     public Graph betweenStep(NodeSet from, NodeSet to);
 
@@ -422,6 +473,8 @@ public interface Graph {
      * reachable from the nodes in from using forward traversal.
      * 
      * Logically equivalent to graph.forward(from).intersection(graph.reverse(to)) .
+          * @param from the source element
+     * @param to the target element
      */
     public Graph between(Node from, Node to);
 
@@ -430,6 +483,8 @@ public interface Graph {
      * reachable from the nodes in from using forward traversal.
      * 
      * Logically equivalent to graph.forward(from).intersection(graph.reverse(to)) .
+          * @param from the source element
+     * @param to the target element
      */
     public Graph between(Graph from, Graph to);
 
@@ -438,42 +493,50 @@ public interface Graph {
      * reachable from the nodes in from using forward traversal.
      * 
      * Logically equivalent to graph.forward(from).intersection(graph.reverse(to)) .
+          * @param from the source element
+     * @param to the target element
      */
     public Graph between(NodeSet from, NodeSet to);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * forward transitive traversal.
+          * @param origin the origin element
      */
     public Graph forward(Node... origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * forward transitive traversal.
+          * @param origin the origin element
      */
     public Graph forward(Graph origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * forward transitive traversal.
+          * @param origin the origin element
      */
     public Graph forward(NodeSet origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * reverse transitive traversal.
+          * @param origin the origin element
      */
     public Graph reverse(Node... origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * reverse transitive traversal.
+          * @param origin the origin element
      */
     public Graph reverse(Graph origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
      * reverse transitive traversal.
+          * @param origin the origin element
      */
     public Graph reverse(NodeSet origin);
 
@@ -481,6 +544,7 @@ public interface Graph {
      * Yields the induced graph formed from the nodes in the current graph and all
      * of the edges in the given graph that connect pairs of nodes in the current
      * graph.
+          * @param edges the edges
      */
     public Graph induce(Edge... edges);
 
@@ -488,6 +552,7 @@ public interface Graph {
      * Yields the induced graph formed from the nodes in the current graph and all
      * of the edges in the given graph that connect pairs of nodes in the current
      * graph.
+          * @param graphs the graphs
      */
     public Graph induce(Graph... graphs);
 
@@ -495,20 +560,27 @@ public interface Graph {
      * Yields the induced graph formed from the nodes in the current graph and all
      * of the edges in the given graph that connect pairs of nodes in the current
      * graph.
+          * @param edges the edges
      */
     public Graph induce(EdgeSet edges);
 /**
      * Returns true if there is at least one edge originating at the source and terminating at the target.
+          * @param source the source node
+     * @param target the target node
      */
     public boolean adjacent(Node source, Node target);
 
     /**
      * Returns the set of edges that originate at the source and terminate at the target.
+          * @param source the source node
+     * @param target the target node
      */
     public EdgeSet edges(Node source, Node target);
 
     /**
      * Returns the number of edges connected to this node in the specified direction.
+          * @param node the node
+     * @param direction the direction
      */
     public int degree(Node node, NodeDirection direction);
 

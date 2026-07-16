@@ -81,16 +81,19 @@ public interface NodeSet extends Set<Node> {
     }
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.
+     * @param other the collection to perform the set operation with
      */
     NodeSet intersect(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing elements from this set, excluding those in the specified collection.
+     * @param other the collection to perform the set operation with
      */
     NodeSet difference(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing all elements from this set and the specified collection.
+     * @param other the collection to perform the set operation with
      */
     NodeSet union(Collection<? extends Node> other);
 

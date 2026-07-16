@@ -97,6 +97,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the given nodes
      */
+	/**
+	 * Constructs a new graph with initial nodes.
+	 * @param nodes the nodes
+	 */
+	/**
+	 * Constructs a new graph with initial nodes.
+	 * @param nodes the nodes
+	 */
 	public GlobalGraph(Node... nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -109,6 +117,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     /**
      * Constructs a new graph of the given nodes
      */
+	/**
+	 * Constructs a new graph with initial nodes.
+	 * @param nodes the nodes
+	 */
+	/**
+	 * Constructs a new graph with initial nodes.
+	 * @param nodes the nodes
+	 */
 	public GlobalGraph(NodeSet nodes) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -118,6 +134,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
+	/**
+	 * Constructs a new graph with initial edges.
+	 * @param edges the edges
+	 */
+	/**
+	 * Constructs a new graph with initial edges.
+	 * @param edges the edges
+	 */
 	public GlobalGraph(Edge... edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
@@ -130,6 +154,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
+	/**
+	 * Constructs a new graph with initial edges.
+	 * @param edges the edges
+	 */
+	/**
+	 * Constructs a new graph with initial edges.
+	 * @param edges the edges
+	 */
 	public GlobalGraph(EdgeSet edges) {
 		this();
 		Objects.requireNonNull(edges, "edges cannot be null");
@@ -141,6 +173,16 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
+	/**
+	 * Constructs a new graph with initial nodes and edges.
+	 * @param nodes the nodes
+	 * @param edges the edges
+	 */
+	/**
+	 * Constructs a new graph with initial nodes and edges.
+	 * @param nodes the nodes
+	 * @param edges the edges
+	 */
 	public GlobalGraph(NodeSet nodes, EdgeSet edges) {
 		this();
 		Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -152,6 +194,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
+	/**
+	 * Constructs a new graph with initial graphs.
+	 * @param graphs the graphs
+	 */
+	/**
+	 * Constructs a new graph with initial graphs.
+	 * @param graphs the graphs
+	 */
 	public GlobalGraph(Graph... graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
@@ -165,6 +215,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
+	/**
+	 * Constructs a new graph with initial graphs.
+	 * @param graphs the graphs
+	 */
+	/**
+	 * Constructs a new graph with initial graphs.
+	 * @param graphs the graphs
+	 */
 	public GlobalGraph(Collection<Graph> graphs) {
 		this();
 		Objects.requireNonNull(graphs, "graphs cannot be null");
@@ -179,6 +237,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
 	 * Gets incoming edges to node
 	 * @return The set of incoming edges to the given node
+	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getInEdgesToNode(Node node){
 		if (!(node instanceof GlobalNode gn)) return Optional.empty();
@@ -188,6 +247,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
 	 * Gets out-coming edges from node
 	 * @return The set of out-coming edges from the given node
+	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
 		if (!(node instanceof GlobalNode gn)) return Optional.empty();

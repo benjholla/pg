@@ -29,10 +29,10 @@ import dev.chpg.pg.api.Node;
  */
 public class DirectGraphBufferWriter {
 
-    // Magic Header: 0x44 0x47 0x42 0x01 (DGB + Version 1)
+    /** The magic header */
     public static final int MAGIC_HEADER = 0x44474201;
 
-    // Magic Footer: 0x45 0x4F 0x46 0x44 0x47 0x42 (EOFDGB)
+    /** The magic footer */
     public static final byte[] MAGIC_FOOTER = new byte[] {
         0x45, 0x4F, 0x46, 0x44, 0x47, 0x42
     };
@@ -48,6 +48,9 @@ public class DirectGraphBufferWriter {
 
     /**
      * Writes the given graph to the provided FileChannel using the default 8MB buffer size.
+     * @param graph the graph to write
+     * @param channel the file channel to write to
+     * @throws IOException if an I/O error occurs
      */
     public static void write(Graph graph, FileChannel channel) throws IOException {
         write(graph, channel, DEFAULT_BUFFER_SIZE);
@@ -55,6 +58,10 @@ public class DirectGraphBufferWriter {
 
     /**
      * Writes the given graph to the provided FileChannel using the specified buffer size.
+     * @param graph the graph to write
+     * @param channel the file channel to write to
+     * @param bufferSize the size of the write buffer
+     * @throws IOException if an I/O error occurs
      */
     public static void write(Graph graph, FileChannel channel, int bufferSize) throws IOException {
         // Seize absolute control of the file pointer to prevent corruption.

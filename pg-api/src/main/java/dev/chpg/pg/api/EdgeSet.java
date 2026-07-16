@@ -81,16 +81,19 @@ public interface EdgeSet extends Set<Edge> {
     }
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.
+     * @param other the collection to perform the set operation with
      */
     EdgeSet intersect(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing elements from this set, excluding those in the specified collection.
+     * @param other the collection to perform the set operation with
      */
     EdgeSet difference(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing all elements from this set and the specified collection.
+     * @param other the collection to perform the set operation with
      */
     EdgeSet union(Collection<? extends Edge> other);
 
