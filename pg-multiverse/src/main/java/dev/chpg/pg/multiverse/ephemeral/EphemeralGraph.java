@@ -458,7 +458,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         for(Node node : nodes) {
             Objects.requireNonNull(node, "node set elements cannot be null");
         }
-        for(Node node : nodes) {
+        for(Node node : new ArrayList<>(nodes)) {
             result |= removeNode(node);
         }
         return result;
@@ -471,7 +471,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         for(Edge edge : edges) {
             Objects.requireNonNull(edge, "edge set elements cannot be null");
         }
-        for(Edge edge : edges) {
+        for(Edge edge : new ArrayList<>(edges)) {
             result |= removeEdge(edge);
         }
         return result;

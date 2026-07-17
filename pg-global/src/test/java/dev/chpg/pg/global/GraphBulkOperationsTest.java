@@ -64,6 +64,27 @@ public class GraphBulkOperationsTest {
     }
 
     @Test
+    public void testRemoveAllNodesSelf() {
+        graph.addAllEdges(Arrays.asList(e1, e2, e3));
+        assertEquals(4, graph.nodes().size());
+        assertEquals(3, graph.edges().size());
+
+        boolean changed = graph.removeAllNodes(graph.nodes());
+        assertTrue(changed);
+        assertEquals(0, graph.nodes().size());
+    }
+
+    @Test
+    public void testRemoveAllEdgesSelf() {
+        graph.addAllEdges(Arrays.asList(e1, e2, e3));
+        assertEquals(4, graph.nodes().size());
+        assertEquals(3, graph.edges().size());
+
+        boolean changed = graph.removeAllEdges(graph.edges());
+        assertTrue(changed);
+        assertEquals(0, graph.edges().size());
+    }
+
     public void testRemoveAllNodes() {
         graph.addAllEdges(Arrays.asList(e1, e2, e3));
         assertEquals(4, graph.nodes().size());
