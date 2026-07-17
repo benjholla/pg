@@ -113,7 +113,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addNode(node);
         }
     }
-    
+
     /**
      * Constructs a new graph of the given nodes
      */
@@ -169,7 +169,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addEdge(edge);
         }
     }
-    
+
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
@@ -190,7 +190,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         addAllNodes(nodes);
         addAllEdges(edges);
     }
-    
+
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
@@ -232,7 +232,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addAllEdges(graph.edges());
         }
     }
-    
+
 
 	/**
 	 * Gets incoming edges to node
@@ -297,7 +297,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Optional<Node> node(int id) {
 		return Optional.ofNullable(nodes.get(id));
 	}
-	
+
 	@Override
     public Optional<Edge> edge(int id) {
         return Optional.ofNullable(edges.get(id));
@@ -323,7 +323,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         inEdges.put(gn.id(), new GlobalEdgeSet());
         return true;
 	}
-	
+
 	@Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
@@ -402,7 +402,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         }
         return result;
     }
-	
+
 	@Override
 	public boolean removeNode(Node node) {
         // 1. Silent Ignore
@@ -444,7 +444,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
         return true;
 	}
-	
+
 	@Override
     public boolean removeEdge(Edge edge) {
         // 1. Silent Ignore
@@ -458,7 +458,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         inEdges.get(ge.to().id()).remove(ge);
         return true;
     }
-	
+
 	@Override
     public boolean removeAllNodes(Collection<? extends Node> nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -466,8 +466,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         for(Node node : nodes) {
             Objects.requireNonNull(node, "node set elements cannot be null");
         }
-        for(Node node : new ArrayList<>(nodes)) {
-            result |= removeNode(node);
+        Object[] arr = nodes.toArray();
+        for(Object node : arr) {
+            result |= removeNode((Node) node);
         }
         return result;
     }
@@ -479,8 +480,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         for(Edge edge : edges) {
             Objects.requireNonNull(edge, "edge set elements cannot be null");
         }
-        for(Edge edge : new ArrayList<>(edges)) {
-            result |= removeEdge(edge);
+        Object[] arr = edges.toArray();
+        for(Object edge : arr) {
+            result |= removeEdge((Edge) edge);
         }
         return result;
     }
@@ -523,18 +525,18 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         }
         return result;
     }
-    
+
     public void clearEdges() {
         inEdges.clear();
         outEdges.clear();
         edges.clear();
     }
-    
+
     public void clear() {
         clearEdges();
         nodes.clear();
     }
-	
+
 	@Override
 	public NodeSet nodes() {
 		return new GlobalUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);

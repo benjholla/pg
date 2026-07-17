@@ -1,4 +1,4 @@
-package dev.chpg.pg.global;
+package dev.chpg.pg.multiverse.ephemeral;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,116 +17,151 @@ import dev.chpg.pg.api.Node.NodeDirection;
 import dev.chpg.pg.api.NodeSet;
 
 /**
- * GlobalGraph provides the core storage, adjacency maps, and graph operations.
+ * EphemeralGraph provides the core storage, adjacency maps, and graph operations.
  */
-public final class GlobalGraph implements Graph, GlobalFactory {
+public final class EphemeralGraph implements Graph, EphemeralFactory {
 
 	private static final EdgeSet EMPTY_EDGES = EdgeSet.empty();
 
-	private Map<Integer, GlobalNode> nodes;
-	private Map<Integer, GlobalEdge> edges;
-	private Map<Integer, GlobalEdgeSet> inEdges;
-	private Map<Integer, GlobalEdgeSet> outEdges;
+	private Map<Integer, EphemeralNode> nodes;
+	private Map<Integer, EphemeralEdge> edges;
+	private Map<Integer, EphemeralEdgeSet> inEdges;
+	private Map<Integer, EphemeralEdgeSet> outEdges;
+	private final EphemeralIdGenerator idGenerator;
 
 	/**
 	 * Constructs a new empty graph
 	 */
     @Override
-    public GlobalGraph createGraph() {
-        return new GlobalGraph();
+    public EphemeralGraph createGraph() {
+        return new EphemeralGraph(this.idGenerator);
     }
 
     @Override
-    public GlobalGraph createGraph(Node... nodes) {
+    public EphemeralGraph createGraph(Node... nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
         for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
-        return new GlobalGraph(nodes);
+        return new EphemeralGraph(this.idGenerator, nodes);
     }
 
     @Override
-    public GlobalGraph createGraph(NodeSet nodes) {
+    public EphemeralGraph createGraph(NodeSet nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
-        return new GlobalGraph(nodes);
+        return new EphemeralGraph(this.idGenerator, nodes);
     }
 
     @Override
-    public GlobalGraph createGraph(Edge... edges) {
+    public EphemeralGraph createGraph(Edge... edges) {
         Objects.requireNonNull(edges, "edges cannot be null");
         for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-        return new GlobalGraph(edges);
+        return new EphemeralGraph(this.idGenerator, edges);
     }
 
     @Override
-    public GlobalGraph createGraph(EdgeSet edges) {
+    public EphemeralGraph createGraph(EdgeSet edges) {
         Objects.requireNonNull(edges, "edges cannot be null");
-        return new GlobalGraph(edges);
+        return new EphemeralGraph(this.idGenerator, edges);
     }
 
     @Override
-    public GlobalGraph createGraph(NodeSet nodes, EdgeSet edges) {
+    public EphemeralGraph createGraph(NodeSet nodes, EdgeSet edges) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
         Objects.requireNonNull(edges, "edges cannot be null");
-        return new GlobalGraph(nodes, edges);
+        return new EphemeralGraph(this.idGenerator, nodes, edges);
     }
 
     @Override
-    public GlobalGraph createGraph(Graph... graphs) {
+    public EphemeralGraph createGraph(Graph... graphs) {
         Objects.requireNonNull(graphs, "graphs cannot be null");
         for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
-        return new GlobalGraph(graphs);
+        validateLineage(graphs);
+        return new EphemeralGraph(this.idGenerator, graphs);
     }
 
     @Override
-    public GlobalGraph createGraph(Collection<Graph> graphs) {
+    public EphemeralGraph createGraph(Collection<Graph> graphs) {
         Objects.requireNonNull(graphs, "graphs cannot be null");
         for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
-        return new GlobalGraph(graphs);
+        validateLineage(graphs.toArray(new Graph[0]));
+        return new EphemeralGraph(this.idGenerator, graphs);
     }
 
-	public GlobalGraph() {
+	/**
+	 * Constructs a new empty graph.
+	 */
+	/**
+	 * Constructs a new empty graph.
+	 */
+	public EphemeralGraph() {
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();
 		this.inEdges = new HashMap<>();
 		this.outEdges = new HashMap<>();
+		this.idGenerator = new EphemeralIdGenerator();
 	}
 
-    public GlobalFactory factory() {
+	private EphemeralGraph(EphemeralIdGenerator idGenerator) {
+		this.nodes = new HashMap<>();
+		this.edges = new HashMap<>();
+		this.inEdges = new HashMap<>();
+		this.outEdges = new HashMap<>();
+		this.idGenerator = idGenerator;
+	}
+
+
+	/**
+     * Ensures that all incoming graphs belong to the exact same Ephemeral ID sandbox.
+     * Blocks cross-engine algebra and cross-sandbox contamination.
+     */
+    private void validateLineage(Graph... others) {
+        for (Graph other : others) {
+            // 1. Block Cross-Engine Contamination
+            if (!(other instanceof EphemeralGraph ephemeralOther)) {
+                throw new IllegalArgumentException(
+                    "Engine mismatch: EphemeralGraph can only perform set algebra with other EphemeralGraphs. " +
+                    "Received: " + other.getClass().getSimpleName()
+                );
+            }
+
+            // 2. Block Cross-Sandbox Contamination
+            if (this.idGenerator != ephemeralOther.idGenerator) {
+                throw new IllegalArgumentException(
+                    "Sandbox mismatch: Cannot perform operations across independent EphemeralGraph instances. " +
+                    "The graphs do not share the same EphemeralIdGenerator lineage."
+                );
+            }
+        }
+    }
+
+    /**
+     * Gets the graph factory.
+     * @return the factory
+     */
+    /**
+     * Gets the graph factory.
+     * @return the factory
+     */
+    public EphemeralFactory factory() {
         return this;
     }
 
 	/**
      * Constructs a new graph of the given nodes
      */
-	/**
-	 * Constructs a new graph with initial nodes.
-	 * @param nodes the nodes
-	 */
-	/**
-	 * Constructs a new graph with initial nodes.
-	 * @param nodes the nodes
-	 */
-	public GlobalGraph(Node... nodes) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, Node... nodes) {
+		this(idGenerator);
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
         for(Node node : nodes) {
             addNode(node);
         }
     }
-    
+
     /**
      * Constructs a new graph of the given nodes
      */
-	/**
-	 * Constructs a new graph with initial nodes.
-	 * @param nodes the nodes
-	 */
-	/**
-	 * Constructs a new graph with initial nodes.
-	 * @param nodes the nodes
-	 */
-	public GlobalGraph(NodeSet nodes) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, NodeSet nodes) {
+		this(idGenerator);
 		Objects.requireNonNull(nodes, "nodes cannot be null");
         addAllNodes(nodes);
     }
@@ -134,18 +169,10 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	/**
-	 * Constructs a new graph with initial edges.
-	 * @param edges the edges
-	 */
-	/**
-	 * Constructs a new graph with initial edges.
-	 * @param edges the edges
-	 */
-	public GlobalGraph(Edge... edges) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, Edge... edges) {
+		this(idGenerator);
 		Objects.requireNonNull(edges, "edges cannot be null");
-		for (Edge edge : edges) Objects.requireNonNull(edge, "edges elements cannot be null");
+		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
         for(Edge edge : edges) {
             addEdge(edge);
         }
@@ -154,56 +181,30 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	/**
-	 * Constructs a new graph with initial edges.
-	 * @param edges the edges
-	 */
-	/**
-	 * Constructs a new graph with initial edges.
-	 * @param edges the edges
-	 */
-	public GlobalGraph(EdgeSet edges) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, EdgeSet edges) {
+		this(idGenerator);
 		Objects.requireNonNull(edges, "edges cannot be null");
         for(Edge edge : edges) {
             addEdge(edge);
         }
     }
-    
+
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-	/**
-	 * Constructs a new graph with initial nodes and edges.
-	 * @param nodes the nodes
-	 * @param edges the edges
-	 */
-	/**
-	 * Constructs a new graph with initial nodes and edges.
-	 * @param nodes the nodes
-	 * @param edges the edges
-	 */
-	public GlobalGraph(NodeSet nodes, EdgeSet edges) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, NodeSet nodes, EdgeSet edges) {
+		this(idGenerator);
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		Objects.requireNonNull(edges, "edges cannot be null");
         addAllNodes(nodes);
         addAllEdges(edges);
     }
-    
+
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	/**
-	 * Constructs a new graph with initial graphs.
-	 * @param graphs the graphs
-	 */
-	/**
-	 * Constructs a new graph with initial graphs.
-	 * @param graphs the graphs
-	 */
-	public GlobalGraph(Graph... graphs) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, Graph... graphs) {
+		this(idGenerator);
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         for(Graph graph : graphs) {
@@ -215,16 +216,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	/**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-	/**
-	 * Constructs a new graph with initial graphs.
-	 * @param graphs the graphs
-	 */
-	/**
-	 * Constructs a new graph with initial graphs.
-	 * @param graphs the graphs
-	 */
-	public GlobalGraph(Collection<Graph> graphs) {
-		this();
+	private EphemeralGraph(EphemeralIdGenerator idGenerator, Collection<Graph> graphs) {
+		this(idGenerator);
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
         for(Graph graph : graphs) {
@@ -232,7 +225,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addAllEdges(graph.edges());
         }
     }
-    
+
 
 	/**
 	 * Gets incoming edges to node
@@ -240,8 +233,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getInEdgesToNode(Node node){
-		if (!(node instanceof GlobalNode gn)) return Optional.empty();
-		return Optional.ofNullable(inEdges.get(gn.id()));
+		if (!(node instanceof EphemeralNode en)) return Optional.empty();
+		return Optional.ofNullable(inEdges.get(en.id()));
 	}
 
 	/**
@@ -250,23 +243,23 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	 * @param node the node
 	 */
 	protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
-		if (!(node instanceof GlobalNode gn)) return Optional.empty();
-		return Optional.ofNullable(outEdges.get(gn.id()));
+		if (!(node instanceof EphemeralNode en)) return Optional.empty();
+		return Optional.ofNullable(outEdges.get(en.id()));
 	}
 
 
 	@Override
 	public boolean containsNode(Node node) {
 		// Silent Ignore
-		if (!(node instanceof GlobalNode gn)) return false;
-		return nodes.containsKey(gn.id());
+		if (!(node instanceof EphemeralNode en)) return false;
+		return nodes.containsKey(en.id());
 	}
 
 	@Override
 	public boolean containsEdge(Edge edge) {
 		// Silent Ignore
-		if (!(edge instanceof GlobalEdge ge)) return false;
-		return edges.containsKey(ge.id());
+		if (!(edge instanceof EphemeralEdge ee)) return false;
+		return edges.containsKey(ee.id());
 	}
 
 	@Override
@@ -297,40 +290,40 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Optional<Node> node(int id) {
 		return Optional.ofNullable(nodes.get(id));
 	}
-	
+
 	@Override
-    public Optional<Edge> edge(int id) {
-        return Optional.ofNullable(edges.get(id));
-    }
+	public Optional<Edge> edge(int id) {
+		return Optional.ofNullable(edges.get(id));
+	}
 
 
 	@Override
 	public boolean addNode(Node node) {
 		Objects.requireNonNull(node, "node cannot be null");
         // 1. Violent Fail boundary
-        if (!(node instanceof GlobalNode gn)) {
-            throw new IllegalArgumentException("Expected GlobalNode in GlobalGraph.");
+        if (!(node instanceof EphemeralNode en)) {
+            throw new IllegalArgumentException("Expected EphemeralNode in EphemeralGraph.");
+        }
+        if (en.id() >= 0) {
+            throw new IllegalArgumentException("Node ID domain must be negative.");
         }
 
         // 2. Idempotent check (don't overwrite existing wiring)
-        if (nodes.containsKey(gn.id())) {
+        if (nodes.containsKey(en.id())) {
             return false;
         }
 
         // 3. Synchronize the 4 Pillars
-        nodes.put(gn.id(), gn);
-        outEdges.put(gn.id(), new GlobalEdgeSet());
-        inEdges.put(gn.id(), new GlobalEdgeSet());
+        nodes.put(en.id(), en);
+        outEdges.put(en.id(), new EphemeralEdgeSet());
+        inEdges.put(en.id(), new EphemeralEdgeSet());
         return true;
 	}
-	
+
 	@Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
-        if (!(edge instanceof GlobalEdge)) {
-            throw new IllegalArgumentException("Expected GlobalEdge in GlobalGraph.");
-        }
-        // Auto-vivify terminal nodes safely
+        // Auto-vivify terminal nodes
         boolean result = false;
         result |= addNode(edge.from());
         result |= addNode(edge.to());
@@ -355,25 +348,28 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public boolean linkEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
         // 1. Violent Fail boundary
-        if (!(edge instanceof GlobalEdge ge)) {
-            throw new IllegalArgumentException("Expected GlobalEdge in GlobalGraph.");
+        if (!(edge instanceof EphemeralEdge ee)) {
+            throw new IllegalArgumentException("Expected EphemeralEdge in EphemeralGraph.");
+        }
+        if (ee.id() >= 0) {
+            throw new IllegalArgumentException("Edge ID domain must be negative.");
         }
 
         // 2. Validate Topology Anchors
         // The graph MUST violently fail if the nodes aren't registered,
         // otherwise the adjacency maps will throw NullPointerExceptions.
-        if (!nodes.containsKey(ge.from().id()) || !nodes.containsKey(ge.to().id())) {
+        if (!nodes.containsKey(ee.from().id()) || !nodes.containsKey(ee.to().id())) {
             throw new IllegalArgumentException("Source or target node is not present in the graph.");
         }
 
         // 3. Idempotent check
-        if (edges.putIfAbsent(ge.id(), ge) != null) {
+        if (edges.putIfAbsent(ee.id(), ee) != null) {
             return false; // Edge already existed
         }
 
         // 4. Wire the adjacency maps
-        outEdges.get(ge.from().id()).add(ge);
-        inEdges.get(ge.to().id()).add(ge);
+        outEdges.get(ee.from().id()).add(ee);
+        inEdges.get(ee.to().id()).add(ee);
         return true;
     }
 
@@ -383,42 +379,38 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		boolean result = false;
 		for(Node node : nodes) {
 			Objects.requireNonNull(node, "node set elements cannot be null");
+			result |= addNode(node);
 		}
-		for(Node node : nodes) {
-            result |= addNode(node);
-        }
 		return result;
 	}
 
 	@Override
     public boolean addAllEdges(Collection<? extends Edge> edges) {
-        Objects.requireNonNull(edges, "edges cannot be null");
+        Objects.requireNonNull(nodes, "edges cannot be null");
         boolean result = false;
         for(Edge edge : edges) {
             Objects.requireNonNull(edge, "edge set elements cannot be null");
-        }
-        for(Edge edge : edges) {
             result |= addEdge(edge);
         }
         return result;
     }
-	
+
 	@Override
 	public boolean removeNode(Node node) {
         // 1. Silent Ignore
-        if (!(node instanceof GlobalNode gn)) {
+        if (!(node instanceof EphemeralNode en)) {
             return false;
         }
 
-        int targetId = gn.id();
+        int targetId = en.id();
 
         // 2. Collapse the pillars for this ID
         if (nodes.remove(targetId) == null) {
             return false;
         }
 
-        GlobalEdgeSet outSet = outEdges.remove(targetId);
-        GlobalEdgeSet inSet = inEdges.remove(targetId);
+        EphemeralEdgeSet outSet = outEdges.remove(targetId);
+        EphemeralEdgeSet inSet = inEdges.remove(targetId);
 
         // 3. Cascading Teardown: Scrub Outbound Edges
         if (outSet != null) {
@@ -444,21 +436,21 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
         return true;
 	}
-	
+
 	@Override
     public boolean removeEdge(Edge edge) {
         // 1. Silent Ignore
-        if (!(edge instanceof GlobalEdge ge) || !edges.containsKey(ge.id())) {
+        if (!(edge instanceof EphemeralEdge ee) || !edges.containsKey(ee.id())) {
             return false;
         }
 
         // 2. Teardown
-        edges.remove(ge.id());
-        outEdges.get(ge.from().id()).remove(ge);
-        inEdges.get(ge.to().id()).remove(ge);
+        edges.remove(ee.id());
+        outEdges.get(ee.from().id()).remove(ee);
+        inEdges.get(ee.to().id()).remove(ee);
         return true;
     }
-	
+
 	@Override
     public boolean removeAllNodes(Collection<? extends Node> nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -466,8 +458,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         for(Node node : nodes) {
             Objects.requireNonNull(node, "node set elements cannot be null");
         }
-        for(Node node : new ArrayList<>(nodes)) {
-            result |= removeNode(node);
+        Object[] arr = nodes.toArray();
+        for(Object node : arr) {
+            result |= removeNode((Node) node);
         }
         return result;
     }
@@ -479,8 +472,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         for(Edge edge : edges) {
             Objects.requireNonNull(edge, "edge set elements cannot be null");
         }
-        for(Edge edge : new ArrayList<>(edges)) {
-            result |= removeEdge(edge);
+        Object[] arr = edges.toArray();
+        for(Object edge : arr) {
+            result |= removeEdge((Edge) edge);
         }
         return result;
     }
@@ -523,27 +517,27 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         }
         return result;
     }
-    
+
     public void clearEdges() {
         inEdges.clear();
         outEdges.clear();
         edges.clear();
     }
-    
+
     public void clear() {
         clearEdges();
         nodes.clear();
     }
-	
+
 	@Override
 	public NodeSet nodes() {
-		return new GlobalUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
+		return new EphemeralUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
 	}
 
 
 	@Override
 	public EdgeSet edges() {
-		return new GlobalUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
+		return new EphemeralUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
 	}
 
 
@@ -555,16 +549,16 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public EdgeSet edges(Node node, NodeDirection direction){
 		if(direction == NodeDirection.IN){
-			return getInEdgesToNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
+			return getInEdgesToNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
 		} else {
-			return getOutEdgesFromNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
+			return getOutEdgesFromNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
 		}
 	}
 
 	@Override
 	public NodeSet limit(NodeDirection direction){
 		java.util.Objects.requireNonNull(direction, "NodeDirection cannot be null");
-		NodeSet result = new GlobalNodeSet();
+		NodeSet result = new EphemeralNodeSet();
 		for(Node node : nodes()){
 			EdgeSet connections = edges(node, direction);
 			if(connections.isEmpty()){
@@ -588,7 +582,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public NodeSet predecessors(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return predecessors(new GlobalNodeSet(origin));
+		return predecessors(new EphemeralNodeSet(origin));
 	}
 
 	@Override
@@ -600,7 +594,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public NodeSet predecessors(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		NodeSet result = new GlobalNodeSet();
+		NodeSet result = new EphemeralNodeSet();
 		for(Node node : origin){
 			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
@@ -615,7 +609,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public NodeSet successors(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return successors(new GlobalNodeSet(origin));
+		return successors(new EphemeralNodeSet(origin));
 	}
 
 	@Override
@@ -627,7 +621,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public NodeSet successors(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		NodeSet result = new GlobalNodeSet();
+		NodeSet result = new EphemeralNodeSet();
 		for(Node node : origin){
 			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
@@ -642,13 +636,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph forwardStep(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return forwardStep(new GlobalNodeSet(origin));
+		return forwardStep(new EphemeralNodeSet(origin));
 	}
 
 	@Override
 	public Graph forwardStep(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		Graph result = new GlobalGraph(origin);
+		validateLineage(origin);
+		Graph result = new EphemeralGraph(this.idGenerator, origin);
 		for(Node node : origin.nodes()){
 			getOutEdgesFromNode(node).ifPresent(outEdges -> {
 				for(Edge edge : outEdges){
@@ -664,20 +659,21 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public Graph forwardStep(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		return forwardStep(new GlobalGraph(origin));
+		return forwardStep(new EphemeralGraph(this.idGenerator, origin));
 	}
 
 	@Override
 	public Graph reverseStep(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return reverseStep(new GlobalNodeSet(origin));
+		return reverseStep(new EphemeralNodeSet(origin));
 	}
 
 	@Override
 	public Graph reverseStep(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		Graph result = new GlobalGraph(origin);
+		validateLineage(origin);
+		Graph result = new EphemeralGraph(this.idGenerator, origin);
 		for(Node node : origin.nodes()){
 			getInEdgesToNode(node).ifPresent(inEdges -> {
 				for(Edge edge : inEdges){
@@ -693,21 +689,21 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public Graph reverseStep(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		return reverseStep(new GlobalGraph(origin));
+		return reverseStep(new EphemeralGraph(this.idGenerator, origin));
 	}
 
 	@Override
 	public Graph union(Node... nodes){
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
-		return union(new GlobalGraph(nodes));
+		return union(new EphemeralGraph(this.idGenerator, nodes));
 	}
 
 	@Override
 	public Graph union(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return union(new GlobalGraph(edges));
+		return union(new EphemeralGraph(this.idGenerator, edges));
 	}
 
 	@Override
@@ -717,12 +713,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
 		// union operations commute, so we order all graphs including this graph
 		// by largest to smallest so that we start with the largest set and minimize add operations
+		validateLineage(graphs);
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		sortedGraphs.add(this);
 		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 		Graph initial = sortedGraphs.remove(0);
 
-		Graph union = new GlobalGraph(initial.nodes(), initial.edges());
+		Graph union = new EphemeralGraph(this.idGenerator, initial.nodes(), initial.edges());
 		for(Graph graph : sortedGraphs){
 			union.addAllNodes(graph.nodes());
 			union.addAllEdges(graph.edges());
@@ -734,14 +731,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph difference(Node... nodes){
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
-		return difference(new GlobalGraph(nodes));
+		return difference(new EphemeralGraph(this.idGenerator, nodes));
 	}
 
 	@Override
 	public Graph difference(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return difference(new GlobalGraph(edges));
+		return difference(new EphemeralGraph(this.idGenerator, edges));
 	}
 
 	@Override
@@ -753,10 +750,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		// in order to remove the most information up front
 		// note that this ordering does not include this graph because difference
 		// operations do not commute (the given graphs are effectively a union)
+		validateLineage(graphs);
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 
-		Graph difference = new GlobalGraph(this.nodes(), this.edges());
+		Graph difference = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
 		for(Graph graph : sortedGraphs){
 			if(difference.isEmpty()) {
 				break;
@@ -773,7 +771,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph differenceEdges(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return differenceEdges(new GlobalGraph(edges));
+		return differenceEdges(new EphemeralGraph(this.idGenerator, edges));
 	}
 
 	@Override
@@ -785,10 +783,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		// in order to remove the most information up front
 		// note that this ordering does not include this graph because difference
 		// operations do not commute (the given graphs are effectively a union)
+		validateLineage(graphs);
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
 
-		Graph difference = new GlobalGraph(this.nodes(), this.edges());
+		Graph difference = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
 		for(Graph graph : sortedGraphs){
 			if(difference.edges().isEmpty()) {
 				break;
@@ -802,14 +801,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph intersection(Node... nodes){
 		Objects.requireNonNull(nodes, "nodes cannot be null");
 		for (Node n : nodes) Objects.requireNonNull(n, "nodes elements cannot be null");
-		return intersection(new GlobalGraph(nodes));
+		return intersection(new EphemeralGraph(this.idGenerator, nodes));
 	}
 
 	@Override
 	public Graph intersection(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return intersection(new GlobalGraph(edges));
+		return intersection(new EphemeralGraph(this.idGenerator, edges));
 	}
 
 	@Override
@@ -820,12 +819,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		// intersections commute, so we order the given graphs including this graph
 		// by the smallest to largest graph in order to start with the smallest set
 		// and minimize retain operations
+		validateLineage(graphs);
 		ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
 		sortedGraphs.add(this);
 		Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR);
 		Graph initial = sortedGraphs.remove(0);
 
-		Graph intersection = new GlobalGraph(initial.nodes(), initial.edges());
+		Graph intersection = new EphemeralGraph(this.idGenerator, initial.nodes(), initial.edges());
 		for(Graph graph : sortedGraphs){
 			if(intersection.isEmpty()) {
 				break;
@@ -840,13 +840,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph betweenStep(Node from, Node to){
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
-		return betweenStep(new GlobalNodeSet(from), new GlobalNodeSet(to));
+		return betweenStep(new EphemeralNodeSet(from), new EphemeralNodeSet(to));
 	}
 
 	@Override
 	public Graph betweenStep(Graph from, Graph to){
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
+		validateLineage(from, to);
 		return betweenStep(from.nodes(), to.nodes());
 	}
 
@@ -855,15 +856,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
 		if(from.isEmpty() || to.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		Graph forward = forwardStep(from);
 		if(forward.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		Graph reverse = reverseStep(to);
 		if(reverse.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		return forward.intersection(reverse);
 	}
@@ -872,13 +873,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph between(Node from, Node to) {
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
-		return between(new GlobalNodeSet(from), new GlobalNodeSet(to));
+		return between(new EphemeralNodeSet(from), new EphemeralNodeSet(to));
 	}
 
 	@Override
 	public Graph between(Graph from, Graph to) {
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
+		validateLineage(from, to);
 		return between(from.nodes(), to.nodes());
 	}
 
@@ -887,15 +889,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		Objects.requireNonNull(from, "from cannot be null");
 		Objects.requireNonNull(to, "to cannot be null");
 		if(from.isEmpty() || to.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		Graph forward = forward(from);
 		if(forward.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		Graph reverse = reverse(to);
 		if(reverse.isEmpty()) {
-			return new GlobalGraph();
+			return new EphemeralGraph(this.idGenerator);
 		}
 		return forward.intersection(reverse);
 	}
@@ -904,14 +906,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	public Graph forward(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return forward(new GlobalNodeSet(origin));
+		return forward(new EphemeralNodeSet(origin));
 	}
 
 	@Override
 	public Graph forward(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		Graph result = new GlobalGraph(origin);
-		NodeSet frontier = new GlobalNodeSet(origin.nodes());
+		validateLineage(origin);
+		Graph result = new EphemeralGraph(this.idGenerator, origin);
+		NodeSet frontier = new EphemeralNodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
@@ -930,21 +933,22 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public Graph forward(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		return forward(new GlobalGraph(origin));
+		return forward(new EphemeralGraph(this.idGenerator, origin));
 	}
 
 	@Override
 	public Graph reverse(Node... origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
 		for (Node n : origin) Objects.requireNonNull(n, "origin elements cannot be null");
-		return reverse(new GlobalNodeSet(origin));
+		return reverse(new EphemeralNodeSet(origin));
 	}
 
 	@Override
 	public Graph reverse(Graph origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		Graph result = new GlobalGraph(origin);
-		NodeSet frontier = new GlobalNodeSet(origin.nodes());
+		validateLineage(origin);
+		Graph result = new EphemeralGraph(this.idGenerator, origin);
+		NodeSet frontier = new EphemeralNodeSet(origin.nodes());
 		while(!frontier.isEmpty()){
 			Node next = frontier.one().get();
 			frontier.remove(next);
@@ -963,14 +967,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public Graph reverse(NodeSet origin){
 		Objects.requireNonNull(origin, "origin cannot be null");
-		return reverse(new GlobalGraph(origin));
+		return reverse(new EphemeralGraph(this.idGenerator, origin));
 	}
 
 	@Override
 	public Graph induce(Edge... edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
 		for (Edge e : edges) Objects.requireNonNull(e, "edges elements cannot be null");
-		return induce(new GlobalEdgeSet(edges));
+		return induce(new EphemeralEdgeSet(edges));
 	}
 
 	@Override
@@ -978,7 +982,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 		Objects.requireNonNull(graphs, "graphs cannot be null");
 		if (graphs.length == 1 && graphs[0] == null) throw new NullPointerException();
 		for (Graph g : graphs) Objects.requireNonNull(g, "graphs elements cannot be null");
-		EdgeSet inducibleEdges = new GlobalEdgeSet();
+		EdgeSet inducibleEdges = new EphemeralEdgeSet();
 		for(Graph graph : graphs){
 			inducibleEdges.addAll(graph.edges());
 		}
@@ -988,7 +992,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 	@Override
 	public Graph induce(EdgeSet edges){
 		Objects.requireNonNull(edges, "edges cannot be null");
-		Graph result = new GlobalGraph(this);
+		Graph result = new EphemeralGraph(this.idGenerator, this);
 		for(Edge edge : edges) {
 			if(result.nodes().contains(edge.from()) && result.nodes().contains(edge.to())) {
 				result.addEdge(edge);
@@ -1000,40 +1004,40 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
 	@Override
 	public NodeSet singleton(Node node) {
-		return new GlobalImmutableSingletonNodeSet((GlobalNode) node);
+		return new EphemeralImmutableSingletonNodeSet((EphemeralNode) node);
 	}
 
 	@Override
-	public GlobalNode createNode() {
-		return new GlobalNode();
+	public EphemeralNode createNode() {
+		return new EphemeralNode(idGenerator.createNodeId());
 	}
 
 	@Override
 	public EdgeSet singleton(Edge edge) {
-		return new GlobalImmutableSingletonEdgeSet((GlobalEdge) edge);
+		return new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) edge);
 	}
 
 	@Override
-	public GlobalEdge createEdge(Node source, Node target) {
-		if (!(source instanceof GlobalNode)) {
-			throw new IllegalArgumentException("Source node is not native to GlobalGraph.");
+	public EphemeralEdge createEdge(Node source, Node target) {
+		if (!(source instanceof EphemeralNode)) {
+			throw new IllegalArgumentException("Source node is not native to EphemeralGraph.");
 		}
-		if (!(target instanceof GlobalNode)) {
-			throw new IllegalArgumentException("Target node is not native to GlobalGraph.");
+		if (!(target instanceof EphemeralNode)) {
+			throw new IllegalArgumentException("Target node is not native to EphemeralGraph.");
 		}
-		return new GlobalEdge(source, target);
+		return new EphemeralEdge(idGenerator.createEdgeId(), source, target);
 	}
 
 	@Override
 	public boolean adjacent(Node source, Node target) {
-		if (!(source instanceof GlobalNode hSource) || !nodes.containsKey(hSource.id())) return false;
-		if (!(target instanceof GlobalNode hTarget) || !nodes.containsKey(hTarget.id())) return false;
+		if (!(source instanceof EphemeralNode eSource) || !nodes.containsKey(eSource.id())) return false;
+		if (!(target instanceof EphemeralNode eTarget) || !nodes.containsKey(eTarget.id())) return false;
 
-		Optional<EdgeSet> out = getOutEdgesFromNode(hSource);
+		Optional<EdgeSet> out = getOutEdgesFromNode(eSource);
 		if (out.isEmpty()) return false;
 
 		for (Edge e : out.get()) {
-			if (e.to().equals(hTarget)) {
+			if (e.to().equals(eTarget)) {
 				return true;
 			}
 		}
@@ -1042,39 +1046,39 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
 	@Override
 	public EdgeSet edges(Node source, Node target) {
-		if (!(source instanceof GlobalNode hSource) || !nodes.containsKey(hSource.id())) return EMPTY_EDGES;
-		if (!(target instanceof GlobalNode hTarget) || !nodes.containsKey(hTarget.id())) return EMPTY_EDGES;
+		if (!(source instanceof EphemeralNode eSource) || !nodes.containsKey(eSource.id())) return EMPTY_EDGES;
+		if (!(target instanceof EphemeralNode eTarget) || !nodes.containsKey(eTarget.id())) return EMPTY_EDGES;
 
-		Optional<EdgeSet> out = getOutEdgesFromNode(hSource);
+		Optional<EdgeSet> out = getOutEdgesFromNode(eSource);
 		if (out.isEmpty()) return EMPTY_EDGES;
 
-		EdgeSet result = new GlobalEdgeSet();
+		EdgeSet result = new EphemeralEdgeSet();
 		for (Edge e : out.get()) {
-			if (e.to().equals(hTarget)) {
+			if (e.to().equals(eTarget)) {
 				result.add(e);
 			}
 		}
-		return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+		return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
 	}
 
 	@Override
 	public int degree(Node node, NodeDirection direction) {
-		if (!(node instanceof GlobalNode gn) || !nodes.containsKey(gn.id())) {
+		if (!(node instanceof EphemeralNode en) || !nodes.containsKey(en.id())) {
 			return 0; // Silent Ignore
 		}
 
 		return switch (direction) {
 			case OUT -> {
-				GlobalEdgeSet out = outEdges.get(gn.id());
+				EphemeralEdgeSet out = outEdges.get(en.id());
 				yield out == null ? 0 : out.size();
 			}
 			case IN -> {
-				GlobalEdgeSet in = inEdges.get(gn.id());
+				EphemeralEdgeSet in = inEdges.get(en.id());
 				yield in == null ? 0 : in.size();
 			}
 			case BOTH -> {
-				GlobalEdgeSet out = outEdges.get(gn.id());
-				GlobalEdgeSet in = inEdges.get(gn.id());
+				EphemeralEdgeSet out = outEdges.get(en.id());
+				EphemeralEdgeSet in = inEdges.get(en.id());
 				yield (out == null ? 0 : out.size()) + (in == null ? 0 : in.size());
 			}
 		};
