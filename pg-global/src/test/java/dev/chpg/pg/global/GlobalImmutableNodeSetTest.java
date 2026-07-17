@@ -71,6 +71,49 @@ public class GlobalImmutableNodeSetTest {
         assertSame(immutableSet, immutableSet.toImmutable());
     }
 
+
+    @Test
+    public void testDelegatedMethodsExtended() {
+        GlobalNodeSet internalSet = new GlobalNodeSet();
+        GlobalNode n1 = new GlobalNode();
+        internalSet.add(n1);
+        GlobalImmutableNodeSet set = new GlobalImmutableNodeSet(internalSet);
+
+        java.util.concurrent.atomic.AtomicInteger count = new java.util.concurrent.atomic.AtomicInteger();
+        set.forEach(node -> count.incrementAndGet());
+        assertEquals(1, count.get());
+
+        dev.chpg.pg.api.Node[] arr = set.toArray(dev.chpg.pg.api.Node[]::new);
+        assertEquals(1, arr.length);
+        assertEquals(n1, arr[0]);
+
+        assertEquals(n1, set.one().get());
+
+        java.util.Set<Integer> ids = set.ids();
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains(n1.id()));
+
+        int[] toIds = set.toIdArray();
+        assertEquals(1, toIds.length);
+        assertEquals(n1.id(), toIds[0]);
+
+        assertSame(set, set.materialize());
+        assertTrue(set.isMaterialized());
+    }
+
+    @Test
+    public void testIterator() {
+        GlobalNodeSet internalSet = new GlobalNodeSet();
+        GlobalNode n1 = new GlobalNode();
+        internalSet.add(n1);
+        GlobalImmutableNodeSet set = new GlobalImmutableNodeSet(internalSet);
+
+        java.util.Iterator<dev.chpg.pg.api.Node> it = set.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(n1, it.next());
+        assertFalse(it.hasNext());
+    }
+
     @Test
     public void testSetAlgebra() {
         dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();

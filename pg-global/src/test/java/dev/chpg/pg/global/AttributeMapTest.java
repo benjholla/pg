@@ -137,6 +137,59 @@ public class AttributeMapTest {
         assertNotEquals(val1.hashCode(), val3.hashCode());
     }
 
+
+    @Test
+    public void testMapOperations() {
+        assertEquals(0, attributeMap.size());
+        attributeMap.put("key1", "value1");
+        assertEquals(1, attributeMap.size());
+
+        attributeMap.put("key2", 42);
+        assertEquals(2, attributeMap.size());
+
+        org.junit.jupiter.api.Assertions.assertTrue(attributeMap.containsValue(AttributeValue.value("value1")));
+        org.junit.jupiter.api.Assertions.assertTrue(attributeMap.containsValue(AttributeValue.value(42)));
+        org.junit.jupiter.api.Assertions.assertFalse(attributeMap.containsValue(AttributeValue.value("missing")));
+
+        java.util.Set<String> keys = attributeMap.keySet();
+        org.junit.jupiter.api.Assertions.assertTrue(keys.contains("key1"));
+        org.junit.jupiter.api.Assertions.assertTrue(keys.contains("key2"));
+        assertEquals(2, keys.size());
+
+        java.util.Collection<AttributeValue> values = attributeMap.values();
+        org.junit.jupiter.api.Assertions.assertTrue(values.contains(AttributeValue.value("value1")));
+        org.junit.jupiter.api.Assertions.assertTrue(values.contains(AttributeValue.value(42)));
+        assertEquals(2, values.size());
+
+        attributeMap.clear();
+        assertEquals(0, attributeMap.size());
+        org.junit.jupiter.api.Assertions.assertTrue(attributeMap.isEmpty());
+    }
+
+    @Test
+    public void testEqualsAndHashCode() {
+        AttributeMap map1 = new GlobalAttributeMap();
+        map1.put("key1", "value1");
+        map1.put("key2", 42);
+
+        AttributeMap map2 = new GlobalAttributeMap();
+        map2.put("key1", "value1");
+        map2.put("key2", 42);
+
+        AttributeMap map3 = new GlobalAttributeMap();
+        map3.put("key1", "value1");
+        map3.put("key2", 43);
+
+        assertEquals(map1, map1);
+        assertEquals(map1, map2);
+        assertNotEquals(map1, map3);
+        assertNotEquals(map1, null);
+        assertNotEquals(map1, new Object());
+
+        assertEquals(map1.hashCode(), map2.hashCode());
+        assertNotEquals(map1.hashCode(), map3.hashCode());
+    }
+
     @Test
     public void testComputeMethods() {
         assertThrows(NullPointerException.class, () -> attributeMap.compute(null, (k, v) -> AttributeValue.value("v")));
