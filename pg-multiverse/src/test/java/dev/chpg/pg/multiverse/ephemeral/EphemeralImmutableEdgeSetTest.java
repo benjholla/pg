@@ -80,6 +80,55 @@ public class EphemeralImmutableEdgeSetTest {
         assertSame(immutableSet, immutableSet.toImmutable());
     }
 
+
+    @Test
+    public void testDelegatedMethodsExtended() {
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet internalSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdge e1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralEdge) g.factory().createEdge(n1, n2);
+        internalSet.add(e1);
+        dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableEdgeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableEdgeSet(internalSet);
+
+        java.util.concurrent.atomic.AtomicInteger count = new java.util.concurrent.atomic.AtomicInteger();
+        set.forEach(edge -> count.incrementAndGet());
+        assertEquals(1, count.get());
+
+        dev.chpg.pg.api.Edge[] arr = set.toArray(dev.chpg.pg.api.Edge[]::new);
+        assertEquals(1, arr.length);
+        assertEquals(e1, arr[0]);
+
+        assertEquals(e1, set.one().get());
+
+        java.util.Set<Integer> ids = set.ids();
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains(e1.id()));
+
+        int[] toIds = set.toIdArray();
+        assertEquals(1, toIds.length);
+        assertEquals(e1.id(), toIds[0]);
+
+        assertSame(set, set.materialize());
+        assertTrue(set.isMaterialized());
+    }
+
+    @Test
+    public void testIterator() {
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet internalSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralEdge e1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralEdge) g.factory().createEdge(n1, n2);
+        internalSet.add(e1);
+        dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableEdgeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralImmutableEdgeSet(internalSet);
+
+        java.util.Iterator<dev.chpg.pg.api.Edge> it = set.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(e1, it.next());
+        assertFalse(it.hasNext());
+    }
+
     @Test
     public void testSetAlgebra() {
         dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();

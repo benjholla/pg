@@ -74,6 +74,53 @@ public class GlobalImmutableEdgeSetTest {
         assertSame(immutableSet, immutableSet.toImmutable());
     }
 
+
+    @Test
+    public void testDelegatedMethodsExtended() {
+        GlobalEdgeSet internalSet = new GlobalEdgeSet();
+        GlobalNode n1 = new GlobalNode();
+        GlobalNode n2 = new GlobalNode();
+        GlobalEdge e1 = new GlobalEdge(n1, n2);
+        internalSet.add(e1);
+        GlobalImmutableEdgeSet set = new GlobalImmutableEdgeSet(internalSet);
+
+        java.util.concurrent.atomic.AtomicInteger count = new java.util.concurrent.atomic.AtomicInteger();
+        set.forEach(edge -> count.incrementAndGet());
+        assertEquals(1, count.get());
+
+        dev.chpg.pg.api.Edge[] arr = set.toArray(dev.chpg.pg.api.Edge[]::new);
+        assertEquals(1, arr.length);
+        assertEquals(e1, arr[0]);
+
+        assertEquals(e1, set.one().get());
+
+        java.util.Set<Integer> ids = set.ids();
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains(e1.id()));
+
+        int[] toIds = set.toIdArray();
+        assertEquals(1, toIds.length);
+        assertEquals(e1.id(), toIds[0]);
+
+        assertSame(set, set.materialize());
+        assertTrue(set.isMaterialized());
+    }
+
+    @Test
+    public void testIterator() {
+        GlobalEdgeSet internalSet = new GlobalEdgeSet();
+        GlobalNode n1 = new GlobalNode();
+        GlobalNode n2 = new GlobalNode();
+        GlobalEdge e1 = new GlobalEdge(n1, n2);
+        internalSet.add(e1);
+        GlobalImmutableEdgeSet set = new GlobalImmutableEdgeSet(internalSet);
+
+        java.util.Iterator<dev.chpg.pg.api.Edge> it = set.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(e1, it.next());
+        assertFalse(it.hasNext());
+    }
+
     @Test
     public void testSetAlgebra() {
         dev.chpg.pg.global.GlobalNode n1 = new dev.chpg.pg.global.GlobalNode();
