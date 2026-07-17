@@ -30,7 +30,7 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
             this.source,
             this.combinedPredicate.and(edge -> {
                 AttributeValue val = edge.attributes().get(attribute);
-                if (val == null || values == null || values.length == 0) return false;
+                if (val == null || values == null || values.length == 0) { return false; }
                 return java.util.Arrays.asList(values).contains(val);
             })
         );
@@ -41,9 +41,9 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
         return new DeferredEdgeSet(
             this.source,
             this.combinedPredicate.and(edge -> {
-                if (tags == null || tags.length == 0) return false;
+                if (tags == null || tags.length == 0) { return false; }
                 for (String tag : tags) {
-                    if (edge.tags().contains(tag)) return true;
+                    if (edge.tags().contains(tag)) { return true; }
                 }
                 return false;
             })
@@ -55,9 +55,9 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
         return new DeferredEdgeSet(
             this.source,
             this.combinedPredicate.and(edge -> {
-                if (tags == null || tags.length == 0) return false;
+                if (tags == null || tags.length == 0) { return false; }
                 for (String tag : tags) {
-                    if (!edge.tags().contains(tag)) return false;
+                    if (!edge.tags().contains(tag)) { return false; }
                 }
                 return true;
             })
@@ -81,7 +81,7 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
     @Override
     public java.util.Optional<Edge> one() {
         Iterator<Edge> it = iterator();
-        if (it.hasNext()) return java.util.Optional.of(it.next());
+        if (it.hasNext()) { return java.util.Optional.of(it.next()); }
         return java.util.Optional.empty();
     }
 
@@ -127,7 +127,7 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override
     public boolean contains(Object o) {
-        if (!(o instanceof Edge)) return false;
+        if (!(o instanceof Edge)) { return false; }
         Edge e = (Edge) o;
         return source.contains(e) && combinedPredicate.test(e);
     }
@@ -150,13 +150,13 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
             @Override
             public boolean hasNext() {
-                if (nextEdge == null) advance();
+                if (nextEdge == null) { advance(); }
                 return nextEdge != null;
             }
 
             @Override
             public Edge next() {
-                if (!hasNext()) throw new NoSuchElementException();
+                if (!hasNext()) { throw new NoSuchElementException(); }
                 Edge result = nextEdge;
                 nextEdge = null;
                 return result;

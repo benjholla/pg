@@ -29,8 +29,8 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet toImmutable() {
-        if (nodes.isEmpty()) return NodeSet.empty();
-        if (nodes.size() == 1) return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next());
+        if (nodes.isEmpty()) { return NodeSet.empty(); }
+        if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next()); }
         EphemeralNodeSet copy = new EphemeralNodeSet();
         copy.addAll(nodes.values());
         return new EphemeralImmutableNodeSet(copy);
@@ -38,7 +38,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public Optional<Node> one() {
-        if (nodes.isEmpty()) return Optional.empty();
+        if (nodes.isEmpty()) { return Optional.empty(); }
         return Optional.of(nodes.values().iterator().next());
     }
 
@@ -105,7 +105,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralNode gn)) return false;
+        if (!(obj instanceof EphemeralNode gn)) { return false; }
         return nodes.containsKey(gn.id()) && nodes.get(gn.id()).equals(gn);
     }
 

@@ -50,8 +50,8 @@ public class EdgeSetBenchmark {
 
             for (int i = 0; i < 10_000; i++) {
                 Edge e = g.factory().createEdge(n1, n2);
-                if (i % 2 == 0) e.tags().add("Even");
-                if (i % 3 == 0) e.tags().add("Div3");
+                if (i % 2 == 0) { e.tags().add("Even"); }
+                if (i % 3 == 0) { e.tags().add("Div3"); }
                 if (i % 5 == 0) {
                     e.tags().add("Div5");
                     e.attributes().put("category", "five");
@@ -84,8 +84,8 @@ public class EdgeSetBenchmark {
 
             for (int i = 0; i < 10_000; i++) {
                 Edge e = eg.factory().createEdge(n1, n2);
-                if (i % 2 == 0) e.tags().add("Even");
-                if (i % 3 == 0) e.tags().add("Div3");
+                if (i % 2 == 0) { e.tags().add("Even"); }
+                if (i % 3 == 0) { e.tags().add("Div3"); }
                 if (i % 5 == 0) {
                     e.tags().add("Div5");
                     e.attributes().put("category", "five");

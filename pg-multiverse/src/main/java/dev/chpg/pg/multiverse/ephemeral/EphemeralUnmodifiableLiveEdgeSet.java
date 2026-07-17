@@ -45,8 +45,8 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet toImmutable() {
-        if (edges.isEmpty()) return EdgeSet.empty();
-        if (edges.size() == 1) return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next());
+        if (edges.isEmpty()) { return EdgeSet.empty(); }
+        if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next()); }
         EphemeralEdgeSet copy = new EphemeralEdgeSet();
         copy.addAll(edges.values());
         return new EphemeralImmutableEdgeSet(copy);
@@ -54,7 +54,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public Optional<Edge> one() {
-        if (edges.isEmpty()) return Optional.empty();
+        if (edges.isEmpty()) { return Optional.empty(); }
         return Optional.of(edges.values().iterator().next());
     }
 
@@ -121,7 +121,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralEdge ge)) return false;
+        if (!(obj instanceof EphemeralEdge ge)) { return false; }
         return edges.containsKey(ge.id()) && edges.get(ge.id()).equals(ge);
     }
 

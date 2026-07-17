@@ -74,7 +74,7 @@ public final class EphemeralTagSet implements TagSet {
         Objects.requireNonNull(c, "Tag collection cannot be null");
         boolean modified = false;
         for (String e : c) {
-            if (delegate.add(Objects.requireNonNull(e, "Tag cannot be null"))) modified = true;
+            if (delegate.add(Objects.requireNonNull(e, "Tag cannot be null"))) { modified = true; }
         }
         return modified;
     }
@@ -96,7 +96,7 @@ public final class EphemeralTagSet implements TagSet {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) { return true; }
         return delegate.equals(o);
     }
 

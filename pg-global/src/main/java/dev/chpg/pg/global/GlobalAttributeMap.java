@@ -131,7 +131,7 @@ public final class GlobalAttributeMap implements AttributeMap {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) { return true; }
         return delegate.equals(o);
     }
 

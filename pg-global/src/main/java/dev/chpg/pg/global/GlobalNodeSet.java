@@ -49,14 +49,14 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public NodeSet toImmutable() {
-        if (internalSet.isEmpty()) return NodeSet.empty();
-        if (internalSet.size() == 1) return new GlobalImmutableSingletonNodeSet(internalSet.iterator().next());
+        if (internalSet.isEmpty()) { return NodeSet.empty(); }
+        if (internalSet.size() == 1) { return new GlobalImmutableSingletonNodeSet(internalSet.iterator().next()); }
         return new GlobalImmutableNodeSet(new GlobalNodeSet(this));
     }
 
     @Override
     public Optional<Node> one() {
-        if (internalSet.isEmpty()) return Optional.empty();
+        if (internalSet.isEmpty()) { return Optional.empty(); }
         return Optional.of(internalSet.iterator().next());
     }
 
@@ -125,7 +125,7 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof Node node)) return false;
+        if (!(obj instanceof Node node)) { return false; }
         try {
             return internalSet.contains(validate(node));
         } catch (IllegalArgumentException e) {
@@ -135,7 +135,7 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public boolean remove(Object obj) {
-        if (!(obj instanceof Node node)) return false;
+        if (!(obj instanceof Node node)) { return false; }
         try {
             return internalSet.remove(validate(node));
         } catch (IllegalArgumentException e) {
@@ -235,7 +235,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) { return true; }
         // Standard Java semantics: safely compares sizes and elements,
         // evaluating to true for empty sets of different types,
         // while deferring to elements for populated sets.

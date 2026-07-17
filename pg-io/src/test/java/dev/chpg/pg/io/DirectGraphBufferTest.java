@@ -575,17 +575,17 @@ public class DirectGraphBufferTest {
 
         // Tier 1: Fits in current chunk space
         byte[] tier1 = new byte[100];
-        for (int i = 0; i < tier1.length; i++) tier1[i] = (byte) i;
+        for (int i = 0; i < tier1.length; i++) { tier1[i] = (byte) i; }
 
         // Tier 2: Doesn't fit in remaining space but fits in total capacity
         // To trigger this, we need to partially fill the buffer first
         byte[] tier2Padding = new byte[800];
         byte[] tier2 = new byte[500]; // 500 > (1024 - 800) but 500 < 1024
-        for (int i = 0; i < tier2.length; i++) tier2[i] = (byte) (i % 256);
+        for (int i = 0; i < tier2.length; i++) { tier2[i] = (byte) (i % 256); }
 
         // Tier 3: Exceeds total capacity
         byte[] tier3 = new byte[2000];
-        for (int i = 0; i < tier3.length; i++) tier3[i] = (byte) (i % 256);
+        for (int i = 0; i < tier3.length; i++) { tier3[i] = (byte) (i % 256); }
 
         Node n1 = nf.createNode();
         n1.attributes().put("tier1", AttributeValue.value(tier1));

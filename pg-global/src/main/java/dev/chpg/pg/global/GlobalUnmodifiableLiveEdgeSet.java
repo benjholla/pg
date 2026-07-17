@@ -29,8 +29,8 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet toImmutable() {
-        if (edges.isEmpty()) return EdgeSet.empty();
-        if (edges.size() == 1) return new GlobalImmutableSingletonEdgeSet(edges.values().iterator().next());
+        if (edges.isEmpty()) { return EdgeSet.empty(); }
+        if (edges.size() == 1) { return new GlobalImmutableSingletonEdgeSet(edges.values().iterator().next()); }
         GlobalEdgeSet copy = new GlobalEdgeSet();
         copy.addAll(edges.values());
         return new GlobalImmutableEdgeSet(copy);
@@ -38,7 +38,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public Optional<Edge> one() {
-        if (edges.isEmpty()) return Optional.empty();
+        if (edges.isEmpty()) { return Optional.empty(); }
         return Optional.of(edges.values().iterator().next());
     }
 
@@ -105,7 +105,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof GlobalEdge ge)) return false;
+        if (!(obj instanceof GlobalEdge ge)) { return false; }
         return edges.containsKey(ge.id());
     }
 

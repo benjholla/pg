@@ -46,7 +46,7 @@ public boolean isMaterialized() {
 
     @Override
     public Optional<Node> one() {
-        if (elements.isEmpty()) return Optional.empty();
+        if (elements.isEmpty()) { return Optional.empty(); }
         return Optional.of(elements.iterator().next());
     }
 

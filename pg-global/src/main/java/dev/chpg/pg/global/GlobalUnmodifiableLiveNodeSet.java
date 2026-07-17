@@ -29,8 +29,8 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet toImmutable() {
-        if (nodes.isEmpty()) return NodeSet.empty();
-        if (nodes.size() == 1) return new GlobalImmutableSingletonNodeSet(nodes.values().iterator().next());
+        if (nodes.isEmpty()) { return NodeSet.empty(); }
+        if (nodes.size() == 1) { return new GlobalImmutableSingletonNodeSet(nodes.values().iterator().next()); }
         GlobalNodeSet copy = new GlobalNodeSet();
         copy.addAll(nodes.values());
         return new GlobalImmutableNodeSet(copy);
@@ -38,7 +38,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public Optional<Node> one() {
-        if (nodes.isEmpty()) return Optional.empty();
+        if (nodes.isEmpty()) { return Optional.empty(); }
         return Optional.of(nodes.values().iterator().next());
     }
 
@@ -105,7 +105,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof GlobalNode gn)) return false;
+        if (!(obj instanceof GlobalNode gn)) { return false; }
         return nodes.containsKey(gn.id());
     }
 
