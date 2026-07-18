@@ -30,7 +30,7 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
             this.source,
             this.combinedPredicate.and(node -> {
                 AttributeValue val = node.attributes().get(attribute);
-                if (val == null || values == null || values.length == 0) return false;
+                if (val == null || values == null || values.length == 0) { return false; }
                 return java.util.Arrays.asList(values).contains(val);
             })
         );
@@ -41,9 +41,9 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
         return new DeferredNodeSet(
             this.source,
             this.combinedPredicate.and(node -> {
-                if (tags == null || tags.length == 0) return false;
+                if (tags == null || tags.length == 0) { return false; }
                 for (String tag : tags) {
-                    if (node.tags().contains(tag)) return true;
+                    if (node.tags().contains(tag)) { return true; }
                 }
                 return false;
             })
@@ -55,9 +55,9 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
         return new DeferredNodeSet(
             this.source,
             this.combinedPredicate.and(node -> {
-                if (tags == null || tags.length == 0) return false;
+                if (tags == null || tags.length == 0) { return false; }
                 for (String tag : tags) {
-                    if (!node.tags().contains(tag)) return false;
+                    if (!node.tags().contains(tag)) { return false; }
                 }
                 return true;
             })
@@ -81,7 +81,7 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
     @Override
     public java.util.Optional<Node> one() {
         Iterator<Node> it = iterator();
-        if (it.hasNext()) return java.util.Optional.of(it.next());
+        if (it.hasNext()) { return java.util.Optional.of(it.next()); }
         return java.util.Optional.empty();
     }
 
@@ -127,7 +127,7 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override
     public boolean contains(Object o) {
-        if (!(o instanceof Node)) return false;
+        if (!(o instanceof Node)) { return false; }
         Node e = (Node) o;
         return source.contains(e) && combinedPredicate.test(e);
     }
@@ -150,13 +150,13 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
             @Override
             public boolean hasNext() {
-                if (nextNode == null) advance();
+                if (nextNode == null) { advance(); }
                 return nextNode != null;
             }
 
             @Override
             public Node next() {
-                if (!hasNext()) throw new NoSuchElementException();
+                if (!hasNext()) { throw new NoSuchElementException(); }
                 Node result = nextNode;
                 nextNode = null;
                 return result;

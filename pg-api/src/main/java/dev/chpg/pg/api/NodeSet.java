@@ -43,27 +43,27 @@ public interface NodeSet extends Set<Node> {
     default NodeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredNodeSet(this, n -> {
             AttributeValue val = n.attributes().get(attribute);
-            if (val == null || values == null || values.length == 0) return false;
+            if (val == null || values == null || values.length == 0) { return false; }
             for (AttributeValue v : values) {
-                if (java.util.Objects.equals(val, v)) return true;
+                if (java.util.Objects.equals(val, v)) { return true; }
             }
             return false;
         });
     }
     default NodeSet withAnyTag(String... tags) {
         return new DeferredNodeSet(this, n -> {
-            if (tags == null || tags.length == 0) return false;
+            if (tags == null || tags.length == 0) { return false; }
             for (String tag : tags) {
-                if (n.tags().contains(tag)) return true;
+                if (n.tags().contains(tag)) { return true; }
             }
             return false;
         });
     }
     default NodeSet withAllTags(String... tags) {
         return new DeferredNodeSet(this, n -> {
-            if (tags == null || tags.length == 0) return false;
+            if (tags == null || tags.length == 0) { return false; }
             for (String tag : tags) {
-                if (!n.tags().contains(tag)) return false;
+                if (!n.tags().contains(tag)) { return false; }
             }
             return true;
         });

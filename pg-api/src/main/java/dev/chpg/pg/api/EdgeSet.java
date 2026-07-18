@@ -43,27 +43,27 @@ public interface EdgeSet extends Set<Edge> {
     default EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredEdgeSet(this, e -> {
             AttributeValue val = e.attributes().get(attribute);
-            if (val == null || values == null || values.length == 0) return false;
+            if (val == null || values == null || values.length == 0) { return false; }
             for (AttributeValue v : values) {
-                if (java.util.Objects.equals(val, v)) return true;
+                if (java.util.Objects.equals(val, v)) { return true; }
             }
             return false;
         });
     }
     default EdgeSet withAnyTag(String... tags) {
         return new DeferredEdgeSet(this, e -> {
-            if (tags == null || tags.length == 0) return false;
+            if (tags == null || tags.length == 0) { return false; }
             for (String tag : tags) {
-                if (e.tags().contains(tag)) return true;
+                if (e.tags().contains(tag)) { return true; }
             }
             return false;
         });
     }
     default EdgeSet withAllTags(String... tags) {
         return new DeferredEdgeSet(this, e -> {
-            if (tags == null || tags.length == 0) return false;
+            if (tags == null || tags.length == 0) { return false; }
             for (String tag : tags) {
-                if (!e.tags().contains(tag)) return false;
+                if (!e.tags().contains(tag)) { return false; }
             }
             return true;
         });

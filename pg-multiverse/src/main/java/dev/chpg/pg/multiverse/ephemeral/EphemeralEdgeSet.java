@@ -78,14 +78,14 @@ public final class EphemeralEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet toImmutable() {
-        if (internalSet.isEmpty()) return EdgeSet.empty();
-        if (internalSet.size() == 1) return new EphemeralImmutableSingletonEdgeSet(internalSet.iterator().next());
+        if (internalSet.isEmpty()) { return EdgeSet.empty(); }
+        if (internalSet.size() == 1) { return new EphemeralImmutableSingletonEdgeSet(internalSet.iterator().next()); }
         return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet(this));
     }
 
     @Override
     public Optional<Edge> one() {
-        if (internalSet.isEmpty()) return Optional.empty();
+        if (internalSet.isEmpty()) { return Optional.empty(); }
         return Optional.of(internalSet.iterator().next());
     }
 
@@ -154,7 +154,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof Edge edge)) return false;
+        if (!(obj instanceof Edge edge)) { return false; }
         try {
             return internalSet.contains(validate(edge));
         } catch (IllegalArgumentException e) {
@@ -164,7 +164,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
 
     @Override
     public boolean remove(Object obj) {
-        if (!(obj instanceof Edge edge)) return false;
+        if (!(obj instanceof Edge edge)) { return false; }
         try {
             return internalSet.remove(validate(edge));
         } catch (IllegalArgumentException e) {
@@ -264,7 +264,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) { return true; }
         // Standard Java semantics: safely compares sizes and elements,
         // evaluating to true for empty sets of different types,
         // while deferring to elements for populated sets.

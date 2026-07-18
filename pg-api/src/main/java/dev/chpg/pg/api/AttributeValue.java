@@ -76,7 +76,7 @@ public sealed interface AttributeValue permits
     record ByteArrayValue(byte[] value) implements AttributeValue {
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
+            if (this == o) { return true; }
             if (o instanceof ByteArrayValue that) {
                 return Arrays.equals(this.value, that.value);
             }

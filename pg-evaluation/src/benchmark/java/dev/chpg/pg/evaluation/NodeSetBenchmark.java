@@ -44,8 +44,8 @@ public class NodeSetBenchmark {
 
             for (int i = 0; i < 10_000; i++) {
                 Node n = g.factory().createNode();
-                if (i % 2 == 0) n.tags().add("Even");
-                if (i % 3 == 0) n.tags().add("Div3");
+                if (i % 2 == 0) { n.tags().add("Even"); }
+                if (i % 3 == 0) { n.tags().add("Div3"); }
                 if (i % 5 == 0) {
                     n.tags().add("Div5");
                     n.attributes().put("category", "five");
@@ -67,8 +67,8 @@ public class NodeSetBenchmark {
 
             for (int i = 0; i < 10_000; i++) {
                 Node n = eg.factory().createNode();
-                if (i % 2 == 0) n.tags().add("Even");
-                if (i % 3 == 0) n.tags().add("Div3");
+                if (i % 2 == 0) { n.tags().add("Even"); }
+                if (i % 3 == 0) { n.tags().add("Div3"); }
                 if (i % 5 == 0) {
                     n.tags().add("Div5");
                     n.attributes().put("category", "five");

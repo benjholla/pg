@@ -140,7 +140,7 @@ public class DgbExporter {
     }
 
     private int countIterable(Iterable<?> it) {
-        if (it == null) return 0;
+        if (it == null) { return 0; }
         // This handles both the Collection optimization and the fallback loop
         // automatically
         // When you call it.spliterator(), Java is smart enough to check if the Iterable
