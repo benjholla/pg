@@ -81,4 +81,21 @@ public class GraphLimitInvariantTest {
         GlobalGraph graph = new GlobalGraph();
         assertThrows(NullPointerException.class, () -> graph.limit(null));
     }
+
+    @Test
+    public void testLimitBothIsolatedNodes() {
+        Node a = new GlobalNode();
+        Node b = new GlobalNode();
+        Node c = new GlobalNode();
+        Node isolated = new GlobalNode();
+        GlobalGraph graph = new GlobalGraph();
+        graph.addEdge(new GlobalEdge(a, b));
+        graph.addEdge(new GlobalEdge(b, c));
+        graph.addNode(isolated);
+
+        NodeSet limitBoth = graph.limit(NodeDirection.BOTH);
+
+        assertEquals(1, limitBoth.size());
+        assertTrue(limitBoth.contains(isolated));
+    }
 }
