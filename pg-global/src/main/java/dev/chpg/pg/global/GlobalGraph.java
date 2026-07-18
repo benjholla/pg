@@ -556,8 +556,12 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public EdgeSet edges(Node node, NodeDirection direction){
         if(direction == NodeDirection.IN){
             return getInEdgesToNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
-        } else {
+        } else if(direction == NodeDirection.OUT){
             return getOutEdgesFromNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
+        } else {
+            GlobalEdgeSet edges = getInEdgesToNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
+            getOutEdgesFromNode(node).ifPresent(edges::addAll);
+            return edges;
         }
     }
 

@@ -548,8 +548,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public EdgeSet edges(Node node, NodeDirection direction){
         if(direction == NodeDirection.IN){
             return getInEdgesToNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
-        } else {
+        } else if(direction == NodeDirection.OUT){
             return getOutEdgesFromNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
+        } else {
+            EphemeralEdgeSet edges = getInEdgesToNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
+            getOutEdgesFromNode(node).ifPresent(edges::addAll);
+            return edges;
         }
     }
 
