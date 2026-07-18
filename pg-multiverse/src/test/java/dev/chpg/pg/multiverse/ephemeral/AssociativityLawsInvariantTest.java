@@ -55,6 +55,26 @@ public class AssociativityLawsInvariantTest {
         // Varargs union: A.union(B, C)
         Graph unionAll = gA.union(gB, gC);
         assertGraphsEqual(aUnionB_UnionC, unionAll);
+
+        // Varargs Node union
+        Node[] gBnodes = gB.nodes().stream().toArray(Node[]::new);
+        Node[] gCnodes = gC.nodes().stream().toArray(Node[]::new);
+        Node[] gB_and_gC_nodes = new Node[gBnodes.length + gCnodes.length];
+        System.arraycopy(gBnodes, 0, gB_and_gC_nodes, 0, gBnodes.length);
+        System.arraycopy(gCnodes, 0, gB_and_gC_nodes, gBnodes.length, gCnodes.length);
+
+        Graph chainedUnionNodes = gA.union(gBnodes).union(gCnodes);
+        assertGraphsEqual(chainedUnionNodes, gA.union(gB_and_gC_nodes));
+
+        // Varargs Edge union
+        Edge[] gBedges = gB.edges().stream().toArray(Edge[]::new);
+        Edge[] gCedges = gC.edges().stream().toArray(Edge[]::new);
+        Edge[] gB_and_gC_edges = new Edge[gBedges.length + gCedges.length];
+        System.arraycopy(gBedges, 0, gB_and_gC_edges, 0, gBedges.length);
+        System.arraycopy(gCedges, 0, gB_and_gC_edges, gBedges.length, gCedges.length);
+
+        Graph chainedUnionEdges = gA.union(gBedges).union(gCedges);
+        assertGraphsEqual(chainedUnionEdges, gA.union(gB_and_gC_edges));
     }
 
     @Test
@@ -67,5 +87,17 @@ public class AssociativityLawsInvariantTest {
         // Varargs intersection: A.intersection(B, C)
         Graph intersectAll = gA.intersection(gB, gC);
         assertGraphsEqual(aIntersectB_IntersectC, intersectAll);
+
+        Node[] gBnodes = gB.nodes().stream().toArray(Node[]::new);
+        Node[] gCnodes = gC.nodes().stream().toArray(Node[]::new);
+
+        Node[] gB_intersect_gC_nodes = gB.intersection(gC).nodes().stream().toArray(Node[]::new);
+        assertGraphsEqual(gA.intersection(gB_intersect_gC_nodes), gA.intersection(gBnodes).intersection(gCnodes));
+
+        Edge[] gBedges = gB.edges().stream().toArray(Edge[]::new);
+        Edge[] gCedges = gC.edges().stream().toArray(Edge[]::new);
+
+        Edge[] gB_intersect_gC_edges = gB.intersection(gC).edges().stream().toArray(Edge[]::new);
+        assertGraphsEqual(gA.intersection(gB_intersect_gC_edges), gA.intersection(gBedges).intersection(gCedges));
     }
 }
