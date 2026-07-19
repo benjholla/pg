@@ -231,25 +231,19 @@ public interface Graph {
     public EdgeSet edges(Node node, NodeDirection direction);
 
     /**
-     * Returns the nodes in the graph without edges from the given direction
-     * 
-     * @param direction the direction
-     */
-    public NodeSet limit(NodeDirection direction);
-
-    /**
-     * Selects the nodes of this graph that have no successors
-     *
-     * Convenience for limit(NodeDirection.OUT)
+     * Selects the nodes of this graph that have no successors (out-degree == 0).
      */
     public NodeSet leaves();
 
     /**
-     * Selects the nodes of this graph that have no predecessors
-     *
-     * Convenience for limit(NodeDirection.IN)
+     * Selects the nodes of this graph that have no predecessors (in-degree == 0).
      */
     public NodeSet roots();
+
+    /**
+     * Selects the nodes of this graph that have no incident edges (degree == 0).
+     */
+    public NodeSet isolated();
 
     /**
      * Gets the predecessor nodes of the given node for this graph's edges
