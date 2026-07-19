@@ -79,8 +79,8 @@ public class GraphAlgebraicPropertiesTest {
         Graph aUnion_BUnionC = gA.union(gB.union(gC));
         assertGraphsEqual(aUnionB_UnionC, aUnion_BUnionC);
 
-        // Also varargs union: union(A, B, C)
-        Graph unionAll = gA.union(gB, gC);
+        // union: union(A, B, C)
+        Graph unionAll = gA.union(gB).union(gC);
         assertGraphsEqual(aUnionB_UnionC, unionAll);
     }
 
@@ -91,8 +91,8 @@ public class GraphAlgebraicPropertiesTest {
         Graph aIntersect_BIntersectC = gA.intersection(gB.intersection(gC));
         assertGraphsEqual(aIntersectB_IntersectC, aIntersect_BIntersectC);
 
-        // Also varargs intersection: intersection(A, B, C)
-        Graph intersectAll = gA.intersection(gB, gC);
+        // intersection: intersection(A, B, C)
+        Graph intersectAll = gA.intersection(gB).intersection(gC);
         assertGraphsEqual(aIntersectB_IntersectC, intersectAll);
     }
 

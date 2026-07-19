@@ -58,7 +58,7 @@ public class EphemeralGraphGraphArgTest {
         Graph gRemove1 = factory.createGraph(e1);
         Graph gRemove2 = factory.createGraph(e1);
 
-        Graph diff = graph.differenceEdges(gRemove1, gRemove2);
+        Graph diff = graph.differenceEdges(gRemove1).differenceEdges(gRemove2);
         assertTrue(diff.edges().isEmpty());
     }
 

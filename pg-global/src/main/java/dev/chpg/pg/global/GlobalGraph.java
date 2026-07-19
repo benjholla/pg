@@ -1,9 +1,7 @@
 package dev.chpg.pg.global;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -194,14 +192,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     /**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
-    /**
-     * Constructs a new graph with initial graphs.
-     * @param graphs the graphs
-     */
-    /**
-     * Constructs a new graph with initial graphs.
-     * @param graphs the graphs
-     */
     public GlobalGraph(Graph... graphs) {
         this();
         Objects.requireNonNull(graphs, "graphs cannot be null");
@@ -214,14 +204,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     /**
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
-     */
-    /**
-     * Constructs a new graph with initial graphs.
-     * @param graphs the graphs
-     */
-    /**
-     * Constructs a new graph with initial graphs.
-     * @param graphs the graphs
      */
     public GlobalGraph(Collection<Graph> graphs) {
         this();
@@ -715,22 +697,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph union(Graph... graphs){
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        if (graphs.length == 1 && graphs[0] == null) { throw new NullPointerException(); }
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        // union operations commute, so we order all graphs including this graph
-        // by largest to smallest so that we start with the largest set and minimize add operations
-        ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-        sortedGraphs.add(this);
-        Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
-        Graph initial = sortedGraphs.remove(0);
-
-        Graph union = new GlobalGraph(initial.nodes(), initial.edges());
-        for(Graph graph : sortedGraphs){
-            union.addAllNodes(graph.nodes());
-            union.addAllEdges(graph.edges());
-        }
+    public Graph union(Graph graph){
+        Objects.requireNonNull(graph, "graph cannot be null");
+        Graph union = new GlobalGraph(this.nodes(), this.edges());
+        union.addAllNodes(graph.nodes());
+        union.addAllEdges(graph.edges());
         return union;
     }
 
@@ -749,27 +720,16 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph difference(Graph... graphs){
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        if (graphs.length == 1 && graphs[0] == null) { throw new NullPointerException(); }
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        // sorting the graphs to difference from this graph by largest to smallest
-        // in order to remove the most information up front
-        // note that this ordering does not include this graph because difference
-        // operations do not commute (the given graphs are effectively a union)
-        ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-        Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
-
+    public Graph difference(Graph graph){
+        Objects.requireNonNull(graph, "graph cannot be null");
         Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        for(Graph graph : sortedGraphs){
-            if(difference.isEmpty()) {
-                break;
-            }
-            for (Node node : graph.nodes()) {
-                difference.removeNode(node);
-            }
-            difference.removeAllEdges(graph.edges());
+        if(difference.isEmpty()) {
+            return difference;
         }
+        for (Node node : graph.nodes()) {
+            difference.removeNode(node);
+        }
+        difference.removeAllEdges(graph.edges());
         return difference;
     }
 
@@ -781,24 +741,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph differenceEdges(Graph... graphs){
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        if (graphs.length == 1 && graphs[0] == null) { throw new NullPointerException(); }
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        // sorting the graphs to difference from this graph by largest to smallest
-        // in order to remove the most information up front
-        // note that this ordering does not include this graph because difference
-        // operations do not commute (the given graphs are effectively a union)
-        ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-        Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR.reversed());
-
+    public Graph differenceEdges(Graph graph){
+        Objects.requireNonNull(graph, "graph cannot be null");
         Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        for(Graph graph : sortedGraphs){
-            if(difference.edges().isEmpty()) {
-                break;
-            }
-            difference.removeAllEdges(graph.edges());
+        if(difference.edges().isEmpty()) {
+            return difference;
         }
+        difference.removeAllEdges(graph.edges());
         return difference;
     }
 
@@ -817,26 +766,14 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph intersection(Graph... graphs){
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        if (graphs.length == 1 && graphs[0] == null) { throw new NullPointerException(); }
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        // intersections commute, so we order the given graphs including this graph
-        // by the smallest to largest graph in order to start with the smallest set
-        // and minimize retain operations
-        ArrayList<Graph> sortedGraphs = new ArrayList<Graph>(Arrays.asList(graphs));
-        sortedGraphs.add(this);
-        Collections.sort(sortedGraphs, Graph.SIZE_COMPARATOR);
-        Graph initial = sortedGraphs.remove(0);
-
-        Graph intersection = new GlobalGraph(initial.nodes(), initial.edges());
-        for(Graph graph : sortedGraphs){
-            if(intersection.isEmpty()) {
-                break;
-            }
-            intersection.retainAllNodes(graph.nodes());
-            intersection.retainAllEdges(graph.edges());
+    public Graph intersection(Graph graph){
+        Objects.requireNonNull(graph, "graph cannot be null");
+        Graph intersection = new GlobalGraph(this.nodes(), this.edges());
+        if(intersection.isEmpty()) {
+            return intersection;
         }
+        intersection.retainAllNodes(graph.nodes());
+        intersection.retainAllEdges(graph.edges());
         return intersection;
     }
 
@@ -978,14 +915,10 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph induce(Graph... graphs){
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        if (graphs.length == 1 && graphs[0] == null) { throw new NullPointerException(); }
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
+    public Graph induce(Graph graph){
+        Objects.requireNonNull(graph, "graph cannot be null");
         EdgeSet inducibleEdges = new GlobalEdgeSet();
-        for(Graph graph : graphs){
-            inducibleEdges.addAll(graph.edges());
-        }
+        inducibleEdges.addAll(graph.edges());
         return induce(inducibleEdges);
     }
 

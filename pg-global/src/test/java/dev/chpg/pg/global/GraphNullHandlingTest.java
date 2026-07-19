@@ -20,16 +20,6 @@ public class GraphNullHandlingTest {
     }
 
     @Test
-    public void testUnionNullArray() {
-        assertThrows(NullPointerException.class, () -> graph.union((Graph[]) null));
-    }
-
-    @Test
-    public void testUnionArrayWithNulls() {
-        assertThrows(NullPointerException.class, () -> graph.union(new Graph[]{null}));
-    }
-
-    @Test
     public void testUnionNodes() {
         assertThrows(NullPointerException.class, () -> graph.union((Node[]) null));
         assertThrows(NullPointerException.class, () -> graph.union(new Node[]{null}));
@@ -47,16 +37,12 @@ public class GraphNullHandlingTest {
         assertThrows(NullPointerException.class, () -> graph.difference(new Node[]{null}));
         assertThrows(NullPointerException.class, () -> graph.difference((Edge[]) null));
         assertThrows(NullPointerException.class, () -> graph.difference(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> graph.difference((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> graph.difference(new Graph[]{null}));
     }
 
     @Test
     public void testDifferenceEdgesNullHandling() {
         assertThrows(NullPointerException.class, () -> graph.differenceEdges((Edge[]) null));
         assertThrows(NullPointerException.class, () -> graph.differenceEdges(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> graph.differenceEdges((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> graph.differenceEdges(new Graph[]{null}));
     }
 
     @Test
@@ -65,16 +51,12 @@ public class GraphNullHandlingTest {
         assertThrows(NullPointerException.class, () -> graph.intersection(new Node[]{null}));
         assertThrows(NullPointerException.class, () -> graph.intersection((Edge[]) null));
         assertThrows(NullPointerException.class, () -> graph.intersection(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> graph.intersection((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> graph.intersection(new Graph[]{null}));
     }
 
     @Test
     public void testInduceNullHandling() {
         assertThrows(NullPointerException.class, () -> graph.induce((Edge[]) null));
         assertThrows(NullPointerException.class, () -> graph.induce(new Edge[]{null}));
-        assertThrows(NullPointerException.class, () -> graph.induce((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> graph.induce(new Graph[]{null}));
         assertThrows(NullPointerException.class, () -> graph.induce((EdgeSet) null));
     }
 

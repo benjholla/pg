@@ -52,11 +52,11 @@ public class AssociativityLawsInvariantTest {
         Graph aUnion_BUnionC = gA.union(gB.union(gC));
         assertGraphsEqual(aUnionB_UnionC, aUnion_BUnionC);
 
-        // Varargs union: A.union(B, C)
-        Graph unionAll = gA.union(gB, gC);
+        // union: A.union(B, C)
+        Graph unionAll = gA.union(gB).union(gC);
         assertGraphsEqual(aUnionB_UnionC, unionAll);
 
-        // Varargs Node union
+        // Node union
         Node[] gBnodes = gB.nodes().stream().toArray(Node[]::new);
         Node[] gCnodes = gC.nodes().stream().toArray(Node[]::new);
         Node[] gB_and_gC_nodes = new Node[gBnodes.length + gCnodes.length];
@@ -66,7 +66,7 @@ public class AssociativityLawsInvariantTest {
         Graph chainedUnionNodes = gA.union(gBnodes).union(gCnodes);
         assertGraphsEqual(chainedUnionNodes, gA.union(gB_and_gC_nodes));
 
-        // Varargs Edge union
+        // Edge union
         Edge[] gBedges = gB.edges().stream().toArray(Edge[]::new);
         Edge[] gCedges = gC.edges().stream().toArray(Edge[]::new);
         Edge[] gB_and_gC_edges = new Edge[gBedges.length + gCedges.length];
@@ -84,8 +84,8 @@ public class AssociativityLawsInvariantTest {
         Graph aIntersect_BIntersectC = gA.intersection(gB.intersection(gC));
         assertGraphsEqual(aIntersectB_IntersectC, aIntersect_BIntersectC);
 
-        // Varargs intersection: A.intersection(B, C)
-        Graph intersectAll = gA.intersection(gB, gC);
+        // intersection: A.intersection(B, C)
+        Graph intersectAll = gA.intersection(gB).intersection(gC);
         assertGraphsEqual(aIntersectB_IntersectC, intersectAll);
 
         Node[] gBnodes = gB.nodes().stream().toArray(Node[]::new);
