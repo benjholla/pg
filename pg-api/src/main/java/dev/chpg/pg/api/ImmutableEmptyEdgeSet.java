@@ -7,6 +7,15 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Empty EdgeSet.
+ */
+/**
+ * An immutable empty EdgeSet.
+ */
+/**
+ * An immutable empty EdgeSet.
+ */
 public final class ImmutableEmptyEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     @Override

@@ -7,10 +7,33 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * A deferred evaluation pipeline for EdgeSet.
+ */
+/**
+ * A deferred evaluation pipeline for EdgeSet.
+ */
+/**
+ * A deferred evaluation pipeline for EdgeSet.
+ */
 public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
     private final EdgeSet source;
     private final Predicate<Edge> combinedPredicate;
 
+    /**
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
+    /**
+     * Constructs a new DeferredEdgeSet.
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
+    /**
+     * Constructs a new DeferredEdgeSet.
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
     public DeferredEdgeSet(EdgeSet source, Predicate<Edge> initialPredicate) {
         this.source = source;
         this.combinedPredicate = initialPredicate;

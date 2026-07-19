@@ -7,6 +7,15 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Empty NodeSet.
+ */
+/**
+ * An immutable empty NodeSet.
+ */
+/**
+ * An immutable empty NodeSet.
+ */
 public final class ImmutableEmptyNodeSet extends AbstractSet<Node> implements NodeSet {
 
     @Override

@@ -8,10 +8,21 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Immutable NodeSet.
+ */
 public final class GenericImmutableNodeSet extends AbstractSet<Node> implements NodeSet {
 
     private final Set<Node> elements;
 
+    /**
+     * Constructs a new GenericImmutableNodeSet from the given source set.
+     * @param elements the source set
+     */
+    /**
+     * Constructs a new GenericImmutableNodeSet from the given source set.
+     * @param elements the source set
+     */
     public GenericImmutableNodeSet(Collection<? extends Node> elements) {
         this.elements = Set.copyOf(elements);
     }

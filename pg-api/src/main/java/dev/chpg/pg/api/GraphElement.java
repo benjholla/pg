@@ -16,7 +16,40 @@ package dev.chpg.pg.api;
  * graph element.
  */
 public interface GraphElement {
+    /**
+     * @return the tags
+     */
+    /**
+     * Returns the set of tags applied to this element.
+     * @return the tags
+     */
+    /**
+     * Returns the set of tags applied to this element.
+     * @return the tags
+     */
     TagSet tags();
+    /**
+     * @return the attributes
+     */
+    /**
+     * Returns the key-value attributes attached to this element.
+     * @return the attributes
+     */
+    /**
+     * Returns the key-value attributes attached to this element.
+     * @return the attributes
+     */
     AttributeMap attributes();
+    /**
+     * @return the id
+     */
+    /**
+     * Returns the unique primitive integer identifier for this element.
+     * @return the ID
+     */
+    /**
+     * Returns the unique primitive integer identifier for this element.
+     * @return the ID
+     */
     int id();
 }

@@ -56,23 +56,173 @@ public sealed interface AttributeValue permits
     AttributeValue.ByteArrayValue {
 
 
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new StringValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new StringValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static StringValue value(String value) { return new StringValue(value); }
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new BooleanValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new BooleanValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static BooleanValue value(boolean value) { return new BooleanValue(value); }
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new IntegerValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new IntegerValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static IntegerValue value(int value) { return new IntegerValue(value); }
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new LongValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new LongValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static LongValue value(long value) { return new LongValue(value); }
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new DoubleValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new DoubleValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static DoubleValue value(double value) { return new DoubleValue(value); }
+    /**
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new ByteArrayValue.
+     * @param value the value
+     * @return the wrapped value
+     */
+    /**
+     * Creates a new ByteArrayValue.
+     * @param value the value
+     * @return the wrapped value
+     */
     static ByteArrayValue value(byte[] value) { return new ByteArrayValue(value); }
 
     // 1. Strings
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of StringValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of StringValue.
+     * @param value the value
+     */
     record StringValue(String value) implements AttributeValue {}
 
     // 2. Primitives
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of BooleanValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of BooleanValue.
+     * @param value the value
+     */
     record BooleanValue(boolean value) implements AttributeValue {}
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of IntegerValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of IntegerValue.
+     * @param value the value
+     */
     record IntegerValue(int value) implements AttributeValue {}
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of LongValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of LongValue.
+     * @param value the value
+     */
     record LongValue(long value) implements AttributeValue {}
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of DoubleValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of DoubleValue.
+     * @param value the value
+     */
     record DoubleValue(double value) implements AttributeValue {}
 
     // 3. The Escape Hatch
+    /**
+     * @param value the value
+     */
+    /**
+     * Implementation of ByteArrayValue.
+     * @param value the value
+     */
+    /**
+     * Implementation of ByteArrayValue.
+     * @param value the value
+     */
     record ByteArrayValue(byte[] value) implements AttributeValue {
         @Override
         public boolean equals(Object o) {

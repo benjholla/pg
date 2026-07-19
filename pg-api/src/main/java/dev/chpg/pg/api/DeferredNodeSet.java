@@ -7,10 +7,33 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * A deferred evaluation pipeline for NodeSet.
+ */
+/**
+ * A deferred evaluation pipeline for NodeSet.
+ */
+/**
+ * A deferred evaluation pipeline for NodeSet.
+ */
 public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
     private final NodeSet source;
     private final Predicate<Node> combinedPredicate;
 
+    /**
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
+    /**
+     * Constructs a new DeferredNodeSet.
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
+    /**
+     * Constructs a new DeferredNodeSet.
+     * @param source the source set
+     * @param initialPredicate the initial predicate
+     */
     public DeferredNodeSet(NodeSet source, Predicate<Node> initialPredicate) {
         this.source = source;
         this.combinedPredicate = initialPredicate;

@@ -25,11 +25,113 @@ import java.util.Map;
  */
 public interface AttributeMap extends Map<String, AttributeValue> {
 
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a String attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a String attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, String value);
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts an int attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts an int attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, int value);
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a long attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a long attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, long value);
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a double attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a double attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, double value);
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a boolean attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a boolean attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, boolean value);
+    /**
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a byte array attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
+    /**
+     * Puts a byte array attribute value into the map.
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     AttributeValue put(String key, byte[] value);
 
     @Override

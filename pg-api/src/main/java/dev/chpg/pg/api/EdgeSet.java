@@ -28,18 +28,75 @@ import java.util.Set;
  */
 public interface EdgeSet extends Set<Edge> {
 
+    /** The empty EdgeSet. */
     EdgeSet EMPTY = new ImmutableEmptyEdgeSet();
 
+    /**
+     * @return the empty set
+     */
     static EdgeSet empty() {
         return EMPTY;
     }
 
+    /**
+     * @return the immutable set
+     */
+    /**
+     * Returns an immutable copy of this EdgeSet.
+     * @return the immutable EdgeSet
+     */
+    /**
+     * Returns an immutable copy of this EdgeSet.
+     * @return the immutable EdgeSet
+     */
     EdgeSet toImmutable();
 
+    /**
+     * @return an optional containing the element, or empty if none
+     */
+    /**
+     * Returns one arbitrary element from this EdgeSet, if it is not empty.
+     * @return an Optional containing the element, or empty if none
+     */
+    /**
+     * Returns one arbitrary element from this EdgeSet, if it is not empty.
+     * @return an Optional containing the element, or empty if none
+     */
     Optional<Edge> one();
+    /**
+     * @param attribute the attribute key
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing the given attribute.
+     * @param attribute the attribute key
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing the given attribute.
+     * @param attribute the attribute key
+     * @return the filtered set
+     */
     default EdgeSet withAttribute(String attribute) {
         return new DeferredEdgeSet(this, e -> e.attributes().containsKey(attribute));
     }
+    /**
+     * @param attribute the attribute key
+     * @param values the allowed values
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing the given attribute with any of the specified values.
+     * @param attribute the attribute key
+     * @param values the allowed values
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing the given attribute with any of the specified values.
+     * @param attribute the attribute key
+     * @param values the allowed values
+     * @return the filtered set
+     */
     default EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredEdgeSet(this, e -> {
             AttributeValue val = e.attributes().get(attribute);
@@ -50,6 +107,20 @@ public interface EdgeSet extends Set<Edge> {
             return false;
         });
     }
+    /**
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing any of the given tags.
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing any of the given tags.
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
     default EdgeSet withAnyTag(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -59,6 +130,20 @@ public interface EdgeSet extends Set<Edge> {
             return false;
         });
     }
+    /**
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing all of the given tags.
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
+    /**
+     * Filters the set to elements possessing all of the given tags.
+     * @param tags the tags to look for
+     * @return the filtered set
+     */
     default EdgeSet withAllTags(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -85,18 +170,21 @@ public interface EdgeSet extends Set<Edge> {
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.
      * @param other the collection to perform the set operation with
+      * @return the resulting edge set
      */
     EdgeSet intersect(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing elements from this set, excluding those in the specified collection.
      * @param other the collection to perform the set operation with
+      * @return the resulting edge set
      */
     EdgeSet difference(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing all elements from this set and the specified collection.
      * @param other the collection to perform the set operation with
+      * @return the resulting edge set
      */
     EdgeSet union(Collection<? extends Edge> other);
 
@@ -104,16 +192,23 @@ public interface EdgeSet extends Set<Edge> {
      * Returns true if this set is already backed by a flat, allocated
      * memory structure. Returns false if this set requires computation
      * (lazy evaluation) during iteration.
+      * @return true if successful, false otherwise
      */
     boolean isMaterialized();
 
     /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
+      * @return the set result
      */
     Set<Integer> ids();
 
     /**
      * Returns an array of the primitive integer IDs of the elements in this set.
+      * @return the array result
+     */
+    /**
+     * Returns an array of the primitive integer IDs of the elements in this set.
+     * @return the array result
      */
     int[] toIdArray();
 }

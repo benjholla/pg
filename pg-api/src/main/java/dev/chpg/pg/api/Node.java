@@ -32,5 +32,13 @@ public interface Node extends GraphElement {
      * <li>{@link #BOTH}: Traverses all incident edges regardless of direction.</li>
      * </ul>
      */
-    enum NodeDirection { IN, OUT, BOTH; }
+    /** Specifies the direction of traversal or edge resolution. */
+    enum NodeDirection {
+        /** Inbound edges */
+        IN,
+        /** Outbound edges */
+        OUT,
+        /** Both inbound and outbound edges */
+        BOTH
+    }
 }

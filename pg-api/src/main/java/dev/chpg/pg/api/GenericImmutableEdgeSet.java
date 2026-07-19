@@ -8,10 +8,21 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Immutable EdgeSet.
+ */
 public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     private final Set<Edge> elements;
 
+    /**
+     * Constructs a new GenericImmutableEdgeSet from the given source set.
+     * @param elements the source set
+     */
+    /**
+     * Constructs a new GenericImmutableEdgeSet from the given source set.
+     * @param elements the source set
+     */
     public GenericImmutableEdgeSet(Collection<? extends Edge> elements) {
         this.elements = Set.copyOf(elements);
     }
