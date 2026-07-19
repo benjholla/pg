@@ -14,14 +14,9 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
 /** Immutable snapshot of an EphemeralEdgeSet. */
-/** Immutable snapshot of an EphemeralEdgeSet. */
 public class EphemeralImmutableEdgeSet implements EdgeSet {
     private final EdgeSet edges;
 
-    /**
-     * Constructs a new EphemeralImmutableEdgeSet.
-     * @param edges the edges to initialize with
-     */
     /**
      * Constructs a new EphemeralImmutableEdgeSet.
      * @param edges the edges to initialize with

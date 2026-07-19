@@ -6,7 +6,6 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
 
 /** The ephemeral implementation of an Edge. */
-/** The ephemeral implementation of an Edge. */
 public final class EphemeralEdge implements Edge {
 
     private final int id;
@@ -15,12 +14,6 @@ public final class EphemeralEdge implements Edge {
     private Node from;
     private Node to;
 
-    /**
-     * Constructs a new EphemeralEdge.
-     * @param id the edge id
-     * @param from the source node
-     * @param to the target node
-     */
     /**
      * Constructs a new EphemeralEdge.
      * @param id the edge id

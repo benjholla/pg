@@ -39,17 +39,6 @@ public class DirectGraphBufferReader {
 
     /**
      * Reads a DirectGraphBuffer from the channel into the target graph using the default 8MB buffer size.
-     */
-    /**
-     * Reads a DirectGraphBuffer from the channel into the target graph.
-     * @param channel the file channel to read from
-     * @param targetGraph the graph to populate
-     * @param nodeFactory the factory to create nodes
-     * @param edgeFactory the factory to create edges
-     * @throws IOException if an I/O error occurs
-     */
-    /**
-     * Reads a DirectGraphBuffer from the channel into the target graph.
      * @param channel the file channel to read from
      * @param targetGraph the graph to populate
      * @param nodeFactory the factory to create nodes

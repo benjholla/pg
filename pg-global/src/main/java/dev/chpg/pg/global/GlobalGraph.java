@@ -94,13 +94,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     /**
-     * Constructs a new graph of the given nodes
-     */
-    /**
-     * Constructs a new graph with initial nodes.
-     * @param nodes the nodes
-     */
-    /**
      * Constructs a new graph with initial nodes.
      * @param nodes the nodes
      */
@@ -114,13 +107,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
     
     /**
-     * Constructs a new graph of the given nodes
-     */
-    /**
-     * Constructs a new graph with initial nodes.
-     * @param nodes the nodes
-     */
-    /**
      * Constructs a new graph with initial nodes.
      * @param nodes the nodes
      */
@@ -132,13 +118,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     /**
      * Constructs a new graph of the given edges and respective edge nodes
-     */
-    /**
-     * Constructs a new graph with initial edges.
-     * @param edges the edges
-     */
-    /**
-     * Constructs a new graph with initial edges.
      * @param edges the edges
      */
     public GlobalGraph(Edge... edges) {
@@ -159,13 +138,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     /**
      * Constructs a new graph of the given edges and respective edge nodes
-     */
-    /**
-     * Constructs a new graph with initial edges.
-     * @param edges the edges
-     */
-    /**
-     * Constructs a new graph with initial edges.
      * @param edges the edges
      */
     public GlobalGraph(EdgeSet edges) {
@@ -178,14 +150,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     
     /**
      * Constructs a new graph of the given edges and respective edge nodes
-     */
-    /**
-     * Constructs a new graph with initial nodes and edges.
-     * @param nodes the nodes
-     * @param edges the edges
-     */
-    /**
-     * Constructs a new graph with initial nodes and edges.
      * @param nodes the nodes
      * @param edges the edges
      */

@@ -1,7 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
 /** Guardrails for Ephemeral operations. */
-/** Guardrails for Ephemeral operations. */
 public class EphemeralGuardrails {
 
     /**

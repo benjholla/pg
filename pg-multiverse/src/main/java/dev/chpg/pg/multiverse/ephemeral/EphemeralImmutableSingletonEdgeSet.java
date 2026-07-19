@@ -12,15 +12,10 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
 /** Immutable singleton set of an EphemeralEdge. */
-/** Immutable singleton set of an EphemeralEdge. */
 public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     private final EphemeralEdge element;
 
-    /**
-     * Constructs a new EphemeralImmutableSingletonEdgeSet.
-     * @param element the single element
-     */
     /**
      * Constructs a new EphemeralImmutableSingletonEdgeSet.
      * @param element the single element

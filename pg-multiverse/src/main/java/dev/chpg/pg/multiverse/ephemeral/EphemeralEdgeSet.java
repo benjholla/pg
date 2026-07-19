@@ -12,21 +12,15 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
 /** The ephemeral implementation of an EdgeSet. */
-/** The ephemeral implementation of an EdgeSet. */
 public final class EphemeralEdgeSet implements EdgeSet {
 
     private final HashSet<EphemeralEdge> internalSet;
 
     /** Constructs an empty EphemeralEdgeSet. */
-    /** Constructs an empty EphemeralEdgeSet. */
     public EphemeralEdgeSet() {
         this.internalSet = new HashSet<>();
     }
 
-    /**
-     * Constructs an EphemeralEdgeSet with an initial edge.
-     * @param initialEdge the initial edge
-     */
     /**
      * Constructs an EphemeralEdgeSet with an initial edge.
      * @param initialEdge the initial edge
@@ -40,10 +34,6 @@ public final class EphemeralEdgeSet implements EdgeSet {
      * Constructs an EphemeralEdgeSet with initial edges.
      * @param initialEdges the initial edges
      */
-    /**
-     * Constructs an EphemeralEdgeSet with initial edges.
-     * @param initialEdges the initial edges
-     */
     public EphemeralEdgeSet(Edge... initialEdges) {
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
         this.internalSet = new HashSet<>((int) (initialEdges.length / 0.75f) + 1);
@@ -52,10 +42,6 @@ public final class EphemeralEdgeSet implements EdgeSet {
         }
     }
 
-    /**
-     * Constructs an EphemeralEdgeSet with a collection of initial edges.
-     * @param initialEdges the initial edges
-     */
     /**
      * Constructs an EphemeralEdgeSet with a collection of initial edges.
      * @param initialEdges the initial edges

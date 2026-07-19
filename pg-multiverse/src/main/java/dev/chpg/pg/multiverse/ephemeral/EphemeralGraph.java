@@ -78,9 +78,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new empty graph.
      */
-    /**
-     * Constructs a new empty graph.
-     */
     public EphemeralGraph() {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -132,10 +129,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         }
     }
 
-    /**
-     * Gets the graph factory.
-     * @return the factory
-     */
     /**
      * Gets the graph factory.
      * @return the factory
