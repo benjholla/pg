@@ -103,6 +103,7 @@ public class Example {
 For deeper insights into the design, performance characteristics, and query optimizations of `pg`, please see the architecture documentation:
 * [Performance Goals](docs/architecture/PerformanceGoals.md)
 * [Ephemeral Graph Memory & ID Management](docs/architecture/EphemeralGraph.md)
+* [GlobalGraph Dense IDs](docs/architecture/GlobalGraphDenseIDs.md)
 
 ## Installation
 
