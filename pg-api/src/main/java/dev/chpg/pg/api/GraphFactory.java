@@ -1,6 +1,5 @@
 package dev.chpg.pg.api;
 
-import java.util.Collection;
 
 /**
  * A factory for creating Graph instances.
