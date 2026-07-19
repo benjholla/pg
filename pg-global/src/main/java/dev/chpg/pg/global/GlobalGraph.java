@@ -584,26 +584,44 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public NodeSet limit(NodeDirection direction){
-        java.util.Objects.requireNonNull(direction, "NodeDirection cannot be null");
-        NodeSet result = new GlobalNodeSet();
-        for(Node node : nodes()){
-            EdgeSet connections = edges(node, direction);
-            if(connections.isEmpty()){
-                result.add(node);
+    public NodeSet roots() {
+        GlobalNodeSet result = new GlobalNodeSet();
+        for (GlobalNode n : this.nodes.values()) {
+            GlobalEdgeSet inbound = this.inEdges.get(n.id());
+            if (inbound == null || inbound.isEmpty()) {
+                result.add(n);
             }
         }
         return result;
     }
 
     @Override
-    public NodeSet leaves(){
-        return limit(NodeDirection.OUT);
+    public NodeSet leaves() {
+        GlobalNodeSet result = new GlobalNodeSet();
+        for (GlobalNode n : this.nodes.values()) {
+            GlobalEdgeSet outbound = this.outEdges.get(n.id());
+            if (outbound == null || outbound.isEmpty()) {
+                result.add(n);
+            }
+        }
+        return result;
     }
 
     @Override
-    public NodeSet roots(){
-        return limit(NodeDirection.IN);
+    public NodeSet isolated() {
+        GlobalNodeSet result = new GlobalNodeSet();
+        for (GlobalNode n : this.nodes.values()) {
+            GlobalEdgeSet inbound = this.inEdges.get(n.id());
+            GlobalEdgeSet outbound = this.outEdges.get(n.id());
+
+            boolean noIn = (inbound == null || inbound.isEmpty());
+            boolean noOut = (outbound == null || outbound.isEmpty());
+
+            if (noIn && noOut) {
+                result.add(n);
+            }
+        }
+        return result;
     }
 
     @Override

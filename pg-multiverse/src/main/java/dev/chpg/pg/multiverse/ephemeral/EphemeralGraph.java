@@ -593,26 +593,44 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     }
 
     @Override
-    public NodeSet limit(NodeDirection direction){
-        java.util.Objects.requireNonNull(direction, "NodeDirection cannot be null");
-        NodeSet result = new EphemeralNodeSet();
-        for(Node node : nodes()){
-            EdgeSet connections = edges(node, direction);
-            if(connections.isEmpty()){
-                result.add(node);
+    public NodeSet roots() {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode n : this.nodes.values()) {
+            EphemeralEdgeSet inbound = this.inEdges.get(n.id());
+            if (inbound == null || inbound.isEmpty()) {
+                result.add(n);
             }
         }
         return result;
     }
 
     @Override
-    public NodeSet leaves(){
-        return limit(NodeDirection.OUT);
+    public NodeSet leaves() {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode n : this.nodes.values()) {
+            EphemeralEdgeSet outbound = this.outEdges.get(n.id());
+            if (outbound == null || outbound.isEmpty()) {
+                result.add(n);
+            }
+        }
+        return result;
     }
 
     @Override
-    public NodeSet roots(){
-        return limit(NodeDirection.IN);
+    public NodeSet isolated() {
+        EphemeralNodeSet result = new EphemeralNodeSet();
+        for (EphemeralNode n : this.nodes.values()) {
+            EphemeralEdgeSet inbound = this.inEdges.get(n.id());
+            EphemeralEdgeSet outbound = this.outEdges.get(n.id());
+
+            boolean noIn = (inbound == null || inbound.isEmpty());
+            boolean noOut = (outbound == null || outbound.isEmpty());
+
+            if (noIn && noOut) {
+                result.add(n);
+            }
+        }
+        return result;
     }
 
     @Override
