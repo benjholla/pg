@@ -77,11 +77,9 @@ public class EphemeralGraphGraphArgTest {
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             factory.createGraph(new Edge[]{null});
         });
+
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            factory.createGraph((Graph[]) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            factory.createGraph(new Graph[]{null});
+            factory.createGraph((Graph) null);
         });
 
         // Collections
@@ -96,12 +94,6 @@ public class EphemeralGraphGraphArgTest {
         });
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             factory.createGraph(new EphemeralNodeSet(), (EdgeSet) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            factory.createGraph((java.util.Collection<Graph>) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            factory.createGraph(java.util.Collections.singletonList(null));
         });
     }
 
@@ -133,14 +125,6 @@ public class EphemeralGraphGraphArgTest {
         Graph gNodesEdges = factory.createGraph(new EphemeralNodeSet(n1, n2), new EphemeralEdgeSet(e1));
         assertEquals(2, gNodesEdges.nodes().size());
         assertEquals(1, gNodesEdges.edges().size());
-
-        Graph gGraphs = factory.createGraph(gNodes, gEdges);
-        assertEquals(2, gGraphs.nodes().size());
-        assertEquals(1, gGraphs.edges().size());
-
-        Graph gGraphsColl = factory.createGraph(java.util.Arrays.asList(gNodes, gEdges));
-        assertEquals(2, gGraphsColl.nodes().size());
-        assertEquals(1, gGraphsColl.edges().size());
     }
 
     @Test

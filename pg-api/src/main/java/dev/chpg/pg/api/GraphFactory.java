@@ -1,6 +1,5 @@
 package dev.chpg.pg.api;
 
-import java.util.Collection;
 
 /**
  * A factory for creating Graph instances.
@@ -38,13 +37,8 @@ public interface GraphFactory {
     public Graph createGraph(NodeSet nodes, EdgeSet edges);
 
     /**
-     * Instantiates and returns a new Graph native to this implementation containing the given graphs.
+     * Instantiates and returns a new Graph native to this implementation containing the given graph.
      */
-    public Graph createGraph(Graph... graphs);
-
-    /**
-     * Instantiates and returns a new Graph native to this implementation containing the given graphs.
-     */
-    public Graph createGraph(Collection<Graph> graphs);
+    public Graph createGraph(Graph graph);
 
 }

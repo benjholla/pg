@@ -69,19 +69,10 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     }
 
     @Override
-    public EphemeralGraph createGraph(Graph... graphs) {
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        validateLineage(graphs);
-        return new EphemeralGraph(this.idGenerator, graphs);
-    }
-
-    @Override
-    public EphemeralGraph createGraph(Collection<Graph> graphs) {
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        validateLineage(graphs.toArray(new Graph[0]));
-        return new EphemeralGraph(this.idGenerator, graphs);
+    public EphemeralGraph createGraph(Graph graph) {
+        Objects.requireNonNull(graph, "graph cannot be null");
+        validateLineage(graph);
+        return new EphemeralGraph(this.idGenerator, graph.nodes(), graph.edges());
     }
 
     /**
@@ -214,53 +205,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         addAllNodes(nodes);
         addAllEdges(edges);
     }
-
-    /**
-     * Constructs a new graph of the nodes and edges collectively contained in the given graphs
-     */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, Graph... graphs) {
-        this(idGenerator, sumNodes(graphs), sumEdges(graphs));
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        for (Graph graph : graphs) {
-            addAllNodes(graph.nodes());
-            addAllEdges(graph.edges());
-        }
-    }
-
-    private static int sumNodes(Graph[] graphs) {
-        int sum = 0;
-        if (graphs != null) {
-            for (Graph g : graphs) {
-                if (g != null) { sum += g.nodes().size(); }
-            }
-        }
-        return sum;
-    }
-
-    private static int sumEdges(Graph[] graphs) {
-        int sum = 0;
-        if (graphs != null) {
-            for (Graph g : graphs) {
-                if (g != null) { sum += g.edges().size(); }
-            }
-        }
-        return sum;
-    }
-
-    /**
-     * Constructs a new graph of the nodes and edges collectively contained in the given graphs
-     */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, Collection<Graph> graphs) {
-        this(idGenerator);
-        Objects.requireNonNull(graphs, "graphs cannot be null");
-        for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        for(Graph graph : graphs) {
-            addAllNodes(graph.nodes());
-            addAllEdges(graph.edges());
-        }
-    }
-
 
     /**
      * Gets incoming edges to node
@@ -698,7 +642,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph forwardStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin);
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getOutEdgesFromNode(node).ifPresent(outEdges -> {
                 for(Edge edge : outEdges){
@@ -728,7 +672,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph reverseStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin);
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getInEdgesToNode(node).ifPresent(inEdges -> {
                 for(Edge edge : inEdges){
@@ -947,7 +891,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph forward(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin);
+        Graph result = createGraph(origin);
         NodeSet frontier = new EphemeralNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -981,7 +925,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph reverse(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin);
+        Graph result = createGraph(origin);
         NodeSet frontier = new EphemeralNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -1022,7 +966,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph induce(EdgeSet edges){
         Objects.requireNonNull(edges, "edges cannot be null");
-        Graph result = new EphemeralGraph(this.idGenerator, this);
+        Graph result = createGraph(this);
         for(Edge edge : edges) {
             if(result.nodes().contains(edge.from()) && result.nodes().contains(edge.to())) {
                 result.addEdge(edge);

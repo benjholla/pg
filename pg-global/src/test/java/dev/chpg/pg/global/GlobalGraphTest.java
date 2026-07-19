@@ -125,11 +125,11 @@ public class GlobalGraphTest {
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
-        GlobalGraph withGraphs = new GlobalGraph(withNodes, withEdges);
+        Graph withGraphs = withNodes.union(withEdges);
         assertEquals(3, withGraphs.nodes().size());
         assertEquals(2, withGraphs.edges().size());
 
-        GlobalGraph withGraphsColl = new GlobalGraph(java.util.Arrays.asList(withNodes, withEdges));
+        Graph withGraphsColl = withNodes.union(withEdges);
         assertEquals(3, withGraphsColl.nodes().size());
         assertEquals(2, withGraphsColl.edges().size());
     }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
-import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.api.TagSet;
@@ -51,9 +50,5 @@ public class NullElementTest {
         assertThrows(NullPointerException.class, () -> new GlobalGraph(new Edge[]{null}));
         assertThrows(NullPointerException.class, () -> new GlobalGraph((EdgeSet) null));
         assertThrows(NullPointerException.class, () -> new GlobalGraph((NodeSet) null, (EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph(new Graph[]{null}));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph((java.util.Collection<Graph>) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph(java.util.Arrays.asList((Graph) null)));
     }
 }
