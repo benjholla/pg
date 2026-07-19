@@ -67,6 +67,12 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return new GlobalGraph(nodes, edges);
     }
 
+    @Override
+    public GlobalGraph createGraph(Graph graph) {
+        Objects.requireNonNull(graph, "graph cannot be null");
+        return new GlobalGraph(graph.nodes(), graph.edges());
+    }
+
     public GlobalGraph() {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -609,7 +615,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forwardStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getOutEdgesFromNode(node).ifPresent(outEdges -> {
                 for(Edge edge : outEdges){
@@ -638,7 +644,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverseStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getInEdgesToNode(node).ifPresent(inEdges -> {
                 for(Edge edge : inEdges){
@@ -826,7 +832,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forward(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         NodeSet frontier = new GlobalNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -859,7 +865,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverse(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         NodeSet frontier = new GlobalNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -900,7 +906,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph induce(EdgeSet edges){
         Objects.requireNonNull(edges, "edges cannot be null");
-        Graph result = new GlobalGraph(this.nodes(), this.edges());
+        Graph result = createGraph(this);
         for(Edge edge : edges) {
             if(result.nodes().contains(edge.from()) && result.nodes().contains(edge.to())) {
                 result.addEdge(edge);

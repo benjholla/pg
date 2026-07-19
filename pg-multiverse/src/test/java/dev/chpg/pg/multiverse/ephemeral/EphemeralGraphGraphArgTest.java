@@ -78,6 +78,10 @@ public class EphemeralGraphGraphArgTest {
             factory.createGraph(new Edge[]{null});
         });
 
+        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
+            factory.createGraph((Graph) null);
+        });
+
         // Collections
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             factory.createGraph((NodeSet) null);

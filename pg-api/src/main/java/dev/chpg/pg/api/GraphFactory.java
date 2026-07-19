@@ -36,4 +36,9 @@ public interface GraphFactory {
      */
     public Graph createGraph(NodeSet nodes, EdgeSet edges);
 
+    /**
+     * Instantiates and returns a new Graph native to this implementation containing the given graph.
+     */
+    public Graph createGraph(Graph graph);
+
 }

@@ -68,6 +68,13 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return new EphemeralGraph(this.idGenerator, nodes, edges);
     }
 
+    @Override
+    public EphemeralGraph createGraph(Graph graph) {
+        Objects.requireNonNull(graph, "graph cannot be null");
+        validateLineage(graph);
+        return new EphemeralGraph(this.idGenerator, graph.nodes(), graph.edges());
+    }
+
     /**
      * Constructs a new empty graph.
      */
@@ -617,7 +624,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph forwardStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getOutEdgesFromNode(node).ifPresent(outEdges -> {
                 for(Edge edge : outEdges){
@@ -647,7 +654,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph reverseStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         for(Node node : origin.nodes()){
             getInEdgesToNode(node).ifPresent(inEdges -> {
                 for(Edge edge : inEdges){
@@ -842,7 +849,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph forward(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         NodeSet frontier = new EphemeralNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -876,7 +883,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph reverse(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
         validateLineage(origin);
-        Graph result = new EphemeralGraph(this.idGenerator, origin.nodes(), origin.edges());
+        Graph result = createGraph(origin);
         NodeSet frontier = new EphemeralNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
@@ -917,7 +924,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph induce(EdgeSet edges){
         Objects.requireNonNull(edges, "edges cannot be null");
-        Graph result = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
+        Graph result = createGraph(this);
         for(Edge edge : edges) {
             if(result.nodes().contains(edge.from()) && result.nodes().contains(edge.to())) {
                 result.addEdge(edge);

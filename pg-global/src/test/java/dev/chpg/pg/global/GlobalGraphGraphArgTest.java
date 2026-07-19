@@ -77,6 +77,10 @@ public class GlobalGraphGraphArgTest {
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph(new Edge[]{null});
         });
+        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
+            graph.createGraph((Graph) null);
+        });
+
         // Collections
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph((NodeSet) null);

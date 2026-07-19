@@ -149,4 +149,4 @@ The Graph API uses distinct terminology to clarify behavior when returning colle
 Locking in UnmodifiableLiveNodeSet (for the 4-pillar internal maps) and ImmutableNodeSet (for the functional math and .withAttribute() returns) provides an incredibly disciplined internal vocabulary.
 
 ### 6. Collection Constraints (No Varargs)
-pg-api strictly bans varargs for collections and query operations to prevent hidden GC allocations and lazy-evaluation bugs. Varargs are exclusively reserved for structural constructors using concrete elements (Node..., Edge...).
+pg-api strictly bans varargs and collections for query operations to prevent hidden GC allocations and lazy-evaluation bugs. Varargs are exclusively reserved for structural constructors using concrete elements (Node..., Edge...).
