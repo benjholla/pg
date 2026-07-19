@@ -108,6 +108,14 @@ public interface NodeSet extends Set<Node> {
     boolean isMaterialized();
 
     /**
+     * Returns true if the size of the set can be determined in O(1) time
+     * without iterating or evaluating the elements.
+     */
+    default boolean isSizeKnown() {
+        return true;
+    }
+
+    /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
      */
     Set<Integer> ids();
