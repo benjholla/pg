@@ -166,6 +166,11 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
 
 
     @Override
+    public boolean isSizeKnown() {
+        return false;
+    }
+
+    @Override
     public boolean isMaterialized() {
         return false;
     }

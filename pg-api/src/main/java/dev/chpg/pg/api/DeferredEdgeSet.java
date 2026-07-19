@@ -166,6 +166,11 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
 
     @Override
+    public boolean isSizeKnown() {
+        return false;
+    }
+
+    @Override
     public boolean isMaterialized() {
         return false;
     }

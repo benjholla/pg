@@ -706,10 +706,28 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return union(new EphemeralGraph(this.idGenerator, edges));
     }
 
+
+    private int topologicalVolume() {
+        return this.nodes().size() + this.edges().size();
+    }
+
+    private int topologicalVolume(Graph g) {
+        return g.nodes().size() + g.edges().size();
+    }
+
+    private boolean isSizeKnown(Graph g) {
+        return g.nodes().isSizeKnown() && g.edges().isSizeKnown();
+    }
     @Override
     public Graph union(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
+
+        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
+            if (this.topologicalVolume() < this.topologicalVolume(graph)) {
+                return graph.union(this);
+            }
+        }
         Graph union = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
@@ -782,6 +800,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph intersection(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
+
+        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
+            if (this.topologicalVolume() > this.topologicalVolume(graph)) {
+                return graph.intersection(this);
+            }
+        }
         Graph intersection = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
         if(intersection.isEmpty()) {
             return intersection;

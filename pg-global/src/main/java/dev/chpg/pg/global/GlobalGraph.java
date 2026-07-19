@@ -696,9 +696,27 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return union(new GlobalGraph(edges));
     }
 
+
+    private int topologicalVolume() {
+        return this.nodes().size() + this.edges().size();
+    }
+
+    private int topologicalVolume(Graph g) {
+        return g.nodes().size() + g.edges().size();
+    }
+
+    private boolean isSizeKnown(Graph g) {
+        return g.nodes().isSizeKnown() && g.edges().isSizeKnown();
+    }
     @Override
     public Graph union(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
+
+        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
+            if (this.topologicalVolume() < this.topologicalVolume(graph)) {
+                return graph.union(this);
+            }
+        }
         Graph union = new GlobalGraph(this.nodes(), this.edges());
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
@@ -768,6 +786,12 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph intersection(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
+
+        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
+            if (this.topologicalVolume() > this.topologicalVolume(graph)) {
+                return graph.intersection(this);
+            }
+        }
         Graph intersection = new GlobalGraph(this.nodes(), this.edges());
         if(intersection.isEmpty()) {
             return intersection;
