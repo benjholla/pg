@@ -1,6 +1,5 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,9 +45,11 @@ public final class EphemeralEdgeSet implements EdgeSet {
      * @param initialEdges the initial edges
      */
     public EphemeralEdgeSet(Edge... initialEdges) {
-        this();
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
-        addAll(Arrays.asList(initialEdges));
+        this.internalSet = new HashSet<>((int) (initialEdges.length / 0.75f) + 1);
+        for (Edge edge : initialEdges) {
+            add(edge);
+        }
     }
 
     /**

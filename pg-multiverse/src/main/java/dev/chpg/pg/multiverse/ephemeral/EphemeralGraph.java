@@ -106,6 +106,16 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         this.idGenerator = idGenerator;
     }
 
+    private EphemeralGraph(EphemeralIdGenerator idGenerator, int nodeCapacity, int edgeCapacity) {
+        int nodeMapCapacity = (int) (nodeCapacity / 0.75f) + 1;
+        int edgeMapCapacity = (int) (edgeCapacity / 0.75f) + 1;
+        this.nodes = new HashMap<>(nodeMapCapacity);
+        this.edges = new HashMap<>(edgeMapCapacity);
+        this.inEdges = new HashMap<>(nodeMapCapacity);
+        this.outEdges = new HashMap<>(nodeMapCapacity);
+        this.idGenerator = idGenerator;
+    }
+
 
     /**
      * Ensures that all incoming graphs belong to the exact same Ephemeral ID sandbox.
@@ -147,10 +157,10 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
      * Constructs a new graph of the given nodes
      */
     private EphemeralGraph(EphemeralIdGenerator idGenerator, Node... nodes) {
-        this(idGenerator);
+        this(idGenerator, nodes.length, 0);
         Objects.requireNonNull(nodes, "nodes cannot be null");
         for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
-        for(Node node : nodes) {
+        for (Node node : nodes) {
             addNode(node);
         }
     }
@@ -168,10 +178,17 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
      * Constructs a new graph of the given edges and respective edge nodes
      */
     private EphemeralGraph(EphemeralIdGenerator idGenerator, Edge... edges) {
-        this(idGenerator);
+        // Over-allocation is Cheap, Rehashing is Expensive
+        // In a highly connected graph, the true number of unique nodes will be much lower than edges.length * 2.
+        // We will likely over-estimate the required capacity. However, in Java HashMap or HashSet implementations,
+        // the "capacity" just dictates the length of the internal bucket array. Over-estimating by a factor of 2 or 3
+        // only costs a few kilobytes of empty array slots. Under-estimating, on the other hand, means the Map hits
+        // its load factor mid-loop, creates a new, larger bucket array, and painstakingly recalculates the hash
+        // and shifts every single existing node into the new buckets.
+        this(idGenerator, edges.length * 2, edges.length);
         Objects.requireNonNull(edges, "edges cannot be null");
         for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        for(Edge edge : edges) {
+        for (Edge edge : edges) {
             addEdge(edge);
         }
     }
@@ -202,13 +219,33 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
      * Constructs a new graph of the nodes and edges collectively contained in the given graphs
      */
     private EphemeralGraph(EphemeralIdGenerator idGenerator, Graph... graphs) {
-        this(idGenerator);
+        this(idGenerator, sumNodes(graphs), sumEdges(graphs));
         Objects.requireNonNull(graphs, "graphs cannot be null");
         for (Graph g : graphs) { Objects.requireNonNull(g, "graphs elements cannot be null"); }
-        for(Graph graph : graphs) {
+        for (Graph graph : graphs) {
             addAllNodes(graph.nodes());
             addAllEdges(graph.edges());
         }
+    }
+
+    private static int sumNodes(Graph[] graphs) {
+        int sum = 0;
+        if (graphs != null) {
+            for (Graph g : graphs) {
+                if (g != null) { sum += g.nodes().size(); }
+            }
+        }
+        return sum;
+    }
+
+    private static int sumEdges(Graph[] graphs) {
+        int sum = 0;
+        if (graphs != null) {
+            for (Graph g : graphs) {
+                if (g != null) { sum += g.edges().size(); }
+            }
+        }
+        return sum;
     }
 
     /**
