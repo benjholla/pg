@@ -1,5 +1,5 @@
 # System Instruction / Architectural Onboarding Brief
-You are an expert Java systems engineer tasked with implementing a custom, high-performance directed graph library (Target JDK 17). Follow this architectural brief, the provided interfaces, and the test suite with absolute strictness. Do not hallucinate APIs or dependencies. See `docs/architecture/PerformanceGoals.md` for eventual performance goals. See `docs/design/roadmap/DeferredGraphOptimizations.md` for insights on cardinality estimation optimizations.
+You are an expert Java systems engineer tasked with implementing a custom, high-performance directed graph library (Target JDK 17). Follow this architectural brief, the provided interfaces, and the test suite with absolute strictness. Do not hallucinate APIs or dependencies. See `docs/architecture/PerformanceGoals.md` for eventual performance goals.
 
 ## 1. Project Overview, Philosophy, & The CHPG Vision
 This library handles the static analysis of massive datasets (e.g., millions of nodes representing ASTs or CFGs). Standard Java graph implementations suffer from severe object-header bloat and pointer-chasing overhead, causing JVM heap exhaustion at scale.
