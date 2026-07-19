@@ -26,9 +26,11 @@ public final class GlobalNodeSet implements NodeSet {
     }
 
     public GlobalNodeSet(Node... initialNodes) {
-        this();
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
-        addAll(Arrays.asList(initialNodes));
+        this.internalSet = new HashSet<>((int) (initialNodes.length / 0.75f) + 1);
+        for (Node node : initialNodes) {
+            add(node);
+        }
     }
 
     public GlobalNodeSet(Collection<Node> initialNodes) {
