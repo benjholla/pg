@@ -127,11 +127,11 @@ public class EphemeralGraphTest {
         assertEquals(3, withSets.nodes().size());
         assertEquals(2, withSets.edges().size());
 
-        Graph withGraphs = factory.createGraph(withNodes, withEdges);
+        Graph withGraphs = withNodes.union(withEdges);
         assertEquals(3, withGraphs.nodes().size());
         assertEquals(2, withGraphs.edges().size());
 
-        Graph withGraphsColl = factory.createGraph(java.util.Arrays.asList(withNodes, withEdges));
+        Graph withGraphsColl = withNodes.union(withEdges);
         assertEquals(3, withGraphsColl.nodes().size());
         assertEquals(2, withGraphsColl.edges().size());
     }

@@ -53,9 +53,5 @@ public class NullElementTest {
         assertThrows(NullPointerException.class, () -> factory.createGraph(new Edge[]{null}));
         assertThrows(NullPointerException.class, () -> factory.createGraph((EdgeSet) null));
         assertThrows(NullPointerException.class, () -> factory.createGraph((NodeSet) null, (EdgeSet) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph((Graph[]) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph(new Graph[]{null}));
-        assertThrows(NullPointerException.class, () -> factory.createGraph((java.util.Collection<Graph>) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph(java.util.Arrays.asList((Graph) null)));
     }
 }

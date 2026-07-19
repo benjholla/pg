@@ -147,3 +147,6 @@ The Graph API uses distinct terminology to clarify behavior when returning colle
 * **1. ImmutableNodeSet (The Snapshot):** This is the gold standard. The word "Immutable" makes a very specific promise: *the underlying data cannot and will not change, regardless of who holds a reference to it*. This guarantees to the developer that this set is a permanently frozen query result. Future maintainers must never let the backing HashSet escape local scope when constructing this object.
 * **2. UnmodifiableLiveNodeSet (The View):** "Unmodifiable" means *you* cannot modify it through this reference, but the underlying data might still mutate. The developer knows their .add() will violently fail, but they also know the set will dynamically reflect the breathing, living graph topology.
 Locking in UnmodifiableLiveNodeSet (for the 4-pillar internal maps) and ImmutableNodeSet (for the functional math and .withAttribute() returns) provides an incredibly disciplined internal vocabulary.
+
+### 6. Collection Constraints (No Varargs)
+pg-api strictly bans varargs for collections and query operations to prevent hidden GC allocations and lazy-evaluation bugs. Varargs are exclusively reserved for structural constructors using concrete elements (Node..., Edge...).

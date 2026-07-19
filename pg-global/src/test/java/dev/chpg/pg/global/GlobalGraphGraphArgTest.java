@@ -77,13 +77,6 @@ public class GlobalGraphGraphArgTest {
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph(new Edge[]{null});
         });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph((Graph[]) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph(new Graph[]{null});
-        });
-
         // Collections
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph((NodeSet) null);
@@ -96,12 +89,6 @@ public class GlobalGraphGraphArgTest {
         });
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph(new GlobalNodeSet(), (EdgeSet) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph((java.util.Collection<Graph>) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph(java.util.Collections.singletonList(null));
         });
     }
 
@@ -134,14 +121,6 @@ public class GlobalGraphGraphArgTest {
         Graph gNodesEdges = graph.createGraph(new GlobalNodeSet(n1, n2), new GlobalEdgeSet(e1));
         assertEquals(2, gNodesEdges.nodes().size());
         assertEquals(1, gNodesEdges.edges().size());
-
-        Graph gGraphs = graph.createGraph(gNodes, gEdges);
-        assertEquals(2, gGraphs.nodes().size());
-        assertEquals(1, gGraphs.edges().size());
-
-        Graph gGraphsColl = graph.createGraph(java.util.Arrays.asList(gNodes, gEdges));
-        assertEquals(2, gGraphsColl.nodes().size());
-        assertEquals(1, gGraphsColl.edges().size());
     }
 
     @Test
