@@ -47,7 +47,6 @@ import dev.chpg.pg.api.Node.NodeDirection;
  * are heavily optimized based on primitive IDs. Query outputs are often
  * deferred pipelines (zero-allocation) until strictly evaluated.
  * 
- * @param node the node
  */
 public interface Graph {
     /**
@@ -68,7 +67,6 @@ public interface Graph {
      * Add a node to the graph
      *
      * @return Returns true if the graph changed as a result of the operation
-     * @param node the node
      */
     public boolean addNode(Node node);
 
@@ -115,7 +113,6 @@ public interface Graph {
     /**
      * Remove a node from the graph if the given node exists in this graph
      * 
-     * @param node the node
      */
     public boolean removeNode(Node node);
 
@@ -342,7 +339,7 @@ public interface Graph {
      * Yields the union of this graph and the given graph. That is, the resulting
      * graph's nodes are the union of all nodes, and likewise for edges.
      * 
-     * @param graphs the graphs
+     * @param graph the graphs
      */
     public Graph union(Graph graph);
 
@@ -385,7 +382,7 @@ public interface Graph {
      * for removing nodes from a graph, but may not be as useful for operating on
      * edges.
      *
-     * @param graphs the graphs
+     * @param graph the graphs
      */
     public Graph difference(Graph graph);
 
@@ -399,7 +396,7 @@ public interface Graph {
     /**
      * Select this graph, excluding the edges from the given graphs.
      * 
-     * @param graphs the graphs
+     * @param graph the graphs
      */
     public Graph differenceEdges(Graph graph);
 
@@ -426,7 +423,7 @@ public interface Graph {
      * resulting graph's nodes are the intersection of all node sets, and likewise
      * for edges.
      * 
-     * @param graphs the graphs
+     * @param graph the graphs
      */
     public Graph intersection(Graph graph);
 
@@ -552,7 +549,7 @@ public interface Graph {
      * of the edges in the given graph that connect pairs of nodes in the current
      * graph.
      * 
-     * @param graphs the graphs
+     * @param graph the graphs
      */
     public Graph induce(Graph graph);
 
