@@ -1,5 +1,7 @@
 # pg
 
+[![Java CI with Gradle](https://github.com/benjholla/pg/actions/workflows/build.yml/badge.svg)](https://github.com/benjholla/pg/actions/workflows/build.yml)
+
 `pg` is a lightweight, intuitive property graph library for Java. It is designed to provide powerful set-theoretic graph operations and transitive traversals on a flexible property graph model.
 
 ## Why `pg`?
