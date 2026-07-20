@@ -59,8 +59,8 @@ public class EphemeralGraphMissingCoverageTest {
         graph.addNode(c);
 
         assertTrue(graph.linkAllEdges(Arrays.asList(ab, bc)));
-        assertTrue(graph.containsEdge(ab));
-        assertTrue(graph.containsEdge(bc));
+        assertTrue(graph.edges().contains(ab));
+        assertTrue(graph.edges().contains(bc));
 
         // Foreign edge
         dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
@@ -83,15 +83,15 @@ public class EphemeralGraphMissingCoverageTest {
         graph.addNode(c);
         graph.addEdge(ab);
 
-        assertTrue(graph.containsAllNodes(Arrays.asList(a, b)));
-        assertTrue(graph.containsAllNodes(Arrays.asList(a, c)));
+        assertTrue(graph.nodes().containsAll(Arrays.asList(a, b)));
+        assertTrue(graph.nodes().containsAll(Arrays.asList(a, c)));
 
         graph.addNode(a);
         graph.addNode(b);
         graph.addNode(c);
         graph.addEdge(ab);
-        assertTrue(graph.containsAllEdges(Arrays.asList(ab)));
-        assertFalse(graph.containsAllEdges(Arrays.asList(ab, bc)));
+        assertTrue(graph.edges().containsAll(Arrays.asList(ab)));
+        assertFalse(graph.edges().containsAll(Arrays.asList(ab, bc)));
 
         // Foreign node / edge testing
         dev.chpg.pg.api.Node foreignNode2 = new dev.chpg.pg.api.Node() {
@@ -100,7 +100,7 @@ public class EphemeralGraphMissingCoverageTest {
             public dev.chpg.pg.api.AttributeMap attributes() { return null; }
         };
 
-        assertFalse(graph.containsAllNodes(Arrays.asList(a, foreignNode2)));
+        assertFalse(graph.nodes().containsAll(Arrays.asList(a, foreignNode2)));
 
         dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
             public int id() { return 100; }
@@ -109,7 +109,7 @@ public class EphemeralGraphMissingCoverageTest {
             public dev.chpg.pg.api.TagSet tags() { return null; }
             public dev.chpg.pg.api.AttributeMap attributes() { return null; }
         };
-        assertFalse(graph.containsAllEdges(Arrays.asList(ab, foreignEdge)));
+        assertFalse(graph.edges().containsAll(Arrays.asList(ab, foreignEdge)));
     }
 
     @Test

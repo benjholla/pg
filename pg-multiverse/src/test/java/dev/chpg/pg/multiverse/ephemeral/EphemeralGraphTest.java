@@ -107,7 +107,7 @@ public class EphemeralGraphTest {
     @Test
     public void testConstructors() {
         Graph empty = factory.createGraph();
-        assertTrue(empty.isEmpty());
+        assertTrue(empty.nodes().isEmpty());
 
         Graph withNodes = factory.createGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
@@ -233,7 +233,7 @@ public class EphemeralGraphTest {
         assertTrue(betweenStepCB.edges().contains(cb));
 
         Graph emptyBetween = graph.betweenStep(a, e);
-        assertTrue(emptyBetween.isEmpty());
+        assertTrue(emptyBetween.nodes().isEmpty());
     }
 
     @Test

@@ -219,45 +219,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return Optional.ofNullable(outEdges.get(en.id()));
     }
 
-
-    @Override
-    public boolean containsNode(Node node) {
-        // Silent Ignore
-        if (!(node instanceof EphemeralNode en)) { return false; }
-        return nodes.containsKey(en.id());
-    }
-
-    @Override
-    public boolean containsEdge(Edge edge) {
-        // Silent Ignore
-        if (!(edge instanceof EphemeralEdge ee)) { return false; }
-        return edges.containsKey(ee.id());
-    }
-
-    @Override
-    public boolean containsAllNodes(Collection<? extends Node> nodes) {
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for (Node node : nodes) {
-            Objects.requireNonNull(node, "node set elements cannot be null");
-            if (!containsNode(node)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean containsAllEdges(Collection<? extends Edge> edges) {
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge edge : edges) {
-            Objects.requireNonNull(edge, "edge set elements cannot be null");
-            if (!containsEdge(edge)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public Optional<Node> node(int id) {
         return Optional.ofNullable(nodes.get(id));
@@ -510,12 +471,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         return new EphemeralUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
     }
 
-
-    @Override
-    public boolean isEmpty() {
-        return nodes.isEmpty();
-    }
-
     @Override
     public EdgeSet edges(Node node, NodeDirection direction){
         if(direction == NodeDirection.IN){
@@ -745,7 +700,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
         Graph difference = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
-        if(difference.isEmpty()) {
+        if(difference.nodes().isEmpty()) {
             return difference;
         }
         for (Node node : graph.nodes()) {
@@ -799,7 +754,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             }
         }
         Graph intersection = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
-        if(intersection.isEmpty()) {
+        if(intersection.nodes().isEmpty()) {
             return intersection;
         }
         intersection.retainAllNodes(graph.nodes());
@@ -830,11 +785,11 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph forward = forwardStep(from);
-        if(forward.isEmpty()) {
+        if(forward.nodes().isEmpty()) {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph reverse = reverseStep(to);
-        if(reverse.isEmpty()) {
+        if(reverse.nodes().isEmpty()) {
             return new EphemeralGraph(this.idGenerator);
         }
         return forward.intersection(reverse);
@@ -863,11 +818,11 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph forward = forward(from);
-        if(forward.isEmpty()) {
+        if(forward.nodes().isEmpty()) {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph reverse = reverse(to);
-        if(reverse.isEmpty()) {
+        if(reverse.nodes().isEmpty()) {
             return new EphemeralGraph(this.idGenerator);
         }
         return forward.intersection(reverse);

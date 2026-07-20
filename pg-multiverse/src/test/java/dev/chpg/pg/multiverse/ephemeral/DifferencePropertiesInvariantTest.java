@@ -53,7 +53,7 @@ public class DifferencePropertiesInvariantTest {
         // ∅ \ A = ∅
         Graph empty = factory.createGraph();
         Graph diff = empty.difference(gA);
-        assertTrue(diff.isEmpty());
+        assertTrue(diff.nodes().isEmpty());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class DifferencePropertiesInvariantTest {
     public void testDifferenceSelf() {
         // A \ A = ∅
         Graph diff = gA.difference(gA);
-        assertTrue(diff.isEmpty());
+        assertTrue(diff.nodes().isEmpty());
     }
 
     @Test

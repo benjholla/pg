@@ -23,15 +23,15 @@ public class EmptyInputInvariantTest {
         Graph empty = new GlobalGraph();
 
         Graph result1 = graph.forward(empty);
-        assertTrue(result1.isEmpty(), "forward(empty) should be empty");
+        assertTrue(result1.nodes().isEmpty(), "forward(empty) should be empty");
 
         Graph result2 = graph.reverse(empty);
-        assertTrue(result2.isEmpty(), "reverse(empty) should be empty");
+        assertTrue(result2.nodes().isEmpty(), "reverse(empty) should be empty");
 
         Graph result3 = graph.forwardStep(empty);
-        assertTrue(result3.isEmpty(), "forwardStep(empty) should be empty");
+        assertTrue(result3.nodes().isEmpty(), "forwardStep(empty) should be empty");
 
         Graph result4 = graph.reverseStep(empty);
-        assertTrue(result4.isEmpty(), "reverseStep(empty) should be empty");
+        assertTrue(result4.nodes().isEmpty(), "reverseStep(empty) should be empty");
     }
 }

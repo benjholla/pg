@@ -28,7 +28,7 @@ public class GraphClearTest {
 
         assertEquals(0, graph.nodes().size());
         assertEquals(0, graph.edges().size());
-        assertTrue(graph.isEmpty());
+        assertTrue(graph.nodes().isEmpty());
     }
 
     @Test
