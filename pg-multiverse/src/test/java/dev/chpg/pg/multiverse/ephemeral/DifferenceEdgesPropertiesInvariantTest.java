@@ -53,7 +53,7 @@ public class DifferenceEdgesPropertiesInvariantTest {
         // ∅ \_e A = ∅
         Graph empty = factory.createGraph();
         Graph diff = empty.differenceEdges(gA);
-        assertTrue(diff.isEmpty());
+        assertTrue(diff.nodes().isEmpty());
     }
 
     @Test

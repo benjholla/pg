@@ -26,8 +26,8 @@ public class CrossGraphContaminationTest {
 
         assertThrows(IllegalArgumentException.class, () -> globalGraph.addNode(ephemeralNode));
         assertThrows(IllegalArgumentException.class, () -> globalGraph.addEdge(ephemeralEdge));
-        assertFalse(globalGraph.containsNode(ephemeralNode));
-        assertFalse(globalGraph.containsEdge(ephemeralEdge));
+        assertFalse(globalGraph.nodes().contains(ephemeralNode));
+        assertFalse(globalGraph.edges().contains(ephemeralEdge));
     }
 
     @Test
@@ -40,8 +40,8 @@ public class CrossGraphContaminationTest {
 
         assertThrows(IllegalArgumentException.class, () -> ephemeralGraph.addNode(globalNode));
         assertThrows(IllegalArgumentException.class, () -> ephemeralGraph.addEdge(globalEdge));
-        assertFalse(ephemeralGraph.containsNode(globalNode));
-        assertFalse(ephemeralGraph.containsEdge(globalEdge));
+        assertFalse(ephemeralGraph.nodes().contains(globalNode));
+        assertFalse(ephemeralGraph.edges().contains(globalEdge));
     }
 
     @Test

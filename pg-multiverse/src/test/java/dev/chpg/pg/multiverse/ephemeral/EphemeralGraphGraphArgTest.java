@@ -104,7 +104,7 @@ public class EphemeralGraphGraphArgTest {
         Edge e1 = factory.createEdge(n1, n2);
 
         Graph gEmpty = factory.createGraph();
-        assertTrue(gEmpty.isEmpty());
+        assertTrue(gEmpty.nodes().isEmpty());
 
         Graph gNodes = factory.createGraph(n1, n2);
         assertEquals(2, gNodes.nodes().size());
@@ -138,18 +138,18 @@ public class EphemeralGraphGraphArgTest {
 
         NodeSet emptyFrom = new EphemeralNodeSet();
         NodeSet validTo = new EphemeralNodeSet(n2);
-        assertTrue(graph.between(emptyFrom, validTo).isEmpty());
-        assertTrue(graph.betweenStep(emptyFrom, validTo).isEmpty());
+        assertTrue(graph.between(emptyFrom, validTo).nodes().isEmpty());
+        assertTrue(graph.betweenStep(emptyFrom, validTo).nodes().isEmpty());
 
         NodeSet validFrom = new EphemeralNodeSet(n1);
         NodeSet emptyTo = new EphemeralNodeSet();
-        assertTrue(graph.between(validFrom, emptyTo).isEmpty());
-        assertTrue(graph.betweenStep(validFrom, emptyTo).isEmpty());
+        assertTrue(graph.between(validFrom, emptyTo).nodes().isEmpty());
+        assertTrue(graph.betweenStep(validFrom, emptyTo).nodes().isEmpty());
 
         NodeSet isolated = new EphemeralNodeSet(n3);
-        assertTrue(graph.between(isolated, validTo).isEmpty());
-        assertTrue(graph.betweenStep(isolated, validTo).isEmpty());
-        assertTrue(graph.between(validFrom, isolated).isEmpty());
-        assertTrue(graph.betweenStep(validFrom, isolated).isEmpty());
+        assertTrue(graph.between(isolated, validTo).nodes().isEmpty());
+        assertTrue(graph.betweenStep(isolated, validTo).nodes().isEmpty());
+        assertTrue(graph.between(validFrom, isolated).nodes().isEmpty());
+        assertTrue(graph.betweenStep(validFrom, isolated).nodes().isEmpty());
     }
 }

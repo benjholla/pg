@@ -181,45 +181,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return Optional.ofNullable(outEdges.get(gn.id()));
     }
 
-
-    @Override
-    public boolean containsNode(Node node) {
-        // Silent Ignore
-        if (!(node instanceof GlobalNode gn)) { return false; }
-        return nodes.containsKey(gn.id());
-    }
-
-    @Override
-    public boolean containsEdge(Edge edge) {
-        // Silent Ignore
-        if (!(edge instanceof GlobalEdge ge)) { return false; }
-        return edges.containsKey(ge.id());
-    }
-
-    @Override
-    public boolean containsAllNodes(Collection<? extends Node> nodes) {
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for (Node node : nodes) {
-            Objects.requireNonNull(node, "node set elements cannot be null");
-            if (!containsNode(node)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean containsAllEdges(Collection<? extends Edge> edges) {
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge edge : edges) {
-            Objects.requireNonNull(edge, "edge set elements cannot be null");
-            if (!containsEdge(edge)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public Optional<Node> node(int id) {
         return Optional.ofNullable(nodes.get(id));
@@ -473,12 +434,6 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return new GlobalUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
     }
 
-
-    @Override
-    public boolean isEmpty() {
-        return nodes.isEmpty();
-    }
-
     @Override
     public EdgeSet edges(Node node, NodeDirection direction){
         if(direction == NodeDirection.IN){
@@ -704,7 +659,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph difference(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        if(difference.isEmpty()) {
+        if(difference.nodes().isEmpty()) {
             return difference;
         }
         for (Node node : graph.nodes()) {
@@ -756,7 +711,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             }
         }
         Graph intersection = new GlobalGraph(this.nodes(), this.edges());
-        if(intersection.isEmpty()) {
+        if(intersection.nodes().isEmpty()) {
             return intersection;
         }
         intersection.retainAllNodes(graph.nodes());
@@ -786,11 +741,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             return new GlobalGraph();
         }
         Graph forward = forwardStep(from);
-        if(forward.isEmpty()) {
+        if(forward.nodes().isEmpty()) {
             return new GlobalGraph();
         }
         Graph reverse = reverseStep(to);
-        if(reverse.isEmpty()) {
+        if(reverse.nodes().isEmpty()) {
             return new GlobalGraph();
         }
         return forward.intersection(reverse);
@@ -818,11 +773,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             return new GlobalGraph();
         }
         Graph forward = forward(from);
-        if(forward.isEmpty()) {
+        if(forward.nodes().isEmpty()) {
             return new GlobalGraph();
         }
         Graph reverse = reverse(to);
-        if(reverse.isEmpty()) {
+        if(reverse.nodes().isEmpty()) {
             return new GlobalGraph();
         }
         return forward.intersection(reverse);

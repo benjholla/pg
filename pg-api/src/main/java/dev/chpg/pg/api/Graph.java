@@ -50,35 +50,6 @@ import dev.chpg.pg.api.Node.NodeDirection;
  * @param node the node
  */
 public interface Graph {
-
-    /**
-     * Returns true if the graph contains the specified node.
-     * 
-     * @param node the node
-     */
-    public boolean containsNode(Node node);
-
-    /**
-     * Returns true if the graph contains the specified edge.
-     * 
-     * @param edge the edge
-     */
-    public boolean containsEdge(Edge edge);
-
-    /**
-     * Returns true if the graph contains all of the specified nodes.
-     * 
-     * @param nodes the nodes
-     */
-    public boolean containsAllNodes(Collection<? extends Node> nodes);
-
-    /**
-     * Returns true if the graph contains all of the specified edges.
-     * 
-     * @param edges the edges
-     */
-    public boolean containsAllEdges(Collection<? extends Edge> edges);
-
     /**
      * Returns the node denoted by the given id if one exists
      * 
@@ -216,12 +187,6 @@ public interface Graph {
      * Return an immutable set of edges in the graph
      */
     public EdgeSet edges();
-
-    /**
-     * Returns true if the graph empty (has no nodes)
-     */
-    public boolean isEmpty();
-
     /**
      * Gets the node's predecessor or successor edges in this graph
      * 

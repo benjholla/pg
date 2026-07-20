@@ -33,7 +33,7 @@ public class DisjointGraphInvariantTest {
     @Test
     public void testDisjointIntersectionIsEmpty() {
         Graph intersection = graphA.intersection(graphB);
-        assertTrue(intersection.isEmpty());
+        assertTrue(intersection.nodes().isEmpty());
         assertEquals(0, intersection.nodes().size());
         assertEquals(0, intersection.edges().size());
     }
@@ -56,6 +56,6 @@ public class DisjointGraphInvariantTest {
 
         // Between a1 and b2 should be completely empty since there is no path between graphA and graphB
         Graph between = unionGraph.between(a1, b2);
-        assertTrue(between.isEmpty());
+        assertTrue(between.nodes().isEmpty());
     }
 }

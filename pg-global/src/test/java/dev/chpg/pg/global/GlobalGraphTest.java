@@ -105,7 +105,7 @@ public class GlobalGraphTest {
     @Test
     public void testConstructors() {
         GlobalGraph empty = new GlobalGraph();
-        assertTrue(empty.isEmpty());
+        assertTrue(empty.nodes().isEmpty());
 
         GlobalGraph withNodes = new GlobalGraph(a, b);
         assertEquals(2, withNodes.nodes().size());
@@ -231,7 +231,7 @@ public class GlobalGraphTest {
         assertTrue(betweenStepCB.edges().contains(cb));
 
         Graph emptyBetween = graph.betweenStep(a, e);
-        assertTrue(emptyBetween.isEmpty());
+        assertTrue(emptyBetween.nodes().isEmpty());
     }
 
     @Test

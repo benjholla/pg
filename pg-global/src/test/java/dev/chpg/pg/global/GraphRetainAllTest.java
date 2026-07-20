@@ -35,13 +35,13 @@ public class GraphRetainAllTest {
         assertTrue(changed);
 
         assertEquals(2, graph.nodes().size());
-        assertTrue(graph.containsNode(n1));
-        assertTrue(graph.containsNode(n2));
-        assertFalse(graph.containsNode(n3));
+        assertTrue(graph.nodes().contains(n1));
+        assertTrue(graph.nodes().contains(n2));
+        assertFalse(graph.nodes().contains(n3));
 
         assertEquals(1, graph.edges().size());
-        assertTrue(graph.containsEdge(e1));
-        assertFalse(graph.containsEdge(e2)); // e2 should be removed because n3 is removed
+        assertTrue(graph.edges().contains(e1));
+        assertFalse(graph.edges().contains(e2)); // e2 should be removed because n3 is removed
 
         boolean changedAgain = graph.retainAllNodes(Arrays.asList(n1, n2));
         assertFalse(changedAgain);
@@ -70,8 +70,8 @@ public class GraphRetainAllTest {
 
         assertEquals(3, graph.nodes().size()); // nodes shouldn't be removed
         assertEquals(1, graph.edges().size());
-        assertTrue(graph.containsEdge(e1));
-        assertFalse(graph.containsEdge(e2));
+        assertTrue(graph.edges().contains(e1));
+        assertFalse(graph.edges().contains(e2));
 
         boolean changedAgain = graph.retainAllEdges(Arrays.asList(e1));
         assertFalse(changedAgain);

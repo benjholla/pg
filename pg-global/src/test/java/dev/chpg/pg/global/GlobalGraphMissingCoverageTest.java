@@ -62,8 +62,8 @@ public class GlobalGraphMissingCoverageTest {
         graph.addNode(c);
 
         assertTrue(graph.linkAllEdges(Arrays.asList(ab, bc)));
-        assertTrue(graph.containsEdge(ab));
-        assertTrue(graph.containsEdge(bc));
+        assertTrue(graph.edges().contains(ab));
+        assertTrue(graph.edges().contains(bc));
 
         // Foreign edge
         dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
@@ -83,11 +83,11 @@ public class GlobalGraphMissingCoverageTest {
     public void testContainsAllNodesAndEdges() {
         graph.addEdge(ab);
 
-        assertTrue(graph.containsAllNodes(Arrays.asList(a, b)));
-        assertFalse(graph.containsAllNodes(Arrays.asList(a, c)));
+        assertTrue(graph.nodes().containsAll(Arrays.asList(a, b)));
+        assertFalse(graph.nodes().containsAll(Arrays.asList(a, c)));
 
-        assertTrue(graph.containsAllEdges(Arrays.asList(ab)));
-        assertFalse(graph.containsAllEdges(Arrays.asList(ab, bc)));
+        assertTrue(graph.edges().containsAll(Arrays.asList(ab)));
+        assertFalse(graph.edges().containsAll(Arrays.asList(ab, bc)));
 
         // Foreign node / edge testing
         dev.chpg.pg.api.Node foreignNode = new dev.chpg.pg.api.Node() {
@@ -96,7 +96,7 @@ public class GlobalGraphMissingCoverageTest {
             public dev.chpg.pg.api.AttributeMap attributes() { return null; }
         };
 
-        assertFalse(graph.containsAllNodes(Arrays.asList(a, foreignNode)));
+        assertFalse(graph.nodes().containsAll(Arrays.asList(a, foreignNode)));
 
         dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
             public int id() { return 100; }
@@ -105,7 +105,7 @@ public class GlobalGraphMissingCoverageTest {
             public dev.chpg.pg.api.TagSet tags() { return null; }
             public dev.chpg.pg.api.AttributeMap attributes() { return null; }
         };
-        assertFalse(graph.containsAllEdges(Arrays.asList(ab, foreignEdge)));
+        assertFalse(graph.edges().containsAll(Arrays.asList(ab, foreignEdge)));
     }
 
     @Test

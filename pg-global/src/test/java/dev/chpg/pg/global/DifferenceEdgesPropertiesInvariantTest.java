@@ -49,7 +49,7 @@ public class DifferenceEdgesPropertiesInvariantTest {
         // ∅ \_e A = ∅
         GlobalGraph empty = new GlobalGraph();
         Graph diff = empty.differenceEdges(gA);
-        assertTrue(diff.isEmpty());
+        assertTrue(diff.nodes().isEmpty());
     }
 
     @Test

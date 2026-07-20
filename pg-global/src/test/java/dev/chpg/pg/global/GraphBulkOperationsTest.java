@@ -33,13 +33,13 @@ public class GraphBulkOperationsTest {
 
     @Test
     public void testAddAllNodes() {
-        assertTrue(graph.isEmpty());
+        assertTrue(graph.nodes().isEmpty());
         boolean changed = graph.addAllNodes(Arrays.asList(n1, n2, n3));
         assertTrue(changed);
         assertEquals(3, graph.nodes().size());
-        assertTrue(graph.containsNode(n1));
-        assertTrue(graph.containsNode(n2));
-        assertTrue(graph.containsNode(n3));
+        assertTrue(graph.nodes().contains(n1));
+        assertTrue(graph.nodes().contains(n2));
+        assertTrue(graph.nodes().contains(n3));
 
         // Adding already existing nodes should return false
         changed = graph.addAllNodes(Arrays.asList(n1, n2));
@@ -49,13 +49,13 @@ public class GraphBulkOperationsTest {
 
     @Test
     public void testAddAllEdges() {
-        assertTrue(graph.isEmpty());
+        assertTrue(graph.nodes().isEmpty());
         boolean changed = graph.addAllEdges(Arrays.asList(e1, e2));
         assertTrue(changed);
         assertEquals(3, graph.nodes().size()); // n1, n2, n3 implicitly added
         assertEquals(2, graph.edges().size());
-        assertTrue(graph.containsEdge(e1));
-        assertTrue(graph.containsEdge(e2));
+        assertTrue(graph.edges().contains(e1));
+        assertTrue(graph.edges().contains(e2));
 
         // Adding already existing edges should return false
         changed = graph.addAllEdges(Arrays.asList(e1));
@@ -94,8 +94,8 @@ public class GraphBulkOperationsTest {
         assertTrue(changed);
 
         assertEquals(2, graph.nodes().size());
-        assertTrue(graph.containsNode(n1));
-        assertTrue(graph.containsNode(n4));
+        assertTrue(graph.nodes().contains(n1));
+        assertTrue(graph.nodes().contains(n4));
 
         // Removing n2 and n3 should remove all incident edges (e1, e2, e3)
         assertEquals(0, graph.edges().size());
@@ -116,9 +116,9 @@ public class GraphBulkOperationsTest {
 
         assertEquals(4, graph.nodes().size()); // Nodes should remain
         assertEquals(1, graph.edges().size());
-        assertTrue(graph.containsEdge(e2));
-        assertFalse(graph.containsEdge(e1));
-        assertFalse(graph.containsEdge(e3));
+        assertTrue(graph.edges().contains(e2));
+        assertFalse(graph.edges().contains(e1));
+        assertFalse(graph.edges().contains(e3));
 
         // Removing already non-existent edges should return false
         changed = graph.removeAllEdges(Arrays.asList(e1, e3));
