@@ -87,6 +87,7 @@ public class GraphBulkOperationsTest {
         assertEquals(0, graph.edges().size());
     }
 
+    @Test
     public void testRemoveAllNodes() {
         graph.addAllEdges(Arrays.asList(e1, e2, e3));
         assertEquals(4, graph.nodes().size());
