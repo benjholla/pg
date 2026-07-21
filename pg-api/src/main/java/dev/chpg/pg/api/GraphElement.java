@@ -1,7 +1,21 @@
 package dev.chpg.pg.api;
 
 /**
- * Represents a fundamental entity within the property graph, such as a {@link Node} or an {@link Edge}.
+ * <b>What it represents:</b> A fundamental entity within the property graph, such as a {@link Node} or an {@link Edge}.
+ * <p>
+ * <b>Why it exists:</b> To provide a unified abstraction for all topological entities within the graph, guaranteeing they share an identity, tags, and properties.
+ * <p>
+ * <b>When to use it:</b> Primarily as a foundational interface. Code should generally interact with the more specific {@link Node} or {@link Edge} interfaces.
+ * <p>
+ * <b>Common usage patterns:</b>
+ * <ul>
+ * <li>Extracting the primitive ID for routing or mapping.</li>
+ * <li>Checking common tags or properties shared between nodes and edges.</li>
+ * </ul>
+ * <p>
+ * <b>Thread safety:</b> The interface defines no explicit thread safety guarantees. Thread safety depends on the concrete implementation.
+ * <p>
+ * <b>Performance characteristics:</b> ID retrieval is strictly O(1) and guaranteed to be a primitive int without object overhead.
  * <p>
  * A {@code GraphElement} is defined by three core properties:
  * <ul>
