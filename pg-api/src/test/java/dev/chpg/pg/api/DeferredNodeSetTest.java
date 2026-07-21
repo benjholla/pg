@@ -1,11 +1,9 @@
 package dev.chpg.pg.api;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -141,10 +139,10 @@ public class DeferredNodeSetTest {
 
         public TestNode(int id, String tag, String attrKey, Object attrVal) {
             this.id = id;
-            if (tag != null) tags.add(tag);
+            if (tag != null) { tags.add(tag); }
             if (attrKey != null && attrVal != null) {
-                if (attrVal instanceof String) attributes.put(attrKey, (String) attrVal);
-                if (attrVal instanceof Integer) attributes.put(attrKey, (Integer) attrVal);
+                if (attrVal instanceof String) { attributes.put(attrKey, (String) attrVal); }
+                if (attrVal instanceof Integer) { attributes.put(attrKey, (Integer) attrVal); }
             }
         }
 
@@ -170,8 +168,8 @@ public class DeferredNodeSetTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
+            if (this == obj) { return true; }
+            if (obj == null || getClass() != obj.getClass()) { return false; }
             return id == ((TestNode) obj).id;
         }
     }

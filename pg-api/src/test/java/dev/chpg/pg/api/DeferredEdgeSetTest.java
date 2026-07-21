@@ -1,11 +1,9 @@
 package dev.chpg.pg.api;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -151,11 +149,11 @@ public class DeferredEdgeSetTest {
             this.id = id;
             this.from = from;
             this.to = to;
-            if (tag != null) tags.add(tag);
+            if (tag != null) { tags.add(tag); }
             if (attrKey != null && attrVal != null) {
-                if (attrVal instanceof String) attributes.put(attrKey, (String) attrVal);
-                if (attrVal instanceof Integer) attributes.put(attrKey, (Integer) attrVal);
-                if (attrVal instanceof Double) attributes.put(attrKey, (Double) attrVal);
+                if (attrVal instanceof String) { attributes.put(attrKey, (String) attrVal); }
+                if (attrVal instanceof Integer) { attributes.put(attrKey, (Integer) attrVal); }
+                if (attrVal instanceof Double) { attributes.put(attrKey, (Double) attrVal); }
             }
         }
 
@@ -178,8 +176,8 @@ public class DeferredEdgeSetTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
+            if (this == obj) { return true; }
+            if (obj == null || getClass() != obj.getClass()) { return false; }
             return id == ((TestEdge) obj).id;
         }
     }
