@@ -3,7 +3,21 @@ package dev.chpg.pg.api;
 import java.util.Arrays;
 
 /**
- * Represents a strictly typed, memory-safe property value within the graph ecosystem.
+ * <b>What it represents:</b> A strictly typed, memory-safe property value within the graph ecosystem.
+ * <p>
+ * <b>Why it exists:</b> To provide a memory-safe, predictable, and serialization-friendly type system for graph properties while preventing object-header bloat.
+ * <p>
+ * <b>When to use it:</b> Use {@code AttributeValue} exclusively when mapping key-value properties onto a {@link Node} or {@link Edge} via an {@link AttributeMap}.
+ * <p>
+ * <b>Common usage patterns:</b>
+ * <ul>
+ * <li>Creating values via static factories: {@code AttributeValue.value("Alice")}</li>
+ * <li>Extracting values using modern Java pattern matching (switch expressions).</li>
+ * </ul>
+ * <p>
+ * <b>Thread safety:</b> All implementations of {@code AttributeValue} are immutable records and are inherently thread-safe.
+ * <p>
+ * <b>Performance characteristics:</b> Restricted to primitives and String/byte[] to ensure exact 1:1 mapping during binary serialization without reflection overhead.
  * <p>
  * This sealed interface purposefully restricts graph attributes to a highly curated 
  * subset of Java primitives and core types: {@code String}, {@code boolean}, {@code int}, 
@@ -42,7 +56,8 @@ import java.util.Arrays;
  * actually more memory-efficient per character than forcing the JVM to allocate a 16-bit 
  * {@code char} wrapper and bypass its native string optimizations.</li>
  * </ul>
- * * @implNote For complex application objects, standard 32-bit floats, single characters, or 
+ * <p>
+ * <b>Implementation Note:</b> For complex application objects, standard 32-bit floats, single characters, or
  * external schemas that do not fit natively into this subset, consumers must map them to 
  * standard types (e.g., passing a {@code char} as a 1-character {@code String}) or serialize 
  * them and utilize the {@code ByteArrayValue} escape hatch.
