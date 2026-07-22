@@ -32,6 +32,40 @@ public class GlobalGraphMissingCoverageTest {
     }
 
     @Test
+    public void testAddAndRemoveExceptions() {
+        dev.chpg.pg.api.Node foreignNode = new dev.chpg.pg.api.Node() {
+            public int id() { return 100; }
+            public dev.chpg.pg.api.TagSet tags() { return null; }
+            public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+
+        assertThrows(IllegalArgumentException.class, () -> graph.addNode(foreignNode));
+
+        dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
+            public int id() { return 100; }
+            public dev.chpg.pg.api.Node from() { return a; }
+            public dev.chpg.pg.api.Node to() { return b; }
+            public dev.chpg.pg.api.TagSet tags() { return null; }
+            public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+
+        assertThrows(IllegalArgumentException.class, () -> graph.addEdge(foreignEdge));
+
+        assertFalse(graph.removeNode(foreignNode));
+    }
+
+    @Test
+    public void testEdgesBoth() {
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+
+        EdgeSet bEdges = graph.edges(b, NodeDirection.BOTH);
+        assertEquals(2, bEdges.size());
+        assertTrue(bEdges.contains(ab));
+        assertTrue(bEdges.contains(bc));
+    }
+
+    @Test
     public void testDegree() {
         graph.addEdge(ab);
         graph.addEdge(bc);
@@ -233,5 +267,51 @@ public class GlobalGraphMissingCoverageTest {
         GlobalNodeSet singletonNodeSet = new GlobalNodeSet();
         singletonNodeSet.add(a);
         assertEquals(1, singletonNodeSet.intersect(singletonNodeSet).size());
+    }
+
+    @Test
+    public void testSingleton() {
+        NodeSet singleNode = graph.singleton(a);
+        assertEquals(1, singleNode.size());
+        assertTrue(singleNode.contains(a));
+
+        EdgeSet singleEdge = graph.singleton(ab);
+        assertEquals(1, singleEdge.size());
+        assertTrue(singleEdge.contains(ab));
+    }
+
+    @Test
+    public void testCreateGraph() {
+        GlobalGraph emptyGraph = graph.createGraph();
+        assertTrue(emptyGraph.nodes().isEmpty());
+
+        GlobalGraph nodeGraph = graph.createGraph(a, b);
+        assertEquals(2, nodeGraph.nodes().size());
+
+        GlobalNodeSet nodeSet = new GlobalNodeSet();
+        nodeSet.add(a);
+        nodeSet.add(b);
+        GlobalGraph nodeSetGraph = graph.createGraph(nodeSet);
+        assertEquals(2, nodeSetGraph.nodes().size());
+
+        GlobalGraph edgeGraph = graph.createGraph(ab);
+        assertEquals(2, edgeGraph.nodes().size());
+        assertEquals(1, edgeGraph.edges().size());
+
+        GlobalEdgeSet edgeSet = new GlobalEdgeSet();
+        edgeSet.add(ab);
+        GlobalGraph edgeSetGraph = graph.createGraph(edgeSet);
+        assertEquals(2, edgeSetGraph.nodes().size());
+        assertEquals(1, edgeSetGraph.edges().size());
+
+        GlobalGraph multiGraph = graph.createGraph(nodeSet, edgeSet);
+        assertEquals(2, multiGraph.nodes().size());
+        assertEquals(1, multiGraph.edges().size());
+
+        GlobalGraph copyGraph = graph.createGraph(multiGraph);
+        assertEquals(2, copyGraph.nodes().size());
+        assertEquals(1, copyGraph.edges().size());
+
+        assertEquals(graph, graph.factory());
     }
 }

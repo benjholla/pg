@@ -32,6 +32,142 @@ public class EphemeralGraphMissingCoverageTest {
     }
 
     @Test
+    public void testValidateLineageExceptions() {
+        // Block Cross-Engine Contamination
+        dev.chpg.pg.api.Graph mockGraph = new dev.chpg.pg.api.Graph() {
+            public java.util.Optional<dev.chpg.pg.api.Node> node(int id) { return java.util.Optional.empty(); }
+            public java.util.Optional<dev.chpg.pg.api.Edge> edge(int id) { return java.util.Optional.empty(); }
+            public dev.chpg.pg.api.NodeSet nodes() { return null; }
+            public dev.chpg.pg.api.EdgeSet edges() { return null; }
+            public boolean addNode(dev.chpg.pg.api.Node node) { return false; }
+            public boolean addAllNodes(java.util.Collection<? extends dev.chpg.pg.api.Node> nodes) { return false; }
+            public boolean addEdge(dev.chpg.pg.api.Edge edge) { return false; }
+            public boolean addAllEdges(java.util.Collection<? extends dev.chpg.pg.api.Edge> edges) { return false; }
+            public boolean linkEdge(dev.chpg.pg.api.Edge edge) { return false; }
+            public boolean linkAllEdges(java.util.Collection<? extends dev.chpg.pg.api.Edge> edges) { return false; }
+            public boolean removeNode(dev.chpg.pg.api.Node node) { return false; }
+            public boolean removeAllNodes(java.util.Collection<? extends dev.chpg.pg.api.Node> nodes) { return false; }
+            public boolean retainAllNodes(java.util.Collection<? extends dev.chpg.pg.api.Node> nodes) { return false; }
+            public boolean removeEdge(dev.chpg.pg.api.Edge edge) { return false; }
+            public boolean removeAllEdges(java.util.Collection<? extends dev.chpg.pg.api.Edge> edges) { return false; }
+            public boolean retainAllEdges(java.util.Collection<? extends dev.chpg.pg.api.Edge> edges) { return false; }
+            public void clear() {}
+            public void clearEdges() {}
+            public dev.chpg.pg.api.NodeSet roots() { return null; }
+            public dev.chpg.pg.api.NodeSet leaves() { return null; }
+            public dev.chpg.pg.api.NodeSet isolated() { return null; }
+            public boolean adjacent(dev.chpg.pg.api.Node source, dev.chpg.pg.api.Node target) { return false; }
+            public dev.chpg.pg.api.EdgeSet edges(dev.chpg.pg.api.Node node, dev.chpg.pg.api.Node.NodeDirection direction) { return null; }
+            public dev.chpg.pg.api.EdgeSet edges(dev.chpg.pg.api.Node source, dev.chpg.pg.api.Node target) { return null; }
+            public int degree(dev.chpg.pg.api.Node node, dev.chpg.pg.api.Node.NodeDirection direction) { return 0; }
+            public dev.chpg.pg.api.Graph union(dev.chpg.pg.api.Node... nodes) { return null; }
+            public dev.chpg.pg.api.Graph union(dev.chpg.pg.api.Edge... edges) { return null; }
+            public dev.chpg.pg.api.Graph union(dev.chpg.pg.api.NodeSet nodes) { return null; }
+            public dev.chpg.pg.api.Graph union(dev.chpg.pg.api.EdgeSet edges) { return null; }
+            public dev.chpg.pg.api.Graph union(dev.chpg.pg.api.Graph graph) { return null; }
+            public dev.chpg.pg.api.Graph difference(dev.chpg.pg.api.Node... nodes) { return null; }
+            public dev.chpg.pg.api.Graph difference(dev.chpg.pg.api.Edge... edges) { return null; }
+            public dev.chpg.pg.api.Graph difference(dev.chpg.pg.api.NodeSet nodes) { return null; }
+            public dev.chpg.pg.api.Graph difference(dev.chpg.pg.api.EdgeSet edges) { return null; }
+            public dev.chpg.pg.api.Graph difference(dev.chpg.pg.api.Graph graph) { return null; }
+            public dev.chpg.pg.api.Graph differenceEdges(dev.chpg.pg.api.Edge... edges) { return null; }
+            public dev.chpg.pg.api.Graph differenceEdges(dev.chpg.pg.api.EdgeSet edges) { return null; }
+            public dev.chpg.pg.api.Graph differenceEdges(dev.chpg.pg.api.Graph graph) { return null; }
+            public dev.chpg.pg.api.Graph intersection(dev.chpg.pg.api.Node... nodes) { return null; }
+            public dev.chpg.pg.api.Graph intersection(dev.chpg.pg.api.Edge... edges) { return null; }
+            public dev.chpg.pg.api.Graph intersection(dev.chpg.pg.api.NodeSet nodes) { return null; }
+            public dev.chpg.pg.api.Graph intersection(dev.chpg.pg.api.EdgeSet edges) { return null; }
+            public dev.chpg.pg.api.Graph intersection(dev.chpg.pg.api.Graph graph) { return null; }
+            public dev.chpg.pg.api.Graph betweenStep(dev.chpg.pg.api.Node from, dev.chpg.pg.api.Node to) { return null; }
+            public dev.chpg.pg.api.Graph betweenStep(dev.chpg.pg.api.Graph from, dev.chpg.pg.api.Graph to) { return null; }
+            public dev.chpg.pg.api.Graph betweenStep(dev.chpg.pg.api.NodeSet from, dev.chpg.pg.api.NodeSet to) { return null; }
+            public dev.chpg.pg.api.Graph between(dev.chpg.pg.api.Node from, dev.chpg.pg.api.Node to) { return null; }
+            public dev.chpg.pg.api.Graph between(dev.chpg.pg.api.Graph from, dev.chpg.pg.api.Graph to) { return null; }
+            public dev.chpg.pg.api.Graph between(dev.chpg.pg.api.NodeSet from, dev.chpg.pg.api.NodeSet to) { return null; }
+            public dev.chpg.pg.api.NodeSet successors(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.NodeSet successors(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.NodeSet successors(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.NodeSet predecessors(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.NodeSet predecessors(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.NodeSet predecessors(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.Graph forwardStep(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.Graph forwardStep(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.Graph forwardStep(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.Graph forward(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.Graph forward(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.Graph forward(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.Graph reverseStep(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.Graph reverseStep(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.Graph reverseStep(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.Graph reverse(dev.chpg.pg.api.Node... origin) { return null; }
+            public dev.chpg.pg.api.Graph reverse(dev.chpg.pg.api.Graph origin) { return null; }
+            public dev.chpg.pg.api.Graph reverse(dev.chpg.pg.api.NodeSet origin) { return null; }
+            public dev.chpg.pg.api.Graph induce(dev.chpg.pg.api.Edge... edges) { return null; }
+            public dev.chpg.pg.api.Graph induce(dev.chpg.pg.api.EdgeSet edges) { return null; }
+            public dev.chpg.pg.api.Graph induce(dev.chpg.pg.api.Graph graph) { return null; }
+        };
+        assertThrows(IllegalArgumentException.class, () -> graph.union(mockGraph));
+
+        // Block Cross-Sandbox Contamination
+        EphemeralGraph otherGraph = new EphemeralGraph();
+        assertThrows(IllegalArgumentException.class, () -> graph.union(otherGraph));
+    }
+
+    @Test
+    public void testAddAndRemoveExceptions() {
+        graph.addNode(a);
+
+        dev.chpg.pg.api.Node foreignNode = new dev.chpg.pg.api.Node() {
+            public int id() { return -100; }
+            public dev.chpg.pg.api.TagSet tags() { return null; }
+            public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+
+        assertThrows(IllegalArgumentException.class, () -> graph.addNode(foreignNode));
+
+        dev.chpg.pg.api.Edge foreignEdge = new dev.chpg.pg.api.Edge() {
+            public int id() { return -100; }
+            public dev.chpg.pg.api.Node from() { return a; }
+            public dev.chpg.pg.api.Node to() { return b; }
+            public dev.chpg.pg.api.TagSet tags() { return null; }
+            public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+
+        assertThrows(IllegalArgumentException.class, () -> graph.addEdge(foreignEdge));
+
+        assertFalse(graph.removeNode(foreignNode));
+
+        // Positive ID Exception
+        EphemeralNode posIdNode = new EphemeralNode(1);
+        assertThrows(IllegalArgumentException.class, () -> graph.addNode(posIdNode));
+
+        EphemeralEdge posIdEdge = new EphemeralEdge(1, a, b);
+        assertThrows(IllegalArgumentException.class, () -> graph.addEdge(posIdEdge));
+    }
+
+    @Test
+    public void testEdgesBoth() {
+        graph.addNode(a);
+        graph.addNode(b);
+        graph.addNode(c);
+        graph.addEdge(ab);
+        graph.addEdge(bc);
+
+        dev.chpg.pg.api.EdgeSet bEdges = graph.edges(b, NodeDirection.BOTH);
+        assertEquals(2, bEdges.size());
+        assertTrue(bEdges.contains(ab));
+        assertTrue(bEdges.contains(bc));
+
+        dev.chpg.pg.api.EdgeSet aEdges = graph.edges(a, NodeDirection.BOTH);
+        assertEquals(1, aEdges.size());
+        assertTrue(aEdges.contains(ab));
+
+        dev.chpg.pg.api.EdgeSet cEdges = graph.edges(c, NodeDirection.BOTH);
+        assertEquals(1, cEdges.size());
+        assertTrue(cEdges.contains(bc));
+    }
+
+    @Test
     public void testDegree() {
         graph.addNode(a);
         graph.addNode(b);
@@ -50,6 +186,19 @@ public class EphemeralGraphMissingCoverageTest {
         assertEquals(1, graph.degree(c, NodeDirection.IN));
         assertEquals(0, graph.degree(c, NodeDirection.OUT));
         assertEquals(1, graph.degree(c, NodeDirection.BOTH));
+
+        // Foreign node
+        dev.chpg.pg.api.Node foreignNode = new dev.chpg.pg.api.Node() {
+            public int id() { return -100; }
+            public dev.chpg.pg.api.TagSet tags() { return null; }
+            public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        };
+        assertEquals(0, graph.degree(foreignNode, NodeDirection.IN));
+        assertEquals(0, graph.degree(foreignNode, NodeDirection.OUT));
+        assertEquals(0, graph.degree(foreignNode, NodeDirection.BOTH));
+
+        EphemeralNode isolatedNode = (EphemeralNode) factory.createNode();
+        assertEquals(0, graph.degree(isolatedNode, NodeDirection.BOTH));
     }
 
     @Test
@@ -220,12 +369,35 @@ public class EphemeralGraphMissingCoverageTest {
         dev.chpg.pg.api.NodeSet sources = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(a.id()));
         dev.chpg.pg.api.NodeSet targets = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(c.id()));
 
-        dev.chpg.pg.api.Graph betweenGraph = graph.between(sources, targets);
-        assertEquals(0, betweenGraph.nodes().size());
-        dev.chpg.pg.api.Graph betweenStepGraph = graph.betweenStep(sources, targets);
-        assertEquals(0, betweenStepGraph.nodes().size());
+        // Ensure between and betweenStep handle empty step branches
+        EphemeralNode isolatedNode = (EphemeralNode) factory.createNode();
+        graph.addNode(isolatedNode);
 
-        EphemeralGraph g2 = new EphemeralGraph();
+        dev.chpg.pg.api.NodeSet isolatedSource = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(isolatedNode.id()));
+
+        // Ensure reverse step is non-empty when testing empty forward step
+        EphemeralNode isolatedNode2 = (EphemeralNode) factory.createNode();
+        graph.addNode(isolatedNode2);
+        dev.chpg.pg.api.NodeSet isolatedSource2 = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(isolatedNode2.id()));
+
+        // Ensure reverse step is non-empty by providing an actual target from the graph ('c')
+        // Forward step is empty since isolatedNode has no outgoing edges
+        dev.chpg.pg.api.Graph betweenGraph1 = graph.between(isolatedSource, targets);
+        assertEquals(0, betweenGraph1.nodes().size());
+        dev.chpg.pg.api.Graph betweenStepGraph1 = graph.betweenStep(isolatedSource, targets);
+        assertEquals(0, betweenStepGraph1.nodes().size());
+
+        // We also need reverse step to be empty and forward step to be non-empty.
+        // For forward step to be non-empty, we need it to reach nodes that are in `isolatedSource2`.
+        // So we add an edge from 'a' to `isolatedNode2` just to make the forward step from 'a' yield something.
+        graph.addEdge(graph.createEdge(a, isolatedNode2));
+
+        dev.chpg.pg.api.Graph betweenGraph2 = graph.between(sources, isolatedSource2);
+        assertEquals(0, betweenGraph2.nodes().size());
+        dev.chpg.pg.api.Graph betweenStepGraph2 = graph.betweenStep(sources, isolatedSource2);
+        assertEquals(0, betweenStepGraph2.nodes().size());
+
+        EphemeralGraph g2 = (EphemeralGraph) graph.createGraph();
         g2.addNode((EphemeralNode) g2.factory().createNode());
 
         dev.chpg.pg.api.Graph g1 = graph.between(g2.nodes(), targets);
@@ -236,6 +408,44 @@ public class EphemeralGraphMissingCoverageTest {
         assertEquals(0, g4.nodes().size());
         dev.chpg.pg.api.Graph g5 = graph.betweenStep(sources, g2.nodes());
         assertEquals(0, g5.nodes().size());
+
+        // Also ensure full forward/reverse can hit the empty branches
+        dev.chpg.pg.api.Graph fullBetweenForward = graph.between(isolatedSource, targets);
+        assertEquals(0, fullBetweenForward.nodes().size());
+        dev.chpg.pg.api.Graph fullBetweenReverse = graph.between(sources, isolatedSource2);
+        assertEquals(0, fullBetweenReverse.nodes().size());
     }
 
+    @Test
+    public void testCreateGraph() {
+        EphemeralGraph emptyGraph = graph.createGraph();
+        assertTrue(emptyGraph.nodes().isEmpty());
+
+        EphemeralGraph nodeGraph = graph.createGraph(a, b);
+        assertEquals(2, nodeGraph.nodes().size());
+
+        EphemeralNodeSet nodeSet = new EphemeralNodeSet();
+        nodeSet.add(a);
+        nodeSet.add(b);
+        EphemeralGraph nodeSetGraph = graph.createGraph(nodeSet);
+        assertEquals(2, nodeSetGraph.nodes().size());
+
+        EphemeralGraph edgeGraph = graph.createGraph(ab);
+        assertEquals(2, edgeGraph.nodes().size());
+        assertEquals(1, edgeGraph.edges().size());
+
+        EphemeralEdgeSet edgeSet = new EphemeralEdgeSet();
+        edgeSet.add(ab);
+        EphemeralGraph edgeSetGraph = graph.createGraph(edgeSet);
+        assertEquals(2, edgeSetGraph.nodes().size());
+        assertEquals(1, edgeSetGraph.edges().size());
+
+        EphemeralGraph multiGraph = graph.createGraph(nodeSet, edgeSet);
+        assertEquals(2, multiGraph.nodes().size());
+        assertEquals(1, multiGraph.edges().size());
+
+        EphemeralGraph copyGraph = graph.createGraph(multiGraph);
+        assertEquals(2, copyGraph.nodes().size());
+        assertEquals(1, copyGraph.edges().size());
+    }
 }
