@@ -115,11 +115,11 @@ public class EphemeralGraphTest {
         Graph withNodeSet = factory.createGraph(new EphemeralNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        Graph withEdges = factory.createGraph(new EphemeralEdgeSet(ab, bc));
+        Graph withEdges = factory.createGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        Graph withEdgeSet = factory.createGraph(new EphemeralEdgeSet(ab, bc));
+        Graph withEdgeSet = factory.createGraph(ab, bc);
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 

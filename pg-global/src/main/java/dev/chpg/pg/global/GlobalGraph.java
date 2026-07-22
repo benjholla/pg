@@ -35,9 +35,10 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public GlobalGraph createGraph(Node node) {
-        Objects.requireNonNull(node, "node cannot be null");
-        return new GlobalGraph(node);
+    public GlobalGraph createGraph(Node... nodes) {
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
+        return new GlobalGraph(nodes);
     }
 
     @Override
@@ -47,9 +48,10 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public GlobalGraph createGraph(Edge edge) {
-        Objects.requireNonNull(edge, "edge cannot be null");
-        return new GlobalGraph(edge);
+    public GlobalGraph createGraph(Edge... edges) {
+        Objects.requireNonNull(edges, "edges cannot be null");
+        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
+        return new GlobalGraph(edges);
     }
 
     @Override
@@ -93,12 +95,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     /**
      * Constructs a new graph with initial nodes.
-     * @param node the node
+     * @param nodes the nodes
      */
-    public GlobalGraph(Node node) {
-        this(1, 0);
-        Objects.requireNonNull(node, "node cannot be null");
-        addNode(node);
+    public GlobalGraph(Node... nodes) {
+        this(nodes.length, 0);
+        Objects.requireNonNull(nodes, "nodes cannot be null");
+        for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
+        for (Node node : nodes) {
+            addNode(node);
+        }
     }
     
     /**
@@ -113,12 +118,22 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     /**
      * Constructs a new graph of the given edges and respective edge nodes
-     * @param edge the edge
+     * @param edges the edges
      */
-    public GlobalGraph(Edge edge) {
-        this(2, 1);
-        Objects.requireNonNull(edge, "edge cannot be null");
-        addEdge(edge);
+    public GlobalGraph(Edge... edges) {
+        // Over-allocation is Cheap, Rehashing is Expensive
+        // In a highly connected graph, the true number of unique nodes will be much lower than edges.length * 2.
+        // We will likely over-estimate the required capacity. However, in Java HashMap or HashSet implementations,
+        // the "capacity" just dictates the length of the internal bucket array. Over-estimating by a factor of 2 or 3
+        // only costs a few kilobytes of empty array slots. Under-estimating, on the other hand, means the Map hits
+        // its load factor mid-loop, creates a new, larger bucket array, and painstakingly recalculates the hash
+        // and shifts every single existing node into the new buckets.
+        this(edges.length * 2, edges.length);
+        Objects.requireNonNull(edges, "edges cannot be null");
+        for (Edge edge : edges) { Objects.requireNonNull(edge, "edges elements cannot be null"); }
+        for (Edge edge : edges) {
+            addEdge(edge);
+        }
     }
 
     /**

@@ -113,11 +113,11 @@ public class GlobalGraphTest {
         GlobalGraph withNodeSet = new GlobalGraph(new GlobalNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        GlobalGraph withEdges = new GlobalGraph(new GlobalEdgeSet(ab, bc));
+        GlobalGraph withEdges = new GlobalGraph(ab, bc);
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        GlobalGraph withEdgeSet = new GlobalGraph(new GlobalEdgeSet(ab, bc));
+        GlobalGraph withEdgeSet = new GlobalGraph(ab, bc);
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
