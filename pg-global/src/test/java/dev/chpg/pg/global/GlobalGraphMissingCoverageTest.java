@@ -169,11 +169,33 @@ public class GlobalGraphMissingCoverageTest {
         NodeSet sources = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(a.id()));
         NodeSet targets = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(c.id()));
 
-        // Ensure between and betweenStep handle invalid nodes properly and run without error
-        dev.chpg.pg.api.Graph betweenGraph = graph.between(sources, targets);
-        assertEquals(0, betweenGraph.nodes().size());
-        dev.chpg.pg.api.Graph betweenStepGraph = graph.betweenStep(sources, targets);
-        assertEquals(0, betweenStepGraph.nodes().size());
+        // Ensure between and betweenStep handle empty step branches
+        GlobalNode isolatedNode = new GlobalNode();
+        graph.addNode(isolatedNode);
+
+        NodeSet isolatedSource = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(isolatedNode.id()));
+
+        // Ensure reverse step is non-empty when testing empty forward step
+        GlobalNode isolatedNode2 = new GlobalNode();
+        graph.addNode(isolatedNode2);
+        NodeSet isolatedSource2 = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(isolatedNode2.id()));
+
+        // Ensure reverse step is non-empty by providing an actual target from the graph ('c')
+        // Forward step is empty since isolatedNode has no outgoing edges
+        dev.chpg.pg.api.Graph betweenGraph1 = graph.between(isolatedSource, targets);
+        assertEquals(0, betweenGraph1.nodes().size());
+        dev.chpg.pg.api.Graph betweenStepGraph1 = graph.betweenStep(isolatedSource, targets);
+        assertEquals(0, betweenStepGraph1.nodes().size());
+
+        // We also need reverse step to be empty and forward step to be non-empty.
+        // For forward step to be non-empty, we need it to reach nodes that are in `isolatedSource2`.
+        // So we add an edge from 'a' to `isolatedNode2` just to make the forward step from 'a' yield something.
+        graph.addEdge(graph.createEdge(a, isolatedNode2));
+
+        dev.chpg.pg.api.Graph betweenGraph2 = graph.between(sources, isolatedSource2);
+        assertEquals(0, betweenGraph2.nodes().size());
+        dev.chpg.pg.api.Graph betweenStepGraph2 = graph.betweenStep(sources, isolatedSource2);
+        assertEquals(0, betweenStepGraph2.nodes().size());
 
         GlobalGraph g2 = new GlobalGraph();
         g2.addNode(new GlobalNode());
@@ -186,6 +208,12 @@ public class GlobalGraphMissingCoverageTest {
         assertEquals(0, g4.nodes().size());
         dev.chpg.pg.api.Graph g5 = graph.betweenStep(sources, g2.nodes());
         assertEquals(0, g5.nodes().size());
+
+        // Also ensure full forward/reverse can hit the empty branches
+        dev.chpg.pg.api.Graph fullBetweenForward = graph.between(isolatedSource, targets);
+        assertEquals(0, fullBetweenForward.nodes().size());
+        dev.chpg.pg.api.Graph fullBetweenReverse = graph.between(sources, isolatedSource2);
+        assertEquals(0, fullBetweenReverse.nodes().size());
     }
 
     @Test

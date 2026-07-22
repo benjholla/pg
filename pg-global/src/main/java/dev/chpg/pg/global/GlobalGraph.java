@@ -741,7 +741,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             return new GlobalGraph();
         }
         Graph forward = forwardStep(from);
+        if(forward.nodes().isEmpty()) {
+            return new GlobalGraph();
+        }
         Graph reverse = reverseStep(to);
+        if(reverse.nodes().isEmpty()) {
+            return new GlobalGraph();
+        }
         return forward.intersection(reverse);
     }
 
@@ -767,7 +773,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             return new GlobalGraph();
         }
         Graph forward = forward(from);
+        if(forward.nodes().isEmpty()) {
+            return new GlobalGraph();
+        }
         Graph reverse = reverse(to);
+        if(reverse.nodes().isEmpty()) {
+            return new GlobalGraph();
+        }
         return forward.intersection(reverse);
     }
 

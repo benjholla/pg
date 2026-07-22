@@ -785,7 +785,13 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph forward = forwardStep(from);
+        if(forward.nodes().isEmpty()) {
+            return new EphemeralGraph(this.idGenerator);
+        }
         Graph reverse = reverseStep(to);
+        if(reverse.nodes().isEmpty()) {
+            return new EphemeralGraph(this.idGenerator);
+        }
         return forward.intersection(reverse);
     }
 
@@ -812,7 +818,13 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return new EphemeralGraph(this.idGenerator);
         }
         Graph forward = forward(from);
+        if(forward.nodes().isEmpty()) {
+            return new EphemeralGraph(this.idGenerator);
+        }
         Graph reverse = reverse(to);
+        if(reverse.nodes().isEmpty()) {
+            return new EphemeralGraph(this.idGenerator);
+        }
         return forward.intersection(reverse);
     }
 
