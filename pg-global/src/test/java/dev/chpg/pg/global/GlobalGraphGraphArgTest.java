@@ -66,16 +66,10 @@ public class GlobalGraphGraphArgTest {
 
         // Arrays
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph((Node[]) null);
+            graph.createGraph((Node) null);
         });
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph(new Node[]{null});
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph((Edge[]) null);
-        });
-        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
-            graph.createGraph(new Edge[]{null});
+            graph.createGraph((Edge) null);
         });
         org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
             graph.createGraph((Graph) null);
@@ -106,7 +100,7 @@ public class GlobalGraphGraphArgTest {
         Graph gEmpty = graph.createGraph();
         assertTrue(gEmpty.nodes().isEmpty());
 
-        Graph gNodes = graph.createGraph(n1, n2);
+        Graph gNodes = graph.createGraph(new GlobalNodeSet(n1, n2));
         assertEquals(2, gNodes.nodes().size());
         assertTrue(gNodes.edges().isEmpty());
 

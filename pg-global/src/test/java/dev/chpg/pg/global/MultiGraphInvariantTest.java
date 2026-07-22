@@ -19,7 +19,7 @@ public class MultiGraphInvariantTest {
         Edge e2 = new GlobalEdge(a, b);
         e2.tags().add("type2");
 
-        GlobalGraph graph = new GlobalGraph(a, b);
+        GlobalGraph graph = new GlobalGraph(new GlobalNodeSet(a, b));
         graph.addEdge(e1);
         graph.addEdge(e2);
 

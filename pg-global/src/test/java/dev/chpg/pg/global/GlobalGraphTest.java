@@ -107,13 +107,13 @@ public class GlobalGraphTest {
         GlobalGraph empty = new GlobalGraph();
         assertTrue(empty.nodes().isEmpty());
 
-        GlobalGraph withNodes = new GlobalGraph(a, b);
+        GlobalGraph withNodes = new GlobalGraph(new GlobalNodeSet(a, b));
         assertEquals(2, withNodes.nodes().size());
 
         GlobalGraph withNodeSet = new GlobalGraph(new GlobalNodeSet(a, b));
         assertEquals(2, withNodeSet.nodes().size());
 
-        GlobalGraph withEdges = new GlobalGraph(ab, bc);
+        GlobalGraph withEdges = new GlobalGraph(new GlobalEdgeSet(ab, bc));
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
@@ -252,13 +252,13 @@ public class GlobalGraphTest {
 
     @Test
     public void testUnion() {
-        GlobalGraph g1 = new GlobalGraph(a, b);
-        GlobalGraph g2 = new GlobalGraph(c, d);
+        GlobalGraph g1 = new GlobalGraph(new GlobalNodeSet(a, b));
+        GlobalGraph g2 = new GlobalGraph(new GlobalNodeSet(c, d));
 
         Graph union = g1.union(g2);
         assertEquals(4, union.nodes().size());
 
-        Graph unionNodes = g1.union(e, f);
+        Graph unionNodes = g1.union(e).union(f);
         assertEquals(4, unionNodes.nodes().size());
 
         Graph unionEdges = g1.union(cd);
@@ -268,7 +268,7 @@ public class GlobalGraphTest {
 
     @Test
     public void testDifference() {
-        GlobalGraph sub = new GlobalGraph(a, b, c);
+        GlobalGraph sub = new GlobalGraph(new GlobalNodeSet(a, b, c));
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -295,7 +295,7 @@ public class GlobalGraphTest {
 
     @Test
     public void testDifferenceEdges() {
-        GlobalGraph sub = new GlobalGraph(a, b, c);
+        GlobalGraph sub = new GlobalGraph(new GlobalNodeSet(a, b, c));
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -313,11 +313,11 @@ public class GlobalGraphTest {
 
     @Test
     public void testIntersection() {
-        GlobalGraph g1 = new GlobalGraph(a, b, c);
+        GlobalGraph g1 = new GlobalGraph(new GlobalNodeSet(a, b, c));
         g1.addEdge(ab);
         g1.addEdge(bc);
 
-        GlobalGraph g2 = new GlobalGraph(b, c, d);
+        GlobalGraph g2 = new GlobalGraph(new GlobalNodeSet(b, c, d));
         g2.addEdge(bc);
         g2.addEdge(cd);
 
@@ -329,7 +329,7 @@ public class GlobalGraphTest {
         assertEquals(1, intersect.edges().size());
         assertTrue(intersect.edges().contains(bc));
 
-        Graph intersectNodes = g1.intersection(b, c);
+        Graph intersectNodes = g1.intersection(new GlobalGraph(new GlobalNodeSet(b, c)));
         assertEquals(2, intersectNodes.nodes().size());
 
         Graph intersectEdges = g1.intersection(bc);
@@ -339,9 +339,9 @@ public class GlobalGraphTest {
 
     @Test
     public void testInduce() {
-        GlobalGraph g1 = new GlobalGraph(a, b, c); // nodes only
+        GlobalGraph g1 = new GlobalGraph(new GlobalNodeSet(a, b, c)); // nodes only
 
-        Graph induced = g1.induce(ab, bc, cd);
+        Graph induced = g1.induce(new GlobalEdgeSet(ab, bc, cd));
         assertEquals(3, induced.nodes().size());
         assertEquals(2, induced.edges().size());
         assertTrue(induced.edges().contains(ab));

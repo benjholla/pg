@@ -28,7 +28,7 @@ public class GraphInvariantTest {
         bc = new GlobalEdge(b, c);
         ca = new GlobalEdge(c, a);
 
-        graph = new GlobalGraph(a, b, c);
+        graph = new GlobalGraph(new GlobalNodeSet(a, b, c));
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

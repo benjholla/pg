@@ -26,13 +26,13 @@ public class AssociativityLawsInvariantTest {
         Edge bc = factory.createEdge(b, c);
         Edge cd = factory.createEdge(c, d);
 
-        gA = factory.createGraph(a, b);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = factory.createGraph(b, c);
+        gB = factory.createGraph(new EphemeralNodeSet(b, c));
         gB.addEdge(bc);
 
-        gC = factory.createGraph(c, d);
+        gC = factory.createGraph(new EphemeralNodeSet(c, d));
         gC.addEdge(cd);
     }
 
@@ -63,8 +63,8 @@ public class AssociativityLawsInvariantTest {
         System.arraycopy(gBnodes, 0, gB_and_gC_nodes, 0, gBnodes.length);
         System.arraycopy(gCnodes, 0, gB_and_gC_nodes, gBnodes.length, gCnodes.length);
 
-        Graph chainedUnionNodes = gA.union(gBnodes).union(gCnodes);
-        assertGraphsEqual(chainedUnionNodes, gA.union(gB_and_gC_nodes));
+        Graph chainedUnionNodes = gA.union(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gBnodes)))).union(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gCnodes))));
+        assertGraphsEqual(chainedUnionNodes, gA.union(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gB_and_gC_nodes)))));
 
         // Edge union
         Edge[] gBedges = gB.edges().stream().toArray(Edge[]::new);
@@ -73,8 +73,8 @@ public class AssociativityLawsInvariantTest {
         System.arraycopy(gBedges, 0, gB_and_gC_edges, 0, gBedges.length);
         System.arraycopy(gCedges, 0, gB_and_gC_edges, gBedges.length, gCedges.length);
 
-        Graph chainedUnionEdges = gA.union(gBedges).union(gCedges);
-        assertGraphsEqual(chainedUnionEdges, gA.union(gB_and_gC_edges));
+        Graph chainedUnionEdges = gA.union(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gBedges)))).union(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gCedges))));
+        assertGraphsEqual(chainedUnionEdges, gA.union(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gB_and_gC_edges)))));
     }
 
     @Test
@@ -92,12 +92,12 @@ public class AssociativityLawsInvariantTest {
         Node[] gCnodes = gC.nodes().stream().toArray(Node[]::new);
 
         Node[] gB_intersect_gC_nodes = gB.intersection(gC).nodes().stream().toArray(Node[]::new);
-        assertGraphsEqual(gA.intersection(gB_intersect_gC_nodes), gA.intersection(gBnodes).intersection(gCnodes));
+        assertGraphsEqual(gA.intersection(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gB_intersect_gC_nodes)))), gA.intersection(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gBnodes)))).intersection(factory.createGraph(new EphemeralNodeSet(java.util.Arrays.asList(gCnodes)))));
 
         Edge[] gBedges = gB.edges().stream().toArray(Edge[]::new);
         Edge[] gCedges = gC.edges().stream().toArray(Edge[]::new);
 
         Edge[] gB_intersect_gC_edges = gB.intersection(gC).edges().stream().toArray(Edge[]::new);
-        assertGraphsEqual(gA.intersection(gB_intersect_gC_edges), gA.intersection(gBedges).intersection(gCedges));
+        assertGraphsEqual(gA.intersection(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gB_intersect_gC_edges)))), gA.intersection(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gBedges)))).intersection(factory.createGraph(new EphemeralEdgeSet(java.util.Arrays.asList(gCedges)))));
     }
 }

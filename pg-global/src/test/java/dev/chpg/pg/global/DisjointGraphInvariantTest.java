@@ -19,12 +19,12 @@ public class DisjointGraphInvariantTest {
     public void setUp() {
         a1 = new GlobalNode();
         a2 = new GlobalNode();
-        graphA = new GlobalGraph(a1, a2);
+        graphA = new GlobalGraph(new GlobalNodeSet(a1, a2));
         graphA.addEdge(new GlobalEdge(a1, a2));
 
         b1 = new GlobalNode();
         b2 = new GlobalNode();
-        graphB = new GlobalGraph(b1, b2);
+        graphB = new GlobalGraph(new GlobalNodeSet(b1, b2));
         graphB.addEdge(new GlobalEdge(b1, b2));
     }
 

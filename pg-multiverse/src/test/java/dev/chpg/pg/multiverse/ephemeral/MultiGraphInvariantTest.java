@@ -21,7 +21,7 @@ public class MultiGraphInvariantTest {
         Edge e2 = factory.createEdge(a, b);
         e2.tags().add("type2");
 
-        Graph graph = factory.createGraph(a, b);
+        Graph graph = factory.createGraph(new EphemeralNodeSet(a, b));
         graph.addEdge(e1);
         graph.addEdge(e2);
 

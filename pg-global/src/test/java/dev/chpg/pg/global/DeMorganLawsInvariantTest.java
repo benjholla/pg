@@ -31,15 +31,15 @@ public class DeMorganLawsInvariantTest {
         GlobalEdge bc = new GlobalEdge(b, c);
 
         // A is the superset
-        gA = new GlobalGraph(a, b, c);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
         // B and C are subsets
-        gB = new GlobalGraph(a, b);
+        gB = new GlobalGraph(new GlobalNodeSet(a, b));
         gB.addEdge(ab);
 
-        gC = new GlobalGraph(b, c);
+        gC = new GlobalGraph(new GlobalNodeSet(b, c));
         gC.addEdge(bc);
     }
 

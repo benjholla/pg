@@ -13,7 +13,7 @@ package dev.chpg.pg.api;
  * <ul>
  * <li>Created via a {@link GraphFactory} by supplying the source and target nodes.</li>
  * <li>Decorated with labels via its {@link TagSet} (e.g., "knows", "calls").</li>
- * <li>Used to drive topological queries (e.g., {@link Graph#forward(Node...)}).</li>
+ * <li>Used to drive topological queries (e.g., {@link Graph#forward(Node)}).</li>
  * </ul>
  * <p>
  * <b>Important invariants:</b>

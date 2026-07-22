@@ -32,7 +32,7 @@ public interface GraphFactory {
     /**
      * Instantiates and returns a new Graph native to this implementation containing the given nodes.
      */
-    public Graph createGraph(Node... nodes);
+    public Graph createGraph(Node node);
 
     /**
      * Instantiates and returns a new Graph native to this implementation containing the given nodes.
@@ -42,7 +42,7 @@ public interface GraphFactory {
     /**
      * Instantiates and returns a new Graph native to this implementation containing the given edges.
      */
-    public Graph createGraph(Edge... edges);
+    public Graph createGraph(Edge edge);
 
     /**
      * Instantiates and returns a new Graph native to this implementation containing the given edges.

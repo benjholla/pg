@@ -31,15 +31,15 @@ public class DeMorganLawsInvariantTest {
         Edge bc = factory.createEdge(b, c);
 
         // A is the superset
-        gA = factory.createGraph(a, b, c);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
         // B and C are subsets
-        gB = factory.createGraph(a, b);
+        gB = factory.createGraph(new EphemeralNodeSet(a, b));
         gB.addEdge(ab);
 
-        gC = factory.createGraph(b, c);
+        gC = factory.createGraph(new EphemeralNodeSet(b, c));
         gC.addEdge(bc);
     }
 

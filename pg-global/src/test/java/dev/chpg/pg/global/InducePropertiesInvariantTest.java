@@ -26,7 +26,7 @@ public class InducePropertiesInvariantTest {
         ab = new GlobalEdge(a, b);
         bc = new GlobalEdge(b, c);
 
-        gA = new GlobalGraph(a, b, c);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
     }
@@ -54,7 +54,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        GlobalGraph nodesOnly = new GlobalGraph(a, b, c);
+        GlobalGraph nodesOnly = new GlobalGraph(new GlobalNodeSet(a, b, c));
         GlobalEdgeSet edgesToAdd = new GlobalEdgeSet();
         edgesToAdd.add(ab);
 

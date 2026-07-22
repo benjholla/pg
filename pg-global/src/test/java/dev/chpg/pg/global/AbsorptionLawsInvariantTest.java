@@ -26,10 +26,10 @@ public class AbsorptionLawsInvariantTest {
         GlobalEdge ab = new GlobalEdge(a, b);
         GlobalEdge bc = new GlobalEdge(b, c);
 
-        gA = new GlobalGraph(a, b);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = new GlobalGraph(b, c);
+        gB = new GlobalGraph(new GlobalNodeSet(b, c));
         gB.addEdge(bc);
     }
 

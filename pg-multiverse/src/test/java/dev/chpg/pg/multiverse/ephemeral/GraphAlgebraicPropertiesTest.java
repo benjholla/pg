@@ -35,14 +35,14 @@ public class GraphAlgebraicPropertiesTest {
         cd = factory.createEdge(c, d);
         de = factory.createEdge(d, e);
 
-        gA = factory.createGraph(a, b, c);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = factory.createGraph(c, d);
+        gB = factory.createGraph(new EphemeralNodeSet(c, d));
         gB.addEdge(cd);
 
-        gC = factory.createGraph(a, b, d, e);
+        gC = factory.createGraph(new EphemeralNodeSet(a, b, d, e));
         gC.addEdge(ab);
         gC.addEdge(de);
     }

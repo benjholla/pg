@@ -23,13 +23,13 @@ public class DistributiveLawsInvariantTest {
         GlobalEdge bc = new GlobalEdge(b, c);
         GlobalEdge cd = new GlobalEdge(c, d);
 
-        gA = new GlobalGraph(a, b);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = new GlobalGraph(b, c);
+        gB = new GlobalGraph(new GlobalNodeSet(b, c));
         gB.addEdge(bc);
 
-        gC = new GlobalGraph(c, d);
+        gC = new GlobalGraph(new GlobalNodeSet(c, d));
         gC.addEdge(cd);
     }
 

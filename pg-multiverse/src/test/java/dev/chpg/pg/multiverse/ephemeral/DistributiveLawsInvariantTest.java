@@ -26,13 +26,13 @@ public class DistributiveLawsInvariantTest {
         Edge bc = factory.createEdge(b, c);
         Edge cd = factory.createEdge(c, d);
 
-        gA = factory.createGraph(a, b);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = factory.createGraph(b, c);
+        gB = factory.createGraph(new EphemeralNodeSet(b, c));
         gB.addEdge(bc);
 
-        gC = factory.createGraph(c, d);
+        gC = factory.createGraph(new EphemeralNodeSet(c, d));
         gC.addEdge(cd);
     }
 

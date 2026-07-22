@@ -43,11 +43,9 @@ public class NullElementTest {
 
     @Test
     public void testGlobalGraphConstructorsNull() {
-        assertThrows(NullPointerException.class, () -> new GlobalGraph((Node[]) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> new GlobalGraph((Node) null));
         assertThrows(NullPointerException.class, () -> new GlobalGraph((NodeSet) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph((Edge[]) null));
-        assertThrows(NullPointerException.class, () -> new GlobalGraph(new Edge[]{null}));
+        assertThrows(NullPointerException.class, () -> new GlobalGraph((Edge) null));
         assertThrows(NullPointerException.class, () -> new GlobalGraph((EdgeSet) null));
         assertThrows(NullPointerException.class, () -> new GlobalGraph((NodeSet) null, (EdgeSet) null));
     }

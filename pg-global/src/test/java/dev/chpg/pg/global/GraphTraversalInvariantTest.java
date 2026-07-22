@@ -48,7 +48,7 @@ public class GraphTraversalInvariantTest {
     @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
-        Graph unionNodes = new GlobalGraph(a, e);
+        Graph unionNodes = new GlobalGraph(new GlobalNodeSet(a, e));
         Graph forwardUnion = graph.forward(unionNodes);
 
         Graph forwardA = graph.forward(a);

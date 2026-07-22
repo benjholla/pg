@@ -24,14 +24,14 @@ public class DifferencePropertiesInvariantTest {
         GlobalEdge ab = new GlobalEdge(a, b);
         GlobalEdge bc = new GlobalEdge(b, c);
 
-        gA = new GlobalGraph(a, b, c);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new GlobalGraph(a, b);
+        gB = new GlobalGraph(new GlobalNodeSet(a, b));
         gB.addEdge(ab);
 
-        gC = new GlobalGraph(b, c);
+        gC = new GlobalGraph(new GlobalNodeSet(b, c));
         gC.addEdge(bc);
     }
 

@@ -34,7 +34,7 @@ public class ReadmeExampleTest {
         knows2.tags().add("knows");
 
         // Instantiate a graph
-        Graph graph = factory.createGraph(alice, bob, charlie);
+        Graph graph = factory.createGraph(new EphemeralNodeSet(alice, bob, charlie));
         graph.addEdge(knows1);
         graph.addEdge(knows2);
 

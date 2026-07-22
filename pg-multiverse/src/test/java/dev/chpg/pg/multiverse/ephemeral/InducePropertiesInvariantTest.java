@@ -30,7 +30,7 @@ public class InducePropertiesInvariantTest {
         ab = factory.createEdge(a, b);
         bc = factory.createEdge(b, c);
 
-        gA = factory.createGraph(a, b, c);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
     }
@@ -55,7 +55,7 @@ public class InducePropertiesInvariantTest {
 
     @Test
     public void testInduceAddsNewValidEdges() {
-        Graph nodesOnly = factory.createGraph(a, b, c);
+        Graph nodesOnly = factory.createGraph(new EphemeralNodeSet(a, b, c));
         EphemeralEdgeSet edgesToAdd = new EphemeralEdgeSet();
         edgesToAdd.add(ab);
 

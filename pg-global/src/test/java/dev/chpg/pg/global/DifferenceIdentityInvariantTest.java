@@ -26,15 +26,15 @@ public class DifferenceIdentityInvariantTest {
         GlobalEdge bc = new GlobalEdge(b, c);
         GlobalEdge cd = new GlobalEdge(c, d);
 
-        gA = new GlobalGraph(a, b, c);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new GlobalGraph(b, c, d);
+        gB = new GlobalGraph(new GlobalNodeSet(b, c, d));
         gB.addEdge(bc);
         gB.addEdge(cd);
 
-        gC = new GlobalGraph(a, d);
+        gC = new GlobalGraph(new GlobalNodeSet(a, d));
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

@@ -19,7 +19,7 @@ public class GraphCycleTest {
         Edge bc = new GlobalEdge(b, c);
         Edge ca = new GlobalEdge(c, a); // Cycle!
 
-        GlobalGraph graph = new GlobalGraph(a, b, c);
+        GlobalGraph graph = new GlobalGraph(new GlobalNodeSet(a, b, c));
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);
