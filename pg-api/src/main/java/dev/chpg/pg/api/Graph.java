@@ -213,7 +213,7 @@ public interface Graph {
      * @return The set of nodes reachable from incoming edges to the given nodes
      * @param origin the origin element
      */
-    public NodeSet predecessors(Node... origin);
+    public NodeSet predecessors(Node origin);
 
     /**
      * Gets the predecessor nodes of the given node for this graph's edges
@@ -237,7 +237,7 @@ public interface Graph {
      * @return The set of nodes reachable from outgoing edges from the given nodes
      * @param origin the origin element
      */
-    public NodeSet successors(Node... origin);
+    public NodeSet successors(Node origin);
 
     /**
      * Gets the successor nodes of the given node for this graph's edges
@@ -264,7 +264,7 @@ public interface Graph {
      * 
      * @param origin the origin element
      */
-    public Graph forwardStep(Node... origin);
+    public Graph forwardStep(Node origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes along a
@@ -297,7 +297,7 @@ public interface Graph {
      * 
      * @param origin the origin element
      */
-    public Graph reverseStep(Node... origin);
+    public Graph reverseStep(Node origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes along a
@@ -324,16 +324,16 @@ public interface Graph {
     /**
      * Yields the union of this graph and a new graph formed by the given nodes.
      * 
-     * @param nodes the nodes
+     * @param node the node
      */
-    public Graph union(Node... nodes);
+    public Graph union(Node node);
 
     /**
      * Yields the union of this graph and a new graph formed by the given edges.
      * 
-     * @param edges the edges
+     * @param edge the edge
      */
-    public Graph union(Edge... edges);
+    public Graph union(Edge edge);
 
     /**
      * Yields the union of this graph and the given graph. That is, the resulting
@@ -348,9 +348,9 @@ public interface Graph {
      * only in a graph if it's nodes are in a graph, removing a node will
      * necessarily remove the edges it connects as well.
      * 
-     * @param nodes the nodes
+     * @param node the node
      */
-    public Graph difference(Node... nodes);
+    public Graph difference(Node node);
 
     /**
      * Select this graph, excluding the given edges. Note that, because an edge is
@@ -365,9 +365,9 @@ public interface Graph {
      * for removing nodes from a graph, but may not be as useful for operating on
      * edges.
      * 
-     * @param edges the edges
+     * @param edge the edge
      */
-    public Graph difference(Edge... edges);
+    public Graph difference(Edge edge);
 
     /**
      * Select this graph, excluding the graphs g. Note that, because an edge is only
@@ -389,9 +389,9 @@ public interface Graph {
     /**
      * Select this graph, excluding the given edges.
      * 
-     * @param edges the edges
+     * @param edge the edge
      */
-    public Graph differenceEdges(Edge... edges);
+    public Graph differenceEdges(Edge edge);
 
     /**
      * Select this graph, excluding the edges from the given graphs.
@@ -405,18 +405,18 @@ public interface Graph {
      * nodes. That is, the resulting graph's nodes are the intersection of all node
      * sets, and likewise for edges.
      * 
-     * @param nodes the nodes
+     * @param node the node
      */
-    public Graph intersection(Node... nodes);
+    public Graph intersection(Node node);
 
     /**
      * Yields the intersection of this graph and a new graph formed by the given
      * edges. That is, the resulting graph's nodes are the intersection of all node
      * sets, and likewise for edges.
      * 
-     * @param edges the edges
+     * @param edge the edge
      */
-    public Graph intersection(Edge... edges);
+    public Graph intersection(Edge edge);
 
     /**
      * Yields the intersection of this graph and the given graph. That is, the
@@ -493,7 +493,7 @@ public interface Graph {
      * 
      * @param origin the origin element
      */
-    public Graph forward(Node... origin);
+    public Graph forward(Node origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
@@ -517,7 +517,7 @@ public interface Graph {
      * 
      * @param origin the origin element
      */
-    public Graph reverse(Node... origin);
+    public Graph reverse(Node origin);
 
     /**
      * From this graph, selects the subgraph reachable from the given nodes using
@@ -540,9 +540,9 @@ public interface Graph {
      * of the edges in the given graph that connect pairs of nodes in the current
      * graph.
      * 
-     * @param edges the edges
+     * @param edge the edge
      */
-    public Graph induce(Edge... edges);
+    public Graph induce(Edge edge);
 
     /**
      * Yields the induced graph formed from the nodes in the current graph and all

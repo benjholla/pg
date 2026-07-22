@@ -45,11 +45,9 @@ public class NullElementTest {
 
     @Test
     public void testEphemeralGraphConstructorsNull() {
-        assertThrows(NullPointerException.class, () -> factory.createGraph((Node[]) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph(new Node[]{null}));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((Node) null));
         assertThrows(NullPointerException.class, () -> factory.createGraph((NodeSet) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph((Edge[]) null));
-        assertThrows(NullPointerException.class, () -> factory.createGraph(new Edge[]{null}));
+        assertThrows(NullPointerException.class, () -> factory.createGraph((Edge) null));
         assertThrows(NullPointerException.class, () -> factory.createGraph((EdgeSet) null));
         assertThrows(NullPointerException.class, () -> factory.createGraph((NodeSet) null, (EdgeSet) null));
     }

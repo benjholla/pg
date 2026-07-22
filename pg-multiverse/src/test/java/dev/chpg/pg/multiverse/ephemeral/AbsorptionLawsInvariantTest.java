@@ -30,10 +30,10 @@ public class AbsorptionLawsInvariantTest {
         Edge ab = factory.createEdge(a, b);
         Edge bc = factory.createEdge(b, c);
 
-        gA = factory.createGraph(a, b);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = factory.createGraph(b, c);
+        gB = factory.createGraph(new EphemeralNodeSet(b, c));
         gB.addEdge(bc);
     }
 

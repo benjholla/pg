@@ -109,7 +109,7 @@ public class EphemeralGraphTest {
         Graph empty = factory.createGraph();
         assertTrue(empty.nodes().isEmpty());
 
-        Graph withNodes = factory.createGraph(a, b);
+        Graph withNodes = factory.createGraph(new EphemeralNodeSet(a, b));
         assertEquals(2, withNodes.nodes().size());
 
         Graph withNodeSet = factory.createGraph(new EphemeralNodeSet(a, b));
@@ -119,7 +119,7 @@ public class EphemeralGraphTest {
         assertEquals(3, withEdges.nodes().size());
         assertEquals(2, withEdges.edges().size());
 
-        Graph withEdgeSet = factory.createGraph(new EphemeralEdgeSet(ab, bc));
+        Graph withEdgeSet = factory.createGraph(ab, bc);
         assertEquals(3, withEdgeSet.nodes().size());
         assertEquals(2, withEdgeSet.edges().size());
 
@@ -254,13 +254,13 @@ public class EphemeralGraphTest {
 
     @Test
     public void testUnion() {
-        Graph g1 = factory.createGraph(a, b);
-        Graph g2 = factory.createGraph(c, d);
+        Graph g1 = factory.createGraph(new EphemeralNodeSet(a, b));
+        Graph g2 = factory.createGraph(new EphemeralNodeSet(c, d));
 
         Graph union = g1.union(g2);
         assertEquals(4, union.nodes().size());
 
-        Graph unionNodes = g1.union(e, f);
+        Graph unionNodes = g1.union(e).union(f);
         assertEquals(4, unionNodes.nodes().size());
 
         Graph unionEdges = g1.union(cd);
@@ -270,7 +270,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testDifference() {
-        Graph sub = factory.createGraph(a, b, c);
+        Graph sub = factory.createGraph(new EphemeralNodeSet(a, b, c));
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -297,7 +297,7 @@ public class EphemeralGraphTest {
 
     @Test
     public void testDifferenceEdges() {
-        Graph sub = factory.createGraph(a, b, c);
+        Graph sub = factory.createGraph(new EphemeralNodeSet(a, b, c));
         sub.addEdge(ab);
         sub.addEdge(bc);
 
@@ -315,11 +315,11 @@ public class EphemeralGraphTest {
 
     @Test
     public void testIntersection() {
-        Graph g1 = factory.createGraph(a, b, c);
+        Graph g1 = factory.createGraph(new EphemeralNodeSet(a, b, c));
         g1.addEdge(ab);
         g1.addEdge(bc);
 
-        Graph g2 = factory.createGraph(b, c, d);
+        Graph g2 = factory.createGraph(new EphemeralNodeSet(b, c, d));
         g2.addEdge(bc);
         g2.addEdge(cd);
 
@@ -331,7 +331,7 @@ public class EphemeralGraphTest {
         assertEquals(1, intersect.edges().size());
         assertTrue(intersect.edges().contains(bc));
 
-        Graph intersectNodes = g1.intersection(b, c);
+        Graph intersectNodes = g1.intersection(factory.createGraph(new EphemeralNodeSet(b, c)));
         assertEquals(2, intersectNodes.nodes().size());
 
         Graph intersectEdges = g1.intersection(bc);
@@ -341,9 +341,9 @@ public class EphemeralGraphTest {
 
     @Test
     public void testInduce() {
-        Graph g1 = factory.createGraph(a, b, c); // nodes only
+        Graph g1 = factory.createGraph(new EphemeralNodeSet(a, b, c)); // nodes only
 
-        Graph induced = g1.induce(ab, bc, cd);
+        Graph induced = g1.induce(new EphemeralEdgeSet(ab, bc, cd));
         assertEquals(3, induced.nodes().size());
         assertEquals(2, induced.edges().size());
         assertTrue(induced.edges().contains(ab));

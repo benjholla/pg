@@ -110,7 +110,7 @@ public class GlobalGraphGraphArgTest {
         assertEquals(2, gNodes.nodes().size());
         assertTrue(gNodes.edges().isEmpty());
 
-        Graph gNodeSet = graph.createGraph(new GlobalNodeSet(n1, n2));
+        Graph gNodeSet = graph.createGraph(n1, n2);
         assertEquals(2, gNodeSet.nodes().size());
         assertTrue(gNodeSet.edges().isEmpty());
 

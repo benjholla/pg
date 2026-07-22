@@ -489,9 +489,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public NodeSet predecessors(Node... origin){
+    public NodeSet predecessors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return predecessors(new GlobalNodeSet(origin));
     }
 
@@ -516,9 +515,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public NodeSet successors(Node... origin){
+    public NodeSet successors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return successors(new GlobalNodeSet(origin));
     }
 
@@ -543,9 +541,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph forwardStep(Node... origin){
+    public Graph forwardStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return forwardStep(new GlobalNodeSet(origin));
     }
 
@@ -572,9 +569,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph reverseStep(Node... origin){
+    public Graph reverseStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return reverseStep(new GlobalNodeSet(origin));
     }
 
@@ -601,17 +597,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph union(Node... nodes){
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
-        return union(new GlobalGraph(nodes));
+    public Graph union(Node node){
+        Objects.requireNonNull(node, "node cannot be null");
+        return union(new GlobalGraph(node));
     }
 
     @Override
-    public Graph union(Edge... edges){
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return union(new GlobalGraph(edges));
+    public Graph union(Edge edge){
+        Objects.requireNonNull(edge, "edge cannot be null");
+        return union(new GlobalGraph(edge));
     }
 
 
@@ -642,17 +636,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph difference(Node... nodes){
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
-        return difference(new GlobalGraph(nodes));
+    public Graph difference(Node node){
+        Objects.requireNonNull(node, "node cannot be null");
+        return difference(new GlobalGraph(node));
     }
 
     @Override
-    public Graph difference(Edge... edges){
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return difference(new GlobalGraph(edges));
+    public Graph difference(Edge edge){
+        Objects.requireNonNull(edge, "edge cannot be null");
+        return difference(new GlobalGraph(edge));
     }
 
     @Override
@@ -670,10 +662,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph differenceEdges(Edge... edges){
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return differenceEdges(new GlobalGraph(edges));
+    public Graph differenceEdges(Edge edge){
+        Objects.requireNonNull(edge, "edge cannot be null");
+        return differenceEdges(new GlobalGraph(edge));
     }
 
     @Override
@@ -688,17 +679,15 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph intersection(Node... nodes){
-        Objects.requireNonNull(nodes, "nodes cannot be null");
-        for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
-        return intersection(new GlobalGraph(nodes));
+    public Graph intersection(Node node){
+        Objects.requireNonNull(node, "node cannot be null");
+        return intersection(new GlobalGraph(node));
     }
 
     @Override
-    public Graph intersection(Edge... edges){
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return intersection(new GlobalGraph(edges));
+    public Graph intersection(Edge edge){
+        Objects.requireNonNull(edge, "edge cannot be null");
+        return intersection(new GlobalGraph(edge));
     }
 
     @Override
@@ -784,9 +773,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph forward(Node... origin){
+    public Graph forward(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return forward(new GlobalNodeSet(origin));
     }
 
@@ -817,9 +805,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph reverse(Node... origin){
+    public Graph reverse(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        for (Node n : origin) { Objects.requireNonNull(n, "origin elements cannot be null"); }
         return reverse(new GlobalNodeSet(origin));
     }
 
@@ -850,10 +837,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public Graph induce(Edge... edges){
-        Objects.requireNonNull(edges, "edges cannot be null");
-        for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return induce(new GlobalEdgeSet(edges));
+    public Graph induce(Edge edge){
+        Objects.requireNonNull(edge, "edge cannot be null");
+        return induce(new GlobalEdgeSet(edge));
     }
 
     @Override

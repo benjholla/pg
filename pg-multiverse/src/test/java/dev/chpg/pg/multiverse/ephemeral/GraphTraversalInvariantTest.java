@@ -51,7 +51,7 @@ public class GraphTraversalInvariantTest {
     @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
-        Graph unionNodes = factory.createGraph(a, e);
+        Graph unionNodes = factory.createGraph(new EphemeralNodeSet(a, e));
         Graph forwardUnion = graph.forward(unionNodes);
 
         Graph forwardA = graph.forward(a);

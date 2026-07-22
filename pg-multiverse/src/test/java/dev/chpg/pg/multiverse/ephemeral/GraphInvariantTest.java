@@ -31,7 +31,7 @@ public class GraphInvariantTest {
         bc = factory.createEdge(b, c);
         ca = factory.createEdge(c, a);
 
-        graph = factory.createGraph(a, b, c);
+        graph = factory.createGraph(new EphemeralNodeSet(a, b, c));
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

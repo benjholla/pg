@@ -28,14 +28,14 @@ public class DifferenceEdgesPropertiesInvariantTest {
         Edge ab = factory.createEdge(a, b);
         Edge bc = factory.createEdge(b, c);
 
-        gA = factory.createGraph(a, b, c);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = factory.createGraph(a, b);
+        gB = factory.createGraph(new EphemeralNodeSet(a, b));
         gB.addEdge(ab);
 
-        gC = factory.createGraph(b, c);
+        gC = factory.createGraph(new EphemeralNodeSet(b, c));
         gC.addEdge(bc);
     }
 
@@ -79,7 +79,7 @@ public class DifferenceEdgesPropertiesInvariantTest {
         Node d = factory.createNode();
         Node e = factory.createNode();
         Edge de = factory.createEdge(d, e);
-        Graph gDisjoint = factory.createGraph(d, e);
+        Graph gDisjoint = factory.createGraph(new EphemeralNodeSet(d, e));
         gDisjoint.addEdge(de);
 
         Graph diff = gA.differenceEdges(gDisjoint);

@@ -33,14 +33,14 @@ public class GraphAlgebraicPropertiesTest {
         cd = new GlobalEdge(c, d);
         de = new GlobalEdge(d, e);
 
-        gA = new GlobalGraph(a, b, c);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b, c));
         gA.addEdge(ab);
         gA.addEdge(bc);
 
-        gB = new GlobalGraph(c, d);
+        gB = new GlobalGraph(new GlobalNodeSet(c, d));
         gB.addEdge(cd);
 
-        gC = new GlobalGraph(a, b, d, e);
+        gC = new GlobalGraph(new GlobalNodeSet(a, b, d, e));
         gC.addEdge(ab);
         gC.addEdge(de);
     }

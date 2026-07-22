@@ -21,7 +21,7 @@ public class IdempotenceInvariantTest {
         Node b = factory.createNode();
         Edge ab = factory.createEdge(a, b);
 
-        gA = factory.createGraph(a, b);
+        gA = factory.createGraph(new EphemeralNodeSet(a, b));
         gA.addEdge(ab);
     }
 

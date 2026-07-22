@@ -21,12 +21,12 @@ public class DisjointGraphInvariantTest {
     public void setUp() {
         a1 = factory.createNode();
         a2 = factory.createNode();
-        graphA = factory.createGraph(a1, a2);
+        graphA = factory.createGraph(new EphemeralNodeSet(a1, a2));
         graphA.addEdge(factory.createEdge(a1, a2));
 
         b1 = factory.createNode();
         b2 = factory.createNode();
-        graphB = factory.createGraph(b1, b2);
+        graphB = factory.createGraph(new EphemeralNodeSet(b1, b2));
         graphB.addEdge(factory.createEdge(b1, b2));
     }
 

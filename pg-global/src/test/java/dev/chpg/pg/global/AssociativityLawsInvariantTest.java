@@ -23,13 +23,13 @@ public class AssociativityLawsInvariantTest {
         GlobalEdge bc = new GlobalEdge(b, c);
         GlobalEdge cd = new GlobalEdge(c, d);
 
-        gA = new GlobalGraph(a, b);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b));
         gA.addEdge(ab);
 
-        gB = new GlobalGraph(b, c);
+        gB = new GlobalGraph(new GlobalNodeSet(b, c));
         gB.addEdge(bc);
 
-        gC = new GlobalGraph(c, d);
+        gC = new GlobalGraph(new GlobalNodeSet(c, d));
         gC.addEdge(cd);
     }
 
@@ -60,8 +60,8 @@ public class AssociativityLawsInvariantTest {
         System.arraycopy(gBnodes, 0, gB_and_gC_nodes, 0, gBnodes.length);
         System.arraycopy(gCnodes, 0, gB_and_gC_nodes, gBnodes.length, gCnodes.length);
 
-        Graph chainedUnionNodes = gA.union(gBnodes).union(gCnodes);
-        assertGraphsEqual(chainedUnionNodes, gA.union(gB_and_gC_nodes));
+        Graph chainedUnionNodes = gA.union(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gBnodes)))).union(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gCnodes))));
+        assertGraphsEqual(chainedUnionNodes, gA.union(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gB_and_gC_nodes)))));
 
         // Edge union
         GlobalEdge[] gBedges = gB.edges().stream().toArray(GlobalEdge[]::new);
@@ -70,8 +70,8 @@ public class AssociativityLawsInvariantTest {
         System.arraycopy(gBedges, 0, gB_and_gC_edges, 0, gBedges.length);
         System.arraycopy(gCedges, 0, gB_and_gC_edges, gBedges.length, gCedges.length);
 
-        Graph chainedUnionEdges = gA.union(gBedges).union(gCedges);
-        assertGraphsEqual(chainedUnionEdges, gA.union(gB_and_gC_edges));
+        Graph chainedUnionEdges = gA.union(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gBedges)))).union(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gCedges))));
+        assertGraphsEqual(chainedUnionEdges, gA.union(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gB_and_gC_edges)))));
     }
 
     @Test
@@ -89,12 +89,12 @@ public class AssociativityLawsInvariantTest {
         GlobalNode[] gCnodes = gC.nodes().stream().toArray(GlobalNode[]::new);
 
         GlobalNode[] gB_intersect_gC_nodes = gB.intersection(gC).nodes().stream().toArray(GlobalNode[]::new);
-        assertGraphsEqual(gA.intersection(gB_intersect_gC_nodes), gA.intersection(gBnodes).intersection(gCnodes));
+        assertGraphsEqual(gA.intersection(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gB_intersect_gC_nodes)))), gA.intersection(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gBnodes)))).intersection(new GlobalGraph(new GlobalNodeSet(java.util.Arrays.asList(gCnodes)))));
 
         GlobalEdge[] gBedges = gB.edges().stream().toArray(GlobalEdge[]::new);
         GlobalEdge[] gCedges = gC.edges().stream().toArray(GlobalEdge[]::new);
 
         GlobalEdge[] gB_intersect_gC_edges = gB.intersection(gC).edges().stream().toArray(GlobalEdge[]::new);
-        assertGraphsEqual(gA.intersection(gB_intersect_gC_edges), gA.intersection(gBedges).intersection(gCedges));
+        assertGraphsEqual(gA.intersection(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gB_intersect_gC_edges)))), gA.intersection(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gBedges)))).intersection(new GlobalGraph(new GlobalEdgeSet(java.util.Arrays.asList(gCedges)))));
     }
 }

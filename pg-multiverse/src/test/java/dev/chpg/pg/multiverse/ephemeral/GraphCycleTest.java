@@ -21,7 +21,7 @@ public class GraphCycleTest {
         Edge bc = factory.createEdge(b, c);
         Edge ca = factory.createEdge(c, a); // Cycle!
 
-        Graph graph = factory.createGraph(a, b, c);
+        Graph graph = factory.createGraph(new EphemeralNodeSet(a, b, c));
         graph.addEdge(ab);
         graph.addEdge(bc);
         graph.addEdge(ca);

@@ -18,7 +18,7 @@ public class IdempotenceInvariantTest {
         GlobalNode b = new GlobalNode();
         GlobalEdge ab = new GlobalEdge(a, b);
 
-        gA = new GlobalGraph(a, b);
+        gA = new GlobalGraph(new GlobalNodeSet(a, b));
         gA.addEdge(ab);
     }
 

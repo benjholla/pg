@@ -40,7 +40,7 @@ public class GraphInduceInvariantTest {
     @Test
     public void testInduceEdgesWithValidNodes() {
         // 'graph' contains only 'a' and 'b'.
-        Graph induced = graph.induce(ab, bc, ca);
+        Graph induced = graph.induce(new EphemeralEdgeSet(ab, bc, ca));
 
         // Should only contain edges where both nodes are in the graph.
         assertEquals(2, induced.nodes().size(), "Inducing should retain the graph's nodes");
@@ -55,7 +55,7 @@ public class GraphInduceInvariantTest {
 
     @Test
     public void testInduceFromOtherGraph() {
-        Graph otherGraph = factory.createGraph(a, b, c);
+        Graph otherGraph = factory.createGraph(new EphemeralNodeSet(a, b, c));
         otherGraph.addEdge(ab);
         otherGraph.addEdge(bc);
         otherGraph.addEdge(ca);

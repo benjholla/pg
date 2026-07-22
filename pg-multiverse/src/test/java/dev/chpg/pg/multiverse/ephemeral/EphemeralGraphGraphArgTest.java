@@ -106,7 +106,7 @@ public class EphemeralGraphGraphArgTest {
         Graph gEmpty = factory.createGraph();
         assertTrue(gEmpty.nodes().isEmpty());
 
-        Graph gNodes = factory.createGraph(n1, n2);
+        Graph gNodes = factory.createGraph(new EphemeralNodeSet(n1, n2));
         assertEquals(2, gNodes.nodes().size());
         assertTrue(gNodes.edges().isEmpty());
 
