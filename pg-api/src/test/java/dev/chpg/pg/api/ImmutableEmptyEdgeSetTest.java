@@ -13,22 +13,16 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-public class ImmutableEmptyNodeSetTest {
+public class ImmutableEmptyEdgeSetTest {
 
-    private final ImmutableEmptyNodeSet emptySet = new ImmutableEmptyNodeSet();
-
-    private static class DummyNode implements Node {
-        @Override public int id() { return 1; }
-        @Override public TagSet tags() { return null; }
-        @Override public AttributeMap attributes() { return null; }
-    }
+    private final ImmutableEmptyEdgeSet emptySet = new ImmutableEmptyEdgeSet();
 
     @Test
     public void testBasicProperties() {
         assertEquals(0, emptySet.size());
         assertTrue(emptySet.isEmpty());
         assertFalse(emptySet.iterator().hasNext());
-        assertFalse(emptySet.contains(new DummyNode()));
+        assertFalse(emptySet.contains(new TestDummyEdge()));
         assertEquals(Optional.empty(), emptySet.one());
         assertTrue(emptySet.ids().isEmpty());
         assertArrayEquals(new int[0], emptySet.toIdArray());
@@ -40,21 +34,21 @@ public class ImmutableEmptyNodeSetTest {
     public void testImmutability() {
         assertSame(emptySet, emptySet.materialize());
         assertSame(emptySet, emptySet.toImmutable());
-        assertThrows(UnsupportedOperationException.class, () -> emptySet.add(new DummyNode()));
+        assertThrows(UnsupportedOperationException.class, () -> emptySet.add(new TestDummyEdge()));
     }
 
     @Test
     public void testIntersect() {
         assertThrows(NullPointerException.class, () -> emptySet.intersect(null));
         assertSame(emptySet, emptySet.intersect(Collections.emptyList()));
-        assertSame(emptySet, emptySet.intersect(List.of(new DummyNode())));
+        assertSame(emptySet, emptySet.intersect(List.of(new TestDummyEdge())));
     }
 
     @Test
     public void testDifference() {
         assertThrows(NullPointerException.class, () -> emptySet.difference(null));
         assertSame(emptySet, emptySet.difference(Collections.emptyList()));
-        assertSame(emptySet, emptySet.difference(List.of(new DummyNode())));
+        assertSame(emptySet, emptySet.difference(List.of(new TestDummyEdge())));
     }
 
     @Test
@@ -62,15 +56,15 @@ public class ImmutableEmptyNodeSetTest {
         assertThrows(NullPointerException.class, () -> emptySet.union(null));
         assertSame(emptySet, emptySet.union(Collections.emptyList()));
 
-        Node dummy = new DummyNode();
-        List<Node> collection = List.of(dummy);
-        NodeSet unionResult = emptySet.union(collection);
+        Edge dummy = new TestDummyEdge();
+        List<Edge> collection = List.of(dummy);
+        EdgeSet unionResult = emptySet.union(collection);
 
         assertEquals(1, unionResult.size());
         assertTrue(unionResult.contains(dummy));
 
-        NodeSet immutableSet = new GenericImmutableNodeSet(collection);
-        NodeSet unionResult2 = emptySet.union(immutableSet);
+        EdgeSet immutableSet = new GenericImmutableEdgeSet(collection);
+        EdgeSet unionResult2 = emptySet.union(immutableSet);
         assertSame(immutableSet, unionResult2);
     }
 }
