@@ -29,19 +29,39 @@ public class GraphDegreeInvariantTest {
     }
 
     @Test
+    public void testDegreeMatchesEdgeSetSize() {
+        for (Node node : graph.nodes()) {
+            int inDegree = graph.degree(node, NodeDirection.IN);
+            int outDegree = graph.degree(node, NodeDirection.OUT);
+            int bothDegree = graph.degree(node, NodeDirection.BOTH);
+
+            assertEquals(graph.edges(node, NodeDirection.IN).size(), inDegree, "IN degree must equal IN edge set size");
+            assertEquals(graph.edges(node, NodeDirection.OUT).size(), outDegree, "OUT degree must equal OUT edge set size");
+
+            // BOTH degree must exactly equal IN + OUT degree.
+            // Note: a self loop appears in both the IN set and OUT set. Since edges(node, BOTH) returns a Set,
+            // the self loop is only present once in the Set, but structurally contributes 2 to the degree.
+            assertEquals(inDegree + outDegree, bothDegree, "BOTH degree must equal IN + OUT degree");
+        }
+    }
+
+    @Test
     public void testHandshakingLemma() {
         int totalInDegree = 0;
         int totalOutDegree = 0;
+        int totalBothDegree = 0;
 
         for (Node node : graph.nodes()) {
-            totalInDegree += graph.edges(node, NodeDirection.IN).size();
-            totalOutDegree += graph.edges(node, NodeDirection.OUT).size();
+            totalInDegree += graph.degree(node, NodeDirection.IN);
+            totalOutDegree += graph.degree(node, NodeDirection.OUT);
+            totalBothDegree += graph.degree(node, NodeDirection.BOTH);
         }
 
         int totalEdges = graph.edges().size();
 
         assertEquals(totalEdges, totalInDegree, "Sum of in-degrees must equal total number of edges");
         assertEquals(totalEdges, totalOutDegree, "Sum of out-degrees must equal total number of edges");
+        assertEquals(2 * totalEdges, totalBothDegree, "Sum of BOTH degrees must equal 2 * total number of edges");
     }
 
     @Test
@@ -49,14 +69,17 @@ public class GraphDegreeInvariantTest {
         GlobalGraph emptyGraph = new GlobalGraph();
         int totalInDegree = 0;
         int totalOutDegree = 0;
+        int totalBothDegree = 0;
 
         for (Node node : emptyGraph.nodes()) {
-            totalInDegree += emptyGraph.edges(node, NodeDirection.IN).size();
-            totalOutDegree += emptyGraph.edges(node, NodeDirection.OUT).size();
+            totalInDegree += emptyGraph.degree(node, NodeDirection.IN);
+            totalOutDegree += emptyGraph.degree(node, NodeDirection.OUT);
+            totalBothDegree += emptyGraph.degree(node, NodeDirection.BOTH);
         }
 
         assertEquals(0, totalInDegree);
         assertEquals(0, totalOutDegree);
+        assertEquals(0, totalBothDegree);
         assertEquals(0, emptyGraph.edges().size());
     }
 }
