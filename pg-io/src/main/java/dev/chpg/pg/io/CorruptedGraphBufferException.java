@@ -5,12 +5,21 @@ package dev.chpg.pg.io;
  */
 public class CorruptedGraphBufferException extends RuntimeException {
 
+    /**
+     * undocumented.
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * undocumented.
+     */
     public CorruptedGraphBufferException(String message) {
         super(message);
     }
 
+    /**
+     * undocumented.
+     */
     public CorruptedGraphBufferException(String message, Throwable cause) {
         super(message, cause);
     }

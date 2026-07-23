@@ -15,10 +15,19 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * undocumented.
+ */
 public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
 
+    /**
+     * undocumented.
+     */
     private final Map<Integer, GlobalNode> nodes;
 
+    /**
+     * undocumented.
+     */
     public GlobalUnmodifiableLiveNodeSet(
             Map<Integer, GlobalNode> nodes,
             Map<Integer, GlobalEdge> edges,
@@ -118,6 +127,9 @@ public boolean isMaterialized() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return nodes.size();
     }

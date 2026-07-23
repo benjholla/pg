@@ -11,19 +11,34 @@ import java.util.stream.Collectors;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * undocumented.
+ */
 public final class GlobalNodeSet implements NodeSet {
 
+    /**
+     * undocumented.
+     */
     private final HashSet<GlobalNode> internalSet;
 
+    /**
+     * undocumented.
+     */
     public GlobalNodeSet() {
         this.internalSet = new HashSet<>();
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalNodeSet(Node initialNode) {
         this();
         add(initialNode);
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalNodeSet(Node... initialNodes) {
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
         this.internalSet = new HashSet<>((int) (initialNodes.length / 0.75f) + 1);
@@ -32,12 +47,18 @@ public final class GlobalNodeSet implements NodeSet {
         }
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalNodeSet(Collection<Node> initialNodes) {
         this();
         Objects.requireNonNull(initialNodes, "Node collection cannot be null");
         addAll(initialNodes);
     }
 
+    /**
+     * undocumented.
+     */
     private GlobalNode validate(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
         if (!(node instanceof GlobalNode impl)) {
@@ -148,6 +169,9 @@ public boolean isMaterialized() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return internalSet.size();
     }

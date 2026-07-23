@@ -15,10 +15,19 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * undocumented.
+ */
 public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
+    /**
+     * undocumented.
+     */
     private final Map<Integer, GlobalEdge> edges;
 
+    /**
+     * undocumented.
+     */
     public GlobalUnmodifiableLiveEdgeSet(
             Map<Integer, GlobalNode> nodes,
             Map<Integer, GlobalEdge> edges,
@@ -118,6 +127,9 @@ public boolean isMaterialized() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return edges.size();
     }

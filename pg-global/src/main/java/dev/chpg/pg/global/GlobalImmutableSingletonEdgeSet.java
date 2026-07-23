@@ -11,10 +11,19 @@ import java.util.Set;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * undocumented.
+ */
 public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
+    /**
+     * undocumented.
+     */
     private final GlobalEdge element;
 
+    /**
+     * undocumented.
+     */
     public GlobalImmutableSingletonEdgeSet(GlobalEdge element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
@@ -33,6 +42,9 @@ public EdgeSet materialize() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return 1;
     }

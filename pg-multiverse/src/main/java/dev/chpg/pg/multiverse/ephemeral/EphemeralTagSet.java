@@ -15,10 +15,16 @@ public final class EphemeralTagSet implements TagSet {
 
     private final Set<String> delegate;
 
+    /**
+     * undocumented.
+     */
     public EphemeralTagSet() {
         this.delegate = new HashSet<>();
     }
 
+    /**
+     * undocumented.
+     */
     public EphemeralTagSet(Collection<? extends String> c) {
         this.delegate = new HashSet<>();
         this.addAll(c);

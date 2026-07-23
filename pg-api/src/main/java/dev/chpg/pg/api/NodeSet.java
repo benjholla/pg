@@ -74,6 +74,7 @@ public interface NodeSet extends Set<Node> {
      * Forces eager evaluation of the deferred pipeline, materializing
      * the final IDs into a high-performance array in memory.
      * Note: This incurs an allocation and iteration cost.
+     * @return the resulting node set
      */
     default NodeSet materialize() {
         Set<Node> materialized = new java.util.HashSet<>();
@@ -85,18 +86,21 @@ public interface NodeSet extends Set<Node> {
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the resulting node set
      */
     NodeSet intersect(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing elements from this set, excluding those in the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the resulting node set
      */
     NodeSet difference(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing all elements from this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the resulting node set
      */
     NodeSet union(Collection<? extends Node> other);
 
@@ -104,12 +108,14 @@ public interface NodeSet extends Set<Node> {
      * Returns true if this set is already backed by a flat, allocated
      * memory structure. Returns false if this set requires computation
      * (lazy evaluation) during iteration.
+     * @return true if successful or if the graph changed, false otherwise
      */
     boolean isMaterialized();
 
     /**
      * Returns true if the size of the set can be determined in O(1) time
      * without iterating or evaluating the elements.
+     * @return true if successful or if the graph changed, false otherwise
      */
     default boolean isSizeKnown() {
         return true;
@@ -117,11 +123,13 @@ public interface NodeSet extends Set<Node> {
 
     /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
+     * @return the result
      */
     Set<Integer> ids();
 
     /**
      * Returns an array of the primitive integer IDs of the elements in this set.
+     * @return the integer result
      */
     int[] toIdArray();
 }

@@ -57,6 +57,8 @@ public class IntIntMap {
     /**
      * Inserts a key-value pair using linear probing.
      * Assumes keys are non-negative (file IDs).
+     * @param key the key
+     * @param value the value
      */
     public void put(int key, int value) {
         if (key == EMPTY) {
@@ -78,6 +80,7 @@ public class IntIntMap {
      * Retrieves a value for the given key.
      *
      * @return the value, or EMPTY (-1) if not found.
+     * @param key the key
      */
     public int get(int key) {
         int index = hash(key) & mask;
@@ -101,6 +104,7 @@ public class IntIntMap {
      * uses the MurmurHash3 mix constants (0x85ebca6b and 0xc2b2ae35) to fiercely
      * scatter sequential integers across the available bucket space, drastically
      * reducing linear probing collision chains.
+     * @param key the key
      */
     private int hash(int key) {
         int h = key;

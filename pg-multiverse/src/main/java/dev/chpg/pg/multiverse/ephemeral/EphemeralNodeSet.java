@@ -11,19 +11,34 @@ import java.util.stream.Collectors;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * undocumented.
+ */
 public final class EphemeralNodeSet implements NodeSet {
 
+    /**
+     * undocumented.
+     */
     private final HashSet<EphemeralNode> internalSet;
 
+    /**
+     * undocumented.
+     */
     public EphemeralNodeSet() {
         this.internalSet = new HashSet<>();
     }
 
+    /**
+     * undocumented.
+     */
     public EphemeralNodeSet(Node initialNode) {
         this();
         add(initialNode);
     }
 
+    /**
+     * undocumented.
+     */
     public EphemeralNodeSet(Node... initialNodes) {
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
         this.internalSet = new HashSet<>((int) (initialNodes.length / 0.75f) + 1);
@@ -32,12 +47,18 @@ public final class EphemeralNodeSet implements NodeSet {
         }
     }
 
+    /**
+     * undocumented.
+     */
     public EphemeralNodeSet(Collection<Node> initialNodes) {
         this();
         Objects.requireNonNull(initialNodes, "Node collection cannot be null");
         addAll(initialNodes);
     }
 
+    /**
+     * undocumented.
+     */
     private EphemeralNode validate(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
         if (!(node instanceof EphemeralNode impl)) {
@@ -149,6 +170,9 @@ public boolean isMaterialized() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return internalSet.size();
     }
