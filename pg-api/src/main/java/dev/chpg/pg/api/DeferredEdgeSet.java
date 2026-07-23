@@ -29,6 +29,12 @@ public class DeferredEdgeSet extends AbstractSet<Edge> implements EdgeSet {
     private final EdgeSet source;
     private final Predicate<Edge> combinedPredicate;
 
+    /**
+     * Constructs a new deferred edge set.
+     *
+     * @param source           the underlying source edge set
+     * @param initialPredicate the initial filtering predicate
+     */
     public DeferredEdgeSet(EdgeSet source, Predicate<Edge> initialPredicate) {
         this.source = source;
         this.combinedPredicate = initialPredicate;

@@ -29,6 +29,12 @@ public class DeferredNodeSet extends AbstractSet<Node> implements NodeSet {
     private final NodeSet source;
     private final Predicate<Node> combinedPredicate;
 
+    /**
+     * Constructs a new deferred node set.
+     *
+     * @param source           the underlying source node set
+     * @param initialPredicate the initial filtering predicate
+     */
     public DeferredNodeSet(NodeSet source, Predicate<Node> initialPredicate) {
         this.source = source;
         this.combinedPredicate = initialPredicate;

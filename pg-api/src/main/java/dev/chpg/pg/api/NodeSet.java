@@ -28,18 +28,51 @@ import java.util.Set;
  */
 public interface NodeSet extends Set<Node> {
 
+    /**
+     * An immutable, empty node set singleton.
+     */
     NodeSet EMPTY = new ImmutableEmptyNodeSet();
 
+    /**
+     * Returns an empty node set.
+     *
+     * @return an empty NodeSet
+     */
     static NodeSet empty() {
         return EMPTY;
     }
 
+    /**
+     * Converts this node set into an immutable snapshot.
+     *
+     * @return an immutable NodeSet
+     */
     NodeSet toImmutable();
 
+    /**
+     * Returns any single node from this set, if it is not empty.
+     *
+     * @return an Optional containing a node, or empty if the set is empty
+     */
     Optional<Node> one();
+
+    /**
+     * Filters this set to include only nodes with the specified attribute key.
+     *
+     * @param attribute the attribute key to check for
+     * @return a deferred NodeSet containing matching nodes
+     */
     default NodeSet withAttribute(String attribute) {
         return new DeferredNodeSet(this, n -> n.attributes().containsKey(attribute));
     }
+
+    /**
+     * Filters this set to include only nodes with the specified attribute key matching any of the given values.
+     *
+     * @param attribute the attribute key to check for
+     * @param values    the allowed attribute values
+     * @return a deferred NodeSet containing matching nodes
+     */
     default NodeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredNodeSet(this, n -> {
             AttributeValue val = n.attributes().get(attribute);
@@ -50,6 +83,13 @@ public interface NodeSet extends Set<Node> {
             return false;
         });
     }
+
+    /**
+     * Filters this set to include only nodes possessing at least one of the specified tags.
+     *
+     * @param tags the tags to check for
+     * @return a deferred NodeSet containing matching nodes
+     */
     default NodeSet withAnyTag(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -59,6 +99,13 @@ public interface NodeSet extends Set<Node> {
             return false;
         });
     }
+
+    /**
+     * Filters this set to include only nodes possessing all of the specified tags.
+     *
+     * @param tags the tags to check for
+     * @return a deferred NodeSet containing matching nodes
+     */
     default NodeSet withAllTags(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -74,6 +121,8 @@ public interface NodeSet extends Set<Node> {
      * Forces eager evaluation of the deferred pipeline, materializing
      * the final IDs into a high-performance array in memory.
      * Note: This incurs an allocation and iteration cost.
+     *
+     * @return a materialized, immutable NodeSet
      */
     default NodeSet materialize() {
         Set<Node> materialized = new java.util.HashSet<>();
@@ -85,18 +134,21 @@ public interface NodeSet extends Set<Node> {
     /**
      * Returns a new immutable NodeSet snapshot containing elements present in both this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the intersected NodeSet
      */
     NodeSet intersect(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing elements from this set, excluding those in the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the differenced NodeSet
      */
     NodeSet difference(Collection<? extends Node> other);
 
     /**
      * Returns a new immutable NodeSet snapshot containing all elements from this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the unioned NodeSet
      */
     NodeSet union(Collection<? extends Node> other);
 
@@ -104,12 +156,16 @@ public interface NodeSet extends Set<Node> {
      * Returns true if this set is already backed by a flat, allocated
      * memory structure. Returns false if this set requires computation
      * (lazy evaluation) during iteration.
+     *
+     * @return true if materialized, false otherwise
      */
     boolean isMaterialized();
 
     /**
      * Returns true if the size of the set can be determined in O(1) time
      * without iterating or evaluating the elements.
+     *
+     * @return true if the size is known in O(1) time, false otherwise
      */
     default boolean isSizeKnown() {
         return true;
@@ -117,11 +173,15 @@ public interface NodeSet extends Set<Node> {
 
     /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
+     *
+     * @return a set of primitive integer IDs
      */
     Set<Integer> ids();
 
     /**
      * Returns an array of the primitive integer IDs of the elements in this set.
+     *
+     * @return an array of primitive integer IDs
      */
     int[] toIdArray();
 }

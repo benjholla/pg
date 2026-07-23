@@ -25,11 +25,58 @@ import java.util.Map;
  */
 public interface AttributeMap extends Map<String, AttributeValue> {
 
+    /**
+     * Associates the specified String value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, String value);
+
+    /**
+     * Associates the specified int value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, int value);
+
+    /**
+     * Associates the specified long value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, long value);
+
+    /**
+     * Associates the specified double value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, double value);
+
+    /**
+     * Associates the specified boolean value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, boolean value);
+
+    /**
+     * Associates the specified byte[] value with the specified key in this map.
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key.
+     */
     AttributeValue put(String key, byte[] value);
 
     @Override

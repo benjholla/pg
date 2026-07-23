@@ -30,7 +30,24 @@ package dev.chpg.pg.api;
  * graph element.
  */
 public interface GraphElement {
+    /**
+     * Returns the boolean tags associated with this element.
+     *
+     * @return the tag set
+     */
     TagSet tags();
+
+    /**
+     * Returns the key-value properties associated with this element.
+     *
+     * @return the attribute map
+     */
     AttributeMap attributes();
+
+    /**
+     * Returns the primitive, unique identifier for this element.
+     *
+     * @return the element ID
+     */
     int id();
 }

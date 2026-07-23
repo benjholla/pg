@@ -30,6 +30,11 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
 
     private final Set<Edge> elements;
 
+    /**
+     * Constructs a new generic immutable edge set from the provided elements.
+     *
+     * @param elements the collection of edges
+     */
     public GenericImmutableEdgeSet(Collection<? extends Edge> elements) {
         this.elements = Set.copyOf(elements);
     }

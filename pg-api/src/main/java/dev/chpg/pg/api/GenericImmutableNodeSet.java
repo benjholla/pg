@@ -30,6 +30,11 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
 
     private final Set<Node> elements;
 
+    /**
+     * Constructs a new generic immutable node set from the provided elements.
+     *
+     * @param elements the collection of nodes
+     */
     public GenericImmutableNodeSet(Collection<? extends Node> elements) {
         this.elements = Set.copyOf(elements);
     }
