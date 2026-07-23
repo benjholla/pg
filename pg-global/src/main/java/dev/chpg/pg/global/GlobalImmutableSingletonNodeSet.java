@@ -11,10 +11,19 @@ import java.util.Set;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * undocumented.
+ */
 public final class GlobalImmutableSingletonNodeSet extends AbstractSet<Node> implements NodeSet {
 
+    /**
+     * undocumented.
+     */
     private final GlobalNode element;
 
+    /**
+     * undocumented.
+     */
     public GlobalImmutableSingletonNodeSet(GlobalNode element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
@@ -33,6 +42,9 @@ public NodeSet materialize() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return 1;
     }

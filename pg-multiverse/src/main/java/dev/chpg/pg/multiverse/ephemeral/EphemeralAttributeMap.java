@@ -14,12 +14,21 @@ import dev.chpg.pg.api.AttributeValue;
  */
 public final class EphemeralAttributeMap implements AttributeMap {
 
+    /**
+     * undocumented.
+     */
     private final Map<String, AttributeValue> delegate;
 
+    /**
+     * undocumented.
+     */
     public EphemeralAttributeMap() {
         this.delegate = new HashMap<>();
     }
 
+    /**
+     * undocumented.
+     */
     public EphemeralAttributeMap(Map<? extends String, ? extends AttributeValue> m) {
         this.delegate = new HashMap<>();
         this.putAll(m);

@@ -1,5 +1,8 @@
 package dev.chpg.pg.exporter;
 
+/**
+ * undocumented.
+ */
 public final class ExportAttributeValue {
 
     // The byte IDs must perfectly match your Java 17 pg-io reader specification
@@ -15,9 +18,18 @@ public final class ExportAttributeValue {
         Type(byte marker) { this.marker = marker; }
     }
 
+    /**
+     * undocumented.
+     */
     private final Type type;
+    /**
+     * undocumented.
+     */
     private final Object value;
 
+    /**
+     * undocumented.
+     */
     private ExportAttributeValue(Type type, Object value) {
         this.type = type;
         this.value = value;

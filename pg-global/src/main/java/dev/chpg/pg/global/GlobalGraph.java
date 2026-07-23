@@ -19,11 +19,26 @@ import dev.chpg.pg.api.NodeSet;
  */
 public final class GlobalGraph implements Graph, GlobalFactory {
 
+    /**
+     * undocumented.
+     */
     private static final EdgeSet EMPTY_EDGES = EdgeSet.empty();
 
+    /**
+     * undocumented.
+     */
     private Map<Integer, GlobalNode> nodes;
+    /**
+     * undocumented.
+     */
     private Map<Integer, GlobalEdge> edges;
+    /**
+     * undocumented.
+     */
     private Map<Integer, GlobalEdgeSet> inEdges;
+    /**
+     * undocumented.
+     */
     private Map<Integer, GlobalEdgeSet> outEdges;
 
     /**
@@ -73,6 +88,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return new GlobalGraph(graph.nodes(), graph.edges());
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalGraph() {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -80,6 +98,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         this.outEdges = new HashMap<>();
     }
 
+    /**
+     * undocumented.
+     */
     private GlobalGraph(int nodeCapacity, int edgeCapacity) {
         int nodeMapCapacity = (int) (nodeCapacity / 0.75f) + 1;
         int edgeMapCapacity = (int) (edgeCapacity / 0.75f) + 1;
@@ -89,6 +110,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         this.outEdges = new HashMap<>(nodeMapCapacity);
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalFactory factory() {
         return this;
     }
@@ -412,12 +436,18 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return result;
     }
     
+    /**
+     * undocumented.
+     */
     public void clearEdges() {
         inEdges.clear();
         outEdges.clear();
         edges.clear();
     }
     
+    /**
+     * undocumented.
+     */
     public void clear() {
         clearEdges();
         nodes.clear();
@@ -609,14 +639,23 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
 
+    /**
+     * undocumented.
+     */
     private int topologicalVolume() {
         return this.nodes().size() + this.edges().size();
     }
 
+    /**
+     * undocumented.
+     */
     private int topologicalVolume(Graph g) {
         return g.nodes().size() + g.edges().size();
     }
 
+    /**
+     * undocumented.
+     */
     private boolean isSizeKnown(Graph g) {
         return g.nodes().isSizeKnown() && g.edges().isSizeKnown();
     }

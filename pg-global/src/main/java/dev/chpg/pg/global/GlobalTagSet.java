@@ -15,10 +15,16 @@ public final class GlobalTagSet implements TagSet {
 
     private final Set<String> delegate;
 
+    /**
+     * undocumented.
+     */
     public GlobalTagSet() {
         this.delegate = new HashSet<>();
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalTagSet(Collection<? extends String> c) {
         this.delegate = new HashSet<>();
         this.addAll(c);

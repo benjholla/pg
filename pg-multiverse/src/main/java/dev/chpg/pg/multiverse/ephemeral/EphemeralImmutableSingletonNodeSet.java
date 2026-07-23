@@ -11,10 +11,19 @@ import java.util.Set;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * undocumented.
+ */
 public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> implements NodeSet {
 
+    /**
+     * undocumented.
+     */
     private final EphemeralNode element;
 
+    /**
+     * undocumented.
+     */
     public EphemeralImmutableSingletonNodeSet(EphemeralNode element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
@@ -33,6 +42,9 @@ public NodeSet materialize() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return 1;
     }

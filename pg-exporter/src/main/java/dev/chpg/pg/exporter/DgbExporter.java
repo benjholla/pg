@@ -8,8 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+/**
+ * undocumented.
+ */
 public class DgbExporter {
+    /**
+     * undocumented.
+     */
+    public DgbExporter() {}
 
+    /**
+     * undocumented.
+     */
     public void export(ExportGraph graph, String outputPath) throws Exception {
         Map<String, Integer> dictionary = new LinkedHashMap<>();
 
@@ -89,6 +99,9 @@ public class DgbExporter {
         }
     }
 
+    /**
+     * undocumented.
+     */
     private void writeTags(Iterable<String> tags, Map<String, Integer> dict, DataOutputStream out) throws Exception {
         if (tags == null) {
             out.writeInt(0);
@@ -101,6 +114,9 @@ public class DgbExporter {
         }
     }
 
+    /**
+     * undocumented.
+     */
     private void writeAttributes(Map<String, ExportAttributeValue> attributes, Map<String, Integer> dict, DataOutputStream out) throws Exception {
         if (attributes == null) {
             out.writeInt(0);
@@ -139,6 +155,9 @@ public class DgbExporter {
         }
     }
 
+    /**
+     * undocumented.
+     */
     private int countIterable(Iterable<?> it) {
         if (it == null) { return 0; }
         // This handles both the Collection optimization and the fallback loop

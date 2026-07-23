@@ -4,12 +4,21 @@ import dev.chpg.pg.api.AttributeMap;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
 
+/**
+ * undocumented.
+ */
 public final class EphemeralNode implements Node {
 
+    /**
+     * undocumented.
+     */
     private final int id;
     private final TagSet tags;
     private final AttributeMap attributes;
 
+    /**
+     * undocumented.
+     */
     public EphemeralNode(int id) {
         this.id = id;
         this.tags = new EphemeralTagSet();

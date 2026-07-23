@@ -5,14 +5,23 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
 
+/**
+ * undocumented.
+ */
 public final class GlobalEdge implements Edge {
 
+    /**
+     * undocumented.
+     */
     private final int id;
     private final TagSet tags;
     private final AttributeMap attributes;
     private Node from;
     private Node to;
 
+    /**
+     * undocumented.
+     */
     public GlobalEdge(Node from, Node to) {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Edge endpoints cannot be null.");

@@ -11,19 +11,34 @@ import java.util.stream.Collectors;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * undocumented.
+ */
 public final class GlobalEdgeSet implements EdgeSet {
 
+    /**
+     * undocumented.
+     */
     private final HashSet<GlobalEdge> internalSet;
 
+    /**
+     * undocumented.
+     */
     public GlobalEdgeSet() {
         this.internalSet = new HashSet<>();
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalEdgeSet(Edge initialEdge) {
         this();
         add(initialEdge);
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalEdgeSet(Edge... initialEdges) {
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
         this.internalSet = new HashSet<>((int) (initialEdges.length / 0.75f) + 1);
@@ -32,12 +47,18 @@ public final class GlobalEdgeSet implements EdgeSet {
         }
     }
 
+    /**
+     * undocumented.
+     */
     public GlobalEdgeSet(Collection<Edge> initialEdges) {
         this();
         Objects.requireNonNull(initialEdges, "Edge collection cannot be null");
         addAll(initialEdges);
     }
 
+    /**
+     * undocumented.
+     */
     private GlobalEdge validate(Edge edge) {
         Objects.requireNonNull(edge, "Edge cannot be null");
         if (!(edge instanceof GlobalEdge impl)) {
@@ -148,6 +169,9 @@ public boolean isMaterialized() {
         return true;
     }
 
+    /**
+     * undocumented.
+     */
     public int size() {
         return internalSet.size();
     }
