@@ -24,12 +24,17 @@ public interface NodeFactory {
 
     /**
      * Creates an immutable singleton set containing the specified node.
+     *
+     * @param node the node to include in the set
+     * @return an immutable singleton node set
      */
     NodeSet singleton(Node node);
 
     /**
      * Instantiates and returns a new Node native to this graph's implementation.
      * Note: This does NOT add the node to the graph. Use addNode() for structural mutation.
+     *
+     * @return a new node instance
      */
     public Node createNode();
 

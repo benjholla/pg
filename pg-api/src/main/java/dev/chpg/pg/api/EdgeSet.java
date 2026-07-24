@@ -28,18 +28,51 @@ import java.util.Set;
  */
 public interface EdgeSet extends Set<Edge> {
 
+    /**
+     * An immutable, empty edge set singleton.
+     */
     EdgeSet EMPTY = new ImmutableEmptyEdgeSet();
 
+    /**
+     * Returns an empty edge set.
+     *
+     * @return an empty EdgeSet
+     */
     static EdgeSet empty() {
         return EMPTY;
     }
 
+    /**
+     * Converts this edge set into an immutable snapshot.
+     *
+     * @return an immutable EdgeSet
+     */
     EdgeSet toImmutable();
 
+    /**
+     * Returns any single edge from this set, if it is not empty.
+     *
+     * @return an Optional containing an edge, or empty if the set is empty
+     */
     Optional<Edge> one();
+
+    /**
+     * Filters this set to include only edges with the specified attribute key.
+     *
+     * @param attribute the attribute key to check for
+     * @return a deferred EdgeSet containing matching edges
+     */
     default EdgeSet withAttribute(String attribute) {
         return new DeferredEdgeSet(this, e -> e.attributes().containsKey(attribute));
     }
+
+    /**
+     * Filters this set to include only edges with the specified attribute key matching any of the given values.
+     *
+     * @param attribute the attribute key to check for
+     * @param values    the allowed attribute values
+     * @return a deferred EdgeSet containing matching edges
+     */
     default EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredEdgeSet(this, e -> {
             AttributeValue val = e.attributes().get(attribute);
@@ -50,6 +83,13 @@ public interface EdgeSet extends Set<Edge> {
             return false;
         });
     }
+
+    /**
+     * Filters this set to include only edges possessing at least one of the specified tags.
+     *
+     * @param tags the tags to check for
+     * @return a deferred EdgeSet containing matching edges
+     */
     default EdgeSet withAnyTag(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -59,6 +99,13 @@ public interface EdgeSet extends Set<Edge> {
             return false;
         });
     }
+
+    /**
+     * Filters this set to include only edges possessing all of the specified tags.
+     *
+     * @param tags the tags to check for
+     * @return a deferred EdgeSet containing matching edges
+     */
     default EdgeSet withAllTags(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -74,6 +121,8 @@ public interface EdgeSet extends Set<Edge> {
      * Forces eager evaluation of the deferred pipeline, materializing
      * the final IDs into a high-performance array in memory.
      * Note: This incurs an allocation and iteration cost.
+     *
+     * @return a materialized, immutable EdgeSet
      */
     default EdgeSet materialize() {
         Set<Edge> materialized = new java.util.HashSet<>();
@@ -85,18 +134,21 @@ public interface EdgeSet extends Set<Edge> {
     /**
      * Returns a new immutable EdgeSet snapshot containing elements present in both this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the intersected EdgeSet
      */
     EdgeSet intersect(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing elements from this set, excluding those in the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the differenced EdgeSet
      */
     EdgeSet difference(Collection<? extends Edge> other);
 
     /**
      * Returns a new immutable EdgeSet snapshot containing all elements from this set and the specified collection.
      * @param other the collection to perform the set operation with
+     * @return the unioned EdgeSet
      */
     EdgeSet union(Collection<? extends Edge> other);
 
@@ -104,12 +156,16 @@ public interface EdgeSet extends Set<Edge> {
      * Returns true if this set is already backed by a flat, allocated
      * memory structure. Returns false if this set requires computation
      * (lazy evaluation) during iteration.
+     *
+     * @return true if materialized, false otherwise
      */
     boolean isMaterialized();
 
     /**
      * Returns true if the size of the set can be determined in O(1) time
      * without iterating or evaluating the elements.
+     *
+     * @return true if the size is known in O(1) time, false otherwise
      */
     default boolean isSizeKnown() {
         return true;
@@ -117,11 +173,15 @@ public interface EdgeSet extends Set<Edge> {
 
     /**
      * Returns a standard set of the primitive integer IDs of the elements in this set.
+     *
+     * @return a set of primitive integer IDs
      */
     Set<Integer> ids();
 
     /**
      * Returns an array of the primitive integer IDs of the elements in this set.
+     *
+     * @return an array of primitive integer IDs
      */
     int[] toIdArray();
 }

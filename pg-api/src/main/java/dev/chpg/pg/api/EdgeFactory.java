@@ -24,11 +24,18 @@ public interface EdgeFactory {
 
     /**
      * Creates an immutable singleton set containing the specified edge.
+     *
+     * @param edge the edge to include in the set
+     * @return an immutable singleton edge set
      */
     EdgeSet singleton(Edge edge);
 
     /**
      * Instantiates and returns a new Edge native to this graph's implementation.
+     *
+     * @param source the source node
+     * @param target the target node
+     * @return a new edge instance
      */
     public Edge createEdge(Node source, Node target);
 

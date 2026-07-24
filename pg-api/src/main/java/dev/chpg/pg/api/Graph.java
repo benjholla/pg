@@ -53,6 +53,7 @@ public interface Graph {
      * Returns the node denoted by the given id if one exists
      * 
      * @param id the ID
+     * @return an Optional containing the node if it exists, or empty otherwise
      */
     public Optional<Node> node(int id);
 
@@ -60,12 +61,14 @@ public interface Graph {
      * Returns the edge denoted by the given id if one exists
      * 
      * @param id the ID
+     * @return an Optional containing the edge if it exists, or empty otherwise
      */
     public Optional<Edge> edge(int id);
 
     /**
      * Add a node to the graph
      *
+     * @param node the node
      * @return Returns true if the graph changed as a result of the operation
      */
     public boolean addNode(Node node);
@@ -113,6 +116,8 @@ public interface Graph {
     /**
      * Remove a node from the graph if the given node exists in this graph
      * 
+     * @param node the node
+     * @return Returns true if the graph changed as a result of the operation
      */
     public boolean removeNode(Node node);
 
@@ -128,6 +133,7 @@ public interface Graph {
      * Remove all nodes from the graph if the given nodes exist in this graph
      * 
      * @param nodes the nodes
+     * @return Returns true if the graph changed as a result of the operation
      */
     public boolean removeAllNodes(Collection<? extends Node> nodes);
 
@@ -177,11 +183,15 @@ public interface Graph {
 
     /**
      * Return an immutable set of nodes in the graph
+     *
+     * @return an immutable set of nodes
      */
     public NodeSet nodes();
 
     /**
      * Return an immutable set of edges in the graph
+     *
+     * @return an immutable set of edges
      */
     public EdgeSet edges();
     /**
@@ -189,21 +199,28 @@ public interface Graph {
      * 
      * @param node      the node
      * @param direction the direction
+     * @return the set of edges connected to the node in the specified direction
      */
     public EdgeSet edges(Node node, NodeDirection direction);
 
     /**
      * Selects the nodes of this graph that have no successors (out-degree == 0).
+     *
+     * @return the set of nodes with no successors
      */
     public NodeSet leaves();
 
     /**
      * Selects the nodes of this graph that have no predecessors (in-degree == 0).
+     *
+     * @return the set of nodes with no predecessors
      */
     public NodeSet roots();
 
     /**
      * Selects the nodes of this graph that have no incident edges (degree == 0).
+     *
+     * @return the set of nodes with no incident edges
      */
     public NodeSet isolated();
 
@@ -263,6 +280,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forwardStep(Node origin);
 
@@ -274,6 +292,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forwardStep(Graph origin);
 
@@ -285,6 +304,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forwardStep(NodeSet origin);
 
@@ -296,6 +316,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverseStep(Node origin);
 
@@ -307,6 +328,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverseStep(Graph origin);
 
@@ -318,6 +340,7 @@ public interface Graph {
      * reachable nodes.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverseStep(NodeSet origin);
 
@@ -325,6 +348,7 @@ public interface Graph {
      * Yields the union of this graph and a new graph formed by the given nodes.
      * 
      * @param node the node
+     * @return the resulting subgraph
      */
     public Graph union(Node node);
 
@@ -332,6 +356,7 @@ public interface Graph {
      * Yields the union of this graph and a new graph formed by the given edges.
      * 
      * @param edge the edge
+     * @return the resulting subgraph
      */
     public Graph union(Edge edge);
 
@@ -340,6 +365,7 @@ public interface Graph {
      * graph's nodes are the union of all nodes, and likewise for edges.
      * 
      * @param graph the graphs
+     * @return the resulting subgraph
      */
     public Graph union(Graph graph);
 
@@ -349,6 +375,7 @@ public interface Graph {
      * necessarily remove the edges it connects as well.
      * 
      * @param node the node
+     * @return the resulting subgraph
      */
     public Graph difference(Node node);
 
@@ -366,6 +393,7 @@ public interface Graph {
      * edges.
      * 
      * @param edge the edge
+     * @return the resulting subgraph
      */
     public Graph difference(Edge edge);
 
@@ -383,6 +411,7 @@ public interface Graph {
      * edges.
      *
      * @param graph the graphs
+     * @return the resulting subgraph
      */
     public Graph difference(Graph graph);
 
@@ -390,6 +419,7 @@ public interface Graph {
      * Select this graph, excluding the given edges.
      * 
      * @param edge the edge
+     * @return the resulting subgraph
      */
     public Graph differenceEdges(Edge edge);
 
@@ -397,6 +427,7 @@ public interface Graph {
      * Select this graph, excluding the edges from the given graphs.
      * 
      * @param graph the graphs
+     * @return the resulting subgraph
      */
     public Graph differenceEdges(Graph graph);
 
@@ -406,6 +437,7 @@ public interface Graph {
      * sets, and likewise for edges.
      * 
      * @param node the node
+     * @return the resulting subgraph
      */
     public Graph intersection(Node node);
 
@@ -415,6 +447,7 @@ public interface Graph {
      * sets, and likewise for edges.
      * 
      * @param edge the edge
+     * @return the resulting subgraph
      */
     public Graph intersection(Edge edge);
 
@@ -424,6 +457,7 @@ public interface Graph {
      * for edges.
      * 
      * @param graph the graphs
+     * @return the resulting subgraph
      */
     public Graph intersection(Graph graph);
 
@@ -433,6 +467,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph betweenStep(Node from, Node to);
 
@@ -442,6 +477,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph betweenStep(Graph from, Graph to);
 
@@ -451,6 +487,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph betweenStep(NodeSet from, NodeSet to);
 
@@ -462,6 +499,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph between(Node from, Node to);
 
@@ -473,6 +511,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph between(Graph from, Graph to);
 
@@ -484,6 +523,7 @@ public interface Graph {
      * 
      * @param from the source element
      * @param to   the target element
+     * @return the resulting subgraph
      */
     public Graph between(NodeSet from, NodeSet to);
 
@@ -492,6 +532,7 @@ public interface Graph {
      * forward transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forward(Node origin);
 
@@ -500,6 +541,7 @@ public interface Graph {
      * forward transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forward(Graph origin);
 
@@ -508,6 +550,7 @@ public interface Graph {
      * forward transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph forward(NodeSet origin);
 
@@ -516,6 +559,7 @@ public interface Graph {
      * reverse transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverse(Node origin);
 
@@ -524,6 +568,7 @@ public interface Graph {
      * reverse transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverse(Graph origin);
 
@@ -532,6 +577,7 @@ public interface Graph {
      * reverse transitive traversal.
      * 
      * @param origin the origin element
+     * @return the resulting subgraph
      */
     public Graph reverse(NodeSet origin);
 
@@ -541,6 +587,7 @@ public interface Graph {
      * graph.
      * 
      * @param edge the edge
+     * @return the resulting subgraph
      */
     public Graph induce(Edge edge);
 
@@ -550,6 +597,7 @@ public interface Graph {
      * graph.
      * 
      * @param graph the graphs
+     * @return the resulting subgraph
      */
     public Graph induce(Graph graph);
 
@@ -559,6 +607,7 @@ public interface Graph {
      * graph.
      * 
      * @param edges the edges
+     * @return the resulting subgraph
      */
     public Graph induce(EdgeSet edges);
 
@@ -568,6 +617,7 @@ public interface Graph {
      * 
      * @param source the source node
      * @param target the target node
+     * @return true if there is at least one edge between source and target
      */
     public boolean adjacent(Node source, Node target);
 
@@ -577,6 +627,7 @@ public interface Graph {
      * 
      * @param source the source node
      * @param target the target node
+     * @return the set of edges between source and target
      */
     public EdgeSet edges(Node source, Node target);
 
@@ -586,6 +637,7 @@ public interface Graph {
      * 
      * @param node      the node
      * @param direction the direction
+     * @return the number of edges
      */
     public int degree(Node node, NodeDirection direction);
 

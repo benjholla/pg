@@ -71,23 +71,97 @@ public sealed interface AttributeValue permits
     AttributeValue.ByteArrayValue {
 
 
+    /**
+     * Creates a new {@link StringValue} instance.
+     *
+     * @param value the string value
+     * @return an AttributeValue containing the string
+     */
     static StringValue value(String value) { return new StringValue(value); }
+
+    /**
+     * Creates a new {@link BooleanValue} instance.
+     *
+     * @param value the boolean value
+     * @return an AttributeValue containing the boolean
+     */
     static BooleanValue value(boolean value) { return new BooleanValue(value); }
+
+    /**
+     * Creates a new {@link IntegerValue} instance.
+     *
+     * @param value the integer value
+     * @return an AttributeValue containing the integer
+     */
     static IntegerValue value(int value) { return new IntegerValue(value); }
+
+    /**
+     * Creates a new {@link LongValue} instance.
+     *
+     * @param value the long value
+     * @return an AttributeValue containing the long
+     */
     static LongValue value(long value) { return new LongValue(value); }
+
+    /**
+     * Creates a new {@link DoubleValue} instance.
+     *
+     * @param value the double value
+     * @return an AttributeValue containing the double
+     */
     static DoubleValue value(double value) { return new DoubleValue(value); }
+
+    /**
+     * Creates a new {@link ByteArrayValue} instance.
+     *
+     * @param value the byte array value
+     * @return an AttributeValue containing the byte array
+     */
     static ByteArrayValue value(byte[] value) { return new ByteArrayValue(value); }
 
     // 1. Strings
+    /**
+     * Represents a string attribute value.
+     *
+     * @param value the underlying string
+     */
     record StringValue(String value) implements AttributeValue {}
 
     // 2. Primitives
+    /**
+     * Represents a boolean attribute value.
+     *
+     * @param value the underlying boolean
+     */
     record BooleanValue(boolean value) implements AttributeValue {}
+
+    /**
+     * Represents an integer attribute value.
+     *
+     * @param value the underlying integer
+     */
     record IntegerValue(int value) implements AttributeValue {}
+
+    /**
+     * Represents a long attribute value.
+     *
+     * @param value the underlying long
+     */
     record LongValue(long value) implements AttributeValue {}
+
+    /**
+     * Represents a double attribute value.
+     *
+     * @param value the underlying double
+     */
     record DoubleValue(double value) implements AttributeValue {}
 
     // 3. The Escape Hatch
+    /**
+     * Represents a raw byte array attribute value. Used as an escape hatch for complex types.
+     *
+     * @param value the underlying byte array
+     */
     record ByteArrayValue(byte[] value) implements AttributeValue {
         @Override
         public boolean equals(Object o) {

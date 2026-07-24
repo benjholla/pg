@@ -30,11 +30,15 @@ public interface Edge extends GraphElement {
 
     /**
      * Returns the source node from which this directed edge originates.
+     *
+     * @return the source node
      */
     Node from();
 
     /**
      * Returns the target node at which this directed edge terminates.
+     *
+     * @return the target node
      */
     Node to();
 
