@@ -11,19 +11,43 @@ import java.util.stream.Collectors;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * A concrete implementation of {@link EdgeSet} designed for the global ID space.
+ * <p>
+ * <b>What it represents:</b> A mutable collection of uniquely identified {@link GlobalEdge}s.
+ * <p>
+ * <b>Why it exists:</b> To provide the underlying edge collection mechanism for {@link GlobalGraph}.
+ * <p>
+ * <b>When to use it:</b> Use this set when you need to construct or manipulate groups of edges belonging to a global graph.
+ * <p>
+ * <b>Important invariants:</b> This set violently rejects attempts to add foreign or incompatible edge implementations to prevent cross-graph contamination.
+ */
 public final class GlobalEdgeSet implements EdgeSet {
 
     private final HashSet<GlobalEdge> internalSet;
 
+    /**
+     * Constructs a new, empty {@code GlobalEdgeSet}.
+     */
     public GlobalEdgeSet() {
         this.internalSet = new HashSet<>();
     }
 
+    /**
+     * Constructs a new {@code GlobalEdgeSet} containing the specified initial edge.
+     *
+     * @param initialEdge the edge to add
+     */
     public GlobalEdgeSet(Edge initialEdge) {
         this();
         add(initialEdge);
     }
 
+    /**
+     * Constructs a new {@code GlobalEdgeSet} containing the elements of the specified array.
+     *
+     * @param initialEdges the array of initial edges
+     */
     public GlobalEdgeSet(Edge... initialEdges) {
         Objects.requireNonNull(initialEdges, "Edge array cannot be null");
         this.internalSet = new HashSet<>((int) (initialEdges.length / 0.75f) + 1);
@@ -32,6 +56,11 @@ public final class GlobalEdgeSet implements EdgeSet {
         }
     }
 
+    /**
+     * Constructs a new {@code GlobalEdgeSet} containing the elements of the specified collection.
+     *
+     * @param initialEdges the collection whose elements are to be placed into this set
+     */
     public GlobalEdgeSet(Collection<Edge> initialEdges) {
         this();
         Objects.requireNonNull(initialEdges, "Edge collection cannot be null");

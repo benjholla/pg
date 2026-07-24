@@ -11,10 +11,26 @@ import java.util.Set;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * An immutable view of a single-element {@link EdgeSet} in the global graph ecosystem.
+ * <p>
+ * <b>What it represents:</b> A highly optimized, read-only collection of exactly one {@link GlobalEdge}.
+ * <p>
+ * <b>Why it exists:</b> To eliminate the memory allocation overhead of a backing HashSet when returning single edges (e.g., from functional algebra).
+ * <p>
+ * <b>When to use it:</b> Used internally by the engine when a query or set operation returns exactly one edge.
+ * <p>
+ * <b>Important invariants:</b> Inherits {@link AbstractSet} behavior which blocks mutations.
+ */
 public final class GlobalImmutableSingletonEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
     private final GlobalEdge element;
 
+    /**
+     * Constructs a new singleton edge set containing the specified element.
+     *
+     * @param element the single global edge
+     */
     public GlobalImmutableSingletonEdgeSet(GlobalEdge element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }

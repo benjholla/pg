@@ -73,6 +73,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return new GlobalGraph(graph.nodes(), graph.edges());
     }
 
+    /**
+     * Constructs a new, empty {@code GlobalGraph}.
+     */
     public GlobalGraph() {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -89,6 +92,11 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         this.outEdges = new HashMap<>(nodeMapCapacity);
     }
 
+    /**
+     * Returns a factory for creating elements native to this global graph.
+     *
+     * @return the global factory
+     */
     public GlobalFactory factory() {
         return this;
     }
