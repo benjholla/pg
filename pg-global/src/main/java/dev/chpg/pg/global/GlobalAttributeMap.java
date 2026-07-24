@@ -16,10 +16,18 @@ public final class GlobalAttributeMap implements AttributeMap {
 
     private final Map<String, AttributeValue> delegate;
 
+    /**
+     * Constructs a new, empty {@code GlobalAttributeMap}.
+     */
     public GlobalAttributeMap() {
         this.delegate = new HashMap<>();
     }
 
+    /**
+     * Constructs a new {@code GlobalAttributeMap} containing the mappings from the specified map.
+     *
+     * @param m the map whose mappings are to be placed in this map
+     */
     public GlobalAttributeMap(Map<? extends String, ? extends AttributeValue> m) {
         this.delegate = new HashMap<>();
         this.putAll(m);

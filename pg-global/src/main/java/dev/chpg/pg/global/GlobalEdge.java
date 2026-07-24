@@ -5,6 +5,15 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
 
+/**
+ * A concrete implementation of a graph {@link Edge} designed for the global ID space.
+ * <p>
+ * <b>What it represents:</b> A directed connection between two nodes (identified by primitive IDs) that may carry tags and attributes.
+ * <p>
+ * <b>Why it exists:</b> To provide a robust, globally unique edge type for use within {@link GlobalGraph}.
+ * <p>
+ * <b>When to use it:</b> Use this when constructing topologies for {@link GlobalGraph} instances.
+ */
 public final class GlobalEdge implements Edge {
 
     private final int id;
@@ -13,6 +22,13 @@ public final class GlobalEdge implements Edge {
     private Node from;
     private Node to;
 
+    /**
+     * Constructs a new {@code GlobalEdge} from the specified source node to the target node.
+     *
+     * @param from the source node
+     * @param to   the target node
+     * @throws IllegalArgumentException if either endpoint is null
+     */
     public GlobalEdge(Node from, Node to) {
         if (from == null || to == null) {
             throw new IllegalArgumentException("Edge endpoints cannot be null.");

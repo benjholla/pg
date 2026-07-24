@@ -13,9 +13,25 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * An immutable view of an {@link EdgeSet} in the global graph ecosystem.
+ * <p>
+ * <b>What it represents:</b> A read-only collection of {@link GlobalEdge}s.
+ * <p>
+ * <b>Why it exists:</b> To strictly preserve immutability invariants for query results, protecting the underlying sets from unauthorized modifications.
+ * <p>
+ * <b>When to use it:</b> Used internally by the engine to wrap results of functional graph operations or API queries.
+ * <p>
+ * <b>Important invariants:</b> All structural mutation operations (add, remove, clear, retainAll) throw {@link UnsupportedOperationException}.
+ */
 public class GlobalImmutableEdgeSet implements EdgeSet {
     private final EdgeSet edges;
 
+    /**
+     * Constructs a new immutable wrapper around the given edge set.
+     *
+     * @param edges the edge set to wrap
+     */
     public GlobalImmutableEdgeSet(EdgeSet edges) {
         this.edges = edges;
     }

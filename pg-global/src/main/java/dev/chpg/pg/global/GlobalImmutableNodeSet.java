@@ -13,9 +13,25 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * An immutable view of a {@link NodeSet} in the global graph ecosystem.
+ * <p>
+ * <b>What it represents:</b> A read-only collection of {@link GlobalNode}s.
+ * <p>
+ * <b>Why it exists:</b> To strictly preserve immutability invariants for query results, protecting the underlying sets from unauthorized modifications.
+ * <p>
+ * <b>When to use it:</b> Used internally by the engine to wrap results of functional graph operations or API queries.
+ * <p>
+ * <b>Important invariants:</b> All structural mutation operations (add, remove, clear, retainAll) throw {@link UnsupportedOperationException}.
+ */
 public class GlobalImmutableNodeSet implements NodeSet {
     private final NodeSet nodes;
     
+    /**
+     * Constructs a new immutable wrapper around the given node set.
+     *
+     * @param nodes the node set to wrap
+     */
     public GlobalImmutableNodeSet(NodeSet nodes) {
         this.nodes = nodes;
     }

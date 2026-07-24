@@ -8,8 +8,31 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+/**
+ * A utility for exporting an {@link ExportGraph} to the DirectGraphBuffer (.dgb) binary format.
+ * <p>
+ * <b>What it represents:</b> A serializer that converts in-memory graph models into a high-performance binary file.
+ * <p>
+ * <b>Why it exists:</b> To provide a mechanism to save graph data to disk for persistent storage, sharing, or loading into other tools.
+ * <p>
+ * <b>When to use it:</b> Use this when you have constructed an {@link ExportGraph} and need to write it to a {@code .dgb} file.
+ * <p>
+ * <b>Thread safety:</b> Instances of this class are stateless and thread-safe for concurrent use across multiple exports.
+ */
 public class DgbExporter {
 
+    /**
+     * Constructs a new {@code DgbExporter}.
+     */
+    public DgbExporter() {}
+
+    /**
+     * Exports the given graph to the specified file path in the {@code .dgb} format.
+     *
+     * @param graph      the graph to export
+     * @param outputPath the path where the {@code .dgb} file should be written
+     * @throws Exception if an I/O error occurs during the export process
+     */
     public void export(ExportGraph graph, String outputPath) throws Exception {
         Map<String, Integer> dictionary = new LinkedHashMap<>();
 
