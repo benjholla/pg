@@ -12,11 +12,6 @@ import java.nio.file.StandardOpenOption;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import dev.chpg.pg.api.Graph;
-import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.api.NodeFactory;
-import dev.chpg.pg.api.EdgeFactory;
 import dev.chpg.pg.global.GlobalGraph;
 
 // In pg-io, we use mock factories or anonymous classes to avoid specific backend references like GlobalGraph.
