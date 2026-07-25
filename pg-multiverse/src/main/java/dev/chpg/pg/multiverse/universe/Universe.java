@@ -65,6 +65,32 @@ public class Universe {
     }
 
     // =========================================================================
+    // PACKAGE-PRIVATE EDGE RESOLUTION (For Flyweights)
+    // =========================================================================
+
+    /**
+     * Resolves the source node ID for a given edge.
+     *
+     * @param edgeId the primitive ID of the edge
+     * @return the source node ID
+     */
+    int edgeSource(int edgeId) {
+        // TODO: Phase 4 - return this.edgeSources[edgeId];
+        throw new UnsupportedOperationException("Topology arrays not yet implemented in Phase 1 shell.");
+    }
+
+    /**
+     * Resolves the target node ID for a given edge.
+     *
+     * @param edgeId the primitive ID of the edge
+     * @return the target node ID
+     */
+    int edgeTarget(int edgeId) {
+        // TODO: Phase 4 - return this.edgeTargets[edgeId];
+        throw new UnsupportedOperationException("Topology arrays not yet implemented in Phase 1 shell.");
+    }
+
+    // =========================================================================
     // 2. PHASE 4/5 ARCHITECTURAL STUBS
     // =========================================================================
 
