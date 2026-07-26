@@ -1,6 +1,7 @@
 package dev.chpg.pg.multiverse.universe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +26,21 @@ public class UniverseTest {
         Universe universe = new Universe(generator);
         assertSame(generator, universe.idGenerator(), "Should return injected ID generator");
         assertEquals(1L, universe.modCount(), "Should reflect injected generator's modCount");
+    }
+
+    @Test
+    public void testUniverseIdUniqueness() {
+        Universe u1 = new Universe();
+        Universe u2 = new Universe();
+        Universe u3 = new Universe(new UniverseIdGenerator());
+
+
+        assertNotEquals(u1.universeId(), u2.universeId(), "Universe IDs must be unique");
+        assertNotEquals(u1.universeId(), u3.universeId(), "Universe IDs must be unique");
+        assertNotEquals(u2.universeId(), u3.universeId(), "Universe IDs must be unique");
+
+        assertEquals(u2.universeId(), u1.universeId() + 1, "Universe IDs should be monotonically increasing");
+        assertEquals(u3.universeId(), u2.universeId() + 1, "Universe IDs should be monotonically increasing");
     }
 
     @Test
