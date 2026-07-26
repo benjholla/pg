@@ -9,7 +9,7 @@ import java.util.Objects;
  * A read-optimized Flyweight representing a persistent node in the pg-multiverse.
  * Contains strictly zero local collections or state beyond its primitive ID.
  */
-public final class UniverseNode implements Node {
+public final class UniverseNode implements Node, UniverseView {
 
     private final Universe universe;
     private final int id;
@@ -40,10 +40,9 @@ public final class UniverseNode implements Node {
     }
 
     /**
-     * Exposes the backing engine for validation and proxy delegation.
-     *
-     * @return the backing universe
+     * Exposes the underlying bitwise storage engine backing this element.
      */
+    @Override
     public Universe universe() {
         return this.universe;
     }

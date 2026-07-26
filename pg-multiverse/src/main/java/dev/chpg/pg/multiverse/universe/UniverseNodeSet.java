@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * A read-optimized, immutable view of active nodes within a UniverseGraph.
  * Wraps a raw BitSet and instantiates transient UniverseNode flyweights on demand.
  */
-public final class UniverseNodeSet implements NodeSet {
+public final class UniverseNodeSet implements NodeSet, UniverseView {
 
     private final Universe universe;
     private final BitSet activeBits;
@@ -33,6 +33,18 @@ public final class UniverseNodeSet implements NodeSet {
     }
 
     // =========================================================================
+    // =========================================================================
+    // 0. ENGINE ACCESS
+    // =========================================================================
+
+    /**
+     * Exposes the underlying bitwise storage engine backing this element.
+     */
+    @Override
+    public Universe universe() {
+        return this.universe;
+    }
+
     // 1. O(1) SIZING & MAGNITUDE
     // =========================================================================
 

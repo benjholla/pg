@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * A read-optimized, immutable view of active edges within a UniverseGraph.
  * Wraps a raw BitSet and instantiates transient UniverseEdge flyweights on demand.
  */
-public final class UniverseEdgeSet implements EdgeSet {
+public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     private final Universe universe;
     private final BitSet activeBits;
@@ -34,6 +34,18 @@ public final class UniverseEdgeSet implements EdgeSet {
     }
 
     // =========================================================================
+    // =========================================================================
+    // 0. ENGINE ACCESS
+    // =========================================================================
+
+    /**
+     * Exposes the underlying bitwise storage engine backing this element.
+     */
+    @Override
+    public Universe universe() {
+        return this.universe;
+    }
+
     // 1. CORE API & MAGNITUDE
     // =========================================================================
 
