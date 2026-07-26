@@ -58,7 +58,13 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
 
     @Override
     public NodeSet toImmutable() {
-        throw new RuntimeException("Not yet implemented");
+        if (isEmpty()) {
+            return NodeSet.empty();
+        } else if (size() == 1) {
+            return new UniverseImmutableSingletonNodeSet((UniverseNode) one().get());
+        }
+        BitSet clonedBits = (BitSet) this.activeBits.clone();
+        return new UniverseImmutableNodeSet(new UniverseNodeSet(this.universe, clonedBits));
     }
 
     @Override
