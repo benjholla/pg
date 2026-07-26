@@ -3,6 +3,7 @@ package dev.chpg.pg.multiverse.universe;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+import java.util.AbstractSet;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,40 +13,27 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * A read-optimized, immutable view of active nodes within a UniverseGraph.
- * Wraps a raw BitSet and instantiates transient UniverseNode flyweights on demand.
+ * A bitwise-backed, mutable topological viewport into a pg-multiverse Universe.
+ * Modifying this set only alters the local bit-mask, never the underlying engine arrays.
+ * Strictly rejects cross-contamination from foreign graphs or sandboxes.
  */
 public final class UniverseNodeSet implements NodeSet, UniverseView {
 
     private final Universe universe;
     private final BitSet activeBits;
 
-    /**
-     * Package-private constructor.
-     * Only UniverseGraph and internal Universe queries should instantiate this view.
-     *
-     * @param universe   the backing universe
-     * @param activeBits the bitset representing active node IDs
-     */
     UniverseNodeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");
     }
 
-    // =========================================================================
-    // =========================================================================
-    // 0. ENGINE ACCESS
-    // =========================================================================
-
-    /**
-     * Exposes the underlying bitwise storage engine backing this element.
-     */
     @Override
     public Universe universe() {
         return this.universe;
     }
 
-    // 1. O(1) SIZING & MAGNITUDE
+    // =========================================================================
+    // 1. CORE API & MAGNITUDE
     // =========================================================================
 
     @Override
@@ -60,112 +48,17 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
 
     @Override
     public boolean isSizeKnown() {
-        // BitSets are natively materialized; the magnitude is always known in O(1)
         return true;
     }
 
-    // =========================================================================
-    // 2. PRIMITIVE ROUTING & CONTAINMENT
-    // =========================================================================
-
     @Override
-    public boolean contains(Object o) {
-        // 1. Fast-path reference check
-        if (this == o) {
-            return true;
-        }
-
-        // 2. Strict Type Boundary (Silent ignore for subtractions/queries)
-        if (!(o instanceof UniverseNode)) {
-            return false;
-        }
-
-        UniverseNode node = (UniverseNode) o;
-
-        // 3. Optional: Strict Universe boundary check (Prevents cross-contamination)
-        if (node.universe() != this.universe) {
-            return false;
-        }
-
-        // 4. Primitive BitSet lookup
-        return this.activeBits.get(node.id());
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        Objects.requireNonNull(c, "Collection cannot be null");
-        for (Object e : c) {
-            if (!contains(e)) {
-                return false;
-            }
-        }
+    public boolean isMaterialized() {
         return true;
     }
-
-    // =========================================================================
-    // 3. ZERO-ALLOCATION TRAVERSAL
-    // =========================================================================
-
-    @Override
-    public Iterator<Node> iterator() {
-        // Leverages JDK 17 IntStream to scan the active bits, mapping them
-        // dynamically to transient UniverseNode flyweights.
-        return this.activeBits.stream()
-                .mapToObj(id -> (Node) new UniverseNode(this.universe, id))
-                .iterator();
-    }
-
-    /**
-     * Expose the raw stream.
-     *
-     * @return A stream of transient node flyweights.
-     */
-    public Stream<Node> stream() {
-        return this.activeBits.stream()
-                .mapToObj(id -> (Node) new UniverseNode(this.universe, id));
-    }
-
-    // =========================================================================
-    // 4. IMMUTABILITY GUARDRAILS (Fail-Fast Mutations)
-    // =========================================================================
-
-    @Override
-    public boolean add(Node node) {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view. Mutations are strictly forbidden.");
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view. Mutations are strictly forbidden.");
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Node> c) {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view.");
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view.");
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view.");
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("UniverseNodeSet is a read-only bitwise view.");
-    }
-
-    // =========================================================================
-    // 5. NODESET API IMPLEMENTATIONS
-    // =========================================================================
 
     @Override
     public NodeSet toImmutable() {
-        return this;
+        throw new RuntimeException("Not yet implemented");
     }
 
     @Override
@@ -177,99 +70,119 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
         return Optional.of(new UniverseNode(this.universe, firstId));
     }
 
+    // =========================================================================
+    // 2. PRIMITIVE ROUTING & CONTAINMENT
+    // =========================================================================
+
+    @Override
+    public boolean contains(Object o) {
+        if (this == o) { return true; }
+        if (!(o instanceof UniverseNode)) { return false; }
+
+        UniverseNode node = (UniverseNode) o;
+
+        if (node.universe() != this.universe) { return false; }
+
+        return this.activeBits.get(node.id());
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object e : c) {
+            if (!contains(e)) { return false; }
+        }
+        return true;
+    }
+
+    // =========================================================================
+    // 3. STRICTLY BOUNDED SET OPERATIONS
+    // =========================================================================
+
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseNodeSet && ((UniverseNodeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.and(((UniverseNodeSet) other).activeBits);
             return clonedBits.isEmpty() ? NodeSet.empty() : new UniverseNodeSet(this.universe, clonedBits);
         }
 
-        // 2. The Optimized Fallback
         BitSet fallbackBits = new BitSet();
         for (Node n : other) {
-            // this.contains() safely and silently rejects foreign nodes,
-            // so we only set bits for valid UniverseNodes that exist in this set.
-            if (this.contains(n)) {
-                fallbackBits.set(n.id());
-            }
+            if (this.contains(n)) { fallbackBits.set(n.id()); }
         }
-
         return fallbackBits.isEmpty() ? NodeSet.empty() : new UniverseNodeSet(this.universe, fallbackBits);
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseNodeSet && ((UniverseNodeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.andNot(((UniverseNodeSet) other).activeBits);
             return clonedBits.isEmpty() ? NodeSet.empty() : new UniverseNodeSet(this.universe, clonedBits);
         }
 
-        // 2. The Optimized Fallback
         BitSet fallbackBits = (BitSet) this.activeBits.clone();
         for (Node n : other) {
-            // Safely check if the foreign collection contains one of our nodes
             if (n instanceof UniverseNode && ((UniverseNode) n).universe() == this.universe) {
                 fallbackBits.clear(n.id());
             }
         }
-
         return fallbackBits.isEmpty() ? NodeSet.empty() : new UniverseNodeSet(this.universe, fallbackBits);
     }
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseNodeSet && ((UniverseNodeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.or(((UniverseNodeSet) other).activeBits);
             return new UniverseNodeSet(this.universe, clonedBits);
         }
 
-        // 2. The Mandatory Generic Fallback
-        // We must use a HashSet because the result will be a polyglot mixture of implementations.
-        java.util.Set<Node> unioned = new java.util.HashSet<>();
-
-        // Add all of our internal flyweights (zero-allocation iteration!)
-        for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
-            unioned.add(new UniverseNode(this.universe, id));
+        BitSet clonedBits = (BitSet) this.activeBits.clone();
+        for (Node n : other) {
+            if (!(n instanceof UniverseNode)) {
+                throw new IllegalArgumentException("Cannot union with foreign node. Must be a UniverseNode.");
+            }
+            UniverseNode uNode = (UniverseNode) n;
+            if (uNode.universe() != this.universe) {
+                throw new IllegalArgumentException("Cannot union with a UniverseNode from a different Universe instance.");
+            }
+            clonedBits.set(uNode.id());
         }
 
-        // Add the foreign nodes
-        unioned.addAll(other);
-
-        return new dev.chpg.pg.api.GenericImmutableNodeSet(unioned);
+        return new UniverseNodeSet(this.universe, clonedBits);
     }
 
+    // =========================================================================
+    // 4. ZERO-ALLOCATION TRAVERSAL & ID BRIDGING
+    // =========================================================================
+
     @Override
-    public boolean isMaterialized() {
-        return true;
+    public Iterator<Node> iterator() {
+        return this.activeBits.stream()
+                .mapToObj(id -> (Node) new UniverseNode(this.universe, id))
+                .iterator();
+    }
+
+    public Stream<Node> stream() {
+        return this.activeBits.stream()
+                .mapToObj(id -> (Node) new UniverseNode(this.universe, id));
     }
 
     @Override
     public Set<Integer> ids() {
-        return new java.util.AbstractSet<Integer>() {
+        return new AbstractSet<Integer>() {
             @Override
             public Iterator<Integer> iterator() {
                 return activeBits.stream().iterator();
             }
-
             @Override
             public int size() {
                 return activeBits.cardinality();
             }
-
             @Override
             public boolean contains(Object o) {
-                if (!(o instanceof Integer)) {
-                    return false;
-                }
+                if (!(o instanceof Integer)) { return false; }
                 return activeBits.get((Integer) o);
             }
         };
@@ -288,19 +201,80 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
-        Objects.requireNonNull(a, "Array cannot be null");
-        int currentSize = size();
-        T[] result = a.length >= currentSize ? a
-                : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), currentSize);
-
+        int size = size();
+        T[] result = a.length >= size ? a : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         int i = 0;
         for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
             result[i++] = (T) new UniverseNode(this.universe, id);
         }
-
-        if (result.length > currentSize) {
-            result[currentSize] = null;
-        }
+        if (result.length > size) { result[size] = null; }
         return result;
+    }
+
+    // =========================================================================
+    // 5. MUTABILITY & LINEAGE CHECKS
+    // =========================================================================
+
+    @Override
+    public boolean add(Node node) {
+        if (!(node instanceof UniverseNode)) {
+            throw new IllegalArgumentException("Cannot add foreign node. Must be a UniverseNode.");
+        }
+        UniverseNode uNode = (UniverseNode) node;
+        if (uNode.universe() != this.universe) {
+            throw new IllegalArgumentException("Cannot add a UniverseNode from a different Universe instance.");
+        }
+
+        boolean isNew = !this.activeBits.get(uNode.id());
+        this.activeBits.set(uNode.id());
+        return isNew;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        if (!(o instanceof UniverseNode)) { return false; }
+        UniverseNode uNode = (UniverseNode) o;
+        if (uNode.universe() != this.universe) { return false; }
+
+        boolean exists = this.activeBits.get(uNode.id());
+        this.activeBits.clear(uNode.id());
+        return exists;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Node> c) {
+        boolean modified = false;
+        for (Node n : c) {
+            if (this.add(n)) { modified = true; }
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean modified = false;
+        for (Object o : c) {
+            if (this.remove(o)) { modified = true; }
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        BitSet retainMask = new BitSet();
+        for (Object o : c) {
+            if (o instanceof UniverseNode && ((UniverseNode) o).universe() == this.universe) {
+                retainMask.set(((UniverseNode) o).id());
+            }
+        }
+
+        int preSize = this.activeBits.cardinality();
+        this.activeBits.and(retainMask);
+        return this.activeBits.cardinality() != preSize;
+    }
+
+    @Override
+    public void clear() {
+        this.activeBits.clear();
     }
 }
