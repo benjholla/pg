@@ -1,6 +1,7 @@
 package dev.chpg.pg.multiverse.universe;
 
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.multiverse.MultiverseIdGenerator;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import java.util.Objects;
 
@@ -12,12 +13,14 @@ import java.util.Objects;
  */
 public class Universe {
 
+    private final int universeId;
     private final UniverseIdGenerator idGenerator;
 
     /**
      * Instantiates a completely isolated Universe with its own ID space and modCount.
      */
     public Universe() {
+        this.universeId = MultiverseIdGenerator.INSTANCE.createUniverseId();
         this.idGenerator = new UniverseIdGenerator();
     }
 
@@ -27,6 +30,7 @@ public class Universe {
      * @param idGenerator the ID generator to inject
      */
     public Universe(UniverseIdGenerator idGenerator) {
+        this.universeId = MultiverseIdGenerator.INSTANCE.createUniverseId();
         this.idGenerator = Objects.requireNonNull(idGenerator, "IdGenerator cannot be null");
     }
 
@@ -41,6 +45,15 @@ public class Universe {
      */
     public UniverseIdGenerator idGenerator() {
         return this.idGenerator;
+    }
+
+    /**
+     * Returns the globally unique ID of this Universe.
+     *
+     * @return the unique integer universe ID
+     */
+    public int universeId() {
+        return this.universeId;
     }
 
     /**
