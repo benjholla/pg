@@ -58,7 +58,7 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public EdgeSet toImmutable() {
-        return new UniverseEdgeSet(this.universe, (BitSet) this.activeBits.clone());
+        throw new RuntimeException("Not yet implemented");
     }
 
     @Override
