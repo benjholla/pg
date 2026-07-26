@@ -16,7 +16,7 @@ import java.util.Optional;
  * A read-optimized, immutable topological viewport into a pg-multiverse Universe.
  * Executes queries and set operations using CPU-level boolean algebra.
  */
-public final class UniverseGraph implements Graph {
+public final class UniverseGraph implements Graph, UniverseView {
 
     private final Universe universe;
     private final BitSet activeNodeBits;
@@ -47,7 +47,19 @@ public final class UniverseGraph implements Graph {
     }
 
     // =========================================================================
-    // 2. SET MATH (O(1) Graph Combinations)
+    // 2. ENGINE ACCESS
+    // =========================================================================
+
+    /**
+     * Exposes the underlying bitwise storage engine backing this element.
+     */
+    @Override
+    public Universe universe() {
+        return this.universe;
+    }
+
+    // =========================================================================
+    // 3. SET MATH (O(1) Graph Combinations)
     // =========================================================================
 
     @Override
@@ -96,7 +108,7 @@ public final class UniverseGraph implements Graph {
     }
 
     // =========================================================================
-    // 3. MASKED TRAVERSAL QUERIES & MUTATIONS (Phase 4/5 integration point)
+    // 4. MASKED TRAVERSAL QUERIES & MUTATIONS (Phase 4/5 integration point)
     // =========================================================================
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Objects;
  * A read-optimized Flyweight representing a persistent directed edge in the pg-multiverse.
  * Contains strictly zero local collections or state beyond its primitive ID.
  */
-public final class UniverseEdge implements Edge {
+public final class UniverseEdge implements Edge, UniverseView {
 
     private final Universe universe;
     private final int id;
@@ -38,6 +38,10 @@ public final class UniverseEdge implements Edge {
         return this.id;
     }
 
+    /**
+     * Exposes the underlying bitwise storage engine backing this element.
+     */
+    @Override
     public Universe universe() {
         return this.universe;
     }
