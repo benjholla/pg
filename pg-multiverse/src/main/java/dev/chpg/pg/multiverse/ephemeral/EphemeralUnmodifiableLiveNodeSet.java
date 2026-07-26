@@ -15,10 +15,35 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * A live, unmodifiable view of nodes within an {@code EphemeralGraph}.
+ * <p>
+ * <b>What it represents:</b> A read-only projection of the temporary sandbox's internal node registry.
+ * <p>
+ * <b>Why it exists:</b> It exposes the dynamic, breathing topology of an ephemeral graph while strictly rejecting external mutation attempts, preventing the graph's invariants from being compromised.
+ * <p>
+ * <b>When to use it:</b> It is used internally to safely return the results of queries like {@code graph.nodes()}.
+ * <p>
+ * <b>Common usage patterns:</b> Iterate over the view directly, or convert it to an immutable snapshot (via {@code toImmutable()}) if a persistent record is required.
+ * <p>
+ * <b>Important invariants:</b> Direct modifications via {@code add()} or {@code remove()} throw an {@code UnsupportedOperationException}. It perfectly mirrors real-time additions and removals from the underlying ephemeral graph.
+ * <p>
+ * <b>Thread safety:</b> Not inherently thread-safe. Changes to the underlying graph while iterating will cause undefined behavior unless synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Operations like {@code size()} and {@code contains()} are resolved in O(1) time directly against the live engine maps.
+ */
 public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     private final Map<Integer, EphemeralNode> nodes;
 
+    /**
+     * Constructs a new unmodifiable live node set backing the ephemeral graph view.
+     *
+     * @param nodes    the core ephemeral node registry map
+     * @param edges    the ephemeral edge registry map (unused in node sets directly)
+     * @param inEdges  the inbound ephemeral adjacency map
+     * @param outEdges the outbound ephemeral adjacency map
+     */
     public EphemeralUnmodifiableLiveNodeSet(
             Map<Integer, EphemeralNode> nodes,
             Map<Integer, EphemeralEdge> edges,

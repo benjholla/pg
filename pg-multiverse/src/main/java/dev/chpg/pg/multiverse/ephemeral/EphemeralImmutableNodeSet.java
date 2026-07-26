@@ -13,9 +13,31 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * An immutable, snapshot view of a collection of {@link EphemeralNode} objects.
+ * <p>
+ * <b>What it represents:</b> A frozen, unmodifiable set of nodes tied to an ephemeral sandbox.
+ * <p>
+ * <b>Why it exists:</b> It fulfills the {@code ImmutableNodeSet} contract by permanently freezing a query result, ensuring that regardless of future graph mutations, the snapshot remains mathematically identical.
+ * <p>
+ * <b>When to use it:</b> Use it when you need to safely return, store, or share the result of an algebraic traversal (like {@code union} or {@code difference}) without risking external corruption.
+ * <p>
+ * <b>Common usage patterns:</b> It is typically generated internally by operations like {@code toImmutable()} on mutable or live node sets.
+ * <p>
+ * <b>Important invariants:</b> Attempts to modify this set will throw an {@code UnsupportedOperationException}.
+ * <p>
+ * <b>Thread safety:</b> Completely thread-safe. As an immutable structure, it can be safely shared across concurrent execution contexts.
+ * <p>
+ * <b>Performance characteristics:</b> Delegates read operations to its internal materialized set, providing O(1) lookups without any further allocation overhead.
+ */
 public class EphemeralImmutableNodeSet implements NodeSet {
     private final NodeSet nodes;
     
+    /**
+     * Constructs a new immutable wrapper around the provided materialized node set.
+     *
+     * @param nodes the internally materialized node set to freeze
+     */
     public EphemeralImmutableNodeSet(NodeSet nodes) {
         this.nodes = nodes;
     }

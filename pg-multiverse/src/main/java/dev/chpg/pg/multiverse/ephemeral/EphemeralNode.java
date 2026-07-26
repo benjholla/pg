@@ -4,12 +4,34 @@ import dev.chpg.pg.api.AttributeMap;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
 
+/**
+ * Represents a transient, lightweight node within an {@code EphemeralGraph} sandbox.
+ * <p>
+ * <b>What it represents:</b> A concrete, single vertex in a high-speed mutation scratchpad.
+ * <p>
+ * <b>Why it exists:</b> It acts as a naked coordinate mapping to a negative integer sequence, providing zero-GC overhead and perfect mathematical isolation from permanent global records during intermediate computations.
+ * <p>
+ * <b>When to use it:</b> Use this when parsing, staging data, or performing local graph mutations before promoting the topology to a permanent registry.
+ * <p>
+ * <b>Common usage patterns:</b> Instantiated by an ephemeral ID generator and manipulated via the standard `tags()` and `attributes()` interfaces.
+ * <p>
+ * <b>Important invariants:</b> The ID must be strictly negative, enforcing the firewall against permanent {@code UniverseGraph} elements. This object does not maintain a backward reference to its parent graph.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent structural or state mutations must be synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Relies on standard HashMaps for property lookups, incurring slight hashing overhead compared to raw array layouts, which is the mathematically necessary trade-off for dynamic isolation.
+ */
 public final class EphemeralNode implements Node {
 
     private final int id;
     private final TagSet tags;
     private final AttributeMap attributes;
 
+    /**
+     * Constructs a new {@code EphemeralNode} with the specified negative identifier.
+     *
+     * @param id the strictly negative unique identifier for this node
+     */
     public EphemeralNode(int id) {
         this.id = id;
         this.tags = new EphemeralTagSet();

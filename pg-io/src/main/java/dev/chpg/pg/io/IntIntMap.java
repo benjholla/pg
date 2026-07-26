@@ -57,6 +57,9 @@ public class IntIntMap {
     /**
      * Inserts a key-value pair using linear probing.
      * Assumes keys are non-negative (file IDs).
+     *
+     * @param key   the key to insert
+     * @param value the value to insert
      */
     public void put(int key, int value) {
         if (key == EMPTY) {
@@ -77,6 +80,7 @@ public class IntIntMap {
     /**
      * Retrieves a value for the given key.
      *
+     * @param key the key whose associated value is to be returned
      * @return the value, or EMPTY (-1) if not found.
      */
     public int get(int key) {

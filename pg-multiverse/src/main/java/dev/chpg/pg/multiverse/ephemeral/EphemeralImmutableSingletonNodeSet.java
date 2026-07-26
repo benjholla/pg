@@ -11,10 +11,32 @@ import java.util.Set;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * An immutable, highly optimized set containing exactly one {@link EphemeralNode}.
+ * <p>
+ * <b>What it represents:</b> A single-element, read-only collection in the ephemeral sandbox architecture.
+ * <p>
+ * <b>Why it exists:</b> It avoids the memory overhead and hashing cost of standard {@code HashSet} collections for singleton queries.
+ * <p>
+ * <b>When to use it:</b> It is used internally as the return type for operations that definitively isolate a single node (e.g., resolving a specific ID).
+ * <p>
+ * <b>Common usage patterns:</b> Generated dynamically when operations result in a size of 1.
+ * <p>
+ * <b>Important invariants:</b> The set size is strictly fixed at 1. Mutative operations throw an {@code UnsupportedOperationException}.
+ * <p>
+ * <b>Thread safety:</b> Completely thread-safe and stateless beyond the singular frozen element reference.
+ * <p>
+ * <b>Performance characteristics:</b> Operations like {@code contains()}, {@code size()}, and {@code toArray()} execute in perfect O(1) time with zero allocation overhead.
+ */
 public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> implements NodeSet {
 
     private final EphemeralNode element;
 
+    /**
+     * Constructs a new immutable singleton set containing the specified element.
+     *
+     * @param element the single node to freeze in this set
+     */
     public EphemeralImmutableSingletonNodeSet(EphemeralNode element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }

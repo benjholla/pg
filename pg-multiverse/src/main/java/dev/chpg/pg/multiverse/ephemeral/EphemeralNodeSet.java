@@ -11,19 +11,49 @@ import java.util.stream.Collectors;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
+/**
+ * A mutable collection for managing distinct {@link EphemeralNode} objects.
+ * <p>
+ * <b>What it represents:</b> A concrete, materialized implementation of {@code NodeSet} specifically tied to the `pg-multiverse` ephemeral engine.
+ * <p>
+ * <b>Why it exists:</b> It provides standard HashSet operations while actively enforcing strict domain boundaries to prevent positive-ID nodes (like {@code UniverseNode}) from contaminating the local negative-ID sandbox.
+ * <p>
+ * <b>When to use it:</b> Use this when manually assembling collections of ephemeral nodes, or as the backing structure for traversals within an ephemeral graph.
+ * <p>
+ * <b>Common usage patterns:</b> It is used internally to back live views and algebraic computations (union, intersection). Developers can use it directly to construct arbitrary groups of transient nodes.
+ * <p>
+ * <b>Important invariants:</b> The set actively rejects any non-{@code EphemeralNode} or node with a positive ID during addition, throwing an {@code IllegalArgumentException}. Query operations safely ignore foreign node types.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications must be externally synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Backed by a standard {@code HashSet}, offering O(1) amortized insertions and lookups, with the standard object-allocation overhead of generic Java collections.
+ */
 public final class EphemeralNodeSet implements NodeSet {
 
     private final HashSet<EphemeralNode> internalSet;
 
+    /**
+     * Constructs a new, empty {@code EphemeralNodeSet}.
+     */
     public EphemeralNodeSet() {
         this.internalSet = new HashSet<>();
     }
 
+    /**
+     * Constructs a new {@code EphemeralNodeSet} containing the specified node.
+     *
+     * @param initialNode the single node to initially add
+     */
     public EphemeralNodeSet(Node initialNode) {
         this();
         add(initialNode);
     }
 
+    /**
+     * Constructs a new {@code EphemeralNodeSet} containing the specified nodes.
+     *
+     * @param initialNodes an array of nodes to initially add
+     */
     public EphemeralNodeSet(Node... initialNodes) {
         Objects.requireNonNull(initialNodes, "Node array cannot be null");
         this.internalSet = new HashSet<>((int) (initialNodes.length / 0.75f) + 1);
@@ -32,6 +62,11 @@ public final class EphemeralNodeSet implements NodeSet {
         }
     }
 
+    /**
+     * Constructs a new {@code EphemeralNodeSet} containing the elements of the specified collection.
+     *
+     * @param initialNodes a collection of nodes to initially add
+     */
     public EphemeralNodeSet(Collection<Node> initialNodes) {
         this();
         Objects.requireNonNull(initialNodes, "Node collection cannot be null");

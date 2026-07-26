@@ -15,10 +15,18 @@ public final class EphemeralTagSet implements TagSet {
 
     private final Set<String> delegate;
 
+    /**
+     * Constructs a new, empty {@code EphemeralTagSet}.
+     */
     public EphemeralTagSet() {
         this.delegate = new HashSet<>();
     }
 
+    /**
+     * Constructs a new {@code EphemeralTagSet} containing the tags in the specified collection.
+     *
+     * @param c the collection whose tags are to be placed into this tag set
+     */
     public EphemeralTagSet(Collection<? extends String> c) {
         this.delegate = new HashSet<>();
         this.addAll(c);
