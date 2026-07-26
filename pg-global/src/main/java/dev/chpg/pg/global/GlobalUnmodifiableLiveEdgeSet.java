@@ -15,10 +15,35 @@ import java.util.stream.Stream;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
+/**
+ * A live, unmodifiable view of edges within a {@link GlobalGraph}.
+ * <p>
+ * <b>What it represents:</b> A read-only projection of the graph's internal adjacency edges.
+ * <p>
+ * <b>Why it exists:</b> It provides a dynamic window into the structural state of the graph without exposing the underlying primitive arrays or risking external corruption.
+ * <p>
+ * <b>When to use it:</b> It is used internally by the core graph engine to satisfy traversal queries (like {@code forwardStep()}) securely.
+ * <p>
+ * <b>Common usage patterns:</b> Users iterate through this set or spawn immutable snapshots from it to begin processing an edge collection.
+ * <p>
+ * <b>Important invariants:</b> Attempts to modify this set via {@code add()} or {@code remove()} will throw an {@code UnsupportedOperationException}. However, structural changes to the parent graph will instantly reflect in this view.
+ * <p>
+ * <b>Thread safety:</b> Not inherently thread-safe if the underlying graph is concurrently structurally modified.
+ * <p>
+ * <b>Performance characteristics:</b> Operations like {@code size()} and {@code contains()} are executed in O(1) time against the live engine state. Iteration avoids full instantiation but cannot be heavily optimized.
+ */
 public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
 
     private final Map<Integer, GlobalEdge> edges;
 
+    /**
+     * Constructs a new unmodifiable live edge set backing the global graph view.
+     *
+     * @param nodes    the node registry map (unused in edge sets directly)
+     * @param edges    the core edge registry map
+     * @param inEdges  the inbound adjacency map
+     * @param outEdges the outbound adjacency map
+     */
     public GlobalUnmodifiableLiveEdgeSet(
             Map<Integer, GlobalNode> nodes,
             Map<Integer, GlobalEdge> edges,

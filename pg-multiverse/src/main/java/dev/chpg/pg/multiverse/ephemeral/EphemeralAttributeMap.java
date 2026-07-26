@@ -16,10 +16,18 @@ public final class EphemeralAttributeMap implements AttributeMap {
 
     private final Map<String, AttributeValue> delegate;
 
+    /**
+     * Constructs a new, empty {@code EphemeralAttributeMap}.
+     */
     public EphemeralAttributeMap() {
         this.delegate = new HashMap<>();
     }
 
+    /**
+     * Constructs a new {@code EphemeralAttributeMap} initialized with the mappings from the specified map.
+     *
+     * @param m the map whose mappings are to be placed in this map
+     */
     public EphemeralAttributeMap(Map<? extends String, ? extends AttributeValue> m) {
         this.delegate = new HashMap<>();
         this.putAll(m);
