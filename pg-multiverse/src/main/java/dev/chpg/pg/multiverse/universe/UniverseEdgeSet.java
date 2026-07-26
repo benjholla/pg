@@ -13,39 +13,26 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * A read-optimized, immutable view of active edges within a UniverseGraph.
- * Wraps a raw BitSet and instantiates transient UniverseEdge flyweights on demand.
+ * A bitwise-backed, mutable topological viewport into a pg-multiverse Universe.
+ * Modifying this set only alters the local bit-mask, never the underlying engine arrays.
+ * Strictly rejects cross-contamination from foreign graphs or sandboxes.
  */
 public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     private final Universe universe;
     private final BitSet activeBits;
 
-    /**
-     * Package-private constructor.
-     * Only UniverseGraph and internal Universe queries should instantiate this view.
-     *
-     * @param universe The parent universe instance
-     * @param activeBits The underlying active bits
-     */
     UniverseEdgeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");
     }
 
-    // =========================================================================
-    // =========================================================================
-    // 0. ENGINE ACCESS
-    // =========================================================================
-
-    /**
-     * Exposes the underlying bitwise storage engine backing this element.
-     */
     @Override
     public Universe universe() {
         return this.universe;
     }
 
+    // =========================================================================
     // 1. CORE API & MAGNITUDE
     // =========================================================================
 
@@ -71,7 +58,7 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public EdgeSet toImmutable() {
-        return this; // Inherently immutable, zero-allocation return
+        return new UniverseEdgeSet(this.universe, (BitSet) this.activeBits.clone());
     }
 
     @Override
@@ -89,74 +76,53 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public boolean contains(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof UniverseEdge)) {
-            return false;
-        }
+        if (this == o) { return true; }
+        if (!(o instanceof UniverseEdge)) { return false; }
 
         UniverseEdge edge = (UniverseEdge) o;
-        if (edge.universe() != this.universe) {
-            return false;
-        }
+
+        if (edge.universe() != this.universe) { return false; }
 
         return this.activeBits.get(edge.id());
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        Objects.requireNonNull(c, "Collection cannot be null");
         for (Object e : c) {
-            Objects.requireNonNull(e, "Element cannot be null");
-            if (!contains(e)) {
-                return false;
-            }
+            if (!contains(e)) { return false; }
         }
         return true;
     }
 
     // =========================================================================
-    // 3. MATHEMATICAL SET OPERATIONS
+    // 3. STRICTLY BOUNDED SET OPERATIONS
     // =========================================================================
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseEdgeSet && ((UniverseEdgeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.and(((UniverseEdgeSet) other).activeBits);
             return clonedBits.isEmpty() ? EdgeSet.empty() : new UniverseEdgeSet(this.universe, clonedBits);
         }
 
-        // 2. Optimized Fallback (Result is guaranteed to be a subset of this)
         BitSet fallbackBits = new BitSet();
         for (Edge e : other) {
-            Objects.requireNonNull(e, "Element cannot be null");
-            if (this.contains(e)) {
-                fallbackBits.set(e.id());
-            }
+            if (this.contains(e)) { fallbackBits.set(e.id()); }
         }
         return fallbackBits.isEmpty() ? EdgeSet.empty() : new UniverseEdgeSet(this.universe, fallbackBits);
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseEdgeSet && ((UniverseEdgeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.andNot(((UniverseEdgeSet) other).activeBits);
             return clonedBits.isEmpty() ? EdgeSet.empty() : new UniverseEdgeSet(this.universe, clonedBits);
         }
 
-        // 2. Optimized Fallback (Result is guaranteed to be a subset of this)
         BitSet fallbackBits = (BitSet) this.activeBits.clone();
         for (Edge e : other) {
-            Objects.requireNonNull(e, "Element cannot be null");
             if (e instanceof UniverseEdge && ((UniverseEdge) e).universe() == this.universe) {
                 fallbackBits.clear(e.id());
             }
@@ -166,28 +132,25 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        Objects.requireNonNull(other, "Collection cannot be null");
-
-        // 1. Bitwise Fast-Path
         if (other instanceof UniverseEdgeSet && ((UniverseEdgeSet) other).universe == this.universe) {
             BitSet clonedBits = (BitSet) this.activeBits.clone();
             clonedBits.or(((UniverseEdgeSet) other).activeBits);
             return new UniverseEdgeSet(this.universe, clonedBits);
         }
 
-        // 2. Mandatory Generic Fallback (Heterogeneous result)
-        java.util.Set<Edge> unioned = new java.util.HashSet<>();
-
-        for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
-            unioned.add(new UniverseEdge(this.universe, id));
-        }
-
+        BitSet clonedBits = (BitSet) this.activeBits.clone();
         for (Edge e : other) {
-            Objects.requireNonNull(e, "Element cannot be null");
-            unioned.add(e);
+            if (!(e instanceof UniverseEdge)) {
+                throw new IllegalArgumentException("Cannot union with foreign edge. Must be a UniverseEdge.");
+            }
+            UniverseEdge uEdge = (UniverseEdge) e;
+            if (uEdge.universe() != this.universe) {
+                throw new IllegalArgumentException("Cannot union with a UniverseEdge from a different Universe instance.");
+            }
+            clonedBits.set(uEdge.id());
         }
 
-        return new dev.chpg.pg.api.GenericImmutableEdgeSet(unioned);
+        return new UniverseEdgeSet(this.universe, clonedBits);
     }
 
     // =========================================================================
@@ -201,7 +164,6 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
                 .iterator();
     }
 
-    @Override
     public Stream<Edge> stream() {
         return this.activeBits.stream()
                 .mapToObj(id -> (Edge) new UniverseEdge(this.universe, id));
@@ -214,17 +176,13 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
             public Iterator<Integer> iterator() {
                 return activeBits.stream().iterator();
             }
-
             @Override
             public int size() {
                 return activeBits.cardinality();
             }
-
             @Override
             public boolean contains(Object o) {
-                if (!(o instanceof Integer)) {
-                    return false;
-                }
+                if (!(o instanceof Integer)) { return false; }
                 return activeBits.get((Integer) o);
             }
         };
@@ -243,53 +201,80 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
-        Objects.requireNonNull(a, "Array cannot be null");
-        int currentSize = size();
-        T[] result = a.length >= currentSize ? a
-                : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), currentSize);
-
+        int size = size();
+        T[] result = a.length >= size ? a : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         int i = 0;
         for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
             result[i++] = (T) new UniverseEdge(this.universe, id);
         }
-
-        if (result.length > currentSize) {
-            result[currentSize] = null;
-        }
+        if (result.length > size) { result[size] = null; }
         return result;
     }
 
     // =========================================================================
-    // 5. IMMUTABILITY GUARDRAILS (Fail-Fast Mutations)
+    // 5. MUTABILITY & LINEAGE CHECKS
     // =========================================================================
 
     @Override
     public boolean add(Edge edge) {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        if (!(edge instanceof UniverseEdge)) {
+            throw new IllegalArgumentException("Cannot add foreign edge. Must be a UniverseEdge.");
+        }
+        UniverseEdge uEdge = (UniverseEdge) edge;
+        if (uEdge.universe() != this.universe) {
+            throw new IllegalArgumentException("Cannot add a UniverseEdge from a different Universe instance.");
+        }
+
+        boolean isNew = !this.activeBits.get(uEdge.id());
+        this.activeBits.set(uEdge.id());
+        return isNew;
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        if (!(o instanceof UniverseEdge)) { return false; }
+        UniverseEdge uEdge = (UniverseEdge) o;
+        if (uEdge.universe() != this.universe) { return false; }
+
+        boolean exists = this.activeBits.get(uEdge.id());
+        this.activeBits.clear(uEdge.id());
+        return exists;
     }
 
     @Override
     public boolean addAll(Collection<? extends Edge> c) {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        boolean modified = false;
+        for (Edge e : c) {
+            if (this.add(e)) { modified = true; }
+        }
+        return modified;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        boolean modified = false;
+        for (Object o : c) {
+            if (this.remove(o)) { modified = true; }
+        }
+        return modified;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        BitSet retainMask = new BitSet();
+        for (Object o : c) {
+            if (o instanceof UniverseEdge && ((UniverseEdge) o).universe() == this.universe) {
+                retainMask.set(((UniverseEdge) o).id());
+            }
+        }
+
+        int preSize = this.activeBits.cardinality();
+        this.activeBits.and(retainMask);
+        return this.activeBits.cardinality() != preSize;
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("UniverseEdgeSet is a read-only bitwise view.");
+        this.activeBits.clear();
     }
 }
