@@ -14,7 +14,7 @@ These operations leverage the zero-allocation, 4-pillar primitive integer routin
 |---|---|---|---|
 | nodes(), edges() | O(1) | O(1) | O(1) |
 | node(id), edge(id) | O(1) | O(1) | O(1) |
-| containsNode(n), containsEdge(e) | O(1) | O(1) | O(1) |
+| nodes().contains(n), edges().contains(e) | O(1) | O(1) | O(1) |
 | degree(n, direction) | O(1) | O(1) | O(1) |
 | edges(n, direction) | O(1) | O(1) | O(1) |
 *Note: edges(n, direction) is O(1) memory only if it returns an unmodifiable view of the internal inEdges/outEdges map. If it allocates a new EdgeSet snapshot, memory becomes O(D).*
