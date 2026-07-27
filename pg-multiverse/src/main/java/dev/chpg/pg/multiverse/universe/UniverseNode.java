@@ -24,8 +24,8 @@ public final class UniverseNode implements Node, UniverseView {
     public UniverseNode(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
 
-        if (id <= 0) {
-            throw new IllegalArgumentException("UniverseNode IDs must be strictly positive. Received: " + id);
+        if (id < 0) {
+            throw new IllegalArgumentException("UniverseNode IDs must be positive. Received: " + id);
         }
         this.id = id;
     }

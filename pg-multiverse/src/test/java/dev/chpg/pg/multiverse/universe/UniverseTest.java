@@ -5,8 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.chpg.pg.api.AttributeValue;
+import dev.chpg.pg.api.Edge;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralEdge;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralNode;
 import org.junit.jupiter.api.Test;
 
 public class UniverseTest {
@@ -65,14 +71,81 @@ public class UniverseTest {
     }
 
     @Test
-    public void testPromoteThrowsException() {
+    public void testPromote() {
         Universe universe = new Universe();
+        EphemeralGraph eg = new EphemeralGraph();
 
-        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
-            universe.promote(new EphemeralGraph());
+        EphemeralNode n1 = eg.createNode();
+        n1.tags().add("User");
+        n1.attributes().put("name", AttributeValue.value("Alice"));
+
+        EphemeralNode n2 = eg.createNode();
+        n2.tags().add("User");
+        n2.attributes().put("name", AttributeValue.value("Bob"));
+
+        EphemeralEdge e1 = eg.createEdge(n1, n2);
+        e1.tags().add("KNOWS");
+        e1.attributes().put("since", AttributeValue.value("2023"));
+
+        eg.addNode(n1);
+        eg.addNode(n2);
+        eg.addEdge(e1);
+
+        assertEquals(2, eg.nodes().size());
+        assertEquals(1, eg.edges().size());
+
+        UniverseGraph ug = universe.promote(eg);
+
+        // Assert ephemeral is empty
+        assertEquals(0, eg.nodes().size());
+        assertEquals(0, eg.edges().size());
+
+        // Assert universe graph properties
+        assertEquals(2, ug.nodes().size());
+        assertEquals(1, ug.edges().size());
+
+        // Nodes exist and have correct tags and properties
+        Node un1 = null;
+        Node un2 = null;
+        for (Node un : ug.nodes()) {
+            assertTrue(un.tags().contains("User"));
+            if (((AttributeValue.StringValue) un.attributes().get("name")).value().equals("Alice")) {
+                un1 = un;
+            } else if (((AttributeValue.StringValue) un.attributes().get("name")).value().equals("Bob")) {
+                un2 = un;
+            }
+        }
+
+        assertNotNull(un1);
+        assertNotNull(un2);
+
+        Edge ue1 = null;
+        for (Edge ue : ug.edges()) {
+            ue1 = ue;
+        }
+
+        assertNotNull(ue1);
+        assertTrue(ue1.tags().contains("KNOWS"));
+        assertEquals("2023", ((AttributeValue.StringValue) ue1.attributes().get("since")).value());
+
+        // Assert structure
+        assertTrue(ue1.from().equals(un1) || ue1.from().equals(un2));
+        assertTrue(ue1.to().equals(un1) || ue1.to().equals(un2));
+
+        if (ue1.from().equals(un1)) {
+            assertEquals(un2, ue1.to());
+        } else {
+            assertEquals(un1, ue1.to());
+        }
+    }
+
+    @Test
+    public void testPromoteNull() {
+        Universe universe = new Universe();
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> {
+            universe.promote(null);
         });
-
-        assertEquals("TODO: Implement in Phase 4 (Promotion)", exception.getMessage());
+        assertEquals("EphemeralGraph cannot be null", exception.getMessage());
     }
 
     @Test
