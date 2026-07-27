@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 /** Generates IDs for the Universe graph. */
 public final class UniverseIdGenerator {
 
-    private final AtomicInteger nextNodeId = new AtomicInteger(1);
-    private final AtomicInteger nextEdgeId = new AtomicInteger(1);
+    private final AtomicInteger nextNodeId = new AtomicInteger(0);
+    private final AtomicInteger nextEdgeId = new AtomicInteger(0);
     private final AtomicLong universeModCount = new AtomicLong(0);
 
     /**
@@ -24,6 +24,22 @@ public final class UniverseIdGenerator {
      */
     public int createEdgeId() {
         return nextEdgeId.getAndIncrement();
+    }
+
+    /**
+     * Returns the high-water mark of allocated node IDs.
+     * @return the number of allocated node IDs
+     */
+    public int allocatedNodeCount() {
+        return nextNodeId.get();
+    }
+
+    /**
+     * Returns the high-water mark of allocated edge IDs.
+     * @return the number of allocated edge IDs
+     */
+    public int allocatedEdgeCount() {
+        return nextEdgeId.get();
     }
 
     /**

@@ -121,4 +121,11 @@ public class Universe {
 
     // Note: Future columnar arrays (int[] edgeSources) and
     // inverted indices (Map<String, BitSet> nodeTags) will be placed here in Phase 4/5.
+
+    @Override
+    public String toString() {
+        return "Universe[id=" + this.universeId +
+               ", allocatedNodes=" + this.idGenerator.allocatedNodeCount() +
+               ", allocatedEdges=" + this.idGenerator.allocatedEdgeCount() + "]";
+    }
 }
