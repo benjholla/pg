@@ -248,7 +248,204 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     // =========================================================================
-    // STUBBED: SET ALGEBRA & TRAVERSALS
+    // LINEAGE & INVARIANT UTILITIES
+    // =========================================================================
+
+    private UniverseGraph validateLineage(Graph other) {
+        if (!(other instanceof UniverseGraph ug)) {
+            throw new IllegalArgumentException("Cross-engine algebra blocked. Expected UniverseGraph.");
+        }
+        if (this.universe != ug.universe()) {
+            throw new IllegalArgumentException("Sandbox mismatch. Graphs belong to different Universes.");
+        }
+        return ug;
+    }
+
+    private UniverseNode validateLineage(Node node) {
+        if (!(node instanceof UniverseNode un) || un.universe() != this.universe) {
+            throw new IllegalArgumentException("Node must belong to this Universe.");
+        }
+        return un;
+    }
+
+    private UniverseEdge validateLineage(Edge edge) {
+        if (!(edge instanceof UniverseEdge ue) || ue.universe() != this.universe) {
+            throw new IllegalArgumentException("Edge must belong to this Universe.");
+        }
+        return ue;
+    }
+
+    /**
+     * Validates that every active edge still has both its source and target nodes active.
+     * Clears any orphaned edges to enforce structural graph invariants.
+     */
+    private void scrubOrphanedEdges() {
+        for (int edgeId = this.activeEdges.nextSetBit(0); edgeId >= 0; edgeId = this.activeEdges.nextSetBit(edgeId + 1)) {
+            int sourceId = this.universe.edgeSource(edgeId);
+            int targetId = this.universe.edgeTarget(edgeId);
+
+            if (!this.activeNodes.get(sourceId) || !this.activeNodes.get(targetId)) {
+                this.activeEdges.clear(edgeId);
+            }
+        }
+    }
+
+    // =========================================================================
+    // O(1) SET ALGEBRA
+    // =========================================================================
+
+    @Override
+    public Graph union(Graph graph) {
+        UniverseGraph other = validateLineage(graph);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.or(other.activeNodes);
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.or(other.activeEdges);
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph union(Node node) {
+        UniverseNode un = validateLineage(node);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.set(un.id());
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph union(Edge edge) {
+        UniverseEdge ue = validateLineage(edge);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.set(this.universe.edgeSource(ue.id()));
+        newNodes.set(this.universe.edgeTarget(ue.id()));
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.set(ue.id());
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph difference(Graph graph) {
+        UniverseGraph other = validateLineage(graph);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.andNot(other.activeNodes);
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.andNot(other.activeEdges);
+
+        UniverseGraph result = new UniverseGraph(this.universe, newNodes, newEdges);
+        result.scrubOrphanedEdges(); // Cascade delete edges missing new endpoints
+        return result;
+    }
+
+    @Override
+    public Graph difference(Node node) {
+        UniverseNode un = validateLineage(node);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.clear(un.id());
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+
+        UniverseGraph result = new UniverseGraph(this.universe, newNodes, newEdges);
+        result.scrubOrphanedEdges();
+        return result;
+    }
+
+    @Override
+    public Graph difference(Edge edge) {
+        // API Contract: removing an edge via `difference` explicitly removes its endpoint nodes.
+        UniverseEdge ue = validateLineage(edge);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.clear(this.universe.edgeSource(ue.id()));
+        newNodes.clear(this.universe.edgeTarget(ue.id()));
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.clear(ue.id());
+
+        UniverseGraph result = new UniverseGraph(this.universe, newNodes, newEdges);
+        result.scrubOrphanedEdges();
+        return result;
+    }
+
+    @Override
+    public Graph differenceEdges(Graph graph) {
+        UniverseGraph other = validateLineage(graph);
+        BitSet newNodes = (BitSet) this.activeNodes.clone(); // Nodes untouched
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.andNot(other.activeEdges);
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph differenceEdges(Edge edge) {
+        UniverseEdge ue = validateLineage(edge);
+        BitSet newNodes = (BitSet) this.activeNodes.clone(); // Nodes untouched
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.clear(ue.id());
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph intersection(Graph graph) {
+        UniverseGraph other = validateLineage(graph);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        newNodes.and(other.activeNodes);
+
+        BitSet newEdges = (BitSet) this.activeEdges.clone();
+        newEdges.and(other.activeEdges);
+
+        UniverseGraph result = new UniverseGraph(this.universe, newNodes, newEdges);
+        result.scrubOrphanedEdges();
+        return result;
+    }
+
+    @Override
+    public Graph intersection(Node node) {
+        UniverseNode un = validateLineage(node);
+        BitSet newNodes = new BitSet(); // Empty start
+        if (this.activeNodes.get(un.id())) {
+            newNodes.set(un.id());
+        }
+
+        // Intersecting with a 1-Node/0-Edge graph always yields 0 edges
+        return new UniverseGraph(this.universe, newNodes, new BitSet());
+    }
+
+    @Override
+    public Graph intersection(Edge edge) {
+        UniverseEdge ue = validateLineage(edge);
+        BitSet newNodes = new BitSet();
+        int sourceId = this.universe.edgeSource(ue.id());
+        int targetId = this.universe.edgeTarget(ue.id());
+
+        if (this.activeNodes.get(sourceId)) {
+            newNodes.set(sourceId);
+        }
+        if (this.activeNodes.get(targetId)) {
+            newNodes.set(targetId);
+        }
+
+        BitSet newEdges = new BitSet();
+        if (this.activeEdges.get(ue.id())) {
+            newEdges.set(ue.id());
+        }
+
+        UniverseGraph result = new UniverseGraph(this.universe, newNodes, newEdges);
+        result.scrubOrphanedEdges(); // In case only 1 node matched, the edge must be dropped
+        return result;
+    }
+
+    // =========================================================================
+    // STUBBED: TRAVERSALS
     // =========================================================================
 
     @Override public EdgeSet edges(Node node, NodeDirection direction) { throw new UnsupportedOperationException("Not yet implemented"); }
@@ -267,17 +464,6 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override public Graph reverseStep(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph reverseStep(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph reverseStep(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph union(Node node) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph union(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph union(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph difference(Node node) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph difference(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph difference(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph differenceEdges(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph differenceEdges(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph intersection(Node node) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph intersection(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph intersection(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph betweenStep(Node from, Node to) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph betweenStep(Graph from, Graph to) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph betweenStep(NodeSet from, NodeSet to) { throw new UnsupportedOperationException("Not yet implemented"); }
