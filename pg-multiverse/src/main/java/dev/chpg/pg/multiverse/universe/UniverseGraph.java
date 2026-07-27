@@ -26,6 +26,8 @@ public final class UniverseGraph implements Graph, UniverseView {
 
     /**
      * Constructs a new, empty viewport over the given Universe.
+     *
+     * @param universe the Universe instance to wrap
      */
     public UniverseGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
@@ -35,6 +37,10 @@ public final class UniverseGraph implements Graph, UniverseView {
 
     /**
      * Constructs a viewport backed by existing masks.
+     *
+     * @param universe the Universe instance to wrap
+     * @param activeNodes the active nodes BitSet
+     * @param activeEdges the active edges BitSet
      */
     public UniverseGraph(Universe universe, BitSet activeNodes, BitSet activeEdges) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
