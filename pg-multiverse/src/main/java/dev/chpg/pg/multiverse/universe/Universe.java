@@ -1,17 +1,17 @@
 package dev.chpg.pg.multiverse.universe;
 
 import dev.chpg.pg.api.AttributeValue;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.multiverse.MultiverseIdGenerator;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 
 import java.util.AbstractMap;
-import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Edge;
-import java.util.HashMap;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
@@ -208,15 +208,13 @@ public final class Universe {
     // 2. PHASE 4/5 ARCHITECTURAL STUBS
     // =========================================================================
 
-        /**
-     * Promotes an EphemeralGraph into the Universe columnar engine.
-     * <p>
-     * <b>Warning:</b> This is a destructive, one-way operation. To avoid massive
-     * heap pressure, the EphemeralGraph is cleared immediately after ingestion.
-     * Its internal elements are invalidated and immediately released to the Garbage Collector.
+    /**
+     * Promotes a write-optimized EphemeralGraph into a read-optimized UniverseGraph.
+     * Deep-clones state, translates negative IDs to positive IDs, rewires topology,
+     * and permanently invalidates the ephemeral sandbox.
      *
-     * @param ephemeralGraph the object-oriented graph sandbox to ingest
-     * @return A zero-allocation UniverseGraph viewport over the newly promoted data
+     * @param ephemeralGraph The sandbox graph to promote and invalidate.
+     * @return A read-optimized, BitSet-backed view of the promoted topology.
      */
     public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
         Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
