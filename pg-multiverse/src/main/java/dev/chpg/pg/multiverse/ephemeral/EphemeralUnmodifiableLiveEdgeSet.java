@@ -81,11 +81,9 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     public EdgeSet union(Collection<? extends Edge> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
-        if (true) {
-            for (Edge e : other) {
-                if (e instanceof EphemeralEdge) {
-                    result.add(e);
-                }
+        for (Edge e : other) {
+            if (e instanceof EphemeralEdge) {
+                result.add(e);
             }
         }
         return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);

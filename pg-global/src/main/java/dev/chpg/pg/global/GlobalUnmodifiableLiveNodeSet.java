@@ -98,11 +98,9 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
     public NodeSet union(Collection<? extends Node> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalNodeSet result = new GlobalNodeSet(); result.addAll(nodes.values());
-        if (true) {
-            for (Node n : other) {
-                if (n instanceof GlobalNode) {
-                    result.add(n);
-                }
+        for (Node n : other) {
+            if (n instanceof GlobalNode) {
+                result.add(n);
             }
         }
         return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);

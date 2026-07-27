@@ -98,11 +98,9 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
     public EdgeSet union(Collection<? extends Edge> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalEdgeSet result = new GlobalEdgeSet(); result.addAll(edges.values());
-        if (true) {
-            for (Edge e : other) {
-                if (e instanceof GlobalEdge) {
-                    result.add(e);
-                }
+        for (Edge e : other) {
+            if (e instanceof GlobalEdge) {
+                result.add(e);
             }
         }
         return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
