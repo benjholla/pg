@@ -252,6 +252,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     // =========================================================================
 
     private UniverseGraph validateLineage(Graph other) {
+        Objects.requireNonNull(other, "Graph cannot be null");
         if (!(other instanceof UniverseGraph ug)) {
             throw new IllegalArgumentException("Cross-engine algebra blocked. Expected UniverseGraph.");
         }
@@ -262,6 +263,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     private UniverseNode validateLineage(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
         if (!(node instanceof UniverseNode un) || un.universe() != this.universe) {
             throw new IllegalArgumentException("Node must belong to this Universe.");
         }
@@ -269,6 +271,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     private UniverseEdge validateLineage(Edge edge) {
+        Objects.requireNonNull(edge, "Edge cannot be null");
         if (!(edge instanceof UniverseEdge ue) || ue.universe() != this.universe) {
             throw new IllegalArgumentException("Edge must belong to this Universe.");
         }
@@ -592,34 +595,383 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     // =========================================================================
-    // STUBBED: TRAVERSALS
+    // PREDECESSORS & SUCCESSORS (1-STEP NEIGHBORHOOD)
     // =========================================================================
 
-    @Override public NodeSet predecessors(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet predecessors(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet predecessors(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet successors(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet successors(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet successors(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forwardStep(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forwardStep(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forwardStep(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverseStep(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverseStep(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverseStep(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph betweenStep(Node from, Node to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph betweenStep(Graph from, Graph to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph betweenStep(NodeSet from, NodeSet to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph between(Node from, Node to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph between(Graph from, Graph to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph between(NodeSet from, NodeSet to) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forward(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forward(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph forward(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverse(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverse(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph reverse(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph induce(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph induce(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public Graph induce(EdgeSet edges) { throw new UnsupportedOperationException("Not yet implemented"); }
+    @Override
+    public NodeSet predecessors(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return predecessors(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public NodeSet predecessors(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return predecessors(origin.nodes());
+    }
+
+    @Override
+    public NodeSet predecessors(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet result = new BitSet();
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (!(n instanceof UniverseNode un) || un.universe() != this.universe) {
+                continue;
+            }
+            if (!this.activeNodes.get(un.id())) {
+                continue;
+            }
+
+            int[] in = this.universe.inboundEdges(un.id());
+            if (in != null) {
+                for (int edgeId : in) {
+                    if (this.activeEdges.get(edgeId)) {
+                        result.set(this.universe.edgeSource(edgeId));
+                    }
+                }
+            }
+        }
+        return new UniverseNodeSet(this.universe, result);
+    }
+
+    @Override
+    public NodeSet successors(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return successors(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public NodeSet successors(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return successors(origin.nodes());
+    }
+
+    @Override
+    public NodeSet successors(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet result = new BitSet();
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (!(n instanceof UniverseNode un) || un.universe() != this.universe) {
+                continue;
+            }
+            if (!this.activeNodes.get(un.id())) {
+                continue;
+            }
+
+            int[] out = this.universe.outboundEdges(un.id());
+            if (out != null) {
+                for (int edgeId : out) {
+                    if (this.activeEdges.get(edgeId)) {
+                        result.set(this.universe.edgeTarget(edgeId));
+                    }
+                }
+            }
+        }
+        return new UniverseNodeSet(this.universe, result);
+    }
+
+    // =========================================================================
+    // STEP TRAVERSALS (SUBGRAPH YIELDING)
+    // =========================================================================
+
+    private BitSet singleNodeBit(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
+        BitSet b = new BitSet();
+        if (node instanceof UniverseNode un && un.universe() == this.universe && this.activeNodes.get(un.id())) {
+            b.set(un.id());
+        }
+        return b;
+    }
+
+    @Override
+    public Graph forwardStep(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return forwardStep(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public Graph forwardStep(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return forwardStep(origin.nodes());
+    }
+
+    @Override
+    public Graph forwardStep(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet newNodes = new BitSet();
+        BitSet newEdges = new BitSet();
+
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (n instanceof UniverseNode un && un.universe() == this.universe && this.activeNodes.get(un.id())) {
+                newNodes.set(un.id());
+
+                int[] out = this.universe.outboundEdges(un.id());
+                if (out != null) {
+                    for (int edgeId : out) {
+                        if (this.activeEdges.get(edgeId)) {
+                            newEdges.set(edgeId);
+                            newNodes.set(this.universe.edgeTarget(edgeId));
+                        }
+                    }
+                }
+            }
+        }
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph reverseStep(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return reverseStep(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public Graph reverseStep(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return reverseStep(origin.nodes());
+    }
+
+    @Override
+    public Graph reverseStep(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet newNodes = new BitSet();
+        BitSet newEdges = new BitSet();
+
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (n instanceof UniverseNode un && un.universe() == this.universe && this.activeNodes.get(un.id())) {
+                newNodes.set(un.id());
+
+                int[] in = this.universe.inboundEdges(un.id());
+                if (in != null) {
+                    for (int edgeId : in) {
+                        if (this.activeEdges.get(edgeId)) {
+                            newEdges.set(edgeId);
+                            newNodes.set(this.universe.edgeSource(edgeId));
+                        }
+                    }
+                }
+            }
+        }
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph betweenStep(Node from, Node to) {
+        Objects.requireNonNull(from, "Node 'from' cannot be null");
+        Objects.requireNonNull(to, "Node 'to' cannot be null");
+        return forwardStep(from).intersection(reverseStep(to));
+    }
+
+    @Override
+    public Graph betweenStep(Graph from, Graph to) {
+        Objects.requireNonNull(from, "Graph 'from' cannot be null");
+        Objects.requireNonNull(to, "Graph 'to' cannot be null");
+        return forwardStep(from).intersection(reverseStep(to));
+    }
+
+    @Override
+    public Graph betweenStep(NodeSet from, NodeSet to) {
+        Objects.requireNonNull(from, "NodeSet 'from' cannot be null");
+        Objects.requireNonNull(to, "NodeSet 'to' cannot be null");
+        return forwardStep(from).intersection(reverseStep(to));
+    }
+
+    // =========================================================================
+    // TRANSITIVE BFS TRAVERSALS
+    // =========================================================================
+
+    @Override
+    public Graph forward(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return forward(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public Graph forward(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return forward(origin.nodes());
+    }
+
+    @Override
+    public Graph forward(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet visitedNodes = new BitSet();
+        BitSet visitedEdges = new BitSet();
+        BitSet frontier = new BitSet();
+
+        // 1. Seed the initial frontier
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (n instanceof UniverseNode un && un.universe() == this.universe && this.activeNodes.get(un.id())) {
+                frontier.set(un.id());
+                visitedNodes.set(un.id());
+            }
+        }
+
+        // 2. CPU-bound matrix BFS
+        while (!frontier.isEmpty()) {
+            BitSet nextFrontier = new BitSet();
+
+            for (int nodeId = frontier.nextSetBit(0); nodeId >= 0; nodeId = frontier.nextSetBit(nodeId + 1)) {
+                int[] out = this.universe.outboundEdges(nodeId);
+                if (out != null) {
+                    for (int edgeId : out) {
+                        if (this.activeEdges.get(edgeId)) {
+                            visitedEdges.set(edgeId);
+                            int targetId = this.universe.edgeTarget(edgeId);
+
+                            // If we haven't seen this target yet, mark it visited and add to next frontier
+                            if (!visitedNodes.get(targetId)) {
+                                visitedNodes.set(targetId);
+                                nextFrontier.set(targetId);
+                            }
+                        }
+                    }
+                }
+            }
+            frontier = nextFrontier;
+        }
+
+        return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
+    }
+
+    @Override
+    public Graph reverse(Node origin) {
+        Objects.requireNonNull(origin, "Node cannot be null");
+        return reverse(new UniverseNodeSet(this.universe, singleNodeBit(origin)));
+    }
+
+    @Override
+    public Graph reverse(Graph origin) {
+        Objects.requireNonNull(origin, "Graph cannot be null");
+        return reverse(origin.nodes());
+    }
+
+    @Override
+    public Graph reverse(NodeSet origin) {
+        Objects.requireNonNull(origin, "NodeSet cannot be null");
+        BitSet visitedNodes = new BitSet();
+        BitSet visitedEdges = new BitSet();
+        BitSet frontier = new BitSet();
+
+        for (Node n : origin) {
+            Objects.requireNonNull(n, "Node cannot be null");
+            if (n instanceof UniverseNode un && un.universe() == this.universe && this.activeNodes.get(un.id())) {
+                frontier.set(un.id());
+                visitedNodes.set(un.id());
+            }
+        }
+
+        while (!frontier.isEmpty()) {
+            BitSet nextFrontier = new BitSet();
+
+            for (int nodeId = frontier.nextSetBit(0); nodeId >= 0; nodeId = frontier.nextSetBit(nodeId + 1)) {
+                int[] in = this.universe.inboundEdges(nodeId);
+                if (in != null) {
+                    for (int edgeId : in) {
+                        if (this.activeEdges.get(edgeId)) {
+                            visitedEdges.set(edgeId);
+                            int sourceId = this.universe.edgeSource(edgeId);
+
+                            if (!visitedNodes.get(sourceId)) {
+                                visitedNodes.set(sourceId);
+                                nextFrontier.set(sourceId);
+                            }
+                        }
+                    }
+                }
+            }
+            frontier = nextFrontier;
+        }
+
+        return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
+    }
+
+    @Override
+    public Graph between(Node from, Node to) {
+        Objects.requireNonNull(from, "Node 'from' cannot be null");
+        Objects.requireNonNull(to, "Node 'to' cannot be null");
+        return forward(from).intersection(reverse(to));
+    }
+
+    @Override
+    public Graph between(Graph from, Graph to) {
+        Objects.requireNonNull(from, "Graph 'from' cannot be null");
+        Objects.requireNonNull(to, "Graph 'to' cannot be null");
+        return forward(from).intersection(reverse(to));
+    }
+
+    @Override
+    public Graph between(NodeSet from, NodeSet to) {
+        Objects.requireNonNull(from, "NodeSet 'from' cannot be null");
+        Objects.requireNonNull(to, "NodeSet 'to' cannot be null");
+        return forward(from).intersection(reverse(to));
+    }
+
+    // =========================================================================
+    // GRAPH INDUCTION
+    // =========================================================================
+
+    @Override
+    public Graph induce(Edge edge) {
+        Objects.requireNonNull(edge, "Edge cannot be null");
+        UniverseEdge ue = validateLineage(edge);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        BitSet newEdges = new BitSet();
+
+        int sourceId = this.universe.edgeSource(ue.id());
+        int targetId = this.universe.edgeTarget(ue.id());
+
+        if (this.activeNodes.get(sourceId) && this.activeNodes.get(targetId)) {
+            newEdges.set(ue.id());
+        }
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph induce(Graph graph) {
+        Objects.requireNonNull(graph, "Graph cannot be null");
+        UniverseGraph other = validateLineage(graph);
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        BitSet newEdges = new BitSet();
+
+        // Fast-path: Directly iterate the other graph's BitSet mask
+        for (int edgeId = other.activeEdges.nextSetBit(0); edgeId >= 0; edgeId = other.activeEdges.nextSetBit(edgeId + 1)) {
+            int sourceId = this.universe.edgeSource(edgeId);
+            int targetId = this.universe.edgeTarget(edgeId);
+
+            if (this.activeNodes.get(sourceId) && this.activeNodes.get(targetId)) {
+                newEdges.set(edgeId);
+            }
+        }
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
+
+    @Override
+    public Graph induce(EdgeSet edges) {
+        Objects.requireNonNull(edges, "EdgeSet cannot be null");
+        BitSet newNodes = (BitSet) this.activeNodes.clone();
+        BitSet newEdges = new BitSet();
+
+        // Slow-path: Iterate the generic EdgeSet interface
+        for (Edge e : edges) {
+            Objects.requireNonNull(e, "Edge cannot be null");
+            if (e instanceof UniverseEdge ue && ue.universe() == this.universe) {
+                int sourceId = this.universe.edgeSource(ue.id());
+                int targetId = this.universe.edgeTarget(ue.id());
+
+                if (this.activeNodes.get(sourceId) && this.activeNodes.get(targetId)) {
+                    newEdges.set(ue.id());
+                }
+            }
+        }
+
+        return new UniverseGraph(this.universe, newNodes, newEdges);
+    }
 }
