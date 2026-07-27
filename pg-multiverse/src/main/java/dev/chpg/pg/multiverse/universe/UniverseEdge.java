@@ -23,8 +23,8 @@ public final class UniverseEdge implements Edge, UniverseView {
     UniverseEdge(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
 
-        if (id < 0) {
-            throw new IllegalArgumentException("UniverseEdge IDs must be positive. Received: " + id);
+        if (id <= 0) {
+            throw new IllegalArgumentException("UniverseEdge IDs must be strictly positive. Received: " + id);
         }
         this.id = id;
     }

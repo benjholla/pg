@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.chpg.pg.multiverse.ephemeral.EphemeralNode;
 import org.junit.jupiter.api.Test;
@@ -28,19 +29,21 @@ public class UniverseNodeTest {
     }
 
     @Test
-    public void testZeroIdAllowed() {
+    public void testZeroIdThrowsException() {
         Universe universe = new Universe();
-        UniverseNode node = new UniverseNode(universe, 0);
-        assertEquals(0, node.id(), "Node should allow ID 0");
-
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new UniverseNode(universe, 0);
+        });
+        assertTrue(exception.getMessage().contains("strictly positive"), "Should validate strictly positive ID");
     }
 
     @Test
     public void testNegativeIdThrowsException() {
         Universe universe = new Universe();
-        UniverseNode node = new UniverseNode(universe, 0);
-        assertEquals(0, node.id(), "Node should allow ID 0");
-
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new UniverseNode(universe, -5);
+        });
+        assertTrue(exception.getMessage().contains("strictly positive"), "Should validate strictly positive ID");
     }
 
     @Test

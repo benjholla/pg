@@ -151,12 +151,12 @@ public class UniverseTest {
     @Test
     public void testToString() {
         Universe universe = new Universe();
-        assertEquals("Universe[id=" + universe.universeId() + ", allocatedNodes=0, allocatedEdges=0]", universe.toString());
+        assertEquals("Universe[id=" + universe.universeId() + ", allocatedNodes=1, allocatedEdges=1]", universe.toString());
 
         universe.idGenerator().createNodeId();
         universe.idGenerator().createNodeId();
         universe.idGenerator().createEdgeId();
 
-        assertEquals("Universe[id=" + universe.universeId() + ", allocatedNodes=2, allocatedEdges=1]", universe.toString());
+        assertEquals("Universe[id=" + universe.universeId() + ", allocatedNodes=3, allocatedEdges=2]", universe.toString());
     }
 }

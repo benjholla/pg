@@ -29,10 +29,12 @@ public class UniverseEdgeTest {
     }
 
     @Test
-    public void testZeroIdAllowed() {
+    public void testZeroIdThrowsException() {
         Universe universe = new Universe();
-        UniverseEdge edge = new UniverseEdge(universe, 0);
-        assertEquals(0, edge.id(), "Edge should allow ID 0");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new UniverseEdge(universe, 0);
+        });
+        assertTrue(exception.getMessage().contains("strictly positive"), "Should validate strictly positive ID");
     }
 
     @Test
@@ -41,7 +43,7 @@ public class UniverseEdgeTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new UniverseEdge(universe, -5);
         });
-        assertTrue(exception.getMessage().contains("positive"), "Should validate positive ID");
+        assertTrue(exception.getMessage().contains("strictly positive"), "Should validate strictly positive ID");
     }
 
     @Test
