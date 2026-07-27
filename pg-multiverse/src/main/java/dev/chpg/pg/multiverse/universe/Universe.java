@@ -1,7 +1,8 @@
 package dev.chpg.pg.multiverse.universe;
 
 import dev.chpg.pg.api.AttributeValue;
-import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.multiverse.MultiverseIdGenerator;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
@@ -211,11 +213,66 @@ public final class Universe {
      * Deep-clones state, translates negative IDs to positive IDs, rewires topology,
      * and permanently invalidates the ephemeral sandbox.
      *
-     * @param ephemeral The sandbox graph to promote and invalidate.
+     * @param ephemeralGraph The sandbox graph to promote and invalidate.
      * @return A read-optimized, BitSet-backed view of the promoted topology.
      */
-    public Graph promote(EphemeralGraph ephemeral) {
-        throw new UnsupportedOperationException("TODO: Implement in Phase 4 (Promotion)");
+    public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
+        Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
+
+        BitSet activeNodes = new BitSet();
+        BitSet activeEdges = new BitSet();
+
+        // Local translation map: Ephemeral ID (Negative) -> Universe ID (Positive)
+        // Scoped entirely to this method, instantly GC'd after promotion completes.
+        Map<Integer, Integer> nodeTranslationMap = new HashMap<>();
+
+        // 1. Bulk Ingest Nodes
+        for (Node node : ephemeralGraph.nodes()) {
+            int newId = this.idGenerator.createNodeId();
+            nodeTranslationMap.put(node.id(), newId);
+            activeNodes.set(newId);
+
+            // Copy tags and attributes directly into the columnar arrays
+            for (String tag : node.tags()) {
+                this.addNodeTag(newId, tag);
+            }
+            for (Map.Entry<String, AttributeValue> entry : node.attributes().entrySet()) {
+                this.setNodeAttribute(newId, entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 2. Bulk Ingest Edges
+        for (Edge edge : ephemeralGraph.edges()) {
+            int newEdgeId = this.idGenerator.createEdgeId();
+            activeEdges.set(newEdgeId);
+
+            // Translate the ephemeral topology endpoints to the newly generated Universe IDs
+            Integer uSourceId = nodeTranslationMap.get(edge.from().id());
+            Integer uTargetId = nodeTranslationMap.get(edge.to().id());
+
+            if (uSourceId == null || uTargetId == null) {
+                throw new IllegalStateException("EphemeralGraph topology invariant violated: Edge references unmapped node.");
+            }
+
+            // Wire the structural matrix
+            this.wireEdge(newEdgeId, uSourceId, uTargetId);
+
+            // Copy tags and attributes
+            for (String tag : edge.tags()) {
+                this.addEdgeTag(newEdgeId, tag);
+            }
+            for (Map.Entry<String, AttributeValue> entry : edge.attributes().entrySet()) {
+                this.setEdgeAttribute(newEdgeId, entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 3. The Burn-the-Boats Invalidation
+        // Invokes the clear() method to drop all EphemeralNode/Edge object references
+        // from the EphemeralGraph's internal HashMaps. They are now completely
+        // orphaned and instantly eligible for Eden-space collection.
+        ephemeralGraph.clear();
+
+        return new UniverseGraph(this, activeNodes, activeEdges);
     }
 
     @Override
