@@ -147,6 +147,10 @@ public final class Universe {
     /**
      * Wires an edge into the structural topology.
      * Called exclusively by the engine when a new edge is allocated.
+     *
+     * @param edgeId the primitive ID of the edge
+     * @param sourceId the source node ID
+     * @param targetId the target node ID
      */
     public void wireEdge(int edgeId, int sourceId, int targetId) {
         ensureTopologyCapacity(Math.max(sourceId, targetId), edgeId);
@@ -162,13 +166,23 @@ public final class Universe {
         incrementModCount();
     }
 
-    /** Returns an exact-sized array of outbound edge IDs for the given node, or null. */
+    /**
+     * Returns an exact-sized array of outbound edge IDs for the given node, or null.
+     *
+     * @param nodeId the node ID
+     * @return an exact-sized array of outbound edge IDs
+     */
     public int[] outboundEdges(int nodeId) {
         if (nodeId >= this.nodeOutEdges.length) { return null; }
         return this.nodeOutEdges[nodeId];
     }
 
-    /** Returns an exact-sized array of inbound edge IDs for the given node, or null. */
+    /**
+     * Returns an exact-sized array of inbound edge IDs for the given node, or null.
+     *
+     * @param nodeId the node ID
+     * @return an exact-sized array of inbound edge IDs
+     */
     public int[] inboundEdges(int nodeId) {
         if (nodeId >= this.nodeInEdges.length) { return null; }
         return this.nodeInEdges[nodeId];
@@ -286,6 +300,12 @@ public final class Universe {
     // NODE TAG ENGINE
     // =========================================================================
 
+    /**
+     * Returns the number of tags on a node.
+     *
+     * @param nodeId the node ID
+     * @return the number of tags
+     */
     public int nodeTagCount(int nodeId) {
         int count = 0;
         for (BitSet bits : columnarNodeTags.values()) {
@@ -294,11 +314,25 @@ public final class Universe {
         return count;
     }
 
+    /**
+     * Checks if a node has a specific tag.
+     *
+     * @param nodeId the node ID
+     * @param tag the tag
+     * @return true if the node has the tag, false otherwise
+     */
     public boolean hasNodeTag(int nodeId, String tag) {
         BitSet bits = columnarNodeTags.get(tag);
         return bits != null && bits.get(nodeId);
     }
 
+    /**
+     * Adds a tag to a node.
+     *
+     * @param nodeId the node ID
+     * @param tag the tag
+     * @return true if the tag was added, false if it already existed
+     */
     public boolean addNodeTag(int nodeId, String tag) {
         BitSet bits = columnarNodeTags.computeIfAbsent(tag, k -> new BitSet());
         if (bits.get(nodeId)) { return false; }
@@ -307,6 +341,13 @@ public final class Universe {
         return true;
     }
 
+    /**
+     * Removes a tag from a node.
+     *
+     * @param nodeId the node ID
+     * @param tag the tag
+     * @return true if the tag was removed, false if it did not exist
+     */
     public boolean removeNodeTag(int nodeId, String tag) {
         BitSet bits = columnarNodeTags.get(tag);
         if (bits == null || !bits.get(nodeId)) { return false; }
@@ -315,6 +356,11 @@ public final class Universe {
         return true;
     }
 
+    /**
+     * Clears all tags from a node.
+     *
+     * @param nodeId the node ID
+     */
     public void clearNodeTags(int nodeId) {
         boolean modified = false;
         for (BitSet bits : columnarNodeTags.values()) {
@@ -326,6 +372,12 @@ public final class Universe {
         if (modified) { incrementModCount(); }
     }
 
+    /**
+     * Returns an iterator over the tags of a node.
+     *
+     * @param nodeId the node ID
+     * @return an iterator over the tags
+     */
     public Iterator<String> nodeTagsIterator(int nodeId) {
         return new Iterator<String>() {
             private final Iterator<Map.Entry<String, BitSet>> internal = columnarNodeTags.entrySet().iterator();
@@ -369,6 +421,12 @@ public final class Universe {
         });
     }
 
+    /**
+     * Returns the number of attributes on a node.
+     *
+     * @param nodeId the node ID
+     * @return the number of attributes
+     */
     public int nodeAttributeCount(int nodeId) {
         int count = 0;
         for (AttributeValue[] arr : columnarNodeAttributes.values()) {
@@ -377,17 +435,39 @@ public final class Universe {
         return count;
     }
 
+    /**
+     * Checks if a node has a specific attribute.
+     *
+     * @param nodeId the node ID
+     * @param key the attribute key
+     * @return true if the node has the attribute, false otherwise
+     */
     public boolean hasNodeAttribute(int nodeId, String key) {
         AttributeValue[] arr = columnarNodeAttributes.get(key);
         return arr != null && nodeId < arr.length && arr[nodeId] != null;
     }
 
+    /**
+     * Gets an attribute from a node.
+     *
+     * @param nodeId the node ID
+     * @param key the attribute key
+     * @return the attribute value, or null if not found
+     */
     public AttributeValue getNodeAttribute(int nodeId, String key) {
         AttributeValue[] arr = columnarNodeAttributes.get(key);
         if (arr == null || nodeId >= arr.length) { return null; }
         return arr[nodeId];
     }
 
+    /**
+     * Sets an attribute on a node.
+     *
+     * @param nodeId the node ID
+     * @param key the attribute key
+     * @param value the attribute value
+     * @return the previous attribute value, or null if it did not exist
+     */
     public AttributeValue setNodeAttribute(int nodeId, String key, AttributeValue value) {
         ensureNodeAttributeCapacity(key, nodeId);
         AttributeValue[] arr = columnarNodeAttributes.get(key);
@@ -397,6 +477,13 @@ public final class Universe {
         return old;
     }
 
+    /**
+     * Removes an attribute from a node.
+     *
+     * @param nodeId the node ID
+     * @param key the attribute key
+     * @return the removed attribute value, or null if it did not exist
+     */
     public AttributeValue removeNodeAttribute(int nodeId, String key) {
         AttributeValue[] arr = columnarNodeAttributes.get(key);
         if (arr == null || nodeId >= arr.length) { return null; }
@@ -408,6 +495,11 @@ public final class Universe {
         return old;
     }
 
+    /**
+     * Clears all attributes from a node.
+     *
+     * @param nodeId the node ID
+     */
     public void clearNodeAttributes(int nodeId) {
         boolean modified = false;
         for (AttributeValue[] arr : columnarNodeAttributes.values()) {
@@ -419,6 +511,12 @@ public final class Universe {
         if (modified) { incrementModCount(); }
     }
 
+    /**
+     * Returns an entry set of the attributes on a node.
+     *
+     * @param nodeId the node ID
+     * @return an entry set of the attributes
+     */
     public Set<Map.Entry<String, AttributeValue>> nodeAttributeEntrySet(int nodeId) {
         return new java.util.AbstractSet<Map.Entry<String, AttributeValue>>() {
             @Override public int size() { return nodeAttributeCount(nodeId); }
@@ -457,6 +555,12 @@ public final class Universe {
     // EDGE TAG ENGINE
     // =========================================================================
 
+    /**
+     * Returns the number of tags on an edge.
+     *
+     * @param edgeId the edge ID
+     * @return the number of tags
+     */
     public int edgeTagCount(int edgeId) {
         int count = 0;
         for (BitSet bits : columnarEdgeTags.values()) {
@@ -465,11 +569,25 @@ public final class Universe {
         return count;
     }
 
+    /**
+     * Checks if an edge has a specific tag.
+     *
+     * @param edgeId the edge ID
+     * @param tag the tag
+     * @return true if the edge has the tag, false otherwise
+     */
     public boolean hasEdgeTag(int edgeId, String tag) {
         BitSet bits = columnarEdgeTags.get(tag);
         return bits != null && bits.get(edgeId);
     }
 
+    /**
+     * Adds a tag to an edge.
+     *
+     * @param edgeId the edge ID
+     * @param tag the tag
+     * @return true if the tag was added, false if it already existed
+     */
     public boolean addEdgeTag(int edgeId, String tag) {
         BitSet bits = columnarEdgeTags.computeIfAbsent(tag, k -> new BitSet());
         if (bits.get(edgeId)) { return false; }
@@ -478,6 +596,13 @@ public final class Universe {
         return true;
     }
 
+    /**
+     * Removes a tag from an edge.
+     *
+     * @param edgeId the edge ID
+     * @param tag the tag
+     * @return true if the tag was removed, false if it did not exist
+     */
     public boolean removeEdgeTag(int edgeId, String tag) {
         BitSet bits = columnarEdgeTags.get(tag);
         if (bits == null || !bits.get(edgeId)) { return false; }
@@ -486,6 +611,11 @@ public final class Universe {
         return true;
     }
 
+    /**
+     * Clears all tags from an edge.
+     *
+     * @param edgeId the edge ID
+     */
     public void clearEdgeTags(int edgeId) {
         boolean modified = false;
         for (BitSet bits : columnarEdgeTags.values()) {
@@ -497,6 +627,12 @@ public final class Universe {
         if (modified) { incrementModCount(); }
     }
 
+    /**
+     * Returns an iterator over the tags of an edge.
+     *
+     * @param edgeId the edge ID
+     * @return an iterator over the tags
+     */
     public Iterator<String> edgeTagsIterator(int edgeId) {
         return new Iterator<String>() {
             private final Iterator<Map.Entry<String, BitSet>> internal = columnarEdgeTags.entrySet().iterator();
@@ -540,6 +676,12 @@ public final class Universe {
         });
     }
 
+    /**
+     * Returns the number of attributes on an edge.
+     *
+     * @param edgeId the edge ID
+     * @return the number of attributes
+     */
     public int edgeAttributeCount(int edgeId) {
         int count = 0;
         for (AttributeValue[] arr : columnarEdgeAttributes.values()) {
@@ -548,17 +690,39 @@ public final class Universe {
         return count;
     }
 
+    /**
+     * Checks if an edge has a specific attribute.
+     *
+     * @param edgeId the edge ID
+     * @param key the attribute key
+     * @return true if the edge has the attribute, false otherwise
+     */
     public boolean hasEdgeAttribute(int edgeId, String key) {
         AttributeValue[] arr = columnarEdgeAttributes.get(key);
         return arr != null && edgeId < arr.length && arr[edgeId] != null;
     }
 
+    /**
+     * Gets an attribute from an edge.
+     *
+     * @param edgeId the edge ID
+     * @param key the attribute key
+     * @return the attribute value, or null if not found
+     */
     public AttributeValue getEdgeAttribute(int edgeId, String key) {
         AttributeValue[] arr = columnarEdgeAttributes.get(key);
         if (arr == null || edgeId >= arr.length) { return null; }
         return arr[edgeId];
     }
 
+    /**
+     * Sets an attribute on an edge.
+     *
+     * @param edgeId the edge ID
+     * @param key the attribute key
+     * @param value the attribute value
+     * @return the previous attribute value, or null if it did not exist
+     */
     public AttributeValue setEdgeAttribute(int edgeId, String key, AttributeValue value) {
         ensureEdgeAttributeCapacity(key, edgeId);
         AttributeValue[] arr = columnarEdgeAttributes.get(key);
@@ -568,6 +732,13 @@ public final class Universe {
         return old;
     }
 
+    /**
+     * Removes an attribute from an edge.
+     *
+     * @param edgeId the edge ID
+     * @param key the attribute key
+     * @return the removed attribute value, or null if it did not exist
+     */
     public AttributeValue removeEdgeAttribute(int edgeId, String key) {
         AttributeValue[] arr = columnarEdgeAttributes.get(key);
         if (arr == null || edgeId >= arr.length) { return null; }
@@ -579,6 +750,11 @@ public final class Universe {
         return old;
     }
 
+    /**
+     * Clears all attributes from an edge.
+     *
+     * @param edgeId the edge ID
+     */
     public void clearEdgeAttributes(int edgeId) {
         boolean modified = false;
         for (AttributeValue[] arr : columnarEdgeAttributes.values()) {
@@ -590,6 +766,12 @@ public final class Universe {
         if (modified) { incrementModCount(); }
     }
 
+    /**
+     * Returns an entry set of the attributes on an edge.
+     *
+     * @param edgeId the edge ID
+     * @return an entry set of the attributes
+     */
     public Set<Map.Entry<String, AttributeValue>> edgeAttributeEntrySet(int edgeId) {
         return new java.util.AbstractSet<Map.Entry<String, AttributeValue>>() {
             @Override public int size() { return edgeAttributeCount(edgeId); }
