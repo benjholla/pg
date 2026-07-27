@@ -37,6 +37,13 @@ public final class Universe {
     private int[] edgeTargets = new int[INITIAL_CAPACITY];
 
     // =========================================================================
+    // ADJACENCY MATRICES (STRUCTURAL COLUMNAR STORAGE)
+    // =========================================================================
+    // Node ID -> Array of Edge IDs
+    private int[][] nodeOutEdges = new int[INITIAL_CAPACITY][];
+    private int[][] nodeInEdges = new int[INITIAL_CAPACITY][];
+
+    // =========================================================================
     // PROPERTY COLUMNAR STORAGE
     // =========================================================================
     private final Map<String, BitSet> columnarNodeTags = new ConcurrentHashMap<>();
@@ -104,6 +111,65 @@ public final class Universe {
      */
     public long incrementModCount() {
         return this.idGenerator.incrementAndGetModCount();
+    }
+
+    // =========================================================================
+    // STRUCTURAL TOPOLOGY ENGINE
+    // =========================================================================
+
+    private void ensureTopologyCapacity(int nodeId, int edgeId) {
+        // Resize edge definition arrays
+        if (edgeId >= edgeSources.length) {
+            int newCap = Math.max(edgeSources.length * 2, edgeId + 1);
+            edgeSources = Arrays.copyOf(edgeSources, newCap);
+            edgeTargets = Arrays.copyOf(edgeTargets, newCap);
+        }
+        // Resize adjacency matrix outer arrays
+        if (nodeId >= nodeOutEdges.length) {
+            int newCap = Math.max(nodeOutEdges.length * 2, nodeId + 1);
+            nodeOutEdges = Arrays.copyOf(nodeOutEdges, newCap);
+            nodeInEdges = Arrays.copyOf(nodeInEdges, newCap);
+        }
+    }
+
+    private int[] appendEdgeId(int[] currentArray, int edgeId) {
+        if (currentArray == null) {
+            return new int[]{edgeId};
+        }
+        int len = currentArray.length;
+        int[] newArray = Arrays.copyOf(currentArray, len + 1);
+        newArray[len] = edgeId;
+        return newArray;
+    }
+
+    /**
+     * Wires an edge into the structural topology.
+     * Called exclusively by the engine when a new edge is allocated.
+     */
+    public void wireEdge(int edgeId, int sourceId, int targetId) {
+        ensureTopologyCapacity(Math.max(sourceId, targetId), edgeId);
+
+        // 1. Define the edge endpoints
+        this.edgeSources[edgeId] = sourceId;
+        this.edgeTargets[edgeId] = targetId;
+
+        // 2. Wire the Adjacency Matrices
+        this.nodeOutEdges[sourceId] = appendEdgeId(this.nodeOutEdges[sourceId], edgeId);
+        this.nodeInEdges[targetId] = appendEdgeId(this.nodeInEdges[targetId], edgeId);
+
+        incrementModCount();
+    }
+
+    /** Returns an exact-sized array of outbound edge IDs for the given node, or null. */
+    public int[] outboundEdges(int nodeId) {
+        if (nodeId >= this.nodeOutEdges.length) { return null; }
+        return this.nodeOutEdges[nodeId];
+    }
+
+    /** Returns an exact-sized array of inbound edge IDs for the given node, or null. */
+    public int[] inboundEdges(int nodeId) {
+        if (nodeId >= this.nodeInEdges.length) { return null; }
+        return this.nodeInEdges[nodeId];
     }
 
     // =========================================================================
