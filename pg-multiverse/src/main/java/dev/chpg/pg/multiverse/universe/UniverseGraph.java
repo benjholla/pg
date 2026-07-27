@@ -445,13 +445,156 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     // =========================================================================
+    // EDGE FILTERING & NODE TOPOLOGY
+    // =========================================================================
+
+    @Override
+    public EdgeSet edges(Node node, NodeDirection direction) {
+        UniverseNode un = validateLineage(node);
+        BitSet result = new BitSet();
+
+        if (!this.activeNodes.get(un.id())) {
+            return new UniverseEdgeSet(this.universe, result); // Return empty set
+        }
+
+        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+            int[] out = this.universe.outboundEdges(un.id());
+            if (out != null) {
+                for (int edgeId : out) {
+                    if (this.activeEdges.get(edgeId)) { result.set(edgeId); }
+                }
+            }
+        }
+
+        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+            int[] in = this.universe.inboundEdges(un.id());
+            if (in != null) {
+                for (int edgeId : in) {
+                    if (this.activeEdges.get(edgeId)) { result.set(edgeId); }
+                }
+            }
+        }
+
+        return new UniverseEdgeSet(this.universe, result);
+    }
+
+    private boolean hasActiveEdge(int[] universeEdges) {
+        if (universeEdges == null) { return false; }
+        for (int edgeId : universeEdges) {
+            if (this.activeEdges.get(edgeId)) { return true; }
+        }
+        return false;
+    }
+
+    @Override
+    public NodeSet leaves() {
+        BitSet result = new BitSet();
+        // A leaf is an active node with NO active outbound edges
+        for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+            if (!hasActiveEdge(this.universe.outboundEdges(nodeId))) {
+                result.set(nodeId);
+            }
+        }
+        return new UniverseNodeSet(this.universe, result);
+    }
+
+    @Override
+    public NodeSet roots() {
+        BitSet result = new BitSet();
+        // A root is an active node with NO active inbound edges
+        for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+            if (!hasActiveEdge(this.universe.inboundEdges(nodeId))) {
+                result.set(nodeId);
+            }
+        }
+        return new UniverseNodeSet(this.universe, result);
+    }
+
+    @Override
+    public NodeSet isolated() {
+        BitSet result = new BitSet();
+        // An isolated node has NO active inbound AND NO active outbound edges
+        for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+            boolean hasIn = hasActiveEdge(this.universe.inboundEdges(nodeId));
+            boolean hasOut = hasActiveEdge(this.universe.outboundEdges(nodeId));
+
+            if (!hasIn && !hasOut) {
+                result.set(nodeId);
+            }
+        }
+        return new UniverseNodeSet(this.universe, result);
+    }
+
+    @Override
+    public boolean adjacent(Node source, Node target) {
+        UniverseNode uSource = validateLineage(source);
+        UniverseNode uTarget = validateLineage(target);
+
+        if (!this.activeNodes.get(uSource.id()) || !this.activeNodes.get(uTarget.id())) {
+            return false;
+        }
+
+        int[] out = this.universe.outboundEdges(uSource.id());
+        if (out == null) { return false; }
+
+        for (int edgeId : out) {
+            // Check if the edge is active in this viewport, AND its target matches
+            if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public EdgeSet edges(Node source, Node target) {
+        UniverseNode uSource = validateLineage(source);
+        UniverseNode uTarget = validateLineage(target);
+        BitSet result = new BitSet();
+
+        if (!this.activeNodes.get(uSource.id()) || !this.activeNodes.get(uTarget.id())) {
+            return new UniverseEdgeSet(this.universe, result);
+        }
+
+        int[] out = this.universe.outboundEdges(uSource.id());
+        if (out != null) {
+            for (int edgeId : out) {
+                if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
+                    result.set(edgeId);
+                }
+            }
+        }
+        return new UniverseEdgeSet(this.universe, result);
+    }
+
+    private int countActiveEdges(int[] universeEdges) {
+        if (universeEdges == null) { return 0; }
+        int count = 0;
+        for (int edgeId : universeEdges) {
+            if (this.activeEdges.get(edgeId)) { count++; }
+        }
+        return count;
+    }
+
+    @Override
+    public int degree(Node node, NodeDirection direction) {
+        UniverseNode un = validateLineage(node);
+        if (!this.activeNodes.get(un.id())) { return 0; }
+
+        int count = 0;
+        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+            count += countActiveEdges(this.universe.outboundEdges(un.id()));
+        }
+        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+            count += countActiveEdges(this.universe.inboundEdges(un.id()));
+        }
+        return count;
+    }
+
+    // =========================================================================
     // STUBBED: TRAVERSALS
     // =========================================================================
 
-    @Override public EdgeSet edges(Node node, NodeDirection direction) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet leaves() { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet roots() { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public NodeSet isolated() { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public NodeSet predecessors(Node origin) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public NodeSet predecessors(Graph origin) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public NodeSet predecessors(NodeSet origin) { throw new UnsupportedOperationException("Not yet implemented"); }
@@ -479,7 +622,4 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override public Graph induce(Edge edge) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph induce(Graph graph) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override public Graph induce(EdgeSet edges) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public boolean adjacent(Node source, Node target) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public EdgeSet edges(Node source, Node target) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override public int degree(Node node, NodeDirection direction) { throw new UnsupportedOperationException("Not yet implemented"); }
 }
