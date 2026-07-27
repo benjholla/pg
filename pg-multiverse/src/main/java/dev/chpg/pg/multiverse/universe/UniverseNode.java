@@ -84,13 +84,11 @@ public final class UniverseNode implements Node, UniverseView {
 
     @Override
     public TagSet tags() {
-        // TODO: Phase 5 - Return new UniverseTagProxy(this.universe, this.id);
-        throw new UnsupportedOperationException("Columnar properties not yet implemented in Phase 2.");
+        return new UniverseNodeTagProxy(this.universe, this.id);
     }
 
     @Override
     public AttributeMap attributes() {
-        // TODO: Phase 5 - Return new UniverseAttributeProxy(this.universe, this.id);
-        throw new UnsupportedOperationException("Columnar properties not yet implemented in Phase 2.");
+        return new UniverseNodeAttributeProxy(this.universe, this.id);
     }
 }
