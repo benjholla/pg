@@ -528,7 +528,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public NodeSet predecessors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return predecessors(new EphemeralNodeSet(origin));
+        return predecessors(singleton(origin));
     }
 
     @Override
@@ -554,7 +554,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public NodeSet successors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return successors(new EphemeralNodeSet(origin));
+        return successors(singleton(origin));
     }
 
     @Override
@@ -580,7 +580,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph forwardStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forwardStep(new EphemeralNodeSet(origin));
+        return forwardStep(singleton(origin));
     }
 
     @Override
@@ -609,7 +609,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph reverseStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverseStep(new EphemeralNodeSet(origin));
+        return reverseStep(singleton(origin));
     }
 
     @Override
@@ -648,27 +648,24 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     }
 
 
-    private int topologicalVolume() {
-        return this.nodes().size() + this.edges().size();
+    private Optional<Integer> topologicalVolume(Graph g) {
+        if (g.nodes().isSizeKnown() && g.edges().isSizeKnown()) {
+            return Optional.of(g.nodes().size() + g.edges().size());
+        }
+        return Optional.empty();
     }
 
-    private int topologicalVolume(Graph g) {
-        return g.nodes().size() + g.edges().size();
-    }
-
-    private boolean isSizeKnown(Graph g) {
-        return g.nodes().isSizeKnown() && g.edges().isSizeKnown();
-    }
     @Override
     public Graph union(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
 
-        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
-            if (this.topologicalVolume() < this.topologicalVolume(graph)) {
-                return graph.union(this);
-            }
+        Optional<Integer> thisVol = topologicalVolume(this);
+        Optional<Integer> otherVol = topologicalVolume(graph);
+        if (thisVol.isPresent() && otherVol.isPresent() && thisVol.get() < otherVol.get()) {
+            return graph.union(this);
         }
+
         Graph union = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
@@ -737,11 +734,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
 
-        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
-            if (this.topologicalVolume() > this.topologicalVolume(graph)) {
-                return graph.intersection(this);
-            }
+        Optional<Integer> thisVol = topologicalVolume(this);
+        Optional<Integer> otherVol = topologicalVolume(graph);
+        if (thisVol.isPresent() && otherVol.isPresent() && thisVol.get() > otherVol.get()) {
+            return graph.intersection(this);
         }
+
         Graph intersection = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
         if(intersection.nodes().isEmpty()) {
             return intersection;
@@ -755,7 +753,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph betweenStep(Node from, Node to){
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
-        return betweenStep(new EphemeralNodeSet(from), new EphemeralNodeSet(to));
+        return betweenStep(singleton(from), singleton(to));
     }
 
     @Override
@@ -788,7 +786,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     public Graph between(Node from, Node to) {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
-        return between(new EphemeralNodeSet(from), new EphemeralNodeSet(to));
+        return between(singleton(from), singleton(to));
     }
 
     @Override
@@ -820,7 +818,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph forward(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forward(new EphemeralNodeSet(origin));
+        return forward(singleton(origin));
     }
 
     @Override
@@ -853,7 +851,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph reverse(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverse(new EphemeralNodeSet(origin));
+        return reverse(singleton(origin));
     }
 
     @Override
@@ -886,7 +884,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph induce(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return induce(new EphemeralEdgeSet(edge));
+        return induce(singleton(edge));
     }
 
     @Override

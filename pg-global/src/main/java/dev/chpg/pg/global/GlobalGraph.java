@@ -499,7 +499,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public NodeSet predecessors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return predecessors(new GlobalNodeSet(origin));
+        return predecessors(singleton(origin));
     }
 
     @Override
@@ -525,7 +525,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public NodeSet successors(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return successors(new GlobalNodeSet(origin));
+        return successors(singleton(origin));
     }
 
     @Override
@@ -551,7 +551,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forwardStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forwardStep(new GlobalNodeSet(origin));
+        return forwardStep(singleton(origin));
     }
 
     @Override
@@ -579,7 +579,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverseStep(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverseStep(new GlobalNodeSet(origin));
+        return reverseStep(singleton(origin));
     }
 
     @Override
@@ -617,26 +617,23 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
 
-    private int topologicalVolume() {
-        return this.nodes().size() + this.edges().size();
+    private Optional<Integer> topologicalVolume(Graph g) {
+        if (g.nodes().isSizeKnown() && g.edges().isSizeKnown()) {
+            return Optional.of(g.nodes().size() + g.edges().size());
+        }
+        return Optional.empty();
     }
 
-    private int topologicalVolume(Graph g) {
-        return g.nodes().size() + g.edges().size();
-    }
-
-    private boolean isSizeKnown(Graph g) {
-        return g.nodes().isSizeKnown() && g.edges().isSizeKnown();
-    }
     @Override
     public Graph union(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
 
-        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
-            if (this.topologicalVolume() < this.topologicalVolume(graph)) {
-                return graph.union(this);
-            }
+        Optional<Integer> thisVol = topologicalVolume(this);
+        Optional<Integer> otherVol = topologicalVolume(graph);
+        if (thisVol.isPresent() && otherVol.isPresent() && thisVol.get() < otherVol.get()) {
+            return graph.union(this);
         }
+
         Graph union = new GlobalGraph(this.nodes(), this.edges());
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
@@ -702,11 +699,12 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph intersection(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
 
-        if (this.isSizeKnown(this) && this.isSizeKnown(graph)) {
-            if (this.topologicalVolume() > this.topologicalVolume(graph)) {
-                return graph.intersection(this);
-            }
+        Optional<Integer> thisVol = topologicalVolume(this);
+        Optional<Integer> otherVol = topologicalVolume(graph);
+        if (thisVol.isPresent() && otherVol.isPresent() && thisVol.get() > otherVol.get()) {
+            return graph.intersection(this);
         }
+
         Graph intersection = new GlobalGraph(this.nodes(), this.edges());
         if(intersection.nodes().isEmpty()) {
             return intersection;
@@ -720,7 +718,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph betweenStep(Node from, Node to){
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
-        return betweenStep(new GlobalNodeSet(from), new GlobalNodeSet(to));
+        return betweenStep(singleton(from), singleton(to));
     }
 
     @Override
@@ -752,7 +750,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph between(Node from, Node to) {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
-        return between(new GlobalNodeSet(from), new GlobalNodeSet(to));
+        return between(singleton(from), singleton(to));
     }
 
     @Override
@@ -783,7 +781,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forward(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forward(new GlobalNodeSet(origin));
+        return forward(singleton(origin));
     }
 
     @Override
@@ -815,7 +813,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverse(Node origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverse(new GlobalNodeSet(origin));
+        return reverse(singleton(origin));
     }
 
     @Override
@@ -847,7 +845,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph induce(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return induce(new GlobalEdgeSet(edge));
+        return induce(singleton(edge));
     }
 
     @Override
