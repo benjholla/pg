@@ -98,11 +98,9 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     public NodeSet union(Collection<? extends Node> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralNodeSet result = new EphemeralNodeSet(); result.addAll(nodes.values());
-        if (true) {
-            for (Node n : other) {
-                if (n instanceof EphemeralNode) {
-                    result.add(n);
-                }
+        for (Node n : other) {
+            if (n instanceof EphemeralNode) {
+                result.add(n);
             }
         }
         return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
