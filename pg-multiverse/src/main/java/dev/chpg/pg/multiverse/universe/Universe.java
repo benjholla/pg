@@ -380,8 +380,15 @@ public final class Universe {
      */
     public Iterator<String> nodeTagsIterator(int nodeId) {
         return new Iterator<String>() {
+            private final long expectedModCount = modCount();
             private final Iterator<Map.Entry<String, BitSet>> internal = columnarNodeTags.entrySet().iterator();
             private String nextTag = null;
+
+            private void checkForComodification() {
+                if (modCount() != expectedModCount) {
+                    throw new java.util.ConcurrentModificationException("Universe engine was modified during node tags iteration.");
+                }
+            }
 
             private void advance() {
                 while (nextTag == null && internal.hasNext()) {
@@ -393,11 +400,13 @@ public final class Universe {
             }
 
             @Override public boolean hasNext() {
+                checkForComodification();
                 if (nextTag == null) { advance(); }
                 return nextTag != null;
             }
 
             @Override public String next() {
+                checkForComodification();
                 if (!hasNext()) { throw new NoSuchElementException(); }
                 String res = nextTag;
                 nextTag = null;
@@ -522,8 +531,15 @@ public final class Universe {
             @Override public int size() { return nodeAttributeCount(nodeId); }
             @Override public Iterator<Map.Entry<String, AttributeValue>> iterator() {
                 return new Iterator<Map.Entry<String, AttributeValue>>() {
+                    private final long expectedModCount = modCount();
                     private final Iterator<Map.Entry<String, AttributeValue[]>> internal = columnarNodeAttributes.entrySet().iterator();
                     private Map.Entry<String, AttributeValue> nextEntry = null;
+
+                    private void checkForComodification() {
+                        if (modCount() != expectedModCount) {
+                            throw new java.util.ConcurrentModificationException("Universe engine was modified during node attributes iteration.");
+                        }
+                    }
 
                     private void advance() {
                         while (nextEntry == null && internal.hasNext()) {
@@ -536,11 +552,13 @@ public final class Universe {
                     }
 
                     @Override public boolean hasNext() {
+                        checkForComodification();
                         if (nextEntry == null) { advance(); }
                         return nextEntry != null;
                     }
 
                     @Override public Map.Entry<String, AttributeValue> next() {
+                        checkForComodification();
                         if (!hasNext()) { throw new NoSuchElementException(); }
                         Map.Entry<String, AttributeValue> res = nextEntry;
                         nextEntry = null;
@@ -635,8 +653,15 @@ public final class Universe {
      */
     public Iterator<String> edgeTagsIterator(int edgeId) {
         return new Iterator<String>() {
+            private final long expectedModCount = modCount();
             private final Iterator<Map.Entry<String, BitSet>> internal = columnarEdgeTags.entrySet().iterator();
             private String nextTag = null;
+
+            private void checkForComodification() {
+                if (modCount() != expectedModCount) {
+                    throw new java.util.ConcurrentModificationException("Universe engine was modified during edge tags iteration.");
+                }
+            }
 
             private void advance() {
                 while (nextTag == null && internal.hasNext()) {
@@ -648,11 +673,13 @@ public final class Universe {
             }
 
             @Override public boolean hasNext() {
+                checkForComodification();
                 if (nextTag == null) { advance(); }
                 return nextTag != null;
             }
 
             @Override public String next() {
+                checkForComodification();
                 if (!hasNext()) { throw new NoSuchElementException(); }
                 String res = nextTag;
                 nextTag = null;
@@ -777,8 +804,15 @@ public final class Universe {
             @Override public int size() { return edgeAttributeCount(edgeId); }
             @Override public Iterator<Map.Entry<String, AttributeValue>> iterator() {
                 return new Iterator<Map.Entry<String, AttributeValue>>() {
+                    private final long expectedModCount = modCount();
                     private final Iterator<Map.Entry<String, AttributeValue[]>> internal = columnarEdgeAttributes.entrySet().iterator();
                     private Map.Entry<String, AttributeValue> nextEntry = null;
+
+                    private void checkForComodification() {
+                        if (modCount() != expectedModCount) {
+                            throw new java.util.ConcurrentModificationException("Universe engine was modified during edge attributes iteration.");
+                        }
+                    }
 
                     private void advance() {
                         while (nextEntry == null && internal.hasNext()) {
@@ -791,11 +825,13 @@ public final class Universe {
                     }
 
                     @Override public boolean hasNext() {
+                        checkForComodification();
                         if (nextEntry == null) { advance(); }
                         return nextEntry != null;
                     }
 
                     @Override public Map.Entry<String, AttributeValue> next() {
+                        checkForComodification();
                         if (!hasNext()) { throw new NoSuchElementException(); }
                         Map.Entry<String, AttributeValue> res = nextEntry;
                         nextEntry = null;

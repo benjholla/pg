@@ -94,8 +94,17 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        long expectedModCount = this.universe.modCount();
         for (Object e : c) {
-            if (!contains(e)) { return false; }
+            if (!contains(e)) {
+                if (this.universe.modCount() != expectedModCount) {
+                    throw new java.util.ConcurrentModificationException("Universe engine was modified during bulk operation.");
+                }
+                return false;
+            }
+        }
+        if (this.universe.modCount() != expectedModCount) {
+            throw new java.util.ConcurrentModificationException("Universe engine was modified during bulk operation.");
         }
         return true;
     }
@@ -165,9 +174,48 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public Iterator<Edge> iterator() {
-        return this.activeBits.stream()
-                .mapToObj(id -> (Edge) new UniverseEdge(this.universe, id))
-                .iterator();
+        return new Iterator<>() {
+            // 1. Capture the timeline
+            private final long expectedModCount = universe.modCount();
+            // 2. Initialize the L1-cached hardware scan
+            private int cursor = activeBits.nextSetBit(0);
+
+            private void checkForComodification() {
+                if (universe.modCount() != expectedModCount) {
+                    throw new java.util.ConcurrentModificationException(
+                        "Universe engine was modified during EdgeSet iteration."
+                    );
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                checkForComodification();
+                return cursor >= 0;
+            }
+
+            @Override
+            public Edge next() {
+                checkForComodification();
+                if (cursor < 0) {
+                    throw new java.util.NoSuchElementException();
+                }
+
+                // Capture the current valid ID
+                int currentId = cursor;
+
+                // Advance the bitset cursor to the next active ID
+                cursor = activeBits.nextSetBit(currentId + 1);
+
+                // Spawn the ephemeral flyweight
+                return new UniverseEdge(universe, currentId);
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Universe views are strictly read-only.");
+            }
+        };
     }
 
     public Stream<Edge> stream() {
@@ -180,7 +228,40 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
         return new AbstractSet<Integer>() {
             @Override
             public Iterator<Integer> iterator() {
-                return activeBits.stream().iterator();
+                return new Iterator<Integer>() {
+                    private final long expectedModCount = universe.modCount();
+                    private int cursor = activeBits.nextSetBit(0);
+
+                    private void checkForComodification() {
+                        if (universe.modCount() != expectedModCount) {
+                            throw new java.util.ConcurrentModificationException(
+                                "Universe engine was modified during ID set iteration."
+                            );
+                        }
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        checkForComodification();
+                        return cursor >= 0;
+                    }
+
+                    @Override
+                    public Integer next() {
+                        checkForComodification();
+                        if (cursor < 0) {
+                            throw new java.util.NoSuchElementException();
+                        }
+                        int currentId = cursor;
+                        cursor = activeBits.nextSetBit(currentId + 1);
+                        return currentId;
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException("Universe views are strictly read-only.");
+                    }
+                };
             }
             @Override
             public int size() {
@@ -196,17 +277,38 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
 
     @Override
     public int[] toIdArray() {
-        return this.activeBits.stream().toArray();
+        long expectedModCount = this.universe.modCount();
+        int size = size();
+        int[] result = new int[size];
+        int i = 0;
+        for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
+            result[i++] = id;
+        }
+        if (this.universe.modCount() != expectedModCount) {
+            throw new java.util.ConcurrentModificationException("Universe engine was modified during bulk operation.");
+        }
+        return result;
     }
 
     @Override
     public Object[] toArray() {
-        return this.stream().toArray();
+        long expectedModCount = this.universe.modCount();
+        int size = size();
+        Object[] result = new Object[size];
+        int i = 0;
+        for (int id = this.activeBits.nextSetBit(0); id >= 0; id = this.activeBits.nextSetBit(id + 1)) {
+            result[i++] = new UniverseEdge(this.universe, id);
+        }
+        if (this.universe.modCount() != expectedModCount) {
+            throw new java.util.ConcurrentModificationException("Universe engine was modified during bulk operation.");
+        }
+        return result;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
+        long expectedModCount = this.universe.modCount();
         int size = size();
         T[] result = a.length >= size ? a : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         int i = 0;
@@ -214,6 +316,9 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
             result[i++] = (T) new UniverseEdge(this.universe, id);
         }
         if (result.length > size) { result[size] = null; }
+        if (this.universe.modCount() != expectedModCount) {
+            throw new java.util.ConcurrentModificationException("Universe engine was modified during bulk operation.");
+        }
         return result;
     }
 

@@ -1,0 +1,227 @@
+--- pg-multiverse/src/main/java/dev/chpg/pg/multiverse/universe/UniverseGraph.java
++++ pg-multiverse/src/main/java/dev/chpg/pg/multiverse/universe/UniverseGraph.java
+@@ -402,6 +402,7 @@
+     @Override
+     public EdgeSet edges(Node node, NodeDirection direction) {
+         UniverseNode un = validateLineage(node);
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+
+         if (!this.activeNodes.get(un.id())) {
+@@ -423,6 +424,7 @@
+             }
+         }
+
++        checkTopologyState(expectedModCount);
+         return new UniverseEdgeSet(this.universe, result);
+     }
+
+@@ -438,12 +440,14 @@
+     @Override
+     public NodeSet leaves() {
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+         // A leaf is an active node with NO active outbound edges
+         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+             if (!hasActiveEdge(this.universe.outboundEdges(nodeId))) {
+                 result.set(nodeId);
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseNodeSet(this.universe, result);
+     }
+
+@@ -451,12 +455,14 @@
+     public NodeSet roots() {
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+         // A root is an active node with NO active inbound edges
+         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+             if (!hasActiveEdge(this.universe.inboundEdges(nodeId))) {
+                 result.set(nodeId);
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseNodeSet(this.universe, result);
+     }
+
+@@ -464,6 +470,7 @@
+     public NodeSet isolated() {
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+         // An isolated node has NO active inbound AND NO active outbound edges
+         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
+             boolean hasIn = hasActiveEdge(this.universe.inboundEdges(nodeId));
+             boolean hasOut = hasActiveEdge(this.universe.outboundEdges(nodeId));
+
+             if (!hasIn && !hasOut) {
+                 result.set(nodeId);
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseNodeSet(this.universe, result);
+     }
+
+@@ -477,6 +484,7 @@
+         UniverseNode uTarget = validateLineage(target);
+
+         if (!this.activeNodes.get(uSource.id()) || !this.activeNodes.get(uTarget.id())) {
+             return false;
+         }
+
++        long expectedModCount = this.universe.modCount();
+         int[] out = this.universe.outboundEdges(uSource.id());
+         if (out == null) { return false; }
+
+         for (int edgeId : out) {
+             // Check if the edge is active in this viewport, AND its target matches
+             if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
++                checkTopologyState(expectedModCount);
+                 return true;
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return false;
+     }
+
+@@ -488,6 +496,7 @@
+         UniverseNode uTarget = validateLineage(target);
+         BitSet result = new BitSet();
+
+         if (!this.activeNodes.get(uSource.id()) || !this.activeNodes.get(uTarget.id())) {
+             return new UniverseEdgeSet(this.universe, result);
+         }
+
++        long expectedModCount = this.universe.modCount();
+         int[] out = this.universe.outboundEdges(uSource.id());
+         if (out != null) {
+             for (int edgeId : out) {
+                 if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
+                     result.set(edgeId);
+                 }
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseEdgeSet(this.universe, result);
+     }
+
+@@ -510,6 +519,7 @@
+     public int degree(Node node, NodeDirection direction) {
+         UniverseNode un = validateLineage(node);
+         if (!this.activeNodes.get(un.id())) { return 0; }
+
++        long expectedModCount = this.universe.modCount();
+         int count = 0;
+         if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+             count += countActiveEdges(this.universe.outboundEdges(un.id()));
+@@ -518,6 +528,7 @@
+         if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+             count += countActiveEdges(this.universe.inboundEdges(un.id()));
+         }
++        checkTopologyState(expectedModCount);
+         return count;
+     }
+
+@@ -536,6 +547,7 @@
+     @Override
+     public NodeSet predecessors(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+         for (Node n : origin) {
+             Objects.requireNonNull(n, "Node cannot be null");
+@@ -555,6 +567,7 @@
+                 }
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseNodeSet(this.universe, result);
+     }
+
+@@ -573,6 +586,7 @@
+     @Override
+     public NodeSet successors(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet result = new BitSet();
+         for (Node n : origin) {
+             Objects.requireNonNull(n, "Node cannot be null");
+@@ -592,6 +606,7 @@
+                 }
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseNodeSet(this.universe, result);
+     }
+
+@@ -624,6 +639,7 @@
+     @Override
+     public Graph forwardStep(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet newNodes = new BitSet();
+         BitSet newEdges = new BitSet();
+
+@@ -645,6 +661,7 @@
+                 }
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseGraph(this.universe, newNodes, newEdges);
+     }
+
+@@ -664,6 +681,7 @@
+     @Override
+     public Graph reverseStep(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet newNodes = new BitSet();
+         BitSet newEdges = new BitSet();
+
+@@ -685,6 +703,7 @@
+                 }
+             }
+         }
++        checkTopologyState(expectedModCount);
+         return new UniverseGraph(this.universe, newNodes, newEdges);
+     }
+
+@@ -724,6 +743,7 @@
+     @Override
+     public Graph forward(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet visitedNodes = new BitSet();
+         BitSet visitedEdges = new BitSet();
+         BitSet frontier = new BitSet();
+@@ -756,8 +776,10 @@
+                     }
+                 }
+             }
++            checkTopologyState(expectedModCount);
+             frontier = nextFrontier;
+         }
+
++        checkTopologyState(expectedModCount);
+         return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
+     }
+
+@@ -775,6 +797,7 @@
+     @Override
+     public Graph reverse(NodeSet origin) {
+         Objects.requireNonNull(origin, "NodeSet cannot be null");
++        long expectedModCount = this.universe.modCount();
+         BitSet visitedNodes = new BitSet();
+         BitSet visitedEdges = new BitSet();
+         BitSet frontier = new BitSet();
+@@ -807,8 +830,10 @@
+                     }
+                 }
+             }
++            checkTopologyState(expectedModCount);
+             frontier = nextFrontier;
+         }
+
++        checkTopologyState(expectedModCount);
+         return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
+     }
