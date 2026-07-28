@@ -164,16 +164,89 @@ public class UniverseGraphTest {
 
     @Test
     public void testDifference() {
-        // Based on EphemeralGraphTest's testDifference
-        Graph diffNodes = graph.difference(a);
+        Graph empty = graph.difference(graph);
+        Graph sub = empty.union(a).union(b).union(c);
+        sub = sub.union(ab).union(bc);
 
-        assertEquals(6, diffNodes.nodes().size()); // 7 - 1 (a)
-        assertFalse(diffNodes.nodes().contains(a));
+        Graph diffNodes = sub.difference(a);
+        assertEquals(2, diffNodes.nodes().size());
         assertTrue(diffNodes.nodes().contains(b));
+        assertTrue(diffNodes.nodes().contains(c));
+        assertEquals(1, diffNodes.edges().size());
+        assertTrue(diffNodes.edges().contains(bc)); // ab removed because a is removed
 
-        assertEquals(5, diffNodes.edges().size()); // 6 - 1 (ab)
-        assertFalse(diffNodes.edges().contains(ab)); // ab removed because a is removed
-        assertTrue(diffNodes.edges().contains(bc));
+        Graph diffEdges = sub.difference(bc);
+        assertEquals(1, diffEdges.nodes().size());
+        assertTrue(diffEdges.nodes().contains(a));
+        assertEquals(0, diffEdges.edges().size());
+
+        Graph g2 = empty.union(c);
+        Graph diffGraph = sub.difference(g2);
+        assertEquals(2, diffGraph.nodes().size());
+        assertTrue(diffGraph.nodes().contains(a));
+        assertTrue(diffGraph.nodes().contains(b));
+        assertEquals(1, diffGraph.edges().size());
+        assertTrue(diffGraph.edges().contains(ab));
+    }
+
+    @Test
+    public void testUnion() {
+        Graph empty = graph.difference(graph);
+        Graph g1 = empty.union(a).union(b);
+        Graph g2 = empty.union(c).union(d);
+
+        Graph union = g1.union(g2);
+        assertEquals(4, union.nodes().size());
+
+        Graph unionNodes = g1.union(e).union(f);
+        assertEquals(4, unionNodes.nodes().size());
+
+        Graph unionEdges = g1.union(cd);
+        assertEquals(4, unionEdges.nodes().size());
+        assertEquals(1, unionEdges.edges().size());
+    }
+
+    @Test
+    public void testDifferenceEdges() {
+        Graph empty = graph.difference(graph);
+        Graph sub = empty.union(a).union(b).union(c);
+        sub = sub.union(ab).union(bc);
+
+        Graph diffE = sub.differenceEdges(ab);
+        assertEquals(3, diffE.nodes().size()); // nodes not removed
+        assertEquals(1, diffE.edges().size());
+        assertTrue(diffE.edges().contains(bc));
+
+        Graph g2 = empty.union(bc);
+        Graph diffG = sub.differenceEdges(g2);
+        assertEquals(3, diffG.nodes().size());
+        assertEquals(1, diffG.edges().size());
+        assertTrue(diffG.edges().contains(ab));
+    }
+
+    @Test
+    public void testIntersection() {
+        Graph empty = graph.difference(graph);
+        Graph g1 = empty.union(a).union(b).union(c);
+        g1 = g1.union(ab).union(bc);
+
+        Graph g2 = empty.union(b).union(c).union(d);
+        g2 = g2.union(bc).union(cd);
+
+        Graph intersect = g1.intersection(g2);
+        assertEquals(2, intersect.nodes().size());
+        assertTrue(intersect.nodes().contains(b));
+        assertTrue(intersect.nodes().contains(c));
+
+        assertEquals(1, intersect.edges().size());
+        assertTrue(intersect.edges().contains(bc));
+
+        Graph intersectNodes = g1.intersection(empty.union(b).union(c));
+        assertEquals(2, intersectNodes.nodes().size());
+
+        Graph intersectEdges = g1.intersection(bc);
+        assertEquals(2, intersectEdges.nodes().size());
+        assertEquals(1, intersectEdges.edges().size());
     }
 
     @Test
