@@ -257,6 +257,14 @@ public final class UniverseGraph implements Graph, UniverseView {
     // LINEAGE & INVARIANT UTILITIES
     // =========================================================================
 
+    private void checkTopologyState(long expectedModCount) {
+        if (this.universe.modCount() != expectedModCount) {
+            throw new java.util.ConcurrentModificationException(
+                "Universe topology was mutated during graph traversal."
+            );
+        }
+    }
+
     private UniverseGraph validateLineage(Graph other) {
         Objects.requireNonNull(other, "Graph cannot be null");
         if (!(other instanceof UniverseGraph ug)) {
@@ -460,6 +468,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public EdgeSet edges(Node node, NodeDirection direction) {
         UniverseNode un = validateLineage(node);
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
 
         if (!this.activeNodes.get(un.id())) {
@@ -484,6 +493,7 @@ public final class UniverseGraph implements Graph, UniverseView {
             }
         }
 
+        checkTopologyState(expectedModCount);
         return new UniverseEdgeSet(this.universe, result);
     }
 
@@ -497,6 +507,7 @@ public final class UniverseGraph implements Graph, UniverseView {
 
     @Override
     public NodeSet leaves() {
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
         // A leaf is an active node with NO active outbound edges
         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
@@ -504,11 +515,13 @@ public final class UniverseGraph implements Graph, UniverseView {
                 result.set(nodeId);
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseNodeSet(this.universe, result);
     }
 
     @Override
     public NodeSet roots() {
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
         // A root is an active node with NO active inbound edges
         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
@@ -516,11 +529,13 @@ public final class UniverseGraph implements Graph, UniverseView {
                 result.set(nodeId);
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseNodeSet(this.universe, result);
     }
 
     @Override
     public NodeSet isolated() {
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
         // An isolated node has NO active inbound AND NO active outbound edges
         for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
@@ -531,6 +546,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 result.set(nodeId);
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseNodeSet(this.universe, result);
     }
 
@@ -543,15 +559,18 @@ public final class UniverseGraph implements Graph, UniverseView {
             return false;
         }
 
+        long expectedModCount = this.universe.modCount();
         int[] out = this.universe.outboundEdges(uSource.id());
         if (out == null) { return false; }
 
         for (int edgeId : out) {
             // Check if the edge is active in this viewport, AND its target matches
             if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
+                checkTopologyState(expectedModCount);
                 return true;
             }
         }
+        checkTopologyState(expectedModCount);
         return false;
     }
 
@@ -565,6 +584,7 @@ public final class UniverseGraph implements Graph, UniverseView {
             return new UniverseEdgeSet(this.universe, result);
         }
 
+        long expectedModCount = this.universe.modCount();
         int[] out = this.universe.outboundEdges(uSource.id());
         if (out != null) {
             for (int edgeId : out) {
@@ -573,6 +593,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 }
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseEdgeSet(this.universe, result);
     }
 
@@ -590,6 +611,7 @@ public final class UniverseGraph implements Graph, UniverseView {
         UniverseNode un = validateLineage(node);
         if (!this.activeNodes.get(un.id())) { return 0; }
 
+        long expectedModCount = this.universe.modCount();
         int count = 0;
         if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
             count += countActiveEdges(this.universe.outboundEdges(un.id()));
@@ -597,6 +619,7 @@ public final class UniverseGraph implements Graph, UniverseView {
         if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
             count += countActiveEdges(this.universe.inboundEdges(un.id()));
         }
+        checkTopologyState(expectedModCount);
         return count;
     }
 
@@ -619,6 +642,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public NodeSet predecessors(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
         for (Node n : origin) {
             Objects.requireNonNull(n, "Node cannot be null");
@@ -638,6 +662,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 }
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseNodeSet(this.universe, result);
     }
 
@@ -656,6 +681,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public NodeSet successors(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
         for (Node n : origin) {
             Objects.requireNonNull(n, "Node cannot be null");
@@ -675,6 +701,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 }
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseNodeSet(this.universe, result);
     }
 
@@ -706,6 +733,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public Graph forwardStep(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet newNodes = new BitSet();
         BitSet newEdges = new BitSet();
 
@@ -725,6 +753,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 }
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseGraph(this.universe, newNodes, newEdges);
     }
 
@@ -743,6 +772,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public Graph reverseStep(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet newNodes = new BitSet();
         BitSet newEdges = new BitSet();
 
@@ -762,6 +792,7 @@ public final class UniverseGraph implements Graph, UniverseView {
                 }
             }
         }
+        checkTopologyState(expectedModCount);
         return new UniverseGraph(this.universe, newNodes, newEdges);
     }
 
@@ -805,6 +836,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public Graph forward(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet visitedNodes = new BitSet();
         BitSet visitedEdges = new BitSet();
         BitSet frontier = new BitSet();
@@ -839,9 +871,11 @@ public final class UniverseGraph implements Graph, UniverseView {
                     }
                 }
             }
+            checkTopologyState(expectedModCount);
             frontier = nextFrontier;
         }
 
+        checkTopologyState(expectedModCount);
         return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
     }
 
@@ -860,6 +894,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     @Override
     public Graph reverse(NodeSet origin) {
         Objects.requireNonNull(origin, "NodeSet cannot be null");
+        long expectedModCount = this.universe.modCount();
         BitSet visitedNodes = new BitSet();
         BitSet visitedEdges = new BitSet();
         BitSet frontier = new BitSet();
@@ -891,9 +926,11 @@ public final class UniverseGraph implements Graph, UniverseView {
                     }
                 }
             }
+            checkTopologyState(expectedModCount);
             frontier = nextFrontier;
         }
 
+        checkTopologyState(expectedModCount);
         return new UniverseGraph(this.universe, visitedNodes, visitedEdges);
     }
 
