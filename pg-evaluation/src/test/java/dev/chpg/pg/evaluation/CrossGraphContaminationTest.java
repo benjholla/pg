@@ -1,5 +1,6 @@
 package dev.chpg.pg.evaluation;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,7 +20,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void globalGraphRejectsEphemeralElements() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node ephemeralNode = ephemeralGraph.factory().createNode();
         Edge ephemeralEdge = ephemeralGraph.factory().createEdge(ephemeralNode, ephemeralNode);
@@ -33,7 +34,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void ephemeralGraphRejectsGlobalElements() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         Edge globalEdge = globalGraph.factory().createEdge(globalNode, globalNode);
@@ -47,7 +48,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void globalGraphRejectsEphemeralGraphsInSetOperations() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         globalGraph.addNode(globalNode);
@@ -62,7 +63,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void ephemeralGraphRejectsGlobalGraphsInSetOperations() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         globalGraph.addNode(globalNode);
@@ -79,7 +80,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void nodeSetRejectsCrossContaminationInSetOperations() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         globalGraph.addNode(globalNode);
@@ -111,7 +112,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void edgeSetRejectsCrossContaminationInSetOperations() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         Edge globalEdge = globalGraph.factory().createEdge(globalNode, globalNode);
@@ -142,7 +143,7 @@ public class CrossGraphContaminationTest {
     @Test
     public void operationsWithEmptySetSucceed() {
         GlobalGraph globalGraph = new GlobalGraph();
-        EphemeralGraph ephemeralGraph = new EphemeralGraph();
+        EphemeralGraph ephemeralGraph = new EphemeralGraph(new Universe());
 
         Node globalNode = globalGraph.factory().createNode();
         globalGraph.addNode(globalNode);
