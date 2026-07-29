@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
+import dev.chpg.pg.api.AttributeValue;
 
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
@@ -29,6 +32,19 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     private Map<Integer, EphemeralEdgeSet> inEdges;
     private Map<Integer, EphemeralEdgeSet> outEdges;
     private final EphemeralIdGenerator idGenerator;
+
+    // The Delta Logs (Track pending property mutations for Universe elements)
+    // Key = Universe ID
+    private final Map<Integer, Set<String>> pendingNodeTags;
+    private final Map<Integer, Set<String>> removedNodeTags;
+    private final Map<Integer, Map<String, AttributeValue>> pendingNodeAttributes;
+    private final Map<Integer, Set<String>> removedNodeAttributes;
+
+    private final Map<Integer, Set<String>> pendingEdgeTags;
+    private final Map<Integer, Set<String>> removedEdgeTags;
+    private final Map<Integer, Map<String, AttributeValue>> pendingEdgeAttributes;
+    private final Map<Integer, Set<String>> removedEdgeAttributes;
+
 
     /**
      * Constructs a new empty graph
@@ -88,6 +104,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         this.inEdges = new HashMap<>();
         this.outEdges = new HashMap<>();
         this.idGenerator = new EphemeralIdGenerator();
+        this.pendingNodeTags = new HashMap<>();
+        this.removedNodeTags = new HashMap<>();
+        this.pendingNodeAttributes = new HashMap<>();
+        this.removedNodeAttributes = new HashMap<>();
+        this.pendingEdgeTags = new HashMap<>();
+        this.removedEdgeTags = new HashMap<>();
+        this.pendingEdgeAttributes = new HashMap<>();
+        this.removedEdgeAttributes = new HashMap<>();
     }
 
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator) {
@@ -97,6 +121,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         this.inEdges = new HashMap<>();
         this.outEdges = new HashMap<>();
         this.idGenerator = idGenerator;
+        this.pendingNodeTags = new HashMap<>();
+        this.removedNodeTags = new HashMap<>();
+        this.pendingNodeAttributes = new HashMap<>();
+        this.removedNodeAttributes = new HashMap<>();
+        this.pendingEdgeTags = new HashMap<>();
+        this.removedEdgeTags = new HashMap<>();
+        this.pendingEdgeAttributes = new HashMap<>();
+        this.removedEdgeAttributes = new HashMap<>();
     }
 
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, int nodeCapacity, int edgeCapacity) {
@@ -108,6 +140,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         this.inEdges = new HashMap<>(nodeMapCapacity);
         this.outEdges = new HashMap<>(nodeMapCapacity);
         this.idGenerator = idGenerator;
+        this.pendingNodeTags = new HashMap<>();
+        this.removedNodeTags = new HashMap<>();
+        this.pendingNodeAttributes = new HashMap<>();
+        this.removedNodeAttributes = new HashMap<>();
+        this.pendingEdgeTags = new HashMap<>();
+        this.removedEdgeTags = new HashMap<>();
+        this.pendingEdgeAttributes = new HashMap<>();
+        this.removedEdgeAttributes = new HashMap<>();
     }
 
 
@@ -144,6 +184,24 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return universe;
     }
 
+
+    Set<String> getPendingNodeTags(int id) { Set<String> s = this.pendingNodeTags.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputePendingNodeTags(int id) { return this.pendingNodeTags.computeIfAbsent(id, k -> new HashSet<>()); }
+    Set<String> getRemovedNodeTags(int id) { Set<String> s = this.removedNodeTags.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputeRemovedNodeTags(int id) { return this.removedNodeTags.computeIfAbsent(id, k -> new HashSet<>()); }
+    Map<String, AttributeValue> getPendingNodeAttributes(int id) { Map<String, AttributeValue> m = this.pendingNodeAttributes.get(id); return m != null ? m : java.util.Collections.emptyMap(); }
+    Map<String, AttributeValue> getOrComputePendingNodeAttributes(int id) { return this.pendingNodeAttributes.computeIfAbsent(id, k -> new HashMap<>()); }
+    Set<String> getRemovedNodeAttributes(int id) { Set<String> s = this.removedNodeAttributes.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputeRemovedNodeAttributes(int id) { return this.removedNodeAttributes.computeIfAbsent(id, k -> new HashSet<>()); }
+
+    Set<String> getPendingEdgeTags(int id) { Set<String> s = this.pendingEdgeTags.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputePendingEdgeTags(int id) { return this.pendingEdgeTags.computeIfAbsent(id, k -> new HashSet<>()); }
+    Set<String> getRemovedEdgeTags(int id) { Set<String> s = this.removedEdgeTags.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputeRemovedEdgeTags(int id) { return this.removedEdgeTags.computeIfAbsent(id, k -> new HashSet<>()); }
+    Map<String, AttributeValue> getPendingEdgeAttributes(int id) { Map<String, AttributeValue> m = this.pendingEdgeAttributes.get(id); return m != null ? m : java.util.Collections.emptyMap(); }
+    Map<String, AttributeValue> getOrComputePendingEdgeAttributes(int id) { return this.pendingEdgeAttributes.computeIfAbsent(id, k -> new HashMap<>()); }
+    Set<String> getRemovedEdgeAttributes(int id) { Set<String> s = this.removedEdgeAttributes.get(id); return s != null ? s : java.util.Collections.emptySet(); }
+    Set<String> getOrComputeRemovedEdgeAttributes(int id) { return this.removedEdgeAttributes.computeIfAbsent(id, k -> new HashSet<>()); }
 
     public EphemeralFactory factory() {
         return this;
