@@ -79,7 +79,7 @@ public class UniverseNodeTest {
     public void testCrossTypeEqualityRejection() {
         Universe universe = new Universe();
         UniverseNode universeNode = new UniverseNode(universe, 100);
-        EphemeralNode ephemeralNode = new EphemeralNode(100);
+        EphemeralNode ephemeralNode = new EphemeralNode(universe, 100);
 
         assertNotEquals(universeNode, ephemeralNode, "UniverseNode should reject equality with EphemeralNode");
     }

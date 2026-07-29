@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,8 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
 public class GraphNullHandlingTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final Universe universe = new Universe();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
     private Graph graph;
 

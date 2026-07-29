@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,7 +27,7 @@ public class EphemeralImmutableSingletonEdgeSetTest {
 
     @BeforeEach
     public void setup() {
-        graph = new EphemeralGraph();
+        graph = new EphemeralGraph(new Universe());
         EphemeralNode n1 = graph.createNode();
         EphemeralNode n2 = graph.createNode();
         edge = graph.createEdge(n1, n2);

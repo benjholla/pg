@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,8 @@ import dev.chpg.pg.api.NodeSet;
  * Monotonicity states that if A is a subset of B, then traversal(A) should be a subset of traversal(B).
  */
 public class GraphMonotonicityInvariantTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final Universe universe = new Universe();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
 
     private Graph graph;

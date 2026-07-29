@@ -80,7 +80,7 @@ public class UniverseEdgeTest {
         Universe universe = new Universe();
         UniverseEdge universeEdge = new UniverseEdge(universe, 100);
 
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph graph = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph graph = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(universe);
         dev.chpg.pg.api.Node n1 = graph.createNode();
         dev.chpg.pg.api.Node n2 = graph.createNode();
         EphemeralEdge ephemeralEdge = graph.createEdge(n1, n2);

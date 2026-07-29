@@ -4,9 +4,12 @@ import dev.chpg.pg.api.AttributeMap;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.universe.UniverseView;
+import java.util.Objects;
 
 /** The ephemeral implementation of an Edge. */
-public final class EphemeralEdge implements Edge {
+public final class EphemeralEdge implements Edge, UniverseView {
 
     private final int id;
     private final TagSet tags;
@@ -20,7 +23,10 @@ public final class EphemeralEdge implements Edge {
      * @param from the source node
      * @param to the target node
      */
-    public EphemeralEdge(int id, Node from, Node to) {
+    private final Universe universe;
+
+    public EphemeralEdge(Universe universe, int id, Node from, Node to) {
+        this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         if (from == null || to == null) {
             throw new IllegalArgumentException("Edge endpoints cannot be null.");
         }
@@ -29,6 +35,11 @@ public final class EphemeralEdge implements Edge {
         this.attributes = new EphemeralAttributeMap();
         this.from = from;
         this.to = to;
+    }
+
+    @Override
+    public Universe universe() {
+        return universe;
     }
 
     @Override

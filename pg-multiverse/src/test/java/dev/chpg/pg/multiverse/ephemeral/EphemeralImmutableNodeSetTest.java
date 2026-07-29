@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import dev.chpg.pg.api.Node;
 
 public class EphemeralImmutableNodeSetTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final Universe universe = new Universe();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
     @Test
     public void testUnsupportedOperations() {
@@ -66,7 +68,7 @@ public class EphemeralImmutableNodeSetTest {
 
     @Test
     public void testToImmutable() {
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(universe);
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
 
@@ -79,7 +81,7 @@ public class EphemeralImmutableNodeSetTest {
 
     @Test
     public void testDelegatedMethodsExtended() {
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(universe);
         dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet internalSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet();
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         internalSet.add(n1);
@@ -109,7 +111,7 @@ public class EphemeralImmutableNodeSetTest {
 
     @Test
     public void testIterator() {
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(universe);
         dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet internalSet = new dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet();
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         internalSet.add(n1);
@@ -123,7 +125,7 @@ public class EphemeralImmutableNodeSetTest {
 
     @Test
     public void testSetAlgebra() {
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(universe);
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n2 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n3 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();

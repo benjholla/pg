@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,7 +13,7 @@ public class GraphNodeDegreeTest {
 
     @Test
     public void testRootsLeavesIsolated() {
-        EphemeralGraph graph = new EphemeralGraph();
+        EphemeralGraph graph = new EphemeralGraph(new Universe());
 
         Node a = graph.createNode();
         Node b = graph.createNode();

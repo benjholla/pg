@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,8 +15,9 @@ import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 
 public class GraphBulkOperationsTest {
+    private static final Universe universe = new Universe();
 
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
     private Graph graph;
     private Node n1, n2, n3, n4;
     private Edge e1, e2, e3;

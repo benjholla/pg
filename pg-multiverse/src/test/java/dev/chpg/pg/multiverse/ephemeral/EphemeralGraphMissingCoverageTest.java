@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,7 +22,7 @@ public class EphemeralGraphMissingCoverageTest {
 
     @BeforeEach
     public void setUp() {
-        graph = new EphemeralGraph();
+        graph = new EphemeralGraph(new Universe());
         factory = graph.factory();
         a = (EphemeralNode) factory.createNode();
         b = (EphemeralNode) factory.createNode();
@@ -225,7 +226,7 @@ public class EphemeralGraphMissingCoverageTest {
         dev.chpg.pg.api.Graph betweenStepGraph = graph.betweenStep(sources, targets);
         assertEquals(0, betweenStepGraph.nodes().size());
 
-        EphemeralGraph g2 = new EphemeralGraph();
+        EphemeralGraph g2 = new EphemeralGraph(new Universe());
         g2.addNode((EphemeralNode) g2.factory().createNode());
 
         dev.chpg.pg.api.Graph g1 = graph.between(g2.nodes(), targets);

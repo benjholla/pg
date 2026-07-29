@@ -73,7 +73,7 @@ public class UniverseTest {
     @Test
     public void testPromote() {
         Universe universe = new Universe();
-        EphemeralGraph eg = new EphemeralGraph();
+        EphemeralGraph eg = new EphemeralGraph(universe);
 
         EphemeralNode n1 = eg.createNode();
         n1.tags().add("User");

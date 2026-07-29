@@ -13,14 +13,17 @@ import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Node.NodeDirection;
 import dev.chpg.pg.api.NodeSet;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.universe.UniverseView;
 
 /**
  * EphemeralGraph provides the core storage, adjacency maps, and graph operations.
  */
-public final class EphemeralGraph implements Graph, EphemeralFactory {
+public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseView {
 
     private static final EdgeSet EMPTY_EDGES = EdgeSet.empty();
 
+    private final Universe universe;
     private Map<Integer, EphemeralNode> nodes;
     private Map<Integer, EphemeralEdge> edges;
     private Map<Integer, EphemeralEdgeSet> inEdges;
@@ -32,53 +35,54 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
      */
     @Override
     public EphemeralGraph createGraph() {
-        return new EphemeralGraph(this.idGenerator);
+        return new EphemeralGraph(this.universe, this.idGenerator);
     }
 
     @Override
     public EphemeralGraph createGraph(Node... nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
         for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
-        return new EphemeralGraph(this.idGenerator, nodes);
+        return new EphemeralGraph(this.universe, this.idGenerator, nodes);
     }
 
     @Override
     public EphemeralGraph createGraph(NodeSet nodes) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
-        return new EphemeralGraph(this.idGenerator, nodes);
+        return new EphemeralGraph(this.universe, this.idGenerator, nodes);
     }
 
     @Override
     public EphemeralGraph createGraph(Edge... edges) {
         Objects.requireNonNull(edges, "edges cannot be null");
         for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
-        return new EphemeralGraph(this.idGenerator, edges);
+        return new EphemeralGraph(this.universe, this.idGenerator, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(EdgeSet edges) {
         Objects.requireNonNull(edges, "edges cannot be null");
-        return new EphemeralGraph(this.idGenerator, edges);
+        return new EphemeralGraph(this.universe, this.idGenerator, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(NodeSet nodes, EdgeSet edges) {
         Objects.requireNonNull(nodes, "nodes cannot be null");
         Objects.requireNonNull(edges, "edges cannot be null");
-        return new EphemeralGraph(this.idGenerator, nodes, edges);
+        return new EphemeralGraph(this.universe, this.idGenerator, nodes, edges);
     }
 
     @Override
     public EphemeralGraph createGraph(Graph graph) {
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        return new EphemeralGraph(this.idGenerator, graph.nodes(), graph.edges());
+        return new EphemeralGraph(this.universe, this.idGenerator, graph.nodes(), graph.edges());
     }
 
     /**
      * Constructs a new empty graph.
      */
-    public EphemeralGraph() {
+    public EphemeralGraph(Universe universe) {
+        this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
         this.inEdges = new HashMap<>();
@@ -86,7 +90,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         this.idGenerator = new EphemeralIdGenerator();
     }
 
-    private EphemeralGraph(EphemeralIdGenerator idGenerator) {
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator) {
+        this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
         this.inEdges = new HashMap<>();
@@ -94,7 +99,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         this.idGenerator = idGenerator;
     }
 
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, int nodeCapacity, int edgeCapacity) {
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, int nodeCapacity, int edgeCapacity) {
+        this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         int nodeMapCapacity = (int) (nodeCapacity / 0.75f) + 1;
         int edgeMapCapacity = (int) (edgeCapacity / 0.75f) + 1;
         this.nodes = new HashMap<>(nodeMapCapacity);
@@ -133,6 +139,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
      * Gets the graph factory.
      * @return the factory
      */
+    @Override
+    public Universe universe() {
+        return universe;
+    }
+
+
     public EphemeralFactory factory() {
         return this;
     }
@@ -140,8 +152,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given nodes
      */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, Node... nodes) {
-        this(idGenerator, nodes.length, 0);
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, Node... nodes) {
+        this(universe, idGenerator, nodes.length, 0);
         Objects.requireNonNull(nodes, "nodes cannot be null");
         for (Node n : nodes) { Objects.requireNonNull(n, "nodes elements cannot be null"); }
         for (Node node : nodes) {
@@ -152,8 +164,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given nodes
      */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, NodeSet nodes) {
-        this(idGenerator);
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, NodeSet nodes) {
+        this(universe, idGenerator);
         Objects.requireNonNull(nodes, "nodes cannot be null");
         addAllNodes(nodes);
     }
@@ -161,7 +173,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, Edge... edges) {
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, Edge... edges) {
         // Over-allocation is Cheap, Rehashing is Expensive
         // In a highly connected graph, the true number of unique nodes will be much lower than edges.length * 2.
         // We will likely over-estimate the required capacity. However, in Java HashMap or HashSet implementations,
@@ -169,7 +181,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         // only costs a few kilobytes of empty array slots. Under-estimating, on the other hand, means the Map hits
         // its load factor mid-loop, creates a new, larger bucket array, and painstakingly recalculates the hash
         // and shifts every single existing node into the new buckets.
-        this(idGenerator, edges.length * 2, edges.length);
+        this(universe, idGenerator, edges.length * 2, edges.length);
         Objects.requireNonNull(edges, "edges cannot be null");
         for (Edge e : edges) { Objects.requireNonNull(e, "edges elements cannot be null"); }
         for (Edge edge : edges) {
@@ -180,8 +192,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, EdgeSet edges) {
-        this(idGenerator);
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, EdgeSet edges) {
+        this(universe, idGenerator);
         Objects.requireNonNull(edges, "edges cannot be null");
         for(Edge edge : edges) {
             addEdge(edge);
@@ -191,8 +203,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      */
-    private EphemeralGraph(EphemeralIdGenerator idGenerator, NodeSet nodes, EdgeSet edges) {
-        this(idGenerator);
+    private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, NodeSet nodes, EdgeSet edges) {
+        this(universe, idGenerator);
         Objects.requireNonNull(nodes, "nodes cannot be null");
         Objects.requireNonNull(edges, "edges cannot be null");
         addAllNodes(nodes);
@@ -603,7 +615,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph forwardStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forwardStep(new EphemeralGraph(this.idGenerator, origin));
+        return forwardStep(new EphemeralGraph(this.universe, this.idGenerator, origin));
     }
 
     @Override
@@ -632,19 +644,19 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph reverseStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverseStep(new EphemeralGraph(this.idGenerator, origin));
+        return reverseStep(new EphemeralGraph(this.universe, this.idGenerator, origin));
     }
 
     @Override
     public Graph union(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return union(new EphemeralGraph(this.idGenerator, node));
+        return union(new EphemeralGraph(this.universe, this.idGenerator, node));
     }
 
     @Override
     public Graph union(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return union(new EphemeralGraph(this.idGenerator, edge));
+        return union(new EphemeralGraph(this.universe, this.idGenerator, edge));
     }
 
 
@@ -666,7 +678,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return graph.union(this);
         }
 
-        Graph union = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
+        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
         return union;
@@ -675,20 +687,20 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph difference(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return difference(new EphemeralGraph(this.idGenerator, node));
+        return difference(new EphemeralGraph(this.universe, this.idGenerator, node));
     }
 
     @Override
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return difference(new EphemeralGraph(this.idGenerator, edge));
+        return difference(new EphemeralGraph(this.universe, this.idGenerator, edge));
     }
 
     @Override
     public Graph difference(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        Graph difference = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
+        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
         if(difference.nodes().isEmpty()) {
             return difference;
         }
@@ -702,14 +714,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return differenceEdges(new EphemeralGraph(this.idGenerator, edge));
+        return differenceEdges(new EphemeralGraph(this.universe, this.idGenerator, edge));
     }
 
     @Override
     public Graph differenceEdges(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        Graph difference = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
+        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
         if(difference.edges().isEmpty()) {
             return difference;
         }
@@ -720,13 +732,13 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph intersection(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return intersection(new EphemeralGraph(this.idGenerator, node));
+        return intersection(new EphemeralGraph(this.universe, this.idGenerator, node));
     }
 
     @Override
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return intersection(new EphemeralGraph(this.idGenerator, edge));
+        return intersection(new EphemeralGraph(this.universe, this.idGenerator, edge));
     }
 
     @Override
@@ -740,7 +752,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
             return graph.intersection(this);
         }
 
-        Graph intersection = new EphemeralGraph(this.idGenerator, this.nodes(), this.edges());
+        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
         if(intersection.nodes().isEmpty()) {
             return intersection;
         }
@@ -769,15 +781,15 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
         if(from.isEmpty() || to.isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         Graph forward = forwardStep(from);
         if(forward.nodes().isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         Graph reverse = reverseStep(to);
         if(reverse.nodes().isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         return forward.intersection(reverse);
     }
@@ -802,15 +814,15 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
         if(from.isEmpty() || to.isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         Graph forward = forward(from);
         if(forward.nodes().isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         Graph reverse = reverse(to);
         if(reverse.nodes().isEmpty()) {
-            return new EphemeralGraph(this.idGenerator);
+            return new EphemeralGraph(this.universe, this.idGenerator);
         }
         return forward.intersection(reverse);
     }
@@ -845,7 +857,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph forward(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forward(new EphemeralGraph(this.idGenerator, origin));
+        return forward(new EphemeralGraph(this.universe, this.idGenerator, origin));
     }
 
     @Override
@@ -878,7 +890,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
     @Override
     public Graph reverse(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverse(new EphemeralGraph(this.idGenerator, origin));
+        return reverse(new EphemeralGraph(this.universe, this.idGenerator, origin));
     }
 
     @Override
@@ -915,7 +927,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
 
     @Override
     public EphemeralNode createNode() {
-        return new EphemeralNode(idGenerator.createNodeId());
+        return new EphemeralNode(this.universe, idGenerator.createNodeId());
     }
 
     @Override
@@ -931,7 +943,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory {
         if (!(target instanceof EphemeralNode)) {
             throw new IllegalArgumentException("Target node is not native to EphemeralGraph.");
         }
-        return new EphemeralEdge(idGenerator.createEdgeId(), source, target);
+        return new EphemeralEdge(this.universe, idGenerator.createEdgeId(), source, target);
     }
 
     @Override

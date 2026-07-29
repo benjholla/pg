@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -28,7 +29,7 @@ public class EphemeralEdgeSetCoverageTest {
 
     @BeforeEach
     public void setUp() {
-        factory = new EphemeralGraph().factory();
+        factory = new EphemeralGraph(new Universe()).factory();
         n1 = (EphemeralNode) factory.createNode();
         n2 = (EphemeralNode) factory.createNode();
 

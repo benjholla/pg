@@ -24,7 +24,7 @@ public class UniverseGraphTest {
     @BeforeEach
     public void setUp() {
         universe = new Universe();
-        EphemeralFactory factory = new EphemeralGraph().factory();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
         EphemeralGraph ephemeralGraph = (EphemeralGraph) factory.createGraph();
 
         Node ea = factory.createNode();
