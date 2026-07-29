@@ -1,6 +1,5 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

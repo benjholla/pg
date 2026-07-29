@@ -1,5 +1,6 @@
 package dev.chpg.pg.evaluation;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -60,8 +61,8 @@ public class NodeSetBenchmark {
                 }
             }
         } else {
-            EphemeralGraph eg = new EphemeralGraph();
-            EphemeralGraph oeg = new EphemeralGraph();
+            EphemeralGraph eg = new EphemeralGraph(new Universe());
+            EphemeralGraph oeg = new EphemeralGraph(new Universe());
             graph = eg;
             otherGraph = oeg;
 

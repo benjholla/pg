@@ -1,6 +1,5 @@
 package dev.chpg.pg.multiverse.universe;
 
-import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
