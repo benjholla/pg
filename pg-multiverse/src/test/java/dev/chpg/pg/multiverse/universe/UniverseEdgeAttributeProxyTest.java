@@ -109,8 +109,12 @@ public class UniverseEdgeAttributeProxyTest {
         boolean hasK2 = false;
 
         for (Map.Entry<String, AttributeValue> entry : attributes.entrySet()) {
-            if (entry.getKey().equals("k1") && ((AttributeValue.StringValue) entry.getValue()).value().equals("v1")) hasK1 = true;
-            if (entry.getKey().equals("k2") && ((AttributeValue.StringValue) entry.getValue()).value().equals("v2")) hasK2 = true;
+            if (entry.getKey().equals("k1") && ((AttributeValue.StringValue) entry.getValue()).value().equals("v1")) {
+                hasK1 = true;
+            }
+            if (entry.getKey().equals("k2") && ((AttributeValue.StringValue) entry.getValue()).value().equals("v2")) {
+                hasK2 = true;
+            }
             count++;
         }
 

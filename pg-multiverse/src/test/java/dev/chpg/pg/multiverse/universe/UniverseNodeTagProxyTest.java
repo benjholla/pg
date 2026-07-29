@@ -86,9 +86,15 @@ public class UniverseNodeTagProxyTest {
 
         while (it.hasNext()) {
             String tag = it.next();
-            if (tag.equals("A")) hasA = true;
-            if (tag.equals("B")) hasB = true;
-            if (tag.equals("C")) hasC = true;
+            if (tag.equals("A")) {
+                hasA = true;
+            }
+            if (tag.equals("B")) {
+                hasB = true;
+            }
+            if (tag.equals("C")) {
+                hasC = true;
+            }
             count++;
         }
 
