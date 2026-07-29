@@ -96,6 +96,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     /**
      * Constructs a new empty graph.
+     *
+     * @param universe the universe instance backing this ephemeral context
      */
     public EphemeralGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
@@ -203,6 +205,11 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     Set<String> getRemovedEdgeAttributes(int id) { Set<String> s = this.removedEdgeAttributes.get(id); return s != null ? s : java.util.Collections.emptySet(); }
     Set<String> getOrComputeRemovedEdgeAttributes(int id) { return this.removedEdgeAttributes.computeIfAbsent(id, k -> new HashSet<>()); }
 
+    /**
+     * Retrieves the {@link EphemeralFactory} for this graph.
+     *
+     * @return the ephemeral factory associated with this graph
+     */
     public EphemeralFactory factory() {
         return this;
     }

@@ -7,11 +7,22 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A proxy {@link Node} that acts as a wrapper around a permanent {@link UniverseNode}
+ * within the context of an {@link EphemeralGraph} transaction, intercepting modifications
+ * to route them to the local buffer.
+ */
 public class ShadowUniverseNode implements Node, UniverseView {
 
     private final EphemeralGraph transactionContext;
     private final UniverseNode backingNode;
 
+    /**
+     * Constructs a new ShadowUniverseNode.
+     *
+     * @param context the ephemeral transaction context
+     * @param backingNode the original universe node being shadowed
+     */
     public ShadowUniverseNode(EphemeralGraph context, UniverseNode backingNode) {
         this.transactionContext = context;
         this.backingNode = backingNode;

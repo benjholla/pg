@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A proxy {@link AttributeMap} that manages the pending attribute updates and deletions
+ * within an {@link EphemeralGraph} context while reading from the underlying backing engine
+ * as a baseline.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +21,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a ShadowAttributeMap for a given backing node.
+     *
+     * @param transaction the ephemeral transaction context
+     * @param backingNode the original universe node
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +34,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a ShadowAttributeMap for a given backing edge.
+     *
+     * @param transaction the ephemeral transaction context
+     * @param backingEdge the original universe edge
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

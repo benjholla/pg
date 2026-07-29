@@ -9,11 +9,22 @@ import dev.chpg.pg.multiverse.universe.UniverseEdge;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A proxy {@link Edge} that acts as a wrapper around a permanent {@link UniverseEdge}
+ * within the context of an {@link EphemeralGraph} transaction, intercepting modifications
+ * to route them to the local buffer.
+ */
 public class ShadowUniverseEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transactionContext;
     private final UniverseEdge backingEdge;
 
+    /**
+     * Constructs a new ShadowUniverseEdge.
+     *
+     * @param context the ephemeral transaction context
+     * @param backingEdge the original universe edge being shadowed
+     */
     public ShadowUniverseEdge(EphemeralGraph context, UniverseEdge backingEdge) {
         this.transactionContext = context;
         this.backingEdge = backingEdge;
