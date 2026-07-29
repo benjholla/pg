@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,7 +15,8 @@ import dev.chpg.pg.api.Node;
  * Validates properties related to set differences on graphs.
  */
 public class DifferencePropertiesInvariantTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final Universe universe = new Universe();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
 
     private Graph gA, gB, gC;

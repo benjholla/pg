@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,8 +19,9 @@ import dev.chpg.pg.api.NodeSet;
  * Ensuring duality: a ∈ predecessors(b) ⇔ b ∈ successors(a).
  */
 public class PredecessorSuccessorInvariantTest {
+    private static final Universe universe = new Universe();
 
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
     private final Random random = new Random(42); // Deterministic seed for reproducible property tests
 
     private Graph generateRandomGraph(int numNodes, double edgeProbability) {

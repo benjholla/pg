@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,8 +21,9 @@ import dev.chpg.pg.api.Node;
  * Ensures operations hold over a wide variety of topologies (cycles, disjoint parts, empty subsets).
  */
 public class AlgebraicPropertyInvariantTest {
+    private static final Universe universe = new Universe();
 
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
     private final Random random = new Random(42); // Deterministic seed for reproducible property tests
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

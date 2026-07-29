@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,7 +17,7 @@ public class GraphRetainAllTest {
 
     @Test
     public void testRetainAllNodes() {
-        EphemeralFactory factory = new EphemeralGraph().factory();
+        EphemeralFactory factory = new EphemeralGraph(new Universe()).factory();
         Graph graph = factory.createGraph();
         Node n1 = factory.createNode();
         Node n2 = factory.createNode();
@@ -51,7 +52,7 @@ public class GraphRetainAllTest {
 
     @Test
     public void testRetainAllEdges() {
-        EphemeralFactory factory = new EphemeralGraph().factory();
+        EphemeralFactory factory = new EphemeralGraph(new Universe()).factory();
         Graph graph = factory.createGraph();
         Node n1 = factory.createNode();
         Node n2 = factory.createNode();

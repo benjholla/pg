@@ -3,6 +3,9 @@ package dev.chpg.pg.multiverse.ephemeral;
 import dev.chpg.pg.api.AttributeMap;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.TagSet;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.universe.UniverseView;
+import java.util.Objects;
 
 /**
  * Represents a transient, lightweight node within an {@code EphemeralGraph} sandbox.
@@ -21,7 +24,7 @@ import dev.chpg.pg.api.TagSet;
  * <p>
  * <b>Performance characteristics:</b> Relies on standard HashMaps for property lookups, incurring slight hashing overhead compared to raw array layouts, which is the mathematically necessary trade-off for dynamic isolation.
  */
-public final class EphemeralNode implements Node {
+public final class EphemeralNode implements Node, UniverseView {
 
     private final int id;
     private final TagSet tags;
@@ -32,10 +35,18 @@ public final class EphemeralNode implements Node {
      *
      * @param id the strictly negative unique identifier for this node
      */
-    public EphemeralNode(int id) {
+    private final Universe universe;
+
+    public EphemeralNode(Universe universe, int id) {
+        this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.id = id;
         this.tags = new EphemeralTagSet();
         this.attributes = new EphemeralAttributeMap();
+    }
+
+    @Override
+    public Universe universe() {
+        return universe;
     }
 
     @Override

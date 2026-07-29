@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,7 +23,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testUnsupportedOperations() {
-        EphemeralGraph graph = new EphemeralGraph();
+        EphemeralGraph graph = new EphemeralGraph(new Universe());
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
@@ -49,7 +50,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testDelegatedMethods() {
-        EphemeralGraph graph = new EphemeralGraph();
+        EphemeralGraph graph = new EphemeralGraph(new Universe());
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
@@ -110,7 +111,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testSetTheoreticAndFilteringMethods() {
-        EphemeralGraph graph = new EphemeralGraph();
+        EphemeralGraph graph = new EphemeralGraph(new Universe());
         Map<Integer, EphemeralNode> map = new HashMap<>();
         Map<Integer, EphemeralEdge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
@@ -166,15 +167,15 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
 
-        EphemeralNode n1 = new EphemeralNode(-1);
+        EphemeralNode n1 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -1);
         n1.tags().add("tagA");
         n1.tags().add("tagB");
 
-        EphemeralNode n2 = new EphemeralNode(-2);
+        EphemeralNode n2 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -2);
         n2.tags().add("tagB");
         n2.tags().add("tagC");
 
-        EphemeralNode n3 = new EphemeralNode(-3);
+        EphemeralNode n3 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -3);
         n3.tags().add("tagC");
         n3.tags().add("tagD");
 
@@ -216,15 +217,15 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
 
-        EphemeralNode n1 = new EphemeralNode(-1);
+        EphemeralNode n1 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -1);
         n1.tags().add("tagA");
         n1.tags().add("tagB");
 
-        EphemeralNode n2 = new EphemeralNode(-2);
+        EphemeralNode n2 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -2);
         n2.tags().add("tagB");
         n2.tags().add("tagC");
 
-        EphemeralNode n3 = new EphemeralNode(-3);
+        EphemeralNode n3 = new EphemeralNode(new dev.chpg.pg.multiverse.universe.Universe(), -3);
         n3.tags().add("tagA");
         n3.tags().add("tagB");
         n3.tags().add("tagC");
@@ -280,7 +281,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         assertTrue(immutableEmpty.isMaterialized());
 
         // Singleton
-        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph();
+        dev.chpg.pg.multiverse.ephemeral.EphemeralGraph g = new dev.chpg.pg.multiverse.ephemeral.EphemeralGraph(new dev.chpg.pg.multiverse.universe.Universe());
         dev.chpg.pg.multiverse.ephemeral.EphemeralNode n1 = (dev.chpg.pg.multiverse.ephemeral.EphemeralNode) g.factory().createNode();
         map.put(n1.id(), n1);
         NodeSet immutableSingleton = set.toImmutable();

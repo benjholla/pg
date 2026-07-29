@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,7 +18,8 @@ import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Node;
 
 public class EdgeSetTest {
-    private static final EphemeralFactory factory = new EphemeralGraph().factory();
+    private static final Universe universe = new Universe();
+    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
 
     private Node n1, n2, n3;

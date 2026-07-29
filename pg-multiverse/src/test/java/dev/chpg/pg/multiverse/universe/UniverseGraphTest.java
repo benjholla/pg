@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.universe;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,7 +25,7 @@ public class UniverseGraphTest {
     @BeforeEach
     public void setUp() {
         universe = new Universe();
-        EphemeralFactory factory = new EphemeralGraph().factory();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
         EphemeralGraph ephemeralGraph = (EphemeralGraph) factory.createGraph();
 
         Node ea = factory.createNode();

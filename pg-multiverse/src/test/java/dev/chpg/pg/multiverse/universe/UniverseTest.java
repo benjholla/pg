@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.universe;
 
+import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,7 +74,7 @@ public class UniverseTest {
     @Test
     public void testPromote() {
         Universe universe = new Universe();
-        EphemeralGraph eg = new EphemeralGraph();
+        EphemeralGraph eg = new EphemeralGraph(universe);
 
         EphemeralNode n1 = eg.createNode();
         n1.tags().add("User");
