@@ -489,6 +489,45 @@ public class UniverseGraphTest {
     }
 
     @Test
+    public void testInduce() {
+        Graph empty = graph.difference(graph);
+        Graph g1 = empty.union(a).union(b).union(c);
+
+        // induce(Edge edge)
+        Graph inducedEdge = g1.induce(ab);
+        assertEquals(3, inducedEdge.nodes().size());
+        assertEquals(1, inducedEdge.edges().size());
+        assertTrue(inducedEdge.edges().contains(ab));
+
+        Graph inducedEdgeExcluded = g1.induce(cd);
+        assertEquals(3, inducedEdgeExcluded.nodes().size());
+        assertEquals(0, inducedEdgeExcluded.edges().size());
+        assertFalse(inducedEdgeExcluded.edges().contains(cd));
+
+        // induce(Graph graph)
+        Graph inducedGraph = g1.induce(graph);
+        assertEquals(3, inducedGraph.nodes().size());
+        assertEquals(3, inducedGraph.edges().size());
+        assertTrue(inducedGraph.edges().contains(ab));
+        assertTrue(inducedGraph.edges().contains(bc));
+        assertTrue(inducedGraph.edges().contains(cb));
+
+        Graph g2 = empty.union(c).union(d);
+        Graph inducedGraph2 = g2.induce(graph);
+        assertEquals(2, inducedGraph2.nodes().size());
+        assertEquals(1, inducedGraph2.edges().size());
+        assertTrue(inducedGraph2.edges().contains(cd));
+
+        // induce(EdgeSet edges)
+        Graph inducedEdgeSet = g1.induce(graph.edges());
+        assertEquals(3, inducedEdgeSet.nodes().size());
+        assertEquals(3, inducedEdgeSet.edges().size());
+        assertTrue(inducedEdgeSet.edges().contains(ab));
+        assertTrue(inducedEdgeSet.edges().contains(bc));
+        assertTrue(inducedEdgeSet.edges().contains(cb));
+    }
+
+    @Test
     public void testTraversalNullHandling() {
         assertThrows(NullPointerException.class, () -> graph.adjacent(null, a));
         assertThrows(NullPointerException.class, () -> graph.adjacent(a, null));
@@ -512,5 +551,9 @@ public class UniverseGraphTest {
 
         assertThrows(NullPointerException.class, () -> graph.between((Node) null, a));
         assertThrows(NullPointerException.class, () -> graph.between(a, (Node) null));
+
+        assertThrows(NullPointerException.class, () -> graph.induce((Edge) null));
+        assertThrows(NullPointerException.class, () -> graph.induce((Graph) null));
+        assertThrows(NullPointerException.class, () -> graph.induce((dev.chpg.pg.api.EdgeSet) null));
     }
 }
