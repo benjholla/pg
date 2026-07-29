@@ -3,7 +3,6 @@ package dev.chpg.pg.multiverse.ephemeral;
 import dev.chpg.pg.api.TagSet;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseEdge;
-import dev.chpg.pg.api.GraphElement;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;

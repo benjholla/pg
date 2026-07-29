@@ -48,7 +48,9 @@ public class ShadowUniverseNode implements Node, UniverseView {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ShadowUniverseNode shadow) {
             return this.backingNode.equals(shadow.backingNode);
         }
