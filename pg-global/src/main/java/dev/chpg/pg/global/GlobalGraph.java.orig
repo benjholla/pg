@@ -113,7 +113,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addNode(node);
         }
     }
-    
+
     /**
      * Constructs a new graph with initial nodes.
      * @param nodes the nodes
@@ -155,7 +155,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
             addEdge(edge);
         }
     }
-    
+
     /**
      * Constructs a new graph of the given edges and respective edge nodes
      * @param nodes the nodes
@@ -168,7 +168,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         addAllNodes(nodes);
         addAllEdges(edges);
     }
-    
+
     /**
      * Gets incoming edges to node
      * @return The set of incoming edges to the given node
@@ -419,13 +419,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         }
         return result;
     }
-    
+
     public void clearEdges() {
         inEdges.clear();
         outEdges.clear();
         edges.clear();
     }
-    
+
     public void clear() {
         clearEdges();
         nodes.clear();
@@ -557,12 +557,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forwardStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forwardStep(origin.nodes());
-    }
-
-    private Graph forwardStepCore(NodeSet originNodes, Graph result) {
-        result.addAllNodes(originNodes);
-        for(Node node : originNodes){
+        Graph result = createGraph(origin);
+        for(Node node : origin.nodes()){
             getOutEdgesFromNode(node).ifPresent(outEdges -> {
                 for(Edge edge : outEdges){
                     result.addNode(edge.from());
@@ -577,8 +573,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forwardStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.size(), origin.size());
-        return forwardStepCore(origin, result);
+        return forwardStep(new GlobalGraph(origin));
     }
 
     @Override
@@ -590,12 +585,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverseStep(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverseStep(origin.nodes());
-    }
-
-    private Graph reverseStepCore(NodeSet originNodes, Graph result) {
-        result.addAllNodes(originNodes);
-        for(Node node : originNodes){
+        Graph result = createGraph(origin);
+        for(Node node : origin.nodes()){
             getInEdgesToNode(node).ifPresent(inEdges -> {
                 for(Edge edge : inEdges){
                     result.addNode(edge.from());
@@ -610,24 +601,19 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverseStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.size(), origin.size());
-        return reverseStepCore(origin, result);
+        return reverseStep(new GlobalGraph(origin));
     }
 
     @Override
     public Graph union(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph union = new GlobalGraph(this.nodes(), this.edges());
-        union.addNode(node);
-        return union;
+        return union(new GlobalGraph(node));
     }
 
     @Override
     public Graph union(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph union = new GlobalGraph(this.nodes(), this.edges());
-        union.addEdge(edge);
-        return union;
+        return union(new GlobalGraph(edge));
     }
 
 
@@ -657,18 +643,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph difference(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        difference.removeNode(node);
-        return difference;
+        return difference(new GlobalGraph(node));
     }
 
     @Override
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        difference.removeNode(edge.from());
-        difference.removeNode(edge.to());
-        return difference;
+        return difference(new GlobalGraph(edge));
     }
 
     @Override
@@ -688,9 +669,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph difference = new GlobalGraph(this.nodes(), this.edges());
-        difference.removeEdge(edge);
-        return difference;
+        return differenceEdges(new GlobalGraph(edge));
     }
 
     @Override
@@ -707,28 +686,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph intersection(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph intersection = new GlobalGraph();
-        if (this.nodes().contains(node)) {
-            intersection.addNode(node);
-        }
-        return intersection;
+        return intersection(new GlobalGraph(node));
     }
 
     @Override
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph intersection = new GlobalGraph();
-        if (this.edges().contains(edge)) {
-            intersection.addEdge(edge);
-        } else {
-            if (this.nodes().contains(edge.from())) {
-                intersection.addNode(edge.from());
-            }
-            if (this.nodes().contains(edge.to())) {
-                intersection.addNode(edge.to());
-            }
-        }
-        return intersection;
+        return intersection(new GlobalGraph(edge));
     }
 
     @Override
@@ -823,12 +787,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forward(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forward(origin.nodes());
-    }
-
-    private Graph forwardCore(NodeSet originNodes, Graph result) {
-        result.addAllNodes(originNodes);
-        NodeSet frontier = new GlobalNodeSet(originNodes);
+        Graph result = createGraph(origin);
+        NodeSet frontier = new GlobalNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
             frontier.remove(next);
@@ -847,8 +807,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph forward(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.size(), origin.size());
-        return forwardCore(origin, result);
+        return forward(new GlobalGraph(origin));
     }
 
     @Override
@@ -860,12 +819,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverse(Graph origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverse(origin.nodes());
-    }
-
-    private Graph reverseCore(NodeSet originNodes, Graph result) {
-        result.addAllNodes(originNodes);
-        NodeSet frontier = new GlobalNodeSet(originNodes);
+        Graph result = createGraph(origin);
+        NodeSet frontier = new GlobalNodeSet(origin.nodes());
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
             frontier.remove(next);
@@ -884,8 +839,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph reverse(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        Graph result = new GlobalGraph(origin.size(), origin.size());
-        return reverseCore(origin, result);
+        return reverse(new GlobalGraph(origin));
     }
 
     @Override
