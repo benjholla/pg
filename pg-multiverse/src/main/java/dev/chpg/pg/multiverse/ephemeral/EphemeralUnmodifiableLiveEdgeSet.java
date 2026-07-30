@@ -14,11 +14,12 @@ import java.util.stream.Stream;
 
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
+import dev.chpg.pg.api.Node;
 
 /** Unmodifiable live view of an EphemeralEdgeSet. */
 public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
-    private final Map<Integer, EphemeralEdge> edges;
+    private final Map<Integer, Edge> edges;
 
     /**
      * Constructs a new EphemeralUnmodifiableLiveEdgeSet.
@@ -28,8 +29,8 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
      * @param outEdges the outgoing edges map
      */
     public EphemeralUnmodifiableLiveEdgeSet(
-            Map<Integer, EphemeralNode> nodes,
-            Map<Integer, EphemeralEdge> edges,
+            Map<Integer, Node> nodes,
+            Map<Integer, Edge> edges,
             Map<Integer, EphemeralEdgeSet> inEdges,
             Map<Integer, EphemeralEdgeSet> outEdges) {
         this.edges = Objects.requireNonNull(edges);
@@ -38,7 +39,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     @Override
     public EdgeSet toImmutable() {
         if (edges.isEmpty()) { return EdgeSet.empty(); }
-        if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next()); }
+        if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) edges.values().iterator().next()); }
         EphemeralEdgeSet copy = new EphemeralEdgeSet();
         copy.addAll(edges.values());
         return new EphemeralImmutableEdgeSet(copy);
@@ -57,7 +58,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         if (other.isEmpty()) {
             return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
         }
-        for (EphemeralEdge edge : edges.values()) {
+        for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (other.contains(edge)) {
                 result.add(edge);
             }
@@ -69,7 +70,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     public EdgeSet difference(Collection<? extends Edge> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (EphemeralEdge edge : edges.values()) {
+        for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (!other.contains(edge)) {
                 result.add(edge);
             }
@@ -142,7 +143,7 @@ public boolean isMaterialized() {
     public Iterator<Edge> iterator() {
         // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Edge>() {
-            private final Iterator<EphemeralEdge> it = edges.values().iterator();
+            private final Iterator<dev.chpg.pg.api.Edge> it = edges.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -245,7 +246,7 @@ public boolean isMaterialized() {
     @Override
     public int hashCode() {
         int h = 0;
-        for (EphemeralEdge edge : edges.values()) {
+        for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (edge != null) {
                 h += edge.hashCode();
             }

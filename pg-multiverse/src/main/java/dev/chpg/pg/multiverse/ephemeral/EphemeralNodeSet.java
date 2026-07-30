@@ -80,7 +80,7 @@ public final class EphemeralNodeSet implements NodeSet {
                 "Cross-graph contamination: Expected EphemeralNode, got " + node.getClass().getSimpleName()
             );
         }
-        EphemeralGuardrails.requireLocalId(impl.id());
+        if (impl.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
         return impl;
     }
 
