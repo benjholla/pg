@@ -17,14 +17,17 @@ public final class EphemeralEdge implements Edge, UniverseView {
     private Node from;
     private Node to;
 
+
+
+    private final Universe universe;
+
     /**
      * Constructs a new EphemeralEdge.
+     * @param universe the target universe
      * @param id the edge id
      * @param from the source node
      * @param to the target node
      */
-    private final Universe universe;
-
     public EphemeralEdge(Universe universe, int id, Node from, Node to) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         if (from == null || to == null) {

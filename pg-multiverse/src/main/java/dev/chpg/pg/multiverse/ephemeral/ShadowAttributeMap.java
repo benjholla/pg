@@ -9,6 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Represents a shadow proxy map for attributes in a transaction context.
+ *
+ * <p><b>What it represents:</b> A proxy map that intercepts attribute reads and writes for elements within an {@code EphemeralGraph} transaction.
+ * <p><b>Why it exists:</b> It ensures that local attribute modifications in an ephemeral sandbox do not pollute the underlying permanent {@code UniverseGraph}.
+ * <p><b>When to use it:</b> It is used internally by shadow elements to present a unified view of base and pending attributes.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +23,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a new shadow attribute map for a universe node.
+     * @param transaction the ephemeral transaction context
+     * @param backingNode the underlying permanent universe node
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +35,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a new shadow attribute map for a universe edge.
+     * @param transaction the ephemeral transaction context
+     * @param backingEdge the underlying permanent universe edge
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

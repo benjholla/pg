@@ -8,6 +8,13 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.AbstractSet;
 
+/**
+ * Represents a shadow proxy set for tags in a transaction context.
+ *
+ * <p><b>What it represents:</b> A proxy set that intercepts tag additions and removals for elements within an {@code EphemeralGraph} transaction.
+ * <p><b>Why it exists:</b> It ensures that local tag modifications in an ephemeral sandbox do not pollute the underlying permanent {@code UniverseGraph}.
+ * <p><b>When to use it:</b> It is used internally by shadow elements to present a unified view of base and pending tags.
+ */
 public class ShadowTagSet extends AbstractSet<String> implements TagSet {
 
     private final EphemeralGraph transaction;
@@ -15,6 +22,11 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a new shadow tag set for a universe node.
+     * @param transaction the ephemeral transaction context
+     * @param backingNode the underlying permanent universe node
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingTags = backingNode.tags();
@@ -22,6 +34,11 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
         this.isNode = true;
     }
 
+    /**
+     * Constructs a new shadow tag set for a universe edge.
+     * @param transaction the ephemeral transaction context
+     * @param backingEdge the underlying permanent universe edge
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingTags = backingEdge.tags();

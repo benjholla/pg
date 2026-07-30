@@ -9,11 +9,23 @@ import dev.chpg.pg.multiverse.universe.UniverseEdge;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * Represents a shadow proxy for a UniverseEdge within an EphemeralGraph transaction.
+ *
+ * <p><b>What it represents:</b> A transparent wrapper around a permanent universe edge that routes property mutations to a local ephemeral transaction buffer.
+ * <p><b>Why it exists:</b> It allows universe edges to be read and virtually modified within an ephemeral sandbox without mutating the permanent core graph.
+ * <p><b>When to use it:</b> It is used internally when an ephemeral graph needs to present a universe edge as part of its local view.
+ */
 public class ShadowUniverseEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transactionContext;
     private final UniverseEdge backingEdge;
 
+    /**
+     * Constructs a new shadow universe edge.
+     * @param context the ephemeral transaction context
+     * @param backingEdge the underlying permanent universe edge
+     */
     public ShadowUniverseEdge(EphemeralGraph context, UniverseEdge backingEdge) {
         this.transactionContext = context;
         this.backingEdge = backingEdge;

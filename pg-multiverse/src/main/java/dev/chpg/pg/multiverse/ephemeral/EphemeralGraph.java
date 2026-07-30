@@ -46,9 +46,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     private final Map<Integer, Set<String>> removedEdgeAttributes;
 
 
-    /**
-     * Constructs a new empty graph
-     */
     @Override
     public EphemeralGraph createGraph() {
         return new EphemeralGraph(this.universe, this.idGenerator);
@@ -96,6 +93,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     /**
      * Constructs a new empty graph.
+     * @param universe the target universe
      */
     public EphemeralGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
@@ -151,10 +149,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
 
-    /**
-     * Ensures that all incoming graphs belong to the exact same Ephemeral ID sandbox.
-     * Blocks cross-engine algebra and cross-sandbox contamination.
-     */
     private void validateLineage(Graph... others) {
         for (Graph other : others) {
             // 1. Block Cross-Engine Contamination
@@ -175,10 +169,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
     }
 
-    /**
-     * Gets the graph factory.
-     * @return the factory
-     */
     @Override
     public Universe universe() {
         return universe;
@@ -203,13 +193,14 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     Set<String> getRemovedEdgeAttributes(int id) { Set<String> s = this.removedEdgeAttributes.get(id); return s != null ? s : java.util.Collections.emptySet(); }
     Set<String> getOrComputeRemovedEdgeAttributes(int id) { return this.removedEdgeAttributes.computeIfAbsent(id, k -> new HashSet<>()); }
 
+    /**
+     * Returns the factory for this ephemeral graph.
+     * @return the ephemeral factory
+     */
     public EphemeralFactory factory() {
         return this;
     }
 
-    /**
-     * Constructs a new graph of the given nodes
-     */
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, Node... nodes) {
         this(universe, idGenerator, nodes.length, 0);
         Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -219,18 +210,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
     }
 
-    /**
-     * Constructs a new graph of the given nodes
-     */
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, NodeSet nodes) {
         this(universe, idGenerator);
         Objects.requireNonNull(nodes, "nodes cannot be null");
         addAllNodes(nodes);
     }
 
-    /**
-     * Constructs a new graph of the given edges and respective edge nodes
-     */
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, Edge... edges) {
         // Over-allocation is Cheap, Rehashing is Expensive
         // In a highly connected graph, the true number of unique nodes will be much lower than edges.length * 2.
@@ -247,9 +232,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
     }
 
-    /**
-     * Constructs a new graph of the given edges and respective edge nodes
-     */
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, EdgeSet edges) {
         this(universe, idGenerator);
         Objects.requireNonNull(edges, "edges cannot be null");
@@ -258,9 +240,6 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
     }
 
-    /**
-     * Constructs a new graph of the given edges and respective edge nodes
-     */
     private EphemeralGraph(Universe universe, EphemeralIdGenerator idGenerator, NodeSet nodes, EdgeSet edges) {
         this(universe, idGenerator);
         Objects.requireNonNull(nodes, "nodes cannot be null");
@@ -270,9 +249,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     /**
-     * Gets incoming edges to node
-     * @return The set of incoming edges to the given node
-     * @param node the node
+     * Retrieves the set of edges coming into the given node, if the node is managed by this graph.
+     * @param node the target node
+     * @return an optional containing the set of incoming edges, or empty if the node is not present
      */
     protected Optional<EdgeSet> getInEdgesToNode(Node node){
         if (!(node instanceof EphemeralNode en)) { return Optional.empty(); }
@@ -280,9 +259,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     /**
-     * Gets out-coming edges from node
-     * @return The set of out-coming edges from the given node
-     * @param node the node
+     * Retrieves the set of edges going out of the given node, if the node is managed by this graph.
+     * @param node the target node
+     * @return an optional containing the set of outgoing edges, or empty if the node is not present
      */
     protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
         if (!(node instanceof EphemeralNode en)) { return Optional.empty(); }
