@@ -34,7 +34,7 @@ import dev.chpg.pg.api.NodeSet;
  */
 public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
-    private final Map<Integer, EphemeralNode> nodes;
+    private final Map<Integer, Node> nodes;
 
     /**
      * Constructs a new unmodifiable live node set backing the ephemeral graph view.
@@ -45,8 +45,8 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
      * @param outEdges the outbound ephemeral adjacency map
      */
     public EphemeralUnmodifiableLiveNodeSet(
-            Map<Integer, EphemeralNode> nodes,
-            Map<Integer, EphemeralEdge> edges,
+            Map<Integer, Node> nodes,
+            Map<Integer, dev.chpg.pg.api.Edge> edges,
             Map<Integer, EphemeralEdgeSet> inEdges,
             Map<Integer, EphemeralEdgeSet> outEdges) {
         this.nodes = Objects.requireNonNull(nodes);
@@ -55,7 +55,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public NodeSet toImmutable() {
         if (nodes.isEmpty()) { return NodeSet.empty(); }
-        if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next()); }
+        if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet((EphemeralNode) nodes.values().iterator().next()); }
         EphemeralNodeSet copy = new EphemeralNodeSet();
         copy.addAll(nodes.values());
         return new EphemeralImmutableNodeSet(copy);
@@ -74,7 +74,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
         if (other.isEmpty()) {
             return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
         }
-        for (EphemeralNode node : nodes.values()) {
+        for (dev.chpg.pg.api.Node node : nodes.values()) {
             if (other.contains(node)) {
                 result.add(node);
             }
@@ -86,7 +86,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     public NodeSet difference(Collection<? extends Node> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralNodeSet result = new EphemeralNodeSet();
-        for (EphemeralNode node : nodes.values()) {
+        for (dev.chpg.pg.api.Node node : nodes.values()) {
             if (!other.contains(node)) {
                 result.add(node);
             }
@@ -159,7 +159,7 @@ public boolean isMaterialized() {
     public Iterator<Node> iterator() {
         // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Node>() {
-            private final Iterator<EphemeralNode> it = nodes.values().iterator();
+            private final Iterator<dev.chpg.pg.api.Node> it = nodes.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -262,7 +262,7 @@ public boolean isMaterialized() {
     @Override
     public int hashCode() {
         int h = 0;
-        for (EphemeralNode node : nodes.values()) {
+        for (dev.chpg.pg.api.Node node : nodes.values()) {
             if (node != null) {
                 h += node.hashCode();
             }

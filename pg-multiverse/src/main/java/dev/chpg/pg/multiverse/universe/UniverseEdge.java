@@ -20,7 +20,7 @@ public final class UniverseEdge implements Edge, UniverseView {
      * Package-private constructor.
      * Only the Universe (or Universe Sets) should instantiate these transient wrappers.
      */
-    UniverseEdge(Universe universe, int id) {
+   public UniverseEdge(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
 
         if (id <= 0) {

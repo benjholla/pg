@@ -59,7 +59,7 @@ public final class EphemeralEdgeSet implements EdgeSet {
                 "Cross-graph contamination: Expected EphemeralEdge, got " + edge.getClass().getSimpleName()
             );
         }
-        EphemeralGuardrails.requireLocalId(impl.id());
+        if (impl.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
         return impl;
     }
 

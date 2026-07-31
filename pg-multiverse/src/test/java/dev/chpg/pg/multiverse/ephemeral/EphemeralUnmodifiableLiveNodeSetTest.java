@@ -18,14 +18,16 @@ import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.NodeSet;
+import dev.chpg.pg.api.Node;
+import dev.chpg.pg.api.Edge;
 
 public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testUnsupportedOperations() {
         EphemeralGraph graph = new EphemeralGraph(new Universe());
-        Map<Integer, EphemeralNode> map = new HashMap<>();
-        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
         EphemeralUnmodifiableLiveNodeSet set = new EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
@@ -51,8 +53,8 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
     @Test
     public void testDelegatedMethods() {
         EphemeralGraph graph = new EphemeralGraph(new Universe());
-        Map<Integer, EphemeralNode> map = new HashMap<>();
-        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
         EphemeralNode n1 = graph.createNode();
@@ -88,7 +90,7 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         assertEquals(1, count.get());
 
         int h = 0;
-        for (EphemeralNode n : map.values()) {
+        for (Node n : map.values()) {
             h += n.hashCode();
         }
         assertEquals(h, set.hashCode());
@@ -99,12 +101,12 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
         assertFalse(set.equals(null));
         assertFalse(set.equals("String"));
 
-        Map<Integer, EphemeralNode> diffMap = new HashMap<>();
+        Map<Integer, Node> diffMap = new HashMap<>();
         diffMap.put(missing.id(), missing);
         EphemeralUnmodifiableLiveNodeSet diffSet = new EphemeralUnmodifiableLiveNodeSet(diffMap, edges, inEdges, outEdges);
         assertFalse(set.equals(diffSet));
 
-        Map<Integer, EphemeralNode> diffMapSize = new HashMap<>();
+        Map<Integer, Node> diffMapSize = new HashMap<>();
         EphemeralUnmodifiableLiveNodeSet diffSetSize = new EphemeralUnmodifiableLiveNodeSet(diffMapSize, edges, inEdges, outEdges);
         assertFalse(set.equals(diffSetSize));
     }
@@ -112,8 +114,8 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
     @Test
     public void testSetTheoreticAndFilteringMethods() {
         EphemeralGraph graph = new EphemeralGraph(new Universe());
-        Map<Integer, EphemeralNode> map = new HashMap<>();
-        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
         EphemeralNode n1 = graph.createNode();
@@ -162,8 +164,8 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testwithAnyTag() {
-        Map<Integer, EphemeralNode> map = new HashMap<>();
-        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
 
@@ -212,8 +214,8 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testwithAllTags() {
-        Map<Integer, EphemeralNode> map = new HashMap<>();
-        Map<Integer, EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, EphemeralEdgeSet> outEdges = new HashMap<>();
 
@@ -269,8 +271,8 @@ public class EphemeralUnmodifiableLiveNodeSetTest {
 
     @Test
     public void testToImmutable() {
-        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralNode> map = new HashMap<>();
-        Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdge> edges = new HashMap<>();
+        Map<Integer, Node> map = new HashMap<>();
+        Map<Integer, Edge> edges = new HashMap<>();
         Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> inEdges = new HashMap<>();
         Map<Integer, dev.chpg.pg.multiverse.ephemeral.EphemeralEdgeSet> outEdges = new HashMap<>();
         dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveNodeSet set = new dev.chpg.pg.multiverse.ephemeral.EphemeralUnmodifiableLiveNodeSet(map, edges, inEdges, outEdges);
