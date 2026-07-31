@@ -8,6 +8,23 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.AbstractSet;
 
+/**
+ * A transactional viewport for {@link TagSet} operations over a core {@link dev.chpg.pg.multiverse.universe.Universe} element.
+ * <p>
+ * <b>What it represents:</b> A composite tag set that overlays uncommitted string tags and tombstones atop a persistent baseline tag array.
+ * <p>
+ * <b>Why it exists:</b> To allow an {@link EphemeralGraph} to track pending string tag additions or removals without contaminating the global columnar arrays until explicitly promoted.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically when the {@code tags()} collection of a shielded element is accessed. Should not be constructed directly.
+ * <p>
+ * <b>Common usage patterns:</b> Consumers use standard {@link java.util.Set} methods (e.g., {@code add}, {@code remove}, {@code contains}). The set intercepts writes and routes them to the transaction's Delta Log while masking removed tags via tombstones.
+ * <p>
+ * <b>Important invariants:</b> The underlying Universe tag set is strictly read-only within this context. Redundant additions (adding a tag already in the baseline) are safely ignored. Removing a baseline tag drops a tombstone.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications to the same transaction require external synchronization.
+ * <p>
+ * <b>Performance characteristics:</b> Lookups ({@code contains}) evaluate local HashSets before checking the baseline BitSets. Sizing ({@code size()}) is O(T) relative to the number of active tombstones, as effective sizes require streaming filters.
+ */
 public class ShadowTagSet extends AbstractSet<String> implements TagSet {
 
     private final EphemeralGraph transaction;
@@ -15,6 +32,12 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a ShadowTagSet overlay for a {@link UniverseNode}.
+     *
+     * @param transaction the isolated graph context managing the delta log
+     * @param backingNode the core universe element acting as the read baseline
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingTags = backingNode.tags();
@@ -22,6 +45,12 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
         this.isNode = true;
     }
 
+    /**
+     * Constructs a ShadowTagSet overlay for a {@link UniverseEdge}.
+     *
+     * @param transaction the isolated graph context managing the delta log
+     * @param backingEdge the core universe element acting as the read baseline
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingTags = backingEdge.tags();

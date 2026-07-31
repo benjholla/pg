@@ -14,17 +14,45 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A transactional viewport for {@link EdgeSet} operations.
+ * <p>
+ * <b>What it represents:</b> A composite set that seamlessly blends a persistent Universe baseline with transient Ephemeral additions and removals (tombstones).
+ * <p>
+ * <b>Why it exists:</b> To allow set-theoretic graph queries (like traversing edges of a node) to return mathematically correct results reflecting pending changes in an {@link EphemeralGraph} without eagerly materializing complete collections.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically by the engine when querying graph topology within an ephemeral context.
+ * <p>
+ * <b>Common usage patterns:</b> Accessed via standard set algebra (`union`, `difference`, `intersect`) or traversal (`iterator()`).
+ * <p>
+ * <b>Important invariants:</b> Set algebra aggressively filters out tombstoned IDs before returning new composite boundaries. Elements yielded are shielded via {@link ShadowEdgeIterator}. Direct mutability (e.g., `add()`, `remove()`) is unsupported to enforce routing mutations through the main graph interface.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications to the transaction context invalidate the iteration state.
+ * <p>
+ * <b>Performance characteristics:</b> Relies heavily on O(1) bitwise math for universe baselines, but incurs O(N) allocation overheads for merging the uncommitted local object additions during complex set operations.
+ */
 public class ShadowEdgeSet implements EdgeSet {
     private final EphemeralGraph transactionContext;
     private final EdgeSet backingSet;       // The core engine baseline
     private final Set<Edge> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Constructs a ShadowEdgeSet masking a core universe topology.
+     *
+     * @param context the governing ephemeral transaction
+     * @param backingSet the underlying baseline edge set from the universe
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Constructs a composite ShadowEdgeSet including uncommitted local additions.
+     *
+     * @param context the governing ephemeral transaction
+     * @param backingSet the underlying baseline edge set from the universe
+     * @param localAdds the set of locally created, uncommitted edges
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet, Set<Edge> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;

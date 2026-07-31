@@ -9,6 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A transactional viewport for {@link AttributeMap} operations over a core {@link dev.chpg.pg.multiverse.universe.Universe} element.
+ * <p>
+ * <b>What it represents:</b> A proxy map that overlays a transactional write-buffer (Delta Log) on top of the underlying columnar Universe attributes.
+ * <p>
+ * <b>Why it exists:</b> To allow {@code EphemeralGraph} to isolate pending attribute mutations (both additions and removals) without polluting or locking the global {@code Universe} until the transaction is explicitly promoted.
+ * <p>
+ * <b>When to use it:</b> This is instantiated dynamically by {@link ShadowUniverseNode} or {@link ShadowEdge} when the {@code attributes()} method is accessed. It should not be instantiated manually.
+ * <p>
+ * <b>Common usage patterns:</b> Consumers use standard {@link AttributeMap} methods (e.g., {@code put}, {@code get}, {@code remove}). The map transparently reads from the delta log first, falls back to the Universe baseline, and writes exclusively to the delta log.
+ * <p>
+ * <b>Important invariants:</b> Removals drop mathematical "tombstones" over existing Universe attributes to mask them during the transaction. Operations do not mutate the core Universe arrays.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications to the same transaction require external synchronization.
+ * <p>
+ * <b>Performance characteristics:</b> Reading unchanged attributes is O(1) matching the baseline engine. Iteration (via {@code entrySet()}) incurs the overhead of allocating a local composite {@code HashMap} to merge pending writes, tombstones, and baseline attributes.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +33,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a ShadowAttributeMap over a {@link UniverseNode}.
+     *
+     * @param transaction the isolated graph context managing the delta log
+     * @param backingNode the core universe element acting as the read baseline
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +46,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a ShadowAttributeMap over a {@link UniverseEdge}.
+     *
+     * @param transaction the isolated graph context managing the delta log
+     * @param backingEdge the core universe element acting as the read baseline
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

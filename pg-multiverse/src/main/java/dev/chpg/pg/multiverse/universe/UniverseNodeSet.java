@@ -22,6 +22,12 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
     private final Universe universe;
     private final BitSet activeBits;
 
+    /**
+     * Constructs a bitwise-backed viewport over universe nodes.
+     *
+     * @param universe the core engine acting as the topological baseline
+     * @param activeBits the bitmask representing active node IDs in this set
+     */
     public UniverseNodeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");

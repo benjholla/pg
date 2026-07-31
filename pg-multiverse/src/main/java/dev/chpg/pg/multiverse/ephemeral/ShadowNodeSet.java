@@ -14,17 +14,45 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A transactional viewport for {@link NodeSet} operations.
+ * <p>
+ * <b>What it represents:</b> A composite set that seamlessly blends a persistent Universe baseline with transient Ephemeral additions and removals (tombstones).
+ * <p>
+ * <b>Why it exists:</b> To allow set-theoretic graph queries (like traversing neighbors of a node) to return mathematically correct results reflecting pending changes in an {@link EphemeralGraph} without eagerly materializing complete collections.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically by the engine when querying graph topology within an ephemeral context.
+ * <p>
+ * <b>Common usage patterns:</b> Accessed via standard set algebra (`union`, `difference`, `intersect`) or traversal (`iterator()`).
+ * <p>
+ * <b>Important invariants:</b> Set algebra aggressively filters out tombstoned IDs before returning new composite boundaries. Elements yielded are shielded via {@link ShadowNodeIterator}. Direct mutability (e.g., `add()`, `remove()`) is unsupported to enforce routing mutations through the main graph interface.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications to the transaction context invalidate the iteration state.
+ * <p>
+ * <b>Performance characteristics:</b> Relies heavily on O(1) bitwise math for universe baselines, but incurs O(N) allocation overheads for merging the uncommitted local object additions during complex set operations.
+ */
 public class ShadowNodeSet implements NodeSet {
     private final EphemeralGraph transactionContext;
     private final NodeSet backingSet;       // The core engine baseline
     private final Set<Node> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Constructs a ShadowNodeSet masking a core universe topology.
+     *
+     * @param context the governing ephemeral transaction
+     * @param backingSet the underlying baseline node set from the universe
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Constructs a composite ShadowNodeSet including uncommitted local additions.
+     *
+     * @param context the governing ephemeral transaction
+     * @param backingSet the underlying baseline node set from the universe
+     * @param localAdds the set of locally created, uncommitted nodes
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet, Set<Node> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;
