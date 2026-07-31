@@ -716,12 +716,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return forwardStep(singleton(origin));
     }
 
-    @Override
-    public Graph forwardStep(Graph origin){
-        Objects.requireNonNull(origin, "origin cannot be null");
-        validateLineage(origin);
-        Graph result = createGraph(origin);
-        for(Node node : origin.nodes()){
+    private void forwardStepCore(NodeSet origin, Graph result) {
+        for(Node node : origin){
             getOutEdgesFromNode(node).ifPresent(outEdges -> {
                 for(Edge edge : outEdges){
                     result.addNode(edge.from());
@@ -730,13 +726,23 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 }
             });
         }
+    }
+
+    @Override
+    public Graph forwardStep(Graph origin){
+        Objects.requireNonNull(origin, "origin cannot be null");
+        validateLineage(origin);
+        Graph result = createGraph(origin);
+        forwardStepCore(origin.nodes(), result);
         return result;
     }
 
     @Override
     public Graph forwardStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forwardStep(new EphemeralGraph(this.universe, this.idGenerator, origin));
+        Graph result = createGraph(origin);
+        forwardStepCore(origin, result);
+        return result;
     }
 
     @Override
@@ -745,12 +751,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return reverseStep(singleton(origin));
     }
 
-    @Override
-    public Graph reverseStep(Graph origin){
-        Objects.requireNonNull(origin, "origin cannot be null");
-        validateLineage(origin);
-        Graph result = createGraph(origin);
-        for(Node node : origin.nodes()){
+    private void reverseStepCore(NodeSet origin, Graph result) {
+        for(Node node : origin){
             getInEdgesToNode(node).ifPresent(inEdges -> {
                 for(Edge edge : inEdges){
                     result.addNode(edge.from());
@@ -759,25 +761,39 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 }
             });
         }
+    }
+
+    @Override
+    public Graph reverseStep(Graph origin){
+        Objects.requireNonNull(origin, "origin cannot be null");
+        validateLineage(origin);
+        Graph result = createGraph(origin);
+        reverseStepCore(origin.nodes(), result);
         return result;
     }
 
     @Override
     public Graph reverseStep(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverseStep(new EphemeralGraph(this.universe, this.idGenerator, origin));
+        Graph result = createGraph(origin);
+        reverseStepCore(origin, result);
+        return result;
     }
 
     @Override
     public Graph union(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return union(new EphemeralGraph(this.universe, this.idGenerator, node));
+        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        union.addNode(node);
+        return union;
     }
 
     @Override
     public Graph union(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return union(new EphemeralGraph(this.universe, this.idGenerator, edge));
+        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        union.addEdge(edge);
+        return union;
     }
 
 
@@ -808,13 +824,18 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph difference(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return difference(new EphemeralGraph(this.universe, this.idGenerator, node));
+        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        difference.removeNode(node);
+        return difference;
     }
 
     @Override
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return difference(new EphemeralGraph(this.universe, this.idGenerator, edge));
+        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        difference.removeNode(edge.from());
+        difference.removeNode(edge.to());
+        return difference;
     }
 
     @Override
@@ -835,7 +856,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return differenceEdges(new EphemeralGraph(this.universe, this.idGenerator, edge));
+        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        difference.removeEdge(edge);
+        return difference;
     }
 
     @Override
@@ -853,13 +876,21 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph intersection(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        return intersection(new EphemeralGraph(this.universe, this.idGenerator, node));
+        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator);
+        if (this.nodes().contains(node)) {
+            intersection.addNode(node);
+        }
+        return intersection;
     }
 
     @Override
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        return intersection(new EphemeralGraph(this.universe, this.idGenerator, edge));
+        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator);
+        if (this.edges().contains(edge)) {
+            intersection.addEdge(edge);
+        }
+        return intersection;
     }
 
     @Override
@@ -954,12 +985,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return forward(singleton(origin));
     }
 
-    @Override
-    public Graph forward(Graph origin){
-        Objects.requireNonNull(origin, "origin cannot be null");
-        validateLineage(origin);
-        Graph result = createGraph(origin);
-        NodeSet frontier = new EphemeralNodeSet(origin.nodes());
+    private void forwardCore(NodeSet origin, Graph result) {
+        NodeSet frontier = new EphemeralNodeSet(origin);
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
             frontier.remove(next);
@@ -972,13 +999,23 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 }
             });
         }
+    }
+
+    @Override
+    public Graph forward(Graph origin){
+        Objects.requireNonNull(origin, "origin cannot be null");
+        validateLineage(origin);
+        Graph result = createGraph(origin);
+        forwardCore(origin.nodes(), result);
         return result;
     }
 
     @Override
     public Graph forward(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return forward(new EphemeralGraph(this.universe, this.idGenerator, origin));
+        Graph result = createGraph(origin);
+        forwardCore(origin, result);
+        return result;
     }
 
     @Override
@@ -987,12 +1024,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return reverse(singleton(origin));
     }
 
-    @Override
-    public Graph reverse(Graph origin){
-        Objects.requireNonNull(origin, "origin cannot be null");
-        validateLineage(origin);
-        Graph result = createGraph(origin);
-        NodeSet frontier = new EphemeralNodeSet(origin.nodes());
+    private void reverseCore(NodeSet origin, Graph result) {
+        NodeSet frontier = new EphemeralNodeSet(origin);
         while(!frontier.isEmpty()){
             Node next = frontier.one().get();
             frontier.remove(next);
@@ -1005,13 +1038,23 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 }
             });
         }
+    }
+
+    @Override
+    public Graph reverse(Graph origin){
+        Objects.requireNonNull(origin, "origin cannot be null");
+        validateLineage(origin);
+        Graph result = createGraph(origin);
+        reverseCore(origin.nodes(), result);
         return result;
     }
 
     @Override
     public Graph reverse(NodeSet origin){
         Objects.requireNonNull(origin, "origin cannot be null");
-        return reverse(new EphemeralGraph(this.universe, this.idGenerator, origin));
+        Graph result = createGraph(origin);
+        reverseCore(origin, result);
+        return result;
     }
 
     @Override
