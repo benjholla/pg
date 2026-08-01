@@ -56,26 +56,32 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        }
+        for (dev.chpg.pg.api.Edge e : other) {
+            if (e.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
         }
         for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
+        for (dev.chpg.pg.api.Edge e : other) {
+            if (e.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
+        }
         for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (!other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
@@ -83,11 +89,9 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
         for (Edge e : other) {
-            if (e instanceof EphemeralEdge) {
-                result.add(e);
-            }
+            result.add(e); // EphemeralEdgeSet.add will perform validation
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
