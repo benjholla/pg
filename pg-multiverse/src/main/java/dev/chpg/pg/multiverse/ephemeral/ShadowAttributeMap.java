@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A transactional proxy for attribute mutations on Universe elements within an EphemeralGraph.
+ * It intercepts reads and writes, masking changes using delta logs until promotion.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +20,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a ShadowAttributeMap for a node.
+     * @param transaction the ephemeral graph transaction
+     * @param backingNode the core universe node
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +32,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a ShadowAttributeMap for an edge.
+     * @param transaction the ephemeral graph transaction
+     * @param backingEdge the core universe edge
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

@@ -3,11 +3,19 @@ package dev.chpg.pg.multiverse.ephemeral;
 import dev.chpg.pg.api.Node;
 import java.util.Iterator;
 
+/**
+ * Lazily wraps iterating nodes in ShadowUniverseNode proxies within a transaction context.
+ */
 public class ShadowNodeIterator implements Iterator<Node> {
 
     private final EphemeralGraph transactionContext;
     private final Iterator<Node> backingIterator;
 
+    /**
+     * Constructs a ShadowNodeIterator.
+     * @param context the transaction context
+     * @param backingIterator the backing iterator to wrap
+     */
     public ShadowNodeIterator(EphemeralGraph context, Iterator<Node> backingIterator) {
         this.transactionContext = context;
         this.backingIterator = backingIterator;

@@ -4,11 +4,19 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 import java.util.Iterator;
 
+/**
+ * Lazily wraps iterating edges in ShadowEdge proxies within a transaction context.
+ */
 public class ShadowEdgeIterator implements Iterator<Edge> {
 
     private final EphemeralGraph transactionContext;
     private final Iterator<Edge> backingIterator;
 
+    /**
+     * Constructs a ShadowEdgeIterator.
+     * @param context the transaction context
+     * @param backingIterator the backing iterator to wrap
+     */
     public ShadowEdgeIterator(EphemeralGraph context, Iterator<Edge> backingIterator) {
         this.transactionContext = context;
         this.backingIterator = backingIterator;
