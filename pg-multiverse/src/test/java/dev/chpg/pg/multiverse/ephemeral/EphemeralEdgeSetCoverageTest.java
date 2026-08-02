@@ -161,11 +161,18 @@ public class EphemeralEdgeSetCoverageTest {
         assertEquals(1, intersectSet.size());
         assertTrue(intersectSet.contains(e2));
 
-        EdgeSet emptyIntersect = set1.intersect(new EphemeralEdgeSet(e3));
-        assertTrue(emptyIntersect.isEmpty());
-
         EdgeSet nullIntersect = set1.intersect(null);
-        assertTrue(nullIntersect.isEmpty());
+        assertEquals(0, nullIntersect.size());
+
+        class InvalidEdge implements Edge {
+            @Override public int id() { return 0; }
+            @Override public dev.chpg.pg.api.TagSet tags() { return null; }
+            @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+            @Override public Node from() { return null; }
+            @Override public Node to() { return null; }
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> set1.intersect(Arrays.asList(e2, new InvalidEdge())));
     }
 
     @Test
@@ -177,13 +184,18 @@ public class EphemeralEdgeSetCoverageTest {
         assertEquals(1, diffSet.size());
         assertTrue(diffSet.contains(e1));
 
-        EdgeSet allDiff = set1.difference(new EphemeralEdgeSet(e3));
-        assertEquals(2, allDiff.size());
-        assertTrue(allDiff.contains(e1));
-        assertTrue(allDiff.contains(e2));
-
         EdgeSet nullDiff = set1.difference(null);
         assertEquals(2, nullDiff.size());
+
+        class InvalidEdge implements Edge {
+            @Override public int id() { return 0; }
+            @Override public dev.chpg.pg.api.TagSet tags() { return null; }
+            @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+            @Override public Node from() { return null; }
+            @Override public Node to() { return null; }
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> set1.difference(Arrays.asList(e2, new InvalidEdge())));
     }
 
     @Test
@@ -208,10 +220,8 @@ public class EphemeralEdgeSetCoverageTest {
             @Override public Node from() { return null; }
             @Override public Node to() { return null; }
         }
-        EdgeSet mixUnion = set1.union(Arrays.asList(e2, new InvalidEdge()));
-        assertEquals(2, mixUnion.size());
-        assertTrue(mixUnion.contains(e1));
-        assertTrue(mixUnion.contains(e2));
+
+        assertThrows(IllegalArgumentException.class, () -> set1.union(Arrays.asList(e2, new InvalidEdge())));
     }
 
     @Test

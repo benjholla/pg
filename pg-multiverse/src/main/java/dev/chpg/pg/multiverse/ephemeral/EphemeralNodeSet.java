@@ -12,17 +12,17 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
 /**
- * A mutable collection for managing distinct {@link EphemeralNode} objects.
+ * A mutable collection for managing distinct {@link Node} objects within the local transaction.
  * <p>
  * <b>What it represents:</b> A concrete, materialized implementation of {@code NodeSet} specifically tied to the `pg-multiverse` ephemeral engine.
  * <p>
- * <b>Why it exists:</b> It provides standard HashSet operations while actively enforcing strict domain boundaries to prevent positive-ID nodes (like {@code UniverseNode}) from contaminating the local negative-ID sandbox.
+ * <b>Why it exists:</b> It provides standard HashSet operations while actively enforcing strict domain boundaries to prevent positive-ID nodes from contaminating the local negative-ID sandbox.
  * <p>
  * <b>When to use it:</b> Use this when manually assembling collections of ephemeral nodes, or as the backing structure for traversals within an ephemeral graph.
  * <p>
  * <b>Common usage patterns:</b> It is used internally to back live views and algebraic computations (union, intersection). Developers can use it directly to construct arbitrary groups of transient nodes.
  * <p>
- * <b>Important invariants:</b> The set actively rejects any non-{@code EphemeralNode} or node with a positive ID during addition, throwing an {@code IllegalArgumentException}. Query operations safely ignore foreign node types.
+ * <b>Important invariants:</b> The set actively rejects any cross-graph contamination or node with a positive ID during addition, throwing an {@code IllegalArgumentException}.
  * <p>
  * <b>Thread safety:</b> Not thread-safe. Concurrent modifications must be externally synchronized.
  * <p>
@@ -30,7 +30,8 @@ import dev.chpg.pg.api.NodeSet;
  */
 public final class EphemeralNodeSet implements NodeSet {
 
-    private final HashSet<EphemeralNode> internalSet;
+    // WIDENED: Now holds Node to seamlessly support Shadow wrappers if they have negative IDs
+    private final HashSet<Node> internalSet;
 
     /**
      * Constructs a new, empty {@code EphemeralNodeSet}.
@@ -73,15 +74,24 @@ public final class EphemeralNodeSet implements NodeSet {
         addAll(initialNodes);
     }
 
-    private EphemeralNode validate(Node node) {
+    private Node validate(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
-        if (!(node instanceof EphemeralNode impl)) {
+
+        // Strict boundary: Only allow EphemeralNode or Shadow wrappers.
+        if (!(node instanceof EphemeralNode) && !(node.getClass().getSimpleName().contains("Shadow"))) {
             throw new IllegalArgumentException(
-                "Cross-graph contamination: Expected EphemeralNode, got " + node.getClass().getSimpleName()
+                "Cross-graph contamination: Expected EphemeralNode or ShadowNode, got " + node.getClass().getSimpleName()
             );
         }
-        if (impl.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
-        return impl;
+
+        // Strict ID check for the Topological Delta
+        if (node.id() >= 0) {
+            throw new IllegalArgumentException(
+                "Topological violation: Local adjacency sets can only store brand-new transaction elements (negative IDs)."
+            );
+        }
+
+        return node;
     }
 
     @Override
@@ -101,25 +111,41 @@ public final class EphemeralNodeSet implements NodeSet {
     public NodeSet intersect(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+            return NodeSet.empty();
         }
-        for (EphemeralNode node : internalSet) {
+
+        // 1. Pre-flight Fail-Fast Validation
+        for (Node n : other) {
+            this.validate(n);
+        }
+
+        // 2. Safe Algebra
+        for (Node node : internalSet) {
             if (other.contains(node)) {
-                result.internalSet.add(node);
+                result.internalSet.add(node); // Safely bypass validate since it's already in 'this'
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
         EphemeralNodeSet result = new EphemeralNodeSet();
-        for (EphemeralNode node : internalSet) {
-            if (other == null || !other.contains(node)) {
-                result.internalSet.add(node);
+
+        // 1. Pre-flight Fail-Fast Validation
+        if (other != null) {
+            for (Node n : other) {
+                this.validate(n);
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+
+        // 2. Safe Algebra
+        for (Node node : internalSet) {
+            if (other == null || !other.contains(node)) {
+                result.internalSet.add(node); // Safely bypass validate since it's already in 'this'
+            }
+        }
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
@@ -128,18 +154,17 @@ public final class EphemeralNodeSet implements NodeSet {
         result.internalSet.addAll(this.internalSet);
         if (other != null) {
             for (Node n : other) {
-                if (n instanceof EphemeralNode en) {
-                    result.internalSet.add(en);
-                }
+                // FAIL FAST: Force incoming nodes through the strict firewall
+                result.internalSet.add(this.validate(n));
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result));
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result));
     }
 
     @Override
     public Set<Integer> ids() {
         Set<Integer> ids = new HashSet<>((int) (internalSet.size() / 0.75f) + 1);
-        for (EphemeralNode node : internalSet) {
+        for (Node node : internalSet) {
             ids.add(node.id());
         }
         return ids;
@@ -179,8 +204,9 @@ public final class EphemeralNodeSet implements NodeSet {
             return false;
         }
     }
+
     @Override
-public boolean isMaterialized() {
+    public boolean isMaterialized() {
         return true;
     }
 
@@ -198,10 +224,9 @@ public boolean isMaterialized() {
         internalSet.clear();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Node> iterator() {
-        return (Iterator<Node>) (Iterator<?>) internalSet.iterator();
+        return internalSet.iterator();
     }
 
     @Override
@@ -233,7 +258,7 @@ public boolean isMaterialized() {
         }
         boolean modified = false;
         for (Node e : c) {
-            modified |= internalSet.add((EphemeralNode) e);
+            modified |= internalSet.add(e); // Cast removed
         }
         return modified;
     }
@@ -242,7 +267,7 @@ public boolean isMaterialized() {
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
         boolean modified = false;
-        Iterator<EphemeralNode> it = internalSet.iterator();
+        Iterator<Node> it = internalSet.iterator();
         while (it.hasNext()) {
             if (!c.contains(it.next())) {
                 it.remove();
@@ -273,9 +298,6 @@ public boolean isMaterialized() {
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }
-        // Standard Java semantics: safely compares sizes and elements,
-        // evaluating to true for empty sets of different types,
-        // while deferring to elements for populated sets.
         return internalSet.equals(o);
     }
 

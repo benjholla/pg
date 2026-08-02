@@ -154,11 +154,16 @@ public class EphemeralNodeSetCoverageTest {
         assertEquals(1, intersectSet.size());
         assertTrue(intersectSet.contains(n2));
 
-        NodeSet emptyIntersect = set1.intersect(new EphemeralNodeSet(n3));
-        assertTrue(emptyIntersect.isEmpty());
-
         NodeSet nullIntersect = set1.intersect(null);
-        assertTrue(nullIntersect.isEmpty());
+        assertEquals(0, nullIntersect.size());
+
+        class InvalidNode implements Node {
+            @Override public int id() { return 0; }
+            @Override public dev.chpg.pg.api.TagSet tags() { return null; }
+            @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> set1.intersect(Arrays.asList(n2, new InvalidNode())));
     }
 
     @Test
@@ -170,13 +175,16 @@ public class EphemeralNodeSetCoverageTest {
         assertEquals(1, diffSet.size());
         assertTrue(diffSet.contains(n1));
 
-        NodeSet allDiff = set1.difference(new EphemeralNodeSet(n3));
-        assertEquals(2, allDiff.size());
-        assertTrue(allDiff.contains(n1));
-        assertTrue(allDiff.contains(n2));
-
         NodeSet nullDiff = set1.difference(null);
         assertEquals(2, nullDiff.size());
+
+        class InvalidNode implements Node {
+            @Override public int id() { return 0; }
+            @Override public dev.chpg.pg.api.TagSet tags() { return null; }
+            @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> set1.difference(Arrays.asList(n2, new InvalidNode())));
     }
 
     @Test
@@ -199,10 +207,8 @@ public class EphemeralNodeSetCoverageTest {
             @Override public dev.chpg.pg.api.TagSet tags() { return null; }
             @Override public dev.chpg.pg.api.AttributeMap attributes() { return null; }
         }
-        NodeSet mixUnion = set1.union(Arrays.asList(n2, new InvalidNode()));
-        assertEquals(2, mixUnion.size());
-        assertTrue(mixUnion.contains(n1));
-        assertTrue(mixUnion.contains(n2));
+
+        assertThrows(IllegalArgumentException.class, () -> set1.union(Arrays.asList(n2, new InvalidNode())));
     }
 
     @Test

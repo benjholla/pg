@@ -14,7 +14,7 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
 /**
- * An immutable, snapshot view of a collection of {@link EphemeralNode} objects.
+ * An immutable, snapshot view of a collection of {@link Node} objects.
  * <p>
  * <b>What it represents:</b> A frozen, unmodifiable set of nodes tied to an ephemeral sandbox.
  * <p>

@@ -12,7 +12,7 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
 /**
- * An immutable, highly optimized set containing exactly one {@link EphemeralNode}.
+ * An immutable, highly optimized set containing exactly one {@link Node} (EphemeralNode or ShadowNode).
  * <p>
  * <b>What it represents:</b> A single-element, read-only collection in the ephemeral sandbox architecture.
  * <p>
@@ -30,14 +30,14 @@ import dev.chpg.pg.api.NodeSet;
  */
 public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> implements NodeSet {
 
-    private final EphemeralNode element;
+    private final Node element;
 
     /**
      * Constructs a new immutable singleton set containing the specified element.
      *
      * @param element the single node to freeze in this set
      */
-    public EphemeralImmutableSingletonNodeSet(EphemeralNode element) {
+    public EphemeralImmutableSingletonNodeSet(Node element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
 
@@ -46,7 +46,7 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         return this;
     }
     @Override
-public NodeSet materialize() {
+    public NodeSet materialize() {
         return this;
     }
 
@@ -100,7 +100,7 @@ public NodeSet materialize() {
         EphemeralNodeSet result = new EphemeralNodeSet();
         result.add(element);
         for (Node n : other) {
-            result.add((EphemeralNode) n);
+            result.add(n); // Cast removed
         }
         if (result.size() == 1) {
             return this;

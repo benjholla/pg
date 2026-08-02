@@ -14,7 +14,8 @@ import dev.chpg.pg.api.EdgeSet;
 /** The ephemeral implementation of an EdgeSet. */
 public final class EphemeralEdgeSet implements EdgeSet {
 
-    private final HashSet<EphemeralEdge> internalSet;
+    // WIDENED: Now holds Edge to seamlessly support Shadow wrappers if they have negative IDs
+    private final HashSet<Edge> internalSet;
 
     /** Constructs an empty EphemeralEdgeSet. */
     public EphemeralEdgeSet() {
@@ -52,15 +53,24 @@ public final class EphemeralEdgeSet implements EdgeSet {
         addAll(initialEdges);
     }
 
-    private EphemeralEdge validate(Edge edge) {
+    private Edge validate(Edge edge) {
         Objects.requireNonNull(edge, "Edge cannot be null");
-        if (!(edge instanceof EphemeralEdge impl)) {
+
+        // Strict boundary: Only allow EphemeralEdge or Shadow wrappers.
+        if (!(edge instanceof EphemeralEdge) && !(edge.getClass().getSimpleName().contains("Shadow"))) {
             throw new IllegalArgumentException(
-                "Cross-graph contamination: Expected EphemeralEdge, got " + edge.getClass().getSimpleName()
+                "Cross-graph contamination: Expected EphemeralEdge or ShadowEdge, got " + edge.getClass().getSimpleName()
             );
         }
-        if (impl.id() >= 0) { throw new IllegalArgumentException("Ephemeral sets only accept un-promoted local elements."); }
-        return impl;
+
+        // Strict ID check for the Topological Delta
+        if (edge.id() >= 0) {
+            throw new IllegalArgumentException(
+                "Topological violation: Local adjacency sets can only store brand-new transaction edges (negative IDs)."
+            );
+        }
+
+        return edge;
     }
 
     @Override
@@ -80,25 +90,41 @@ public final class EphemeralEdgeSet implements EdgeSet {
     public EdgeSet intersect(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+            return EdgeSet.empty();
         }
-        for (EphemeralEdge edge : internalSet) {
+
+        // 1. Pre-flight Fail-Fast Validation
+        for (Edge e : other) {
+            this.validate(e);
+        }
+
+        // 2. Safe Algebra
+        for (Edge edge : internalSet) {
             if (other.contains(edge)) {
-                result.internalSet.add(edge);
+                result.internalSet.add(edge); // Safely bypass validate since it's already in 'this'
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (EphemeralEdge edge : internalSet) {
-            if (other == null || !other.contains(edge)) {
-                result.internalSet.add(edge);
+
+        // 1. Pre-flight Fail-Fast Validation
+        if (other != null) {
+            for (Edge e : other) {
+                this.validate(e);
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+
+        // 2. Safe Algebra
+        for (Edge edge : internalSet) {
+            if (other == null || !other.contains(edge)) {
+                result.internalSet.add(edge); // Safely bypass validate since it's already in 'this'
+            }
+        }
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
@@ -107,18 +133,17 @@ public final class EphemeralEdgeSet implements EdgeSet {
         result.internalSet.addAll(this.internalSet);
         if (other != null) {
             for (Edge e : other) {
-                if (e instanceof EphemeralEdge ee) {
-                    result.internalSet.add(ee);
-                }
+                // FAIL FAST: Force incoming edges through the strict firewall
+                result.internalSet.add(this.validate(e));
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override
     public Set<Integer> ids() {
         Set<Integer> ids = new HashSet<>((int) (internalSet.size() / 0.75f) + 1);
-        for (EphemeralEdge edge : internalSet) {
+        for (Edge edge : internalSet) {
             ids.add(edge.id());
         }
         return ids;
@@ -158,8 +183,9 @@ public final class EphemeralEdgeSet implements EdgeSet {
             return false;
         }
     }
+
     @Override
-public boolean isMaterialized() {
+    public boolean isMaterialized() {
         return true;
     }
 
@@ -177,10 +203,9 @@ public boolean isMaterialized() {
         internalSet.clear();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Edge> iterator() {
-        return (Iterator<Edge>) (Iterator<?>) internalSet.iterator();
+        return internalSet.iterator(); // No unchecked casting needed anymore
     }
 
     @Override
@@ -212,7 +237,7 @@ public boolean isMaterialized() {
         }
         boolean modified = false;
         for (Edge e : c) {
-            modified |= internalSet.add((EphemeralEdge) e);
+            modified |= internalSet.add(e); // Cast removed
         }
         return modified;
     }
@@ -221,7 +246,7 @@ public boolean isMaterialized() {
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
         boolean modified = false;
-        Iterator<EphemeralEdge> it = internalSet.iterator();
+        Iterator<Edge> it = internalSet.iterator();
         while (it.hasNext()) {
             if (!c.contains(it.next())) {
                 it.remove();
@@ -252,9 +277,6 @@ public boolean isMaterialized() {
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }
-        // Standard Java semantics: safely compares sizes and elements,
-        // evaluating to true for empty sets of different types,
-        // while deferring to elements for populated sets.
         return internalSet.equals(o);
     }
 
