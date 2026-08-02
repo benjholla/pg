@@ -14,17 +14,31 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A transactional view over a Universe NodeSet.
+ */
 public class ShadowNodeSet implements NodeSet {
     private final EphemeralGraph transactionContext;
     private final NodeSet backingSet;       // The core engine baseline
     private final Set<Node> localAdds;      // The transaction additions (ceiling)
 
     // Standard constructor for traversing universe topology
+    /**
+     * Constructs a new ShadowNodeSet.
+     * @param context the ephemeral graph
+     * @param backingSet the backing universe set
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
     // Composite constructor for complex algebra and graph captures
+    /**
+     * Constructs a new ShadowNodeSet with local additions.
+     * @param context the ephemeral graph
+     * @param backingSet the backing universe set
+     * @param localAdds the local additions
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet, Set<Node> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;

@@ -8,17 +8,33 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseEdge;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A transactional view over a Universe element.
+ */
 public class ShadowEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transaction;
     private final Edge backingEdge;
 
+    /**
+     * Constructs a new ShadowEdge.
+     * @param transaction the ephemeral graph
+     * @param backingEdge the backing universe edge
+     */
     public ShadowEdge(EphemeralGraph transaction, Edge backingEdge) {
         this.transaction = transaction;
         this.backingEdge = backingEdge;
     }
 
+    /**
+     * Returns the backing edge.
+     * @return the backing edge
+     */
     public Edge backingEdge() { return backingEdge; }
+    /**
+     * Returns the transaction graph.
+     * @return the transaction graph
+     */
     public EphemeralGraph transaction() {
         return transaction;
     }

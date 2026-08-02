@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A transactional view over a Universe element's attributes.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +19,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a new ShadowAttributeMap for a node.
+     * @param transaction the ephemeral graph
+     * @param backingNode the backing universe node
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +31,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a new ShadowAttributeMap for an edge.
+     * @param transaction the ephemeral graph
+     * @param backingEdge the backing universe edge
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

@@ -4,11 +4,19 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 import java.util.Iterator;
 
+/**
+ * A transactional view over a Universe edge iterator.
+ */
 public class ShadowEdgeIterator implements Iterator<Edge> {
 
     private final EphemeralGraph transactionContext;
     private final Iterator<Edge> backingIterator;
 
+    /**
+     * Constructs a new ShadowEdgeIterator.
+     * @param context the ephemeral graph
+     * @param backingIterator the backing universe iterator
+     */
     public ShadowEdgeIterator(EphemeralGraph context, Iterator<Edge> backingIterator) {
         this.transactionContext = context;
         this.backingIterator = backingIterator;
