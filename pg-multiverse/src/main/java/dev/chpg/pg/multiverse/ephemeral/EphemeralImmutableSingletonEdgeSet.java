@@ -24,10 +24,27 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
 
+    // --- The Firewall ---
+    private Edge validate(Edge edge) {
+        Objects.requireNonNull(edge, "Edge cannot be null");
+        if (!(edge instanceof EphemeralEdge) && !(edge.getClass().getSimpleName().contains("Shadow"))) {
+            throw new IllegalArgumentException(
+                "Cross-graph contamination: Expected EphemeralEdge or ShadowEdge, got " + edge.getClass().getSimpleName()
+            );
+        }
+        if (edge.id() >= 0) {
+            throw new IllegalArgumentException(
+                "Topological violation: Local adjacency sets can only store brand-new transaction edges (negative IDs)."
+            );
+        }
+        return edge;
+    }
+
     @Override
     public EdgeSet toImmutable() {
         return this;
     }
+
     @Override
     public EdgeSet materialize() {
         return this;
@@ -38,6 +55,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         return true;
     }
 
+    @Override
     public int size() {
         return 1;
     }
@@ -57,11 +75,15 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         return Optional.of(element);
     }
 
-
-
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
+
+        // Pre-flight Fail-Fast Validation
+        for (Edge e : other) {
+            this.validate(e);
+        }
+
         if (other.contains(element)) {
             return this;
         }
@@ -70,7 +92,13 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
+
+        // Pre-flight Fail-Fast Validation
+        for (Edge e : other) {
+            this.validate(e);
+        }
+
         if (other.contains(element)) {
             return EdgeSet.empty();
         }
@@ -79,12 +107,15 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
+
         result.add(element);
         for (Edge e : other) {
-            result.add(e); // Cast removed
+            // EphemeralEdgeSet.add() naturally applies the firewall here
+            result.add(e);
         }
+
         if (result.size() == 1) {
             return this;
         }
@@ -100,6 +131,4 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
     public int[] toIdArray() {
         return new int[]{element.id()};
     }
-
-
 }

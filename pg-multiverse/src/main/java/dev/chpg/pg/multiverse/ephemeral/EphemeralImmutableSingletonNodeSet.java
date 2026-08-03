@@ -41,6 +41,22 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
 
+    // --- The Firewall ---
+    private Node validate(Node node) {
+        Objects.requireNonNull(node, "Node cannot be null");
+        if (!(node instanceof EphemeralNode) && !(node.getClass().getSimpleName().contains("Shadow"))) {
+            throw new IllegalArgumentException(
+                "Cross-graph contamination: Expected EphemeralNode or ShadowNode, got " + node.getClass().getSimpleName()
+            );
+        }
+        if (node.id() >= 0) {
+            throw new IllegalArgumentException(
+                "Topological violation: Local adjacency sets can only store brand-new transaction elements (negative IDs)."
+            );
+        }
+        return node;
+    }
+
     @Override
     public NodeSet toImmutable() {
         return this;
@@ -78,7 +94,13 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
+
+        // Pre-flight Fail-Fast Validation
+        for (Node n : other) {
+            this.validate(n);
+        }
+
         if (other.contains(element)) {
             return this;
         }
@@ -87,7 +109,13 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
+
+        // Pre-flight Fail-Fast Validation
+        for (Node n : other) {
+            this.validate(n);
+        }
+
         if (other.contains(element)) {
             return NodeSet.empty();
         }
@@ -96,12 +124,15 @@ public final class EphemeralImmutableSingletonNodeSet extends AbstractSet<Node> 
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
+        Objects.requireNonNull(other, "other cannot be null");
         EphemeralNodeSet result = new EphemeralNodeSet();
+
         result.add(element);
         for (Node n : other) {
-            result.add(n); // Cast removed
+            // EphemeralNodeSet.add() naturally applies the firewall here
+            result.add(n);
         }
+
         if (result.size() == 1) {
             return this;
         }
