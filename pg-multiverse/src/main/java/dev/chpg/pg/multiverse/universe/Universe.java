@@ -192,6 +192,20 @@ public final class Universe {
     // STRUCTURAL TOPOLOGY METHODS
     // =========================================================================
 
+    public boolean removeNode(int id) {
+        throw new UnsupportedOperationException(
+            "The core Universe engine does not yet support topological deletions. " +
+            "Cascading deletions in columnar arrays are currently unimplemented."
+        );
+    }
+
+    public boolean removeEdge(int id) {
+        throw new UnsupportedOperationException(
+            "The core Universe engine does not yet support topological deletions. " +
+            "Cascading deletions in columnar arrays are currently unimplemented."
+        );
+    }
+
     /**
      * Resolves the source node ID for a given edge.
      *
