@@ -11,16 +11,16 @@ import java.util.Set;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 
-/** Immutable singleton set of an EphemeralEdge. */
+/** Immutable singleton set of an EphemeralEdge or ShadowEdge. */
 public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> implements EdgeSet {
 
-    private final EphemeralEdge element;
+    private final Edge element;
 
     /**
      * Constructs a new EphemeralImmutableSingletonEdgeSet.
      * @param element the single element
      */
-    public EphemeralImmutableSingletonEdgeSet(EphemeralEdge element) {
+    public EphemeralImmutableSingletonEdgeSet(Edge element) {
         this.element = Objects.requireNonNull(element, "element cannot be null");
     }
 
@@ -29,7 +29,7 @@ public final class EphemeralImmutableSingletonEdgeSet extends AbstractSet<Edge> 
         return this;
     }
     @Override
-public EdgeSet materialize() {
+    public EdgeSet materialize() {
         return this;
     }
 
@@ -83,7 +83,7 @@ public EdgeSet materialize() {
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         result.add(element);
         for (Edge e : other) {
-            result.add((EphemeralEdge) e);
+            result.add(e); // Cast removed
         }
         if (result.size() == 1) {
             return this;

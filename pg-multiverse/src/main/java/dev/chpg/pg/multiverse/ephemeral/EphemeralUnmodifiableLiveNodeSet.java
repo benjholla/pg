@@ -55,7 +55,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     @Override
     public NodeSet toImmutable() {
         if (nodes.isEmpty()) { return NodeSet.empty(); }
-        if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet((EphemeralNode) nodes.values().iterator().next()); }
+        if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next()); }
         EphemeralNodeSet copy = new EphemeralNodeSet();
         copy.addAll(nodes.values());
         return new EphemeralImmutableNodeSet(copy);
@@ -72,14 +72,14 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralNodeSet result = new EphemeralNodeSet();
         if (other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+            return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
         }
         for (dev.chpg.pg.api.Node node : nodes.values()) {
             if (other.contains(node)) {
                 result.add(node);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
                 result.add(node);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
                 result.add(n);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet((EphemeralNode) result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
     }
 
     @Override

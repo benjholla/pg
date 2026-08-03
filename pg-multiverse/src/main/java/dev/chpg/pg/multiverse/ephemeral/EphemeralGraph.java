@@ -1086,7 +1086,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public NodeSet singleton(Node node) {
-        return new EphemeralImmutableSingletonNodeSet((EphemeralNode) node);
+        return new EphemeralImmutableSingletonNodeSet(node);
     }
 
     @Override
@@ -1096,7 +1096,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public EdgeSet singleton(Edge edge) {
-        return new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) edge);
+        return new EphemeralImmutableSingletonEdgeSet(edge);
     }
 
     @Override
@@ -1140,7 +1140,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 result.add(e);
             }
         }
-        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
+        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result));
     }
 
     @Override

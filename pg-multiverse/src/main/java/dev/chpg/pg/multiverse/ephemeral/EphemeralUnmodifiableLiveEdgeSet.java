@@ -39,7 +39,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     @Override
     public EdgeSet toImmutable() {
         if (edges.isEmpty()) { return EdgeSet.empty(); }
-        if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) edges.values().iterator().next()); }
+        if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next()); }
         EphemeralEdgeSet copy = new EphemeralEdgeSet();
         copy.addAll(edges.values());
         return new EphemeralImmutableEdgeSet(copy);
@@ -56,14 +56,14 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         EphemeralEdgeSet result = new EphemeralEdgeSet();
         if (other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
         }
         for (dev.chpg.pg.api.Edge edge : edges.values()) {
             if (other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
                 result.add(e);
             }
         }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet((EphemeralEdge) result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
     }
 
     @Override
