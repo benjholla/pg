@@ -14,17 +14,45 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A composite view seamlessly blending permanent engine sets with transient transaction state.
+ * <p>
+ * <b>What it represents:</b> A transactional {@code NodeSet} that overlays local additions and tombstones onto a baseline {@code UniverseNodeSet}.
+ * <p>
+ * <b>Why it exists:</b> To provide O(1) set-algebra operations (union, intersection, difference) that intelligently manage both bitmask-backed universe primitives and dynamically allocated ephemeral objects.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically when querying graph topology (like {@code nodes()}) or performing set algebra within an {@code EphemeralGraph}.
+ * <p>
+ * <b>Common usage patterns:</b> Behaves exactly like a standard {@code NodeSet}. Iterating yields a mix of {@code ShadowUniverseNode} proxies and raw {@code EphemeralNode}s while actively filtering out tombstoned baseline nodes.
+ * <p>
+ * <b>Important invariants:</b> The backing set is never mutated. Tombstones locally mask elements in the backing set. Rejects cross-engine contamination during algebra.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe.
+ * <p>
+ * <b>Performance characteristics:</b> Relies on highly optimized bitwise logic where possible, falling back to standard hash-based set logic for transient additions. Iteration uses a composite iterator to evaluate the ceiling over the baseline in real-time.
+ */
 public class ShadowNodeSet implements NodeSet {
     private final EphemeralGraph transactionContext;
     private final NodeSet backingSet;       // The core engine baseline
     private final Set<Node> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Constructs a {@code ShadowNodeSet} wrapping a baseline topology.
+     *
+     * @param context the transactional sandbox context
+     * @param backingSet the baseline engine set
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Constructs a {@code ShadowNodeSet} blending a baseline and local additions.
+     *
+     * @param context the transactional sandbox context
+     * @param backingSet the baseline engine set
+     * @param localAdds the uncommitted transaction additions
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet, Set<Node> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;

@@ -192,6 +192,11 @@ public final class Universe {
     // STRUCTURAL TOPOLOGY METHODS
     // =========================================================================
 
+    /**
+     * Unsupported. Removes a node from the universe.
+     * @param id the id of the node to remove
+     * @return true if removed, false otherwise
+     */
     public boolean removeNode(int id) {
         throw new UnsupportedOperationException(
             "The core Universe engine does not yet support topological deletions. " +
@@ -199,6 +204,11 @@ public final class Universe {
         );
     }
 
+    /**
+     * Unsupported. Removes an edge from the universe.
+     * @param id the id of the edge to remove
+     * @return true if removed, false otherwise
+     */
     public boolean removeEdge(int id) {
         throw new UnsupportedOperationException(
             "The core Universe engine does not yet support topological deletions. " +

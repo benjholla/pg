@@ -30,13 +30,14 @@ public final class EphemeralNode implements Node, UniverseView {
     private final TagSet tags;
     private final AttributeMap attributes;
 
+    private final Universe universe;
+
     /**
      * Constructs a new {@code EphemeralNode} with the specified negative identifier.
      *
+     * @param universe the isolated Universe engine this node is bound to
      * @param id the strictly negative unique identifier for this node
      */
-    private final Universe universe;
-
     public EphemeralNode(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.id = id;

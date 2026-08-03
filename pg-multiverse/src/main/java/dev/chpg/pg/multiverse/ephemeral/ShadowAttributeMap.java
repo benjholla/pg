@@ -9,6 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A transactional view over an element's attributes within an {@code EphemeralGraph}.
+ * <p>
+ * <b>What it represents:</b> A composite {@code Map} blending uncommitted local modifications (the delta log) with the baseline state of a permanent {@code Universe} element.
+ * <p>
+ * <b>Why it exists:</b> It enables the {@code EphemeralGraph} to act as a seamless write-buffer. Reads reflect a coherent merged state (baseline + pending - tombstones), while writes are routed exclusively to the local transaction, leaving the core engine pristine until promotion.
+ * <p>
+ * <b>When to use it:</b> Used internally by shadow wrappers (like {@code ShadowUniverseNode}) when a client accesses the {@code attributes()} property of an element within a transaction.
+ * <p>
+ * <b>Common usage patterns:</b> Operates identically to a standard {@code Map<String, AttributeValue>} for both querying and mutating properties.
+ * <p>
+ * <b>Important invariants:</b> The backing {@code Universe} element is never mutated directly. Tombstones override baseline values for deletions.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications must be externally synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Reads may require checking up to three maps (tombstones, pending, baseline). Iteration requires allocating a composite HashMap to ensure correctness.
+ */
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     private final EphemeralGraph transaction;
@@ -16,6 +33,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a {@code ShadowAttributeMap} for a node.
+     *
+     * @param transaction the transactional sandbox context
+     * @param backingNode the baseline universe node being shadowed
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingAttributes = backingNode.attributes();
@@ -23,6 +46,12 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         this.isNode = true;
     }
 
+    /**
+     * Constructs a {@code ShadowAttributeMap} for an edge.
+     *
+     * @param transaction the transactional sandbox context
+     * @param backingEdge the baseline universe edge being shadowed
+     */
     public ShadowAttributeMap(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingAttributes = backingEdge.attributes();

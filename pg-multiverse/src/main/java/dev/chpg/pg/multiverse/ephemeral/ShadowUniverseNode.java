@@ -7,16 +7,45 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A transactional proxy for a permanent {@code UniverseNode} within an {@code EphemeralGraph}.
+ * <p>
+ * <b>What it represents:</b> A transparent wrapper around a baseline engine node that intercepts property mutations and routes them to a local delta log.
+ * <p>
+ * <b>Why it exists:</b> To allow an {@code EphemeralGraph} to function as a true, isolated write-buffer without polluting the underlying {@code Universe}.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically by the {@code EphemeralGraph} when a permanent node is accessed or traversed within a transaction.
+ * <p>
+ * <b>Common usage patterns:</b> Clients interact with this object exactly like any standard {@code Node}. Mutations to its tags or attributes are safely buffered.
+ * <p>
+ * <b>Important invariants:</b> Shares the exact same positive ID as its backing core element.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent structural or state mutations must be synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Reading properties incurs slight overhead to check local delta logs before falling back to the baseline engine arrays.
+ */
 public class ShadowUniverseNode implements Node, UniverseView {
-    public EphemeralGraph transaction() { return transactionContext; }
 
     private final EphemeralGraph transactionContext;
     private final UniverseNode backingNode;
 
+    /**
+     * Constructs a new {@code ShadowUniverseNode}.
+     *
+     * @param context the transactional sandbox this proxy belongs to
+     * @param backingNode the baseline node to wrap
+     */
     public ShadowUniverseNode(EphemeralGraph context, UniverseNode backingNode) {
         this.transactionContext = context;
         this.backingNode = backingNode;
     }
+
+    /**
+     * Gets the transactional sandbox this proxy is bound to.
+     *
+     * @return the {@code EphemeralGraph} transaction
+     */
+    public EphemeralGraph transaction() { return transactionContext; }
 
     @Override
     public int id() {

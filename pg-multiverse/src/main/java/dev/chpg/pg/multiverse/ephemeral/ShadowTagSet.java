@@ -8,6 +8,23 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.AbstractSet;
 
+/**
+ * A transactional view over an element's tags within an {@code EphemeralGraph}.
+ * <p>
+ * <b>What it represents:</b> A composite {@code Set} blending uncommitted local tag additions (the delta log) with the baseline state of a permanent {@code Universe} element.
+ * <p>
+ * <b>Why it exists:</b> It enables the {@code EphemeralGraph} to act as a seamless write-buffer. Reads reflect a coherent merged state (baseline + pending - tombstones), while writes are routed exclusively to the local transaction, leaving the core engine pristine until promotion.
+ * <p>
+ * <b>When to use it:</b> Used internally by shadow wrappers (like {@code ShadowUniverseNode}) when a client accesses the {@code tags()} property of an element within a transaction.
+ * <p>
+ * <b>Common usage patterns:</b> Operates identically to a standard {@code Set<String>} for both querying and mutating tags.
+ * <p>
+ * <b>Important invariants:</b> The backing {@code Universe} element is never mutated directly. Tombstones override baseline values for deletions.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent modifications must be externally synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Reads may require checking up to three sets (tombstones, pending, baseline). Iteration requires allocating a composite HashSet to ensure correctness.
+ */
 public class ShadowTagSet extends AbstractSet<String> implements TagSet {
 
     private final EphemeralGraph transaction;
@@ -15,6 +32,12 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a {@code ShadowTagSet} for a node.
+     *
+     * @param transaction the transactional sandbox context
+     * @param backingNode the baseline universe node being shadowed
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingTags = backingNode.tags();
@@ -22,6 +45,12 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
         this.isNode = true;
     }
 
+    /**
+     * Constructs a {@code ShadowTagSet} for an edge.
+     *
+     * @param transaction the transactional sandbox context
+     * @param backingEdge the baseline universe edge being shadowed
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingTags = backingEdge.tags();

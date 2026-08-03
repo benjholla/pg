@@ -14,14 +14,32 @@ import java.util.stream.Stream;
 
 /**
  * A bitwise-backed, mutable topological viewport into a pg-multiverse Universe.
- * Modifying this set only alters the local bit-mask, never the underlying engine arrays.
- * Strictly rejects cross-contamination from foreign graphs or sandboxes.
+ * <p>
+ * <b>What it represents:</b> A set of nodes backed by a highly optimized {@code BitSet} rather than object references.
+ * <p>
+ * <b>Why it exists:</b> It provides zero-GC traversal and O(1) set operations (union, intersection, difference) by operating directly on primitive bit masks instead of wrapping individual elements.
+ * <p>
+ * <b>When to use it:</b> This is the standard {@code NodeSet} implementation returned by all core engine operations (e.g., querying nodes, graph traversals).
+ * <p>
+ * <b>Common usage patterns:</b> Functions exactly like a standard Java {@code Set}. Highly optimized for boolean algebra via the {@code union}, {@code difference}, and {@code intersect} methods.
+ * <p>
+ * <b>Important invariants:</b> Modifying this set only alters the local bit-mask view; it never mutates the underlying engine's topology. Rejects cross-contamination from foreign universes.
+ * <p>
+ * <b>Thread safety:</b> Enforces fail-fast concurrency during traversal. If the core universe topology is mutated while this set is being iterated or materially modified, it will throw a {@code ConcurrentModificationException}.
+ * <p>
+ * <b>Performance characteristics:</b> Traversal operates entirely within the CPU L1 cache. Instantiating elements only occurs lazily when requested by an iterator.
  */
 public final class UniverseNodeSet implements NodeSet, UniverseView {
 
     private final Universe universe;
     private final BitSet activeBits;
 
+    /**
+     * Constructs a new {@code UniverseNodeSet}.
+     *
+     * @param universe the isolated Universe engine this set belongs to
+     * @param activeBits the bitmask representing the active nodes in this set
+     */
     public UniverseNodeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");

@@ -8,17 +8,51 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseEdge;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A transactional proxy for a permanent {@code UniverseEdge} within an {@code EphemeralGraph}.
+ * <p>
+ * <b>What it represents:</b> A transparent wrapper around a baseline engine edge that intercepts property mutations and routes them to a local delta log.
+ * <p>
+ * <b>Why it exists:</b> To allow an {@code EphemeralGraph} to function as a true, isolated write-buffer without polluting the underlying {@code Universe}.
+ * <p>
+ * <b>When to use it:</b> Instantiated automatically by the {@code EphemeralGraph} when a permanent edge is accessed or traversed within a transaction.
+ * <p>
+ * <b>Common usage patterns:</b> Clients interact with this object exactly like any standard {@code Edge}. Mutations to its tags or attributes are safely buffered.
+ * <p>
+ * <b>Important invariants:</b> Shares the exact same positive ID as its backing core element. Lazily wraps its endpoint nodes in corresponding shadow proxies when traversed.
+ * <p>
+ * <b>Thread safety:</b> Not thread-safe. Concurrent structural or state mutations must be synchronized.
+ * <p>
+ * <b>Performance characteristics:</b> Reading properties incurs slight overhead to check local delta logs before falling back to the baseline engine arrays.
+ */
 public class ShadowEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transaction;
     private final Edge backingEdge;
 
+    /**
+     * Constructs a new {@code ShadowEdge}.
+     *
+     * @param transaction the transactional sandbox this proxy belongs to
+     * @param backingEdge the baseline edge to wrap
+     */
     public ShadowEdge(EphemeralGraph transaction, Edge backingEdge) {
         this.transaction = transaction;
         this.backingEdge = backingEdge;
     }
 
+    /**
+     * Gets the backing baseline edge.
+     *
+     * @return the unproxied baseline edge
+     */
     public Edge backingEdge() { return backingEdge; }
+
+    /**
+     * Gets the transactional sandbox this proxy is bound to.
+     *
+     * @return the {@code EphemeralGraph} transaction
+     */
     public EphemeralGraph transaction() {
         return transaction;
     }
