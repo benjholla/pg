@@ -94,4 +94,43 @@ public class DifferenceIdentityInvariantTest {
 
         assertGraphsEqual(aMinusEdgesBMinusEdgesC, aMinusEdgesBUnionC);
     }
+
+    @Test
+    public void testDifferenceNodeIdentity() {
+        // A \ n == A \ {n}
+        Node a = gA.nodes().one().get();
+        Graph aMinusNode = gA.difference(a);
+        Graph aMinusGraphNode = gA.difference(factory.createGraph(a));
+
+        assertGraphsEqual(aMinusNode, aMinusGraphNode);
+    }
+
+    @Test
+    public void testDifferenceEdgeIdentity() {
+        // API Contract: Graph.difference(Edge) inherently removes the terminal nodes of the edge.
+        // Therefore, subtracting a single edge should result in the same graph as subtracting
+        // a graph containing that edge (which also contains its terminal nodes due to auto-vivification).
+        // A \ e == A \ {e}
+        Edge e = gA.edges().one().get();
+        Graph aMinusEdge = gA.difference(e);
+
+        Graph gE = factory.createGraph(e.from(), e.to());
+        gE.addEdge(e);
+        Graph aMinusGraphEdge = gA.difference(gE);
+
+        assertGraphsEqual(aMinusEdge, aMinusGraphEdge);
+    }
+
+    @Test
+    public void testDifferenceEdgesEdgeIdentity() {
+        // A \_e e == A \_e {e}
+        Edge e = gA.edges().one().get();
+        Graph aMinusEdgesEdge = gA.differenceEdges(e);
+
+        Graph gE = factory.createGraph(e.from(), e.to());
+        gE.addEdge(e);
+        Graph aMinusEdgesGraphEdge = gA.differenceEdges(gE);
+
+        assertGraphsEqual(aMinusEdgesEdge, aMinusEdgesGraphEdge);
+    }
 }
