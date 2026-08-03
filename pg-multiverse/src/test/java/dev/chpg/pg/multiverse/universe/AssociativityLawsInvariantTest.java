@@ -50,17 +50,31 @@ public class AssociativityLawsInvariantTest {
 
         Node uA = null, uB = null, uC = null, uD = null;
         for (Node n : promotedA.nodes()) {
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) uA = n;
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) uB = n;
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) uC = n;
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(4))) uD = n;
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) {
+                uA = n;
+            }
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) {
+                uB = n;
+            }
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) {
+                uC = n;
+            }
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(4))) {
+                uD = n;
+            }
         }
 
         Edge uAB = null, uBC = null, uCD = null;
         for (Edge e : promotedA.edges()) {
-            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(12))) uAB = e;
-            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(23))) uBC = e;
-            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(34))) uCD = e;
+            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(12))) {
+                uAB = e;
+            }
+            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(23))) {
+                uBC = e;
+            }
+            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(34))) {
+                uCD = e;
+            }
         }
 
         gA = empty.union(uA).union(uB).union(uAB);

@@ -50,15 +50,25 @@ public class DifferencePropertiesInvariantTest {
 
         Node uA = null, uB = null, uC = null;
         for (Node n : gA.nodes()) {
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) uA = n;
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) uB = n;
-            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) uC = n;
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) {
+                uA = n;
+            }
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) {
+                uB = n;
+            }
+            if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) {
+                uC = n;
+            }
         }
 
         Edge uAB = null, uBC = null;
         for (Edge e : gA.edges()) {
-            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(12))) uAB = e;
-            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(23))) uBC = e;
+            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(12))) {
+                uAB = e;
+            }
+            if (e.attributes().get("id").equals(new AttributeValue.IntegerValue(23))) {
+                uBC = e;
+            }
         }
 
         gB = empty.union(uA).union(uB).union(uAB);
