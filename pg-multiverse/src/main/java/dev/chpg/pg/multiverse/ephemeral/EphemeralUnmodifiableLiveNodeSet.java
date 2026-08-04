@@ -12,6 +12,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 
@@ -46,7 +47,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
      */
     public EphemeralUnmodifiableLiveNodeSet(
             Map<Integer, Node> nodes,
-            Map<Integer, dev.chpg.pg.api.Edge> edges,
+            Map<Integer, Edge> edges,
             Map<Integer, EphemeralEdgeSet> inEdges,
             Map<Integer, EphemeralEdgeSet> outEdges) {
         this.nodes = Objects.requireNonNull(nodes);
@@ -56,9 +57,7 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
     public NodeSet toImmutable() {
         if (nodes.isEmpty()) { return NodeSet.empty(); }
         if (nodes.size() == 1) { return new EphemeralImmutableSingletonNodeSet(nodes.values().iterator().next()); }
-        EphemeralNodeSet copy = new EphemeralNodeSet();
-        copy.addAll(nodes.values());
-        return new EphemeralImmutableNodeSet(copy);
+        return new EphemeralImmutableNodeSet(new EphemeralNodeSet(nodes.values()));
     }
 
     @Override
@@ -69,41 +68,23 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public NodeSet intersect(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralNodeSet result = new EphemeralNodeSet();
-        if (other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
-        }
-        for (dev.chpg.pg.api.Node node : nodes.values()) {
-            if (other.contains(node)) {
-                result.add(node);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralNodeSet
+        return new EphemeralNodeSet(nodes.values()).intersect(other);
     }
 
     @Override
     public NodeSet difference(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralNodeSet result = new EphemeralNodeSet();
-        for (dev.chpg.pg.api.Node node : nodes.values()) {
-            if (!other.contains(node)) {
-                result.add(node);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralNodeSet
+        return new EphemeralNodeSet(nodes.values()).difference(other);
     }
 
     @Override
     public NodeSet union(Collection<? extends Node> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralNodeSet result = new EphemeralNodeSet(); result.addAll(nodes.values());
-        for (Node n : other) {
-            if (n instanceof EphemeralNode) {
-                result.add(n);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonNodeSet(result.iterator().next()) : new EphemeralImmutableNodeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralNodeSet
+        return new EphemeralNodeSet(nodes.values()).union(other);
     }
 
     @Override
@@ -123,21 +104,24 @@ public class EphemeralUnmodifiableLiveNodeSet implements NodeSet {
 
     @Override
     public boolean add(Node node) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralNode gn)) { return false; }
-        return nodes.containsKey(gn.id()) && nodes.get(gn.id()).equals(gn);
+        // WIDENED: Accept the broader Node interface to allow Shadow lookups
+        if (!(obj instanceof Node gn)) { return false; }
+        Node found = nodes.get(gn.id());
+        return found != null && found.equals(gn);
     }
 
     @Override
     public boolean remove(Object obj) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
+
     @Override
-public boolean isMaterialized() {
+    public boolean isMaterialized() {
         return true;
     }
 
@@ -152,14 +136,14 @@ public boolean isMaterialized() {
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public Iterator<Node> iterator() {
         // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Node>() {
-            private final Iterator<dev.chpg.pg.api.Node> it = nodes.values().iterator();
+            private final Iterator<Node> it = nodes.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -170,7 +154,7 @@ public boolean isMaterialized() {
             }
             @Override
             public void remove() {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
             }
         };
     }
@@ -198,17 +182,17 @@ public boolean isMaterialized() {
 
     @Override
     public boolean addAll(Collection<? extends Node> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
@@ -216,10 +200,9 @@ public boolean isMaterialized() {
         nodes.values().forEach(action);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Spliterator<Node> spliterator() {
-        return (Spliterator<Node>) (Spliterator<?>) nodes.values().spliterator();
+        return nodes.values().spliterator();
     }
 
     @Override
@@ -229,19 +212,17 @@ public boolean isMaterialized() {
 
     @Override
     public boolean removeIf(Predicate<? super Node> filter) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Stream<Node> stream() {
-        return (Stream<Node>) (Stream<?>) nodes.values().stream();
+        return nodes.values().stream();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Stream<Node> parallelStream() {
-        return (Stream<Node>) (Stream<?>) nodes.values().parallelStream();
+        return nodes.values().parallelStream();
     }
 
     @Override
@@ -262,7 +243,7 @@ public boolean isMaterialized() {
     @Override
     public int hashCode() {
         int h = 0;
-        for (dev.chpg.pg.api.Node node : nodes.values()) {
+        for (Node node : nodes.values()) {
             if (node != null) {
                 h += node.hashCode();
             }

@@ -99,9 +99,7 @@ public class CrossGraphContaminationTest {
         assertFalse(unionResult.contains(ephemeralNode));
 
         // EphemeralUnmodifiableLiveNodeSet implicitly filters elements without throwing an exception.
-        NodeSet ephemeralUnionResult = ephemeralNodeSet.union(globalNodeSet);
-        assertTrue(ephemeralUnionResult.contains(ephemeralNode));
-        assertFalse(ephemeralUnionResult.contains(globalNode));
+        assertThrows(IllegalArgumentException.class, () -> ephemeralNodeSet.union(globalNodeSet));
 
         assertFalse(globalNodeSet.contains(ephemeralNode));
         assertFalse(globalImmutableNodeSet.contains(ephemeralNode));
@@ -130,9 +128,7 @@ public class CrossGraphContaminationTest {
         assertTrue(unionResult.contains(globalEdge));
         assertFalse(unionResult.contains(ephemeralEdge));
 
-        EdgeSet ephemeralUnionResult = ephemeralEdgeSet.union(globalEdgeSet);
-        assertTrue(ephemeralUnionResult.contains(ephemeralEdge));
-        assertFalse(ephemeralUnionResult.contains(globalEdge));
+        assertThrows(IllegalArgumentException.class, () -> ephemeralEdgeSet.union(globalEdgeSet));
 
         assertFalse(globalEdgeSet.contains(ephemeralEdge));
         assertFalse(globalImmutableEdgeSet.contains(ephemeralEdge));
