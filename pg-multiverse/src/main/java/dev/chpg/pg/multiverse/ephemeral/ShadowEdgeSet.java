@@ -3,16 +3,15 @@ package dev.chpg.pg.multiverse.ephemeral;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.multiverse.universe.UniverseEdgeSet;
-import dev.chpg.pg.multiverse.universe.UniverseEdge;
 
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ShadowEdgeSet implements EdgeSet {
     private final EphemeralGraph transactionContext;
@@ -31,38 +30,81 @@ public class ShadowEdgeSet implements EdgeSet {
         this.localAdds = localAdds;
     }
 
-    private EdgeSet unwrapForAlgebra(EdgeSet other) {
-        if (other instanceof ShadowEdgeSet) {
-            return ((ShadowEdgeSet) other).backingSet;
-        }
-        return other;
-    }
-
-    // We implement `unwrapForAlgebra(Collection)` to convert any collection into EdgeSet
+    // --- The Strict Algebra Firewall ---
     private EdgeSet unwrapForAlgebra(Collection<? extends Edge> other) {
-        if (other instanceof ShadowEdgeSet) {
-            ShadowEdgeSet shadow = (ShadowEdgeSet) other;
+        Objects.requireNonNull(other, "Collection cannot be null");
+
+        if (other instanceof ShadowEdgeSet shadow) {
             if (shadow.transactionContext.universe() != this.transactionContext.universe()) {
                 throw new IllegalArgumentException("Cross-universe contamination: Shadow sets belong to different universes.");
             }
             return shadow.backingSet;
         }
 
-        if (other instanceof dev.chpg.pg.multiverse.universe.UniverseEdgeSet) {
-            dev.chpg.pg.multiverse.universe.UniverseEdgeSet universeSet = (dev.chpg.pg.multiverse.universe.UniverseEdgeSet) other;
+        if (other instanceof UniverseEdgeSet universeSet) {
             if (universeSet.universe() != this.transactionContext.universe()) {
                 throw new IllegalArgumentException("Cross-universe contamination: Universe sets do not match.");
             }
             return universeSet;
         }
 
-        return new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.transactionContext.universe(), new java.util.BitSet());
+        // FAIL FAST: No more silent filtering or fallback arrays
+        throw new IllegalArgumentException(
+            "Strict algebra whitelist violation: Expected ShadowEdgeSet or UniverseEdgeSet, got " + other.getClass().getSimpleName()
+        );
     }
-    private Edge unwrapEdge(Edge e) {
-        if (e instanceof ShadowEdge shadow) {
-            return new UniverseEdge(shadow.universe(), shadow.id());
+
+    @Override
+    public EdgeSet union(Collection<? extends Edge> other) {
+        EdgeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        EdgeSet newBacking = this.backingSet.union(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Edge> combinedLocalAdds = new HashSet<>(this.localAdds);
+        if (other instanceof ShadowEdgeSet shadowOther) {
+            combinedLocalAdds.addAll(shadowOther.localAdds);
         }
-        return e;
+
+        // 3. Wrap it up (ShadowEdgeSet intrinsically masks tombstones, no manual subtraction needed!)
+        return new ShadowEdgeSet(this.transactionContext, newBacking, combinedLocalAdds);
+    }
+
+    @Override
+    public EdgeSet difference(Collection<? extends Edge> other) {
+        EdgeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        EdgeSet newBacking = this.backingSet.difference(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Edge> combinedLocalAdds = new HashSet<>(this.localAdds);
+        if (other instanceof ShadowEdgeSet shadowOther) {
+            combinedLocalAdds.removeAll(shadowOther.localAdds);
+        }
+
+        return new ShadowEdgeSet(this.transactionContext, newBacking, combinedLocalAdds);
+    }
+
+    @Override
+    public EdgeSet intersect(Collection<? extends Edge> other) {
+        EdgeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        EdgeSet newBacking = this.backingSet.intersect(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Edge> combinedLocalAdds = new HashSet<>();
+        if (other instanceof ShadowEdgeSet shadowOther) {
+            for (Edge local : this.localAdds) {
+                if (shadowOther.localAdds.contains(local)) {
+                    combinedLocalAdds.add(local);
+                }
+            }
+        }
+
+        return new ShadowEdgeSet(this.transactionContext, newBacking, combinedLocalAdds);
     }
 
     @Override
@@ -74,12 +116,11 @@ public class ShadowEdgeSet implements EdgeSet {
             private final Iterator<Edge> localIter = localAdds.iterator();
 
             private void advance() {
-                if (nextEdge != null) {
-    return;
-}
+                if (nextEdge != null) { return; }
 
                 while (backingIter.hasNext()) {
                     Edge potential = backingIter.next();
+                    // Perfect Tombstone Masking
                     if (!transactionContext.getTombstonedEdgeIds().get(potential.id())) {
                         nextEdge = potential;
                         return;
@@ -101,9 +142,7 @@ public class ShadowEdgeSet implements EdgeSet {
             @Override
             public Edge next() {
                 advance();
-                if (nextEdge == null) {
-    throw new java.util.NoSuchElementException();
-}
+                if (nextEdge == null) { throw new java.util.NoSuchElementException(); }
                 Edge toReturn = nextEdge;
                 nextEdge = null;
                 return toReturn;
@@ -113,6 +152,7 @@ public class ShadowEdgeSet implements EdgeSet {
 
     @Override
     public int size() {
+        // Dynamically compute the size minus active tombstones
         BitSet overlap = new BitSet();
         for (int id : backingSet.ids()) {
             overlap.set(id);
@@ -126,21 +166,7 @@ public class ShadowEdgeSet implements EdgeSet {
     public boolean contains(Object obj) {
         if (!(obj instanceof Edge edge)) { return false; }
 
-        for (Edge local : localAdds) {
-            if (local.equals(edge) || edge.equals(local)) { return true; }
-            if (local instanceof ShadowEdge && ((ShadowEdge) local).backingEdge().equals(edge)) { return true; }
-            if (edge instanceof ShadowEdge && ((ShadowEdge) edge).backingEdge().equals(local)) { return true; }
-        }
-
-        if (edge instanceof ShadowEdge shadow) {
-            if (shadow.id() >= 0 && transactionContext.getTombstonedEdgeIds().get(shadow.id())) {
-                return false;
-            }
-            if (shadow.backingEdge() instanceof dev.chpg.pg.multiverse.universe.UniverseEdge) {
-                return backingSet.contains(new dev.chpg.pg.multiverse.universe.UniverseEdge(shadow.universe(), shadow.id()));
-            }
-            return false;
-        }
+        if (localAdds.contains(edge)) { return true; }
 
         if (edge.id() >= 0 && transactionContext.getTombstonedEdgeIds().get(edge.id())) {
              return false;
@@ -148,6 +174,7 @@ public class ShadowEdgeSet implements EdgeSet {
 
         return backingSet.contains(edge);
     }
+
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
@@ -159,176 +186,6 @@ public class ShadowEdgeSet implements EdgeSet {
     @Override
     public boolean isEmpty() {
         return size() == 0;
-    }
-
-    @Override
-    public EdgeSet union(Collection<? extends Edge> other) {
-        EdgeSet unwrappedOther = unwrapForAlgebra(other);
-
-        java.util.List<Edge> universeOnly = new java.util.ArrayList<>();
-        for (Edge e : unwrappedOther) {
-            if (e instanceof dev.chpg.pg.multiverse.universe.UniverseEdge) {
-                 universeOnly.add(e);
-            }
-        }
-        EdgeSet rawUnion = this.backingSet.union(new dev.chpg.pg.api.GenericImmutableEdgeSet(new java.util.HashSet<>(universeOnly)));
-
-        EdgeSet filteredUnion = rawUnion;
-        if (filteredUnion instanceof UniverseEdgeSet) {
-             UniverseEdgeSet filteredUniverseUnion = (UniverseEdgeSet) filteredUnion;
-             filteredUnion = filteredUniverseUnion.difference(
-                 new UniverseEdgeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedEdgeIds()
-                 )
-             );
-        } else {
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedEdgeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             EdgeSet toRemove = new EphemeralEdgeSet(tombstoned.stream().map(id -> new UniverseEdge(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredUnion = filteredUnion.difference(toRemove);
-        }
-
-        Set<Edge> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowEdgeSet shadowOther) {
-            combinedLocalAdds.addAll(shadowOther.localAdds);
-        } else if (other != null) {
-            for (Edge e : other) {
-                if (e instanceof EphemeralEdge || e instanceof ShadowEdge) {
-                    combinedLocalAdds.add(e);
-                }
-            }
-        }
-        System.out.println("Union combinedLocalAdds size: " + combinedLocalAdds.size());
-
-        return new ShadowEdgeSet(this.transactionContext, filteredUnion, combinedLocalAdds);
-    }
-
-    @Override
-    public EdgeSet difference(Collection<? extends Edge> other) {
-        EdgeSet unwrappedOther = unwrapForAlgebra(other);
-
-        java.util.List<Edge> universeOnly = new java.util.ArrayList<>();
-        for (Edge e : unwrappedOther) {
-            if (e instanceof dev.chpg.pg.multiverse.universe.UniverseEdge) {
-                 universeOnly.add(e);
-            }
-        }
-        EdgeSet rawDiff = this.backingSet.difference(new dev.chpg.pg.api.GenericImmutableEdgeSet(new java.util.HashSet<>(universeOnly)));
-
-        EdgeSet filteredDiff = rawDiff;
-        if (filteredDiff instanceof UniverseEdgeSet) {
-             UniverseEdgeSet filteredUniverseDiff = (UniverseEdgeSet) filteredDiff;
-             filteredDiff = filteredUniverseDiff.difference(
-                 new UniverseEdgeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedEdgeIds()
-                 )
-             );
-        } else {
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedEdgeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             EdgeSet toRemove = new EphemeralEdgeSet(tombstoned.stream().map(id -> new UniverseEdge(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredDiff = filteredDiff.difference(toRemove);
-        }
-
-        Set<Edge> combinedLocalAdds = new HashSet<>();
-        for (Edge local : this.localAdds) {
-            boolean found = false;
-            if (other instanceof ShadowEdgeSet) {
-                ShadowEdgeSet shadowOther = (ShadowEdgeSet) other;
-                for (Edge o : shadowOther.localAdds) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowEdge && ((ShadowEdge) local).backingEdge().equals(o)) ||
-                        (o instanceof ShadowEdge && ((ShadowEdge) o).backingEdge().equals(local))) {
-                        found = true;
-                        break;
-                    }
-                }
-            } else if (other != null) {
-                for (Edge o : other) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowEdge && ((ShadowEdge) local).backingEdge().equals(o)) ||
-                        (o instanceof ShadowEdge && ((ShadowEdge) o).backingEdge().equals(local))) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (!found) {
-                combinedLocalAdds.add(local);
-            }
-        }
-
-        return new ShadowEdgeSet(this.transactionContext, filteredDiff, combinedLocalAdds);
-    }
-
-    @Override
-    public EdgeSet intersect(Collection<? extends Edge> other) {
-        EdgeSet unwrappedOther = unwrapForAlgebra(other);
-
-        java.util.List<Edge> universeOnly = new java.util.ArrayList<>();
-        for (Edge e : unwrappedOther) {
-            if (e instanceof dev.chpg.pg.multiverse.universe.UniverseEdge) {
-                 universeOnly.add(e);
-            }
-        }
-        EdgeSet rawIntersect = this.backingSet.intersect(new dev.chpg.pg.api.GenericImmutableEdgeSet(new java.util.HashSet<>(universeOnly)));
-
-        EdgeSet filteredIntersect = rawIntersect;
-        if (filteredIntersect instanceof UniverseEdgeSet) {
-             UniverseEdgeSet filteredUniverseIntersect = (UniverseEdgeSet) filteredIntersect;
-             filteredIntersect = filteredUniverseIntersect.difference(
-                 new UniverseEdgeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedEdgeIds()
-                 )
-             );
-        } else {
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedEdgeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             EdgeSet toRemove = new EphemeralEdgeSet(tombstoned.stream().map(id -> new UniverseEdge(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredIntersect = filteredIntersect.difference(toRemove);
-        }
-
-        Set<Edge> combinedLocalAdds = new HashSet<>();
-        for (Edge local : this.localAdds) {
-            boolean found = false;
-            if (other instanceof ShadowEdgeSet) {
-                ShadowEdgeSet shadowOther = (ShadowEdgeSet) other;
-                for (Edge o : shadowOther.localAdds) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowEdge && ((ShadowEdge) local).backingEdge().equals(o)) ||
-                        (o instanceof ShadowEdge && ((ShadowEdge) o).backingEdge().equals(local))) {
-                        found = true;
-                        break;
-                    }
-                }
-            } else if (other != null) {
-                for (Edge o : other) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowEdge && ((ShadowEdge) local).backingEdge().equals(o)) ||
-                        (o instanceof ShadowEdge && ((ShadowEdge) o).backingEdge().equals(local))) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (found) {
-                combinedLocalAdds.add(local);
-            }
-        }
-
-        return new ShadowEdgeSet(this.transactionContext, filteredIntersect, combinedLocalAdds);
     }
 
     @Override
@@ -368,47 +225,31 @@ public class ShadowEdgeSet implements EdgeSet {
     @Override
     public EdgeSet toImmutable() {
         if (isEmpty()) { return EdgeSet.empty(); }
-        if (size() == 1) { return new dev.chpg.pg.api.GenericImmutableEdgeSet(java.util.Collections.singleton(one().get())); }
+        if (size() == 1) { return new dev.chpg.pg.api.GenericImmutableEdgeSet(Collections.singleton(one().get())); }
         return new dev.chpg.pg.api.GenericImmutableEdgeSet(this);
     }
 
     @Override
-    public boolean add(Edge e) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean add(Edge e) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean remove(Object o) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean addAll(Collection<? extends Edge> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean addAll(Collection<? extends Edge> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public void clear() { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public Object[] toArray() {
-        return materialize().toArray();
-    }
+    public Object[] toArray() { return materialize().toArray(); }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        return materialize().toArray(a);
-    }
+    public <T> T[] toArray(T[] a) { return materialize().toArray(a); }
 }

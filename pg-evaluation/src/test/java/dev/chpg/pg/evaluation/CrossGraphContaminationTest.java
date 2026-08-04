@@ -14,6 +14,8 @@ import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
+import dev.chpg.pg.multiverse.ephemeral.ShadowNodeSet;
+import dev.chpg.pg.multiverse.ephemeral.ShadowEdgeSet;
 
 public class CrossGraphContaminationTest {
 
@@ -92,13 +94,12 @@ public class CrossGraphContaminationTest {
         NodeSet ephemeralNodeSet = ephemeralGraph.nodes();
         NodeSet ephemeralImmutableNodeSet = ephemeralNodeSet.toImmutable();
 
-        // Direct collection views (GlobalNodeSet, EphemeralNodeSet) implicitly filter elements
-        // through instanceof checks without throwing an exception.
-        // We ensure that a union of global with ephemeral leaves the global intact (doesn't add ephemeral)
+        // GlobalNodeSet implicitly filters elements through instanceof checks without throwing an exception.
         NodeSet unionResult = globalNodeSet.union(ephemeralNodeSet);
         assertTrue(unionResult.contains(globalNode));
         assertFalse(unionResult.contains(ephemeralNode));
 
+        // EphemeralUnmodifiableLiveNodeSet implicitly filters elements without throwing an exception.
         NodeSet ephemeralUnionResult = ephemeralNodeSet.union(globalNodeSet);
         assertTrue(ephemeralUnionResult.contains(ephemeralNode));
         assertFalse(ephemeralUnionResult.contains(globalNode));
@@ -165,5 +166,27 @@ public class CrossGraphContaminationTest {
         assertDoesNotThrow(() -> ephemeralEdgeSet.union(EdgeSet.empty()));
         assertDoesNotThrow(() -> globalEdgeSet.difference(EdgeSet.empty()));
         assertDoesNotThrow(() -> ephemeralEdgeSet.difference(EdgeSet.empty()));
+    }
+
+    @Test
+    public void testShadowSetRejectsForeignUniverse() {
+        // Setup a shadow set in Universe A
+        Universe universeA = new Universe();
+        EphemeralGraph transactionA = new EphemeralGraph(universeA);
+        ShadowNodeSet shadowSetA = new ShadowNodeSet(transactionA, new dev.chpg.pg.multiverse.universe.UniverseNodeSet(universeA, new java.util.BitSet()));
+
+        // Setup a shadow set in Universe B
+        Universe universeB = new Universe();
+        EphemeralGraph transactionB = new EphemeralGraph(universeB);
+        ShadowNodeSet shadowSetB = new ShadowNodeSet(transactionB, new dev.chpg.pg.multiverse.universe.UniverseNodeSet(universeB, new java.util.BitSet()));
+
+        // The test must now assert that the firewall holds and throws an exception
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> shadowSetA.union(shadowSetB),
+            "Expected union to fail fast on cross-universe contamination"
+        );
+
+        assertTrue(exception.getMessage().contains("Cross-universe contamination"));
     }
 }
