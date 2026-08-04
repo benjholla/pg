@@ -15,7 +15,6 @@ import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import dev.chpg.pg.multiverse.ephemeral.ShadowNodeSet;
-import dev.chpg.pg.multiverse.ephemeral.ShadowEdgeSet;
 
 public class CrossGraphContaminationTest {
 
