@@ -91,29 +91,33 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     Edge validateAndWrap(Edge edge) {
-        java.util.Objects.requireNonNull(edge, "Edge cannot be null");
-        if (edge instanceof ShadowEdge) {
-            ShadowEdge shadow = (ShadowEdge) edge;
-            if (shadow.transaction() != this) {
-                throw new IllegalArgumentException("Shadow edge belongs to a foreign transaction.");
-            }
-            return shadow;
-        }
+        if (edge == null) return null;
+
+        // 1. If it's already a local transaction element, it's safe to yield raw
         if (edge instanceof EphemeralEdge) {
             EphemeralEdge ephemeral = (EphemeralEdge) edge;
             if (ephemeral.universe() != this.universe) {
                 throw new IllegalArgumentException("Ephemeral edge is bound to a foreign Universe.");
             }
-            return ephemeral;
+            return edge;
         }
-        if (edge instanceof dev.chpg.pg.multiverse.universe.UniverseEdge) {
-            dev.chpg.pg.multiverse.universe.UniverseEdge universeEdge = (dev.chpg.pg.multiverse.universe.UniverseEdge) edge;
+        // 2. If it's a Shadow wrapper, it's already shielded
+        if (edge instanceof ShadowEdge) {
+            ShadowEdge shadow = (ShadowEdge) edge;
+            if (shadow.transaction() != this) {
+                throw new IllegalArgumentException("Shadow edge belongs to a foreign transaction.");
+            }
+            return edge;
+        }
+        // 3. If it's a raw UniverseEdge, wrap it to protect the core engine
+        if (edge instanceof dev.chpg.pg.multiverse.universe.UniverseEdge universeEdge) {
             if (universeEdge.universe() != this.universe) {
-                throw new IllegalArgumentException("Universe edge belongs to a foreign Universe.");
+                throw new IllegalArgumentException("Cross-universe contamination detected.");
             }
             return new ShadowEdge(this, universeEdge);
         }
-        throw new IllegalArgumentException("Unsupported Edge type: " + edge.getClass().getName());
+
+        throw new IllegalArgumentException("Foreign edge type detected: " + edge.getClass().getSimpleName());
     }
 
 

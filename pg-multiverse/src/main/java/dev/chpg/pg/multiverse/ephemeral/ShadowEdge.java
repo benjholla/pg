@@ -11,14 +11,15 @@ import dev.chpg.pg.multiverse.universe.UniverseView;
 public class ShadowEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transaction;
-    private final Edge backingEdge;
+    private final UniverseEdge backingEdge; // Strictly UniverseEdge now
 
-    public ShadowEdge(EphemeralGraph transaction, Edge backingEdge) {
+    public ShadowEdge(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingEdge = backingEdge;
     }
 
-    public Edge backingEdge() { return backingEdge; }
+    public UniverseEdge backingEdge() { return backingEdge; }
+
     public EphemeralGraph transaction() {
         return transaction;
     }
@@ -30,10 +31,8 @@ public class ShadowEdge implements Edge, UniverseView {
 
     @Override
     public Universe universe() {
-        if (backingEdge instanceof UniverseView) {
-            return ((UniverseView) backingEdge).universe();
-        }
-        return transaction.universe();
+        // No fallback needed, a UniverseEdge always belongs to a Universe
+        return backingEdge.universe();
     }
 
     @Override
@@ -50,24 +49,14 @@ public class ShadowEdge implements Edge, UniverseView {
 
     @Override
     public TagSet tags() {
-        // Route mutations to the delta log ONLY if it's a core universe edge
-        if (backingEdge instanceof UniverseEdge universeEdge) {
-            return new ShadowTagSet(transaction, universeEdge);
-        }
-
-        // If it's an EphemeralEdge, its own internal TagSet is perfectly safe to mutate
-        return backingEdge.tags();
+        // Unconditionally route to the delta buffer
+        return new ShadowTagSet(transaction, backingEdge);
     }
 
     @Override
     public AttributeMap attributes() {
-        // Route mutations to the delta log ONLY if it's a core universe edge
-        if (backingEdge instanceof UniverseEdge universeEdge) {
-            return new ShadowAttributeMap(transaction, universeEdge);
-        }
-
-        // EphemeralEdges safely hold their own attributes until promotion
-        return backingEdge.attributes();
+        // Unconditionally route to the delta buffer
+        return new ShadowAttributeMap(transaction, backingEdge);
     }
 
     @Override

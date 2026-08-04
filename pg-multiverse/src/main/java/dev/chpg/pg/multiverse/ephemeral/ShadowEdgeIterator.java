@@ -22,22 +22,8 @@ public class ShadowEdgeIterator implements Iterator<Edge> {
     @Override
     public Edge next() {
         Edge nextEdge = backingIterator.next();
-
-        if (nextEdge instanceof ShadowEdge) {
-            ShadowEdge se = (ShadowEdge) nextEdge;
-            if (se.transaction() != transactionContext) {
-                throw new IllegalArgumentException("Shadow edge belongs to a foreign transaction.");
-            }
-            return se;
-        }
-
-        if (nextEdge instanceof UniverseView view) {
-            if (view.universe() != transactionContext.universe()) {
-                throw new IllegalArgumentException("Edge belongs to a foreign Universe.");
-            }
-        }
-
-        return new ShadowEdge(transactionContext, nextEdge);
+        // The transaction context acts as the polymorphic firewall
+        return transactionContext.validateAndWrap(nextEdge);
     }
 
     @Override
