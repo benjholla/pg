@@ -66,8 +66,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     Node validateAndWrap(Node node) {
         java.util.Objects.requireNonNull(node, "Node cannot be null");
-        if (node instanceof ShadowUniverseNode) {
-            ShadowUniverseNode shadow = (ShadowUniverseNode) node;
+        if (node instanceof ShadowNode) {
+            ShadowNode shadow = (ShadowNode) node;
             if (shadow.transaction() != this) {
                 throw new IllegalArgumentException("Shadow node belongs to a foreign transaction.");
             }
@@ -85,7 +85,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             if (universeNode.universe() != this.universe) {
                 throw new IllegalArgumentException("Universe node belongs to a foreign Universe.");
             }
-            return new ShadowUniverseNode(this, universeNode);
+            return new ShadowNode(this, universeNode);
         }
         throw new IllegalArgumentException("Unsupported Node type: " + node.getClass().getName());
     }

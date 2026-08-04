@@ -7,13 +7,13 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
-public class ShadowUniverseNode implements Node, UniverseView {
+public class ShadowNode implements Node, UniverseView {
     public EphemeralGraph transaction() { return transactionContext; }
 
     private final EphemeralGraph transactionContext;
     private final UniverseNode backingNode;
 
-    public ShadowUniverseNode(EphemeralGraph context, UniverseNode backingNode) {
+    public ShadowNode(EphemeralGraph context, UniverseNode backingNode) {
         this.transactionContext = context;
         this.backingNode = backingNode;
     }
@@ -52,7 +52,7 @@ public class ShadowUniverseNode implements Node, UniverseView {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ShadowUniverseNode shadow) {
+        if (obj instanceof ShadowNode shadow) {
             return this.backingNode.equals(shadow.backingNode);
         }
         return this.backingNode.equals(obj);
@@ -60,6 +60,6 @@ public class ShadowUniverseNode implements Node, UniverseView {
 
     @Override
     public String toString() {
-        return "ShadowUniverseNode [ attributes=" + this.attributes().toString() + ", tags=" + this.tags().toString() + "]";
+        return "ShadowNode [ attributes=" + this.attributes().toString() + ", tags=" + this.tags().toString() + "]";
     }
 }
