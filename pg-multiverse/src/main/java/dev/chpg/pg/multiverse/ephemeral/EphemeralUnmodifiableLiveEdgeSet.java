@@ -40,9 +40,7 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
     public EdgeSet toImmutable() {
         if (edges.isEmpty()) { return EdgeSet.empty(); }
         if (edges.size() == 1) { return new EphemeralImmutableSingletonEdgeSet(edges.values().iterator().next()); }
-        EphemeralEdgeSet copy = new EphemeralEdgeSet();
-        copy.addAll(edges.values());
-        return new EphemeralImmutableEdgeSet(copy);
+        return new EphemeralImmutableEdgeSet(new EphemeralEdgeSet(edges.values()));
     }
 
     @Override
@@ -53,41 +51,23 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet intersect(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        if (other.isEmpty()) {
-            return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
-        }
-        for (dev.chpg.pg.api.Edge edge : edges.values()) {
-            if (other.contains(edge)) {
-                result.add(edge);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralEdgeSet
+        return new EphemeralEdgeSet(edges.values()).intersect(other);
     }
 
     @Override
     public EdgeSet difference(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralEdgeSet result = new EphemeralEdgeSet();
-        for (dev.chpg.pg.api.Edge edge : edges.values()) {
-            if (!other.contains(edge)) {
-                result.add(edge);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralEdgeSet
+        return new EphemeralEdgeSet(edges.values()).difference(other);
     }
 
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
-        java.util.Objects.requireNonNull(other, "other cannot be null");
-        EphemeralEdgeSet result = new EphemeralEdgeSet(); result.addAll(edges.values());
-        for (Edge e : other) {
-            if (e instanceof EphemeralEdge) {
-                result.add(e);
-            }
-        }
-        return result.size() == 1 ? new EphemeralImmutableSingletonEdgeSet(result.iterator().next()) : new EphemeralImmutableEdgeSet(result);
+        Objects.requireNonNull(other, "other cannot be null");
+        // Delegate directly to the secured, fail-fast algebra in EphemeralEdgeSet
+        return new EphemeralEdgeSet(edges.values()).union(other);
     }
 
     @Override
@@ -107,24 +87,28 @@ public class EphemeralUnmodifiableLiveEdgeSet implements EdgeSet {
 
     @Override
     public boolean add(Edge edge) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean contains(Object obj) {
-        if (!(obj instanceof EphemeralEdge ge)) { return false; }
-        return edges.containsKey(ge.id()) && edges.get(ge.id()).equals(ge);
+        // WIDENED: Accept the broader Edge interface to allow Shadow lookups
+        if (!(obj instanceof Edge ge)) { return false; }
+        Edge found = edges.get(ge.id());
+        return found != null && found.equals(ge);
     }
 
     @Override
     public boolean remove(Object obj) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
+
     @Override
-public boolean isMaterialized() {
+    public boolean isMaterialized() {
         return true;
     }
 
+    @Override
     public int size() {
         return edges.size();
     }
@@ -136,14 +120,14 @@ public boolean isMaterialized() {
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public Iterator<Edge> iterator() {
         // Preserve anonymous wrapper: Prevents iterator.remove() from bypassing graph mutation invariants or immutability contracts.
         return new Iterator<Edge>() {
-            private final Iterator<dev.chpg.pg.api.Edge> it = edges.values().iterator();
+            private final Iterator<Edge> it = edges.values().iterator();
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -154,7 +138,7 @@ public boolean isMaterialized() {
             }
             @Override
             public void remove() {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
             }
         };
     }
@@ -182,17 +166,17 @@ public boolean isMaterialized() {
 
     @Override
     public boolean addAll(Collection<? extends Edge> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
     @Override
@@ -200,10 +184,9 @@ public boolean isMaterialized() {
         edges.values().forEach(action);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Spliterator<Edge> spliterator() {
-        return (Spliterator<Edge>) (Spliterator<?>) edges.values().spliterator();
+        return edges.values().spliterator();
     }
 
     @Override
@@ -213,19 +196,17 @@ public boolean isMaterialized() {
 
     @Override
     public boolean removeIf(Predicate<? super Edge> filter) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Live views are strictly unmodifiable.");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Stream<Edge> stream() {
-        return (Stream<Edge>) (Stream<?>) edges.values().stream();
+        return edges.values().stream();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Stream<Edge> parallelStream() {
-        return (Stream<Edge>) (Stream<?>) edges.values().parallelStream();
+        return edges.values().parallelStream();
     }
 
     @Override
@@ -246,7 +227,7 @@ public boolean isMaterialized() {
     @Override
     public int hashCode() {
         int h = 0;
-        for (dev.chpg.pg.api.Edge edge : edges.values()) {
+        for (Edge edge : edges.values()) {
             if (edge != null) {
                 h += edge.hashCode();
             }
