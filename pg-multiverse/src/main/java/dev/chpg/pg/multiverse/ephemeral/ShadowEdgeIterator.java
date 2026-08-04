@@ -1,7 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.multiverse.universe.UniverseView;
 import java.util.Iterator;
 
 public class ShadowEdgeIterator implements Iterator<Edge> {

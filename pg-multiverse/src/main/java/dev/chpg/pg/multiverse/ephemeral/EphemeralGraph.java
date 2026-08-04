@@ -91,7 +91,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     Edge validateAndWrap(Edge edge) {
-        if (edge == null) return null;
+        if (edge == null) {
+            return null;
+        }
 
         // 1. If it's already a local transaction element, it's safe to yield raw
         if (edge instanceof EphemeralEdge) {
