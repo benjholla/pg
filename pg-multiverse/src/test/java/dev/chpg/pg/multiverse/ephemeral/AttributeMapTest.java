@@ -77,7 +77,7 @@ public class AttributeMapTest {
         });
 
         assertThrows(NullPointerException.class, () -> {
-            attributeMap.putIfAbsent("key", null);
+            attributeMap.putIfAbsent("key", (AttributeValue) null);
         });
     }
 
@@ -202,7 +202,7 @@ public class AttributeMapTest {
         assertThrows(NullPointerException.class, () -> attributeMap.computeIfPresent("k", null));
 
         assertThrows(NullPointerException.class, () -> attributeMap.merge(null, AttributeValue.value("v"), (v1, v2) -> AttributeValue.value("v3")));
-        assertThrows(NullPointerException.class, () -> attributeMap.merge("k", null, (v1, v2) -> AttributeValue.value("v3")));
+        assertThrows(NullPointerException.class, () -> attributeMap.merge("k", (AttributeValue) null, (v1, v2) -> AttributeValue.value("v3")));
         assertThrows(NullPointerException.class, () -> attributeMap.merge("k", AttributeValue.value("v"), null));
 
         assertThrows(NullPointerException.class, () -> attributeMap.replaceAll(null));

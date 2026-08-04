@@ -3,10 +3,26 @@ package dev.chpg.pg.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.jupiter.api.Test;
 
 public class AttributeValueTest {
+
+    @Test
+    public void testNullsRejected() {
+        assertThrows(NullPointerException.class, () -> AttributeValue.value((String) null));
+        assertThrows(NullPointerException.class, () -> AttributeValue.value((byte[]) null));
+    }
+
+    @Test
+    public void testWideningRejected() {
+        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((char) 'a'));
+        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((short) 1));
+        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((byte) 1));
+        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value(1.0f));
+    }
 
     @Test
     public void testStringValue() {
@@ -80,5 +96,18 @@ public class AttributeValueTest {
         assertNotEquals(v1, new Object());
 
         assertEquals(v1.hashCode(), v2.hashCode());
+
+        // Mutability test for defensive copying
+        byte[] arrInput = new byte[]{10, 20, 30};
+        AttributeValue.ByteArrayValue mutabilityTest = AttributeValue.value(arrInput);
+
+        // Change input, shouldn't affect record
+        arrInput[0] = 99;
+        assertArrayEquals(new byte[]{10, 20, 30}, mutabilityTest.value());
+
+        // Change output, shouldn't affect record
+        byte[] arrOutput = mutabilityTest.value();
+        arrOutput[0] = 99;
+        assertArrayEquals(new byte[]{10, 20, 30}, mutabilityTest.value());
     }
 }

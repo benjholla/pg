@@ -90,35 +90,6 @@ public final class EphemeralAttributeMap implements AttributeMap {
         return delegate.put(key, value);
     }
 
-    @Override
-    public AttributeValue put(String key, String value) {
-        return this.put(key, AttributeValue.value(value));
-    }
-
-    @Override
-    public AttributeValue put(String key, int value) {
-        return this.put(key, AttributeValue.value(value));
-    }
-
-    @Override
-    public AttributeValue put(String key, long value) {
-        return this.put(key, AttributeValue.value(value));
-    }
-
-    @Override
-    public AttributeValue put(String key, double value) {
-        return this.put(key, AttributeValue.value(value));
-    }
-
-    @Override
-    public AttributeValue put(String key, boolean value) {
-        return this.put(key, AttributeValue.value(value));
-    }
-
-    @Override
-    public AttributeValue put(String key, byte[] value) {
-        return this.put(key, AttributeValue.value(value));
-    }
 
     @Override
     public void putAll(Map<? extends String, ? extends AttributeValue> m) {

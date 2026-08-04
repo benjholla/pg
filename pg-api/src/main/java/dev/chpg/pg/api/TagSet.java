@@ -17,7 +17,7 @@ import java.util.Set;
  * <li>Checking for category membership (e.g., {@code edge.tags().contains("calls")}).</li>
  * </ul>
  * <p>
- * <b>Important invariants:</b> The tags stored within this set are typically plain strings. Implementations may enforce specific string formats or internally manage them via dictionaries (e.g., string pooling) to reduce memory.
+ * <b>Important invariants:</b> The tags stored within this set must be non-null strings. Null tags are strictly prohibited. Note that any string formatting validation or string pooling is an implementation detail with no specific interface hooks here.
  * <p>
  * <b>Thread safety:</b> Thread safety guarantees depend heavily on the concrete implementation. Modifying the underlying graph while iterating a live TagSet will likely produce a {@code ConcurrentModificationException}.
  * <p>

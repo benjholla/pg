@@ -90,7 +90,7 @@ public class AttributeMapTest {
     @Test
     public void testMerge() {
         assertThrows(NullPointerException.class, () -> map.merge(null, AttributeValue.value(1), (oldV, newV) -> newV));
-        assertThrows(NullPointerException.class, () -> map.merge("key", null, (oldV, newV) -> newV));
+        assertThrows(NullPointerException.class, () -> map.merge("key", (AttributeValue) null, (oldV, newV) -> newV));
         assertThrows(NullPointerException.class, () -> map.merge("key", AttributeValue.value(1), null));
 
         // Insert if absent

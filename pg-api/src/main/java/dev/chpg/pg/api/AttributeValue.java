@@ -28,7 +28,7 @@ import java.util.Arrays;
  * <li><b>Heap Optimization (The Object Padding Fallacy):</b> Because these values must be 
  * wrapped in objects (records) to satisfy the interface, they are subject to the JVM's 
  * 8-byte memory alignment. A hypothetical {@code ShortValue} or {@code ByteValue} record
- * would consume the exact same amount of heap space (typically 24 bytes) as an 
+ * would consume the exact same amount of heap space (typically 24 bytes, or 16 bytes with compressed oops enabled) as an
  * {@code IntegerValue}. Excluding smaller primitives prevents API bloat without sacrificing
  * memory efficiency.</li>
  * <li><b>Pattern Matching Simplicity:</b> Restricting the number of permitted implementations 
@@ -37,8 +37,7 @@ import java.util.Arrays;
  * a maximum of 6 branches rather than the full suite of Java primitives.</li>
  * <li><b>JSON &amp; Transport Interoperability:</b> This specific subset perfectly mirrors
  * native JSON data types (String, Number, Boolean). This guarantees a frictionless, 
- * 1-to-1 serialization pipeline in the {@code pg-io} module, ensuring attributes map cleanly 
- * to the {@code pgv} TypeScript visualizer.</li>
+ * 1-to-1 serialization pipeline in the {@code pg-io} module.</li>
  * </ul>
  * <p>
  * <b>The Character Exclusion (Why {@code StringValue} instead of {@code CharValue}?):</b>
@@ -77,7 +76,10 @@ public sealed interface AttributeValue permits
      * @param value the string value
      * @return an AttributeValue containing the string
      */
-    static StringValue value(String value) { return new StringValue(value); }
+    static StringValue value(String value) {
+        java.util.Objects.requireNonNull(value, "value cannot be null");
+        return new StringValue(value);
+    }
 
     /**
      * Creates a new {@link BooleanValue} instance.
@@ -117,7 +119,50 @@ public sealed interface AttributeValue permits
      * @param value the byte array value
      * @return an AttributeValue containing the byte array
      */
-    static ByteArrayValue value(byte[] value) { return new ByteArrayValue(value); }
+    static ByteArrayValue value(byte[] value) {
+        java.util.Objects.requireNonNull(value, "value cannot be null");
+        return new ByteArrayValue(value);
+    }
+
+    /**
+     * Unsupported. Prevents silent widening of char to int.
+     *
+     * @param value the char value
+     * @return nothing, throws exception
+     */
+    static AttributeValue value(char value) {
+        throw new IllegalArgumentException("char is not a supported AttributeValue. Use String instead.");
+    }
+
+    /**
+     * Unsupported. Prevents silent widening of short to int.
+     *
+     * @param value the short value
+     * @return nothing, throws exception
+     */
+    static AttributeValue value(short value) {
+        throw new IllegalArgumentException("short is not a supported AttributeValue. Use int instead.");
+    }
+
+    /**
+     * Unsupported. Prevents silent widening of byte to int.
+     *
+     * @param value the byte value
+     * @return nothing, throws exception
+     */
+    static AttributeValue value(byte value) {
+        throw new IllegalArgumentException("byte is not a supported AttributeValue. Use int instead.");
+    }
+
+    /**
+     * Unsupported. Prevents silent widening of float to double.
+     *
+     * @param value the float value
+     * @return nothing, throws exception
+     */
+    static AttributeValue value(float value) {
+        throw new IllegalArgumentException("float is not a supported AttributeValue. Use double instead.");
+    }
 
     // 1. Strings
     /**
@@ -144,6 +189,9 @@ public sealed interface AttributeValue permits
 
     /**
      * Represents a long attribute value.
+     * <p>
+     * <b>Warning:</b> When serialized to JSON for web clients, values outside the safe integer range
+     * (between -(2^53 - 1) and 2^53 - 1) will lose precision because JavaScript treats all numbers as double-precision floats.
      *
      * @param value the underlying long
      */
@@ -163,6 +211,17 @@ public sealed interface AttributeValue permits
      * @param value the underlying byte array
      */
     record ByteArrayValue(byte[] value) implements AttributeValue {
+
+        public ByteArrayValue {
+            java.util.Objects.requireNonNull(value, "value");
+            value = value.clone();
+        }
+
+        @Override
+        public byte[] value() {
+            return value.clone();
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) { return true; }

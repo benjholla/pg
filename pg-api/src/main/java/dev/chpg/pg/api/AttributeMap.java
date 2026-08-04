@@ -32,7 +32,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, String value);
+    default AttributeValue put(String key, String value) {
+        return put(key, AttributeValue.value(value));
+    }
 
     /**
      * Associates the specified int value with the specified key in this map.
@@ -41,7 +43,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, int value);
+    default AttributeValue put(String key, int value) {
+        return put(key, AttributeValue.value(value));
+    }
 
     /**
      * Associates the specified long value with the specified key in this map.
@@ -50,7 +54,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, long value);
+    default AttributeValue put(String key, long value) {
+        return put(key, AttributeValue.value(value));
+    }
 
     /**
      * Associates the specified double value with the specified key in this map.
@@ -59,7 +65,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, double value);
+    default AttributeValue put(String key, double value) {
+        return put(key, AttributeValue.value(value));
+    }
 
     /**
      * Associates the specified boolean value with the specified key in this map.
@@ -68,7 +76,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, boolean value);
+    default AttributeValue put(String key, boolean value) {
+        return put(key, AttributeValue.value(value));
+    }
 
     /**
      * Associates the specified byte[] value with the specified key in this map.
@@ -77,7 +87,165 @@ public interface AttributeMap extends Map<String, AttributeValue> {
      * @param value value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no mapping for key.
      */
-    AttributeValue put(String key, byte[] value);
+    default AttributeValue put(String key, byte[] value) {
+        return put(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given String value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, String value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given int value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, int value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given long value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, long value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given double value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, double value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given boolean value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, boolean value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value (or is mapped to null)
+     * associates it with the given byte[] value and returns null, else returns the current value.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with the specified key, or null if there was no mapping for the key.
+     */
+    default AttributeValue putIfAbsent(String key, byte[] value) {
+        return putIfAbsent(key, AttributeValue.value(value));
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null String value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, String value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null int value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, int value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null long value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, long value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null double value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, double value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null boolean value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, boolean value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
+
+    /**
+     * If the specified key is not already associated with a value or is associated with null,
+     * associates it with the given non-null byte[] value. Otherwise, replaces the associated value with the results
+     * of the given remapping function, or removes if the result is null.
+     *
+     * @param key key with which the resulting value is to be associated
+     * @param value the non-null value to be merged with the existing value associated with the key or, if no existing value or a null value is associated with the key, to be associated with the key
+     * @param remappingFunction the function to recompute a value if present
+     * @return the new value associated with the specified key, or null if no value is associated with the key
+     */
+    default AttributeValue merge(String key, byte[] value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return merge(key, AttributeValue.value(value), remappingFunction);
+    }
 
     @Override
     default AttributeValue compute(String key, java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
@@ -88,12 +256,8 @@ public interface AttributeMap extends Map<String, AttributeValue> {
         AttributeValue newValue = remappingFunction.apply(key, oldValue);
 
         if (newValue == null) {
-            if (oldValue != null || containsKey(key)) {
-                remove(key);
-                return null;
-            } else {
-                return null;
-            }
+            remove(key);
+            return null;
         } else {
             put(key, newValue);
             return newValue;

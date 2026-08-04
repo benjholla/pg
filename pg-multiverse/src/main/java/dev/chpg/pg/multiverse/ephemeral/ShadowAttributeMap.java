@@ -60,19 +60,6 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
     }
 
     @Override
-    public AttributeValue put(String key, String value) { return put(key, AttributeValue.value(value)); }
-    @Override
-    public AttributeValue put(String key, int value) { return put(key, AttributeValue.value(value)); }
-    @Override
-    public AttributeValue put(String key, long value) { return put(key, AttributeValue.value(value)); }
-    @Override
-    public AttributeValue put(String key, double value) { return put(key, AttributeValue.value(value)); }
-    @Override
-    public AttributeValue put(String key, boolean value) { return put(key, AttributeValue.value(value)); }
-    @Override
-    public AttributeValue put(String key, byte[] value) { return put(key, AttributeValue.value(value)); }
-
-    @Override
     public AttributeValue get(Object key) {
         if (!(key instanceof String strKey)) {
             return null;
