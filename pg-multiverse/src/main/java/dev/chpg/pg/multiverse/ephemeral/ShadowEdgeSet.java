@@ -48,6 +48,14 @@ public class ShadowEdgeSet implements EdgeSet {
             return universeSet;
         }
 
+        if (other instanceof EphemeralEdgeSet ||
+            other instanceof EphemeralImmutableEdgeSet ||
+            other instanceof EphemeralImmutableSingletonEdgeSet ||
+            other instanceof EphemeralUnmodifiableLiveEdgeSet ||
+            other.isEmpty()) {
+            return new UniverseEdgeSet(this.transactionContext.universe(), new java.util.BitSet());
+        }
+
         // FAIL FAST: No more silent filtering or fallback arrays
         throw new IllegalArgumentException(
             "Strict algebra whitelist violation: Expected ShadowEdgeSet or UniverseEdgeSet, got " + other.getClass().getSimpleName()
