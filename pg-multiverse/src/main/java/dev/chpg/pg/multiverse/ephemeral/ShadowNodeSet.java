@@ -3,16 +3,15 @@ package dev.chpg.pg.multiverse.ephemeral;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.multiverse.universe.UniverseNodeSet;
-import dev.chpg.pg.multiverse.universe.UniverseNode;
 
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ShadowNodeSet implements NodeSet {
     private final EphemeralGraph transactionContext;
@@ -31,39 +30,81 @@ public class ShadowNodeSet implements NodeSet {
         this.localAdds = localAdds;
     }
 
-    private NodeSet unwrapForAlgebra(NodeSet other) {
-        if (other instanceof ShadowNodeSet) {
-            return ((ShadowNodeSet) other).backingSet;
-        }
-        return other;
-    }
-
-    // We implement `unwrapForAlgebra(Collection)` to convert any collection into NodeSet
+    // --- The Strict Algebra Firewall ---
     private NodeSet unwrapForAlgebra(Collection<? extends Node> other) {
-        if (other instanceof ShadowNodeSet) {
-            ShadowNodeSet shadow = (ShadowNodeSet) other;
+        Objects.requireNonNull(other, "Collection cannot be null");
+
+        if (other instanceof ShadowNodeSet shadow) {
             if (shadow.transactionContext.universe() != this.transactionContext.universe()) {
                 throw new IllegalArgumentException("Cross-universe contamination: Shadow sets belong to different universes.");
             }
             return shadow.backingSet;
         }
 
-        if (other instanceof dev.chpg.pg.multiverse.universe.UniverseNodeSet) {
-            dev.chpg.pg.multiverse.universe.UniverseNodeSet universeSet = (dev.chpg.pg.multiverse.universe.UniverseNodeSet) other;
+        if (other instanceof UniverseNodeSet universeSet) {
             if (universeSet.universe() != this.transactionContext.universe()) {
                 throw new IllegalArgumentException("Cross-universe contamination: Universe sets do not match.");
             }
             return universeSet;
         }
 
-        // Return empty baseline to silently filter foreign sets per CrossGraphContaminationTest expectations
-        return new dev.chpg.pg.multiverse.universe.UniverseNodeSet(this.transactionContext.universe(), new java.util.BitSet());
+        // FAIL FAST: No more silent filtering or fallback arrays
+        throw new IllegalArgumentException(
+            "Strict algebra whitelist violation: Expected ShadowNodeSet or UniverseNodeSet, got " + other.getClass().getSimpleName()
+        );
     }
-    private Node unwrapNode(Node n) {
-        if (n instanceof ShadowUniverseNode shadow) {
-            return new UniverseNode(shadow.universe(), shadow.id());
+
+    @Override
+    public NodeSet union(Collection<? extends Node> other) {
+        NodeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        NodeSet newBacking = this.backingSet.union(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Node> combinedLocalAdds = new HashSet<>(this.localAdds);
+        if (other instanceof ShadowNodeSet shadowOther) {
+            combinedLocalAdds.addAll(shadowOther.localAdds);
         }
-        return n;
+
+        // 3. Wrap it up (ShadowNodeSet intrinsically masks tombstones, no manual subtraction needed!)
+        return new ShadowNodeSet(this.transactionContext, newBacking, combinedLocalAdds);
+    }
+
+    @Override
+    public NodeSet difference(Collection<? extends Node> other) {
+        NodeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        NodeSet newBacking = this.backingSet.difference(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Node> combinedLocalAdds = new HashSet<>(this.localAdds);
+        if (other instanceof ShadowNodeSet shadowOther) {
+            combinedLocalAdds.removeAll(shadowOther.localAdds);
+        }
+
+        return new ShadowNodeSet(this.transactionContext, newBacking, combinedLocalAdds);
+    }
+
+    @Override
+    public NodeSet intersect(Collection<? extends Node> other) {
+        NodeSet unwrappedOther = unwrapForAlgebra(other);
+
+        // 1. O(1) Bitwise Algebra on the core engine
+        NodeSet newBacking = this.backingSet.intersect(unwrappedOther);
+
+        // 2. Set Algebra on the local delta
+        Set<Node> combinedLocalAdds = new HashSet<>();
+        if (other instanceof ShadowNodeSet shadowOther) {
+            for (Node local : this.localAdds) {
+                if (shadowOther.localAdds.contains(local)) {
+                    combinedLocalAdds.add(local);
+                }
+            }
+        }
+
+        return new ShadowNodeSet(this.transactionContext, newBacking, combinedLocalAdds);
     }
 
     @Override
@@ -75,12 +116,11 @@ public class ShadowNodeSet implements NodeSet {
             private final Iterator<Node> localIter = localAdds.iterator();
 
             private void advance() {
-                if (nextNode != null) {
-    return;
-}
+                if (nextNode != null) { return; }
 
                 while (backingIter.hasNext()) {
                     Node potential = backingIter.next();
+                    // Perfect Tombstone Masking
                     if (!transactionContext.getTombstonedNodeIds().get(potential.id())) {
                         nextNode = potential;
                         return;
@@ -102,9 +142,7 @@ public class ShadowNodeSet implements NodeSet {
             @Override
             public Node next() {
                 advance();
-                if (nextNode == null) {
-    throw new java.util.NoSuchElementException();
-}
+                if (nextNode == null) { throw new java.util.NoSuchElementException(); }
                 Node toReturn = nextNode;
                 nextNode = null;
                 return toReturn;
@@ -114,6 +152,7 @@ public class ShadowNodeSet implements NodeSet {
 
     @Override
     public int size() {
+        // Dynamically compute the size minus active tombstones
         BitSet overlap = new BitSet();
         for (int id : backingSet.ids()) {
             overlap.set(id);
@@ -127,18 +166,7 @@ public class ShadowNodeSet implements NodeSet {
     public boolean contains(Object obj) {
         if (!(obj instanceof Node node)) { return false; }
 
-        for (Node local : localAdds) {
-            if (local.equals(node) || node.equals(local)) { return true; }
-            if (local instanceof ShadowUniverseNode && ((ShadowUniverseNode) local).id() == node.id()) { return true; }
-            if (node instanceof ShadowUniverseNode && ((ShadowUniverseNode) node).id() == local.id()) { return true; }
-        }
-
-        if (node instanceof ShadowUniverseNode shadow) {
-            if (shadow.id() >= 0 && transactionContext.getTombstonedNodeIds().get(shadow.id())) {
-                return false;
-            }
-            return backingSet.contains(new dev.chpg.pg.multiverse.universe.UniverseNode(shadow.universe(), shadow.id()));
-        }
+        if (localAdds.contains(node)) { return true; }
 
         if (node.id() >= 0 && transactionContext.getTombstonedNodeIds().get(node.id())) {
              return false;
@@ -146,6 +174,7 @@ public class ShadowNodeSet implements NodeSet {
 
         return backingSet.contains(node);
     }
+
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
@@ -157,177 +186,6 @@ public class ShadowNodeSet implements NodeSet {
     @Override
     public boolean isEmpty() {
         return size() == 0;
-    }
-
-    @Override
-    public NodeSet union(Collection<? extends Node> other) {
-        NodeSet unwrappedOther = unwrapForAlgebra(other);
-
-        // Filter unwrappedOther to ONLY contain UniverseNodes for the backing engine
-        java.util.List<Node> universeOnly = new java.util.ArrayList<>();
-        for (Node n : unwrappedOther) {
-            if (n instanceof dev.chpg.pg.multiverse.universe.UniverseNode) {
-                 universeOnly.add(n);
-            }
-        }
-        NodeSet rawUnion = this.backingSet.union(new dev.chpg.pg.api.GenericImmutableNodeSet(new java.util.HashSet<>(universeOnly)));
-
-        NodeSet filteredUnion = rawUnion;
-        if (filteredUnion instanceof UniverseNodeSet) {
-             UniverseNodeSet filteredUniverseUnion = (UniverseNodeSet) filteredUnion;
-             filteredUnion = filteredUniverseUnion.difference(
-                 new UniverseNodeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedNodeIds()
-                 )
-             );
-        } else {
-             // Basic fallback
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedNodeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             NodeSet toRemove = new EphemeralNodeSet(tombstoned.stream().map(id -> new UniverseNode(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredUnion = filteredUnion.difference(toRemove);
-        }
-
-        Set<Node> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowNodeSet shadowOther) {
-            combinedLocalAdds.addAll(shadowOther.localAdds);
-        } else if (other != null) {
-            for (Node n : other) {
-                if (n instanceof EphemeralNode) {
-                    combinedLocalAdds.add(n);
-                }
-            }
-        }
-
-        return new ShadowNodeSet(this.transactionContext, filteredUnion, combinedLocalAdds);
-    }
-
-    @Override
-    public NodeSet difference(Collection<? extends Node> other) {
-        NodeSet unwrappedOther = unwrapForAlgebra(other);
-
-        java.util.List<Node> universeOnly = new java.util.ArrayList<>();
-        for (Node n : unwrappedOther) {
-            if (n instanceof dev.chpg.pg.multiverse.universe.UniverseNode) {
-                 universeOnly.add(n);
-            }
-        }
-        NodeSet rawDiff = this.backingSet.difference(new dev.chpg.pg.api.GenericImmutableNodeSet(new java.util.HashSet<>(universeOnly)));
-
-        NodeSet filteredDiff = rawDiff;
-        if (filteredDiff instanceof dev.chpg.pg.multiverse.universe.UniverseNodeSet) {
-             dev.chpg.pg.multiverse.universe.UniverseNodeSet filteredUniverseDiff = (dev.chpg.pg.multiverse.universe.UniverseNodeSet) filteredDiff;
-             filteredDiff = filteredUniverseDiff.difference(
-                 new dev.chpg.pg.multiverse.universe.UniverseNodeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedNodeIds()
-                 )
-             );
-        } else {
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedNodeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             NodeSet toRemove = new EphemeralNodeSet(tombstoned.stream().map(id -> new dev.chpg.pg.multiverse.universe.UniverseNode(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredDiff = filteredDiff.difference(toRemove);
-        }
-
-        Set<Node> combinedLocalAdds = new HashSet<>();
-        for (Node local : this.localAdds) {
-            boolean found = false;
-            if (other instanceof ShadowNodeSet) {
-                ShadowNodeSet shadowOther = (ShadowNodeSet) other;
-                for (Node o : shadowOther.localAdds) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowUniverseNode && ((ShadowUniverseNode) local).id() == o.id()) ||
-                        (o instanceof ShadowUniverseNode && ((ShadowUniverseNode) o).id() == local.id())) {
-                        found = true;
-                        break;
-                    }
-                }
-            } else if (other != null) {
-                for (Node o : other) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowUniverseNode && ((ShadowUniverseNode) local).id() == o.id()) ||
-                        (o instanceof ShadowUniverseNode && ((ShadowUniverseNode) o).id() == local.id())) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (!found) {
-                combinedLocalAdds.add(local);
-            }
-        }
-
-        return new ShadowNodeSet(this.transactionContext, filteredDiff, combinedLocalAdds);
-    }
-
-    @Override
-    public NodeSet intersect(Collection<? extends Node> other) {
-        NodeSet unwrappedOther = unwrapForAlgebra(other);
-
-        java.util.List<Node> universeOnly = new java.util.ArrayList<>();
-        for (Node n : unwrappedOther) {
-            if (n instanceof dev.chpg.pg.multiverse.universe.UniverseNode) {
-                 universeOnly.add(n);
-            }
-        }
-        NodeSet rawIntersect = this.backingSet.intersect(new dev.chpg.pg.api.GenericImmutableNodeSet(new java.util.HashSet<>(universeOnly)));
-
-        NodeSet filteredIntersect = rawIntersect;
-        if (filteredIntersect instanceof dev.chpg.pg.multiverse.universe.UniverseNodeSet) {
-             dev.chpg.pg.multiverse.universe.UniverseNodeSet filteredUniverseIntersect = (dev.chpg.pg.multiverse.universe.UniverseNodeSet) filteredIntersect;
-             filteredIntersect = filteredUniverseIntersect.difference(
-                 new dev.chpg.pg.multiverse.universe.UniverseNodeSet(
-                     this.transactionContext.universe(),
-                     this.transactionContext.getTombstonedNodeIds()
-                 )
-             );
-        } else {
-             Set<Integer> tombstoned = new HashSet<>();
-             BitSet tombstones = this.transactionContext.getTombstonedNodeIds();
-             for (int i = tombstones.nextSetBit(0); i >= 0; i = tombstones.nextSetBit(i+1)) {
-                 tombstoned.add(i);
-             }
-             NodeSet toRemove = new EphemeralNodeSet(tombstoned.stream().map(id -> new dev.chpg.pg.multiverse.universe.UniverseNode(this.transactionContext.universe(), id)).collect(Collectors.toList()));
-             filteredIntersect = filteredIntersect.difference(toRemove);
-        }
-
-        Set<Node> combinedLocalAdds = new HashSet<>();
-        for (Node local : this.localAdds) {
-            boolean found = false;
-            if (other instanceof ShadowNodeSet) {
-                ShadowNodeSet shadowOther = (ShadowNodeSet) other;
-                for (Node o : shadowOther.localAdds) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowUniverseNode && ((ShadowUniverseNode) local).id() == o.id()) ||
-                        (o instanceof ShadowUniverseNode && ((ShadowUniverseNode) o).id() == local.id())) {
-                        found = true;
-                        break;
-                    }
-                }
-            } else if (other != null) {
-                for (Node o : other) {
-                    if (local.equals(o) || o.equals(local) ||
-                        (local instanceof ShadowUniverseNode && ((ShadowUniverseNode) local).id() == o.id()) ||
-                        (o instanceof ShadowUniverseNode && ((ShadowUniverseNode) o).id() == local.id())) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (found) {
-                combinedLocalAdds.add(local);
-            }
-        }
-
-        return new ShadowNodeSet(this.transactionContext, filteredIntersect, combinedLocalAdds);
     }
 
     @Override
@@ -367,47 +225,31 @@ public class ShadowNodeSet implements NodeSet {
     @Override
     public NodeSet toImmutable() {
         if (isEmpty()) { return NodeSet.empty(); }
-        if (size() == 1) { return new dev.chpg.pg.api.GenericImmutableNodeSet(java.util.Collections.singleton(one().get())); }
+        if (size() == 1) { return new dev.chpg.pg.api.GenericImmutableNodeSet(Collections.singleton(one().get())); }
         return new dev.chpg.pg.api.GenericImmutableNodeSet(this);
     }
 
     @Override
-    public boolean add(Node e) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean add(Node e) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean remove(Object o) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean addAll(Collection<? extends Node> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean addAll(Collection<? extends Node> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs.");
-    }
+    public void clear() { throw new UnsupportedOperationException("Removals/additions must be routed explicitly through EphemeralGraph APIs."); }
 
     @Override
-    public Object[] toArray() {
-        return materialize().toArray();
-    }
+    public Object[] toArray() { return materialize().toArray(); }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        return materialize().toArray(a);
-    }
+    public <T> T[] toArray(T[] a) { return materialize().toArray(a); }
 }
