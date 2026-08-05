@@ -31,6 +31,9 @@ public final class Universe {
     // Initial capacity for all columnar arrays
     private static final int INITIAL_CAPACITY = 1024;
 
+    private final BitSet activeNodes = new BitSet();
+    private final BitSet activeEdges = new BitSet();
+
     // =========================================================================
     // TOPOLOGY ARRAYS (STRUCTURAL COLUMNAR STORAGE)
     // =========================================================================
@@ -247,20 +250,30 @@ public final class Universe {
     public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
         Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
 
-        BitSet activeNodes = new BitSet();
-        BitSet activeEdges = new BitSet();
-
         // Local translation map: Ephemeral ID (Negative) -> Universe ID (Positive)
-        // Scoped entirely to this method, instantly GC'd after promotion completes.
         Map<Integer, Integer> nodeTranslationMap = new HashMap<>();
 
-        // 1. Bulk Ingest Nodes
-        for (Node node : ephemeralGraph.nodes()) {
+        // --- PHASE 1: DELETIONS (TOMBSTONES) ---
+        BitSet deadNodes = ephemeralGraph.getTombstonedNodeIds();
+        for (int i = deadNodes.nextSetBit(0); i >= 0; i = deadNodes.nextSetBit(i + 1)) {
+            this.activeNodes.clear(i);
+        }
+
+        BitSet deadEdges = ephemeralGraph.getTombstonedEdgeIds();
+        for (int i = deadEdges.nextSetBit(0); i >= 0; i = deadEdges.nextSetBit(i + 1)) {
+            this.activeEdges.clear(i);
+        }
+
+        // --- PHASE 2: UPDATES (EXISTING ELEMENT MUTATIONS) ---
+        ephemeralGraph.flushPropertiesTo(this);
+
+        // --- PHASE 3: INSERTIONS (BRAND NEW TOPOLOGY) ---
+        // Iterate ONLY over localNodes() to avoid re-ingesting the entire Universe baseline
+        for (Node node : ephemeralGraph.localNodes()) {
             int newId = this.idGenerator.createNodeId();
             nodeTranslationMap.put(node.id(), newId);
-            activeNodes.set(newId);
+            this.activeNodes.set(newId);
 
-            // Copy tags and attributes directly into the columnar arrays
             for (String tag : node.tags()) {
                 this.addNodeTag(newId, tag);
             }
@@ -269,23 +282,26 @@ public final class Universe {
             }
         }
 
-        // 2. Bulk Ingest Edges
-        for (Edge edge : ephemeralGraph.edges()) {
+        // Iterate ONLY over localEdges()
+        for (Edge edge : ephemeralGraph.localEdges()) {
             int newEdgeId = this.idGenerator.createEdgeId();
-            activeEdges.set(newEdgeId);
+            this.activeEdges.set(newEdgeId);
 
-            // Translate the ephemeral topology endpoints to the newly generated Universe IDs
             Integer uSourceId = nodeTranslationMap.get(edge.from().id());
             Integer uTargetId = nodeTranslationMap.get(edge.to().id());
 
+            // If a local edge connects to a pre-existing Universe node, use the existing positive ID
             if (uSourceId == null || uTargetId == null) {
-                throw new IllegalStateException("EphemeralGraph topology invariant violated: Edge references unmapped node.");
+                uSourceId = edge.from().id() >= 0 ? edge.from().id() : uSourceId;
+                uTargetId = edge.to().id() >= 0 ? edge.to().id() : uTargetId;
+
+                if (uSourceId == null || uTargetId == null) {
+                    throw new IllegalStateException("EphemeralGraph topology invariant violated: Edge references unmapped local node.");
+                }
             }
 
-            // Wire the structural matrix
             this.wireEdge(newEdgeId, uSourceId, uTargetId);
 
-            // Copy tags and attributes
             for (String tag : edge.tags()) {
                 this.addEdgeTag(newEdgeId, tag);
             }
@@ -294,13 +310,12 @@ public final class Universe {
             }
         }
 
-        // 3. The Burn-the-Boats Invalidation
-        // Invokes the clear() method to drop all EphemeralNode/Edge object references
-        // from the EphemeralGraph's internal HashMaps. They are now completely
-        // orphaned and instantly eligible for Eden-space collection.
+        // --- PHASE 4: INVALIDATION ---
         ephemeralGraph.clear();
+        incrementModCount();
 
-        return new UniverseGraph(this, activeNodes, activeEdges);
+        // Return a fresh view tied to the newly updated global active sets
+        return new UniverseGraph(this, (BitSet) this.activeNodes.clone(), (BitSet) this.activeEdges.clone());
     }
 
     @Override

@@ -56,11 +56,11 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return new EphemeralGraph(this.universe, this.idGenerator);
     }
 
-    java.util.BitSet getTombstonedNodeIds() {
+    public java.util.BitSet getTombstonedNodeIds() {
         return this.tombstonedNodeIds;
     }
 
-    java.util.BitSet getTombstonedEdgeIds() {
+    public java.util.BitSet getTombstonedEdgeIds() {
         return this.tombstonedEdgeIds;
     }
 
@@ -253,6 +253,63 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return universe;
     }
 
+    /**
+     * Flushes uncommitted property mutations (tags and attributes)
+     * directly into the provided Universe engine, filtering out any
+     * elements that were deleted or tombstoned during the transaction.
+     */
+    public void flushPropertiesTo(Universe core) {
+        // Intersection Filters
+        java.util.function.IntPredicate isNodeAlive = id ->
+            (id < 0 && this.nodes.containsKey(id)) || (id >= 0 && !this.tombstonedNodeIds.get(id));
+
+        java.util.function.IntPredicate isEdgeAlive = id ->
+            (id < 0 && this.edges.containsKey(id)) || (id >= 0 && !this.tombstonedEdgeIds.get(id));
+
+        // Node Properties
+        pendingNodeTags.forEach((id, tags) -> {
+            if (isNodeAlive.test(id)) {
+                tags.forEach(t -> core.addNodeTag(id, t));
+            }
+        });
+        removedNodeTags.forEach((id, tags) -> {
+            if (isNodeAlive.test(id)) {
+                tags.forEach(t -> core.removeNodeTag(id, t));
+            }
+        });
+        pendingNodeAttributes.forEach((id, attrs) -> {
+            if (isNodeAlive.test(id)) {
+                attrs.forEach((k, v) -> core.setNodeAttribute(id, k, v));
+            }
+        });
+        removedNodeAttributes.forEach((id, attrs) -> {
+            if (isNodeAlive.test(id)) {
+                attrs.forEach(k -> core.removeNodeAttribute(id, k));
+            }
+        });
+
+        // Edge Properties
+        pendingEdgeTags.forEach((id, tags) -> {
+            if (isEdgeAlive.test(id)) {
+                tags.forEach(t -> core.addEdgeTag(id, t));
+            }
+        });
+        removedEdgeTags.forEach((id, tags) -> {
+            if (isEdgeAlive.test(id)) {
+                tags.forEach(t -> core.removeEdgeTag(id, t));
+            }
+        });
+        pendingEdgeAttributes.forEach((id, attrs) -> {
+            if (isEdgeAlive.test(id)) {
+                attrs.forEach((k, v) -> core.setEdgeAttribute(id, k, v));
+            }
+        });
+        removedEdgeAttributes.forEach((id, attrs) -> {
+            if (isEdgeAlive.test(id)) {
+                attrs.forEach(k -> core.removeEdgeAttribute(id, k));
+            }
+        });
+    }
 
     Set<String> getPendingNodeTags(int id) { Set<String> s = this.pendingNodeTags.get(id); return s != null ? s : java.util.Collections.emptySet(); }
     Set<String> getOrComputePendingNodeTags(int id) { return this.pendingNodeTags.computeIfAbsent(id, k -> new HashSet<>()); }
@@ -602,6 +659,26 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public NodeSet nodes() {
         return new EphemeralUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
+    }
+
+    /**
+     * Returns an unmodifiable view of the pure local nodes that have been added
+     * directly into this Ephemeral transaction boundary.
+     *
+     * @return a pure local NodeSet
+     */
+    public Collection<Node> localNodes() {
+        return java.util.Collections.unmodifiableCollection(nodes.values());
+    }
+
+    /**
+     * Returns an unmodifiable view of the pure local edges that have been added
+     * directly into this Ephemeral transaction boundary.
+     *
+     * @return a pure local EdgeSet
+     */
+    public Collection<Edge> localEdges() {
+        return java.util.Collections.unmodifiableCollection(edges.values());
     }
 
 

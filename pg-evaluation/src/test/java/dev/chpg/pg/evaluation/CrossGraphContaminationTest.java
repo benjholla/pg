@@ -16,6 +16,8 @@ import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import dev.chpg.pg.multiverse.ephemeral.ShadowNodeSet;
 
+import java.util.Collection;
+
 public class CrossGraphContaminationTest {
 
     @Test
@@ -183,5 +185,30 @@ public class CrossGraphContaminationTest {
         );
 
         assertTrue(exception.getMessage().contains("Cross-universe contamination"));
+    }
+
+    @Test
+    public void testShadowSetAlgebraWithLocalEphemeralSets() {
+        Universe universe = new Universe();
+        EphemeralGraph graph = new EphemeralGraph(universe);
+
+        Node localNode = graph.factory().createNode();
+        graph.addNode(localNode);
+
+        // This natively returns a ShadowNodeSet
+        NodeSet shadowSet = graph.nodes();
+
+        // This natively returns an EphemeralNodeSet
+        Collection<Node> localSet = graph.localNodes();
+
+        // Algebra should succeed and correctly merge local elements
+        NodeSet unionResult = shadowSet.union(localSet);
+        assertTrue(unionResult.contains(localNode));
+
+        NodeSet intersectResult = shadowSet.intersect(localSet);
+        assertTrue(intersectResult.contains(localNode));
+
+        NodeSet diffResult = shadowSet.difference(localSet);
+        assertFalse(diffResult.contains(localNode));
     }
 }

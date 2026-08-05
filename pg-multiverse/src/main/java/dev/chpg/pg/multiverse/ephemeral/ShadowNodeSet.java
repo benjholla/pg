@@ -62,6 +62,19 @@ public class ShadowNodeSet implements NodeSet {
         );
     }
 
+    // Add this helper method right below unwrapForAlgebra
+    @SuppressWarnings("unchecked")
+    private Set<Node> extractLocalDelta(Collection<? extends Node> other) {
+        if (other instanceof ShadowNodeSet shadow) {
+            return shadow.localAdds;
+        }
+        if (other instanceof UniverseNodeSet) {
+            return Collections.emptySet(); // Core baselines have no local delta
+        }
+        // If it survived unwrapForAlgebra, it is a valid, pure-local Ephemeral set
+        return new HashSet<>(other);
+    }
+
     @Override
     public NodeSet union(Collection<? extends Node> other) {
         NodeSet unwrappedOther = unwrapForAlgebra(other);
@@ -71,9 +84,7 @@ public class ShadowNodeSet implements NodeSet {
 
         // 2. Set Algebra on the local delta
         Set<Node> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowNodeSet shadowOther) {
-            combinedLocalAdds.addAll(shadowOther.localAdds);
-        }
+        combinedLocalAdds.addAll(extractLocalDelta(other));
 
         // 3. Wrap it up (ShadowNodeSet intrinsically masks tombstones, no manual subtraction needed!)
         return new ShadowNodeSet(this.transactionContext, newBacking, combinedLocalAdds);
@@ -88,9 +99,7 @@ public class ShadowNodeSet implements NodeSet {
 
         // 2. Set Algebra on the local delta
         Set<Node> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowNodeSet shadowOther) {
-            combinedLocalAdds.removeAll(shadowOther.localAdds);
-        }
+        combinedLocalAdds.removeAll(extractLocalDelta(other));
 
         return new ShadowNodeSet(this.transactionContext, newBacking, combinedLocalAdds);
     }
@@ -104,11 +113,11 @@ public class ShadowNodeSet implements NodeSet {
 
         // 2. Set Algebra on the local delta
         Set<Node> combinedLocalAdds = new HashSet<>();
-        if (other instanceof ShadowNodeSet shadowOther) {
-            for (Node local : this.localAdds) {
-                if (shadowOther.localAdds.contains(local)) {
-                    combinedLocalAdds.add(local);
-                }
+        Set<Node> otherLocal = extractLocalDelta(other);
+
+        for (Node local : this.localAdds) {
+            if (otherLocal.contains(local)) {
+                combinedLocalAdds.add(local);
             }
         }
 
