@@ -148,6 +148,34 @@ public final class Universe {
     }
 
     /**
+     * Performs a fast, zero-boxing array splice to remove an edge ID from a node's adjacency matrix.
+     *
+     * @param currentArray the current adjacency array
+     * @param edgeId the edge ID to remove
+     * @return the new array with the edge ID removed, or null if the array becomes empty
+     */
+    private int[] removeEdgeId(int[] currentArray, int edgeId) {
+        if (currentArray == null) { return null; }
+
+        int len = currentArray.length;
+        int targetIndex = -1;
+        for (int i = 0; i < len; i++) {
+            if (currentArray[i] == edgeId) {
+                targetIndex = i;
+                break;
+            }
+        }
+
+        if (targetIndex == -1) { return currentArray; }
+        if (len == 1) { return null; }
+
+        int[] newArray = new int[len - 1];
+        System.arraycopy(currentArray, 0, newArray, 0, targetIndex);
+        System.arraycopy(currentArray, targetIndex + 1, newArray, targetIndex, len - targetIndex - 1);
+        return newArray;
+    }
+
+    /**
      * Wires an edge into the structural topology.
      * Called exclusively by the engine when a new edge is allocated.
      *
@@ -195,18 +223,79 @@ public final class Universe {
     // STRUCTURAL TOPOLOGY METHODS
     // =========================================================================
 
-    public boolean removeNode(int id) {
-        throw new UnsupportedOperationException(
-            "The core Universe engine does not yet support topological deletions. " +
-            "Cascading deletions in columnar arrays are currently unimplemented."
-        );
+    /**
+     * Removes a node from the structural topology, cascading deletions to all connected edges,
+     * masks it from the active topology, and clears properties and adjacency references to prevent memory leaks.
+     *
+     * @param nodeId the primitive ID of the node to remove
+     * @return true if the node was removed, false if it was already dead or did not exist
+     */
+    public boolean removeNode(int nodeId) {
+        if (!activeNodes.get(nodeId)) {
+            return false;
+        }
+
+        // 1. Cascade deletions to all connected edges (Inbound and Outbound)
+        if (nodeId < nodeOutEdges.length && nodeOutEdges[nodeId] != null) {
+            int[] outs = Arrays.copyOf(nodeOutEdges[nodeId], nodeOutEdges[nodeId].length);
+            for (int edgeId : outs) {
+                removeEdge(edgeId);
+            }
+        }
+
+        if (nodeId < nodeInEdges.length && nodeInEdges[nodeId] != null) {
+            int[] ins = Arrays.copyOf(nodeInEdges[nodeId], nodeInEdges[nodeId].length);
+            for (int edgeId : ins) {
+                removeEdge(edgeId);
+            }
+        }
+
+        // 2. Mask from active topology
+        activeNodes.clear(nodeId);
+
+        // 3. Clear properties and free adjacency array references
+        clearNodeTags(nodeId);
+        clearNodeAttributes(nodeId);
+
+        if (nodeId < nodeOutEdges.length) { nodeOutEdges[nodeId] = null; }
+        if (nodeId < nodeInEdges.length) { nodeInEdges[nodeId] = null; }
+
+        incrementModCount();
+        return true;
     }
 
-    public boolean removeEdge(int id) {
-        throw new UnsupportedOperationException(
-            "The core Universe engine does not yet support topological deletions. " +
-            "Cascading deletions in columnar arrays are currently unimplemented."
-        );
+    /**
+     * Removes an edge from the structural topology, severs adjacency wires,
+     * and clears properties to prevent memory leaks.
+     *
+     * @param edgeId the primitive ID of the edge to remove
+     * @return true if the edge was removed, false if it was already dead or did not exist
+     */
+    public boolean removeEdge(int edgeId) {
+        if (!activeEdges.get(edgeId)) {
+            return false; // Already dead or never existed
+        }
+
+        // 1. Mask from active topology
+        activeEdges.clear(edgeId);
+
+        // 2. Sever the Adjacency Matrix wires
+        int sourceId = edgeSources[edgeId];
+        int targetId = edgeTargets[edgeId];
+
+        if (sourceId < nodeOutEdges.length) {
+            nodeOutEdges[sourceId] = removeEdgeId(nodeOutEdges[sourceId], edgeId);
+        }
+        if (targetId < nodeInEdges.length) {
+            nodeInEdges[targetId] = removeEdgeId(nodeInEdges[targetId], edgeId);
+        }
+
+        // 3. Clear properties to prevent memory leaks
+        clearEdgeTags(edgeId);
+        clearEdgeAttributes(edgeId);
+
+        incrementModCount();
+        return true;
     }
 
     /**
@@ -254,14 +343,15 @@ public final class Universe {
         Map<Integer, Integer> nodeTranslationMap = new HashMap<>();
 
         // --- PHASE 1: DELETIONS (TOMBSTONES) ---
-        BitSet deadNodes = ephemeralGraph.getTombstonedNodeIds();
-        for (int i = deadNodes.nextSetBit(0); i >= 0; i = deadNodes.nextSetBit(i + 1)) {
-            this.activeNodes.clear(i);
-        }
-
+        // Process edge deletes first to minimize redundant cascading when nodes are deleted
         BitSet deadEdges = ephemeralGraph.getTombstonedEdgeIds();
         for (int i = deadEdges.nextSetBit(0); i >= 0; i = deadEdges.nextSetBit(i + 1)) {
-            this.activeEdges.clear(i);
+            this.removeEdge(i);
+        }
+
+        BitSet deadNodes = ephemeralGraph.getTombstonedNodeIds();
+        for (int i = deadNodes.nextSetBit(0); i >= 0; i = deadNodes.nextSetBit(i + 1)) {
+            this.removeNode(i);
         }
 
         // --- PHASE 2: UPDATES (EXISTING ELEMENT MUTATIONS) ---

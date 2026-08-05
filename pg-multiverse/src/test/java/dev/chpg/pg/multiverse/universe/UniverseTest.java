@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.Edge;
@@ -158,5 +159,58 @@ public class UniverseTest {
         universe.idGenerator().createEdgeId();
 
         assertEquals("Universe[id=" + universe.universeId() + ", allocatedNodes=3, allocatedEdges=2]", universe.toString());
+    }
+
+    @Test
+    public void testRemoveEdge() {
+        Universe universe = new Universe();
+        EphemeralGraph eg = new EphemeralGraph(universe);
+        EphemeralNode en1 = eg.createNode();
+        EphemeralNode en2 = eg.createNode();
+        EphemeralEdge ee1 = eg.createEdge(en1, en2);
+        eg.addNode(en1);
+        eg.addNode(en2);
+        eg.addEdge(ee1);
+
+        UniverseGraph ug = universe.promote(eg);
+        assertEquals(1, ug.edges().size());
+
+        int ueId = ug.edges().iterator().next().id();
+        assertTrue(universe.removeEdge(ueId));
+
+        // Try to remove again, should return false
+        assertFalse(universe.removeEdge(ueId));
+    }
+
+    @Test
+    public void testRemoveNodeCascadesToEdges() {
+        Universe universe = new Universe();
+        EphemeralGraph eg = new EphemeralGraph(universe);
+        EphemeralNode en1 = eg.createNode();
+        EphemeralNode en2 = eg.createNode();
+        EphemeralEdge ee1 = eg.createEdge(en1, en2);
+        eg.addNode(en1);
+        eg.addNode(en2);
+        eg.addEdge(ee1);
+
+        UniverseGraph ug = universe.promote(eg);
+        assertEquals(2, ug.nodes().size());
+        assertEquals(1, ug.edges().size());
+
+        int un1Id = -1;
+        for (Node n : ug.nodes()) {
+            un1Id = n.id();
+            break;
+        }
+
+        int ueId = ug.edges().iterator().next().id();
+
+        assertTrue(universe.removeNode(un1Id));
+
+        // Node should be removed, but so should the edge (cascaded)
+        assertFalse(universe.removeNode(un1Id)); // Cannot remove again
+
+        // Verify the edge is gone too (cascaded delete)
+        assertFalse(universe.removeEdge(ueId)); // Already dead
     }
 }
