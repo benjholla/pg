@@ -62,6 +62,19 @@ public class ShadowEdgeSet implements EdgeSet {
         );
     }
 
+    // Add this helper method right below unwrapForAlgebra
+    @SuppressWarnings("unchecked")
+    private Set<Edge> extractLocalDelta(Collection<? extends Edge> other) {
+        if (other instanceof ShadowEdgeSet shadow) {
+            return shadow.localAdds;
+        }
+        if (other instanceof UniverseEdgeSet) {
+            return Collections.emptySet(); // Core baselines have no local delta
+        }
+        // If it survived unwrapForAlgebra, it is a valid, pure-local Ephemeral set
+        return new HashSet<>(other);
+    }
+
     @Override
     public EdgeSet union(Collection<? extends Edge> other) {
         EdgeSet unwrappedOther = unwrapForAlgebra(other);
@@ -71,9 +84,7 @@ public class ShadowEdgeSet implements EdgeSet {
 
         // 2. Set Algebra on the local delta
         Set<Edge> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowEdgeSet shadowOther) {
-            combinedLocalAdds.addAll(shadowOther.localAdds);
-        }
+        combinedLocalAdds.addAll(extractLocalDelta(other));
 
         // 3. Wrap it up (ShadowEdgeSet intrinsically masks tombstones, no manual subtraction needed!)
         return new ShadowEdgeSet(this.transactionContext, newBacking, combinedLocalAdds);
@@ -88,9 +99,7 @@ public class ShadowEdgeSet implements EdgeSet {
 
         // 2. Set Algebra on the local delta
         Set<Edge> combinedLocalAdds = new HashSet<>(this.localAdds);
-        if (other instanceof ShadowEdgeSet shadowOther) {
-            combinedLocalAdds.removeAll(shadowOther.localAdds);
-        }
+        combinedLocalAdds.removeAll(extractLocalDelta(other));
 
         return new ShadowEdgeSet(this.transactionContext, newBacking, combinedLocalAdds);
     }
@@ -104,11 +113,11 @@ public class ShadowEdgeSet implements EdgeSet {
 
         // 2. Set Algebra on the local delta
         Set<Edge> combinedLocalAdds = new HashSet<>();
-        if (other instanceof ShadowEdgeSet shadowOther) {
-            for (Edge local : this.localAdds) {
-                if (shadowOther.localAdds.contains(local)) {
-                    combinedLocalAdds.add(local);
-                }
+        Set<Edge> otherLocal = extractLocalDelta(other);
+
+        for (Edge local : this.localAdds) {
+            if (otherLocal.contains(local)) {
+                combinedLocalAdds.add(local);
             }
         }
 
