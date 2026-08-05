@@ -48,6 +48,14 @@ public class ShadowNodeSet implements NodeSet {
             return universeSet;
         }
 
+        if (other instanceof EphemeralNodeSet ||
+            other instanceof EphemeralImmutableNodeSet ||
+            other instanceof EphemeralImmutableSingletonNodeSet ||
+            other instanceof EphemeralUnmodifiableLiveNodeSet ||
+            other.isEmpty()) {
+            return new UniverseNodeSet(this.transactionContext.universe(), new java.util.BitSet());
+        }
+
         // FAIL FAST: No more silent filtering or fallback arrays
         throw new IllegalArgumentException(
             "Strict algebra whitelist violation: Expected ShadowNodeSet or UniverseNodeSet, got " + other.getClass().getSimpleName()

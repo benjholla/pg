@@ -1151,25 +1151,50 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public int degree(Node node, NodeDirection direction) {
-        if (!(node instanceof EphemeralNode en) || !nodes.containsKey(en.id())) {
-            return 0; // Silent Ignore
+        Objects.requireNonNull(node, "node cannot be null");
+        Objects.requireNonNull(direction, "direction cannot be null");
+
+        int count = 0;
+
+        // 1. Count local ephemeral edge occurrences
+        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+            EphemeralEdgeSet outs = outEdges.get(node.id());
+            if (outs != null) {
+                count += outs.size();
+            }
+        }
+        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+            EphemeralEdgeSet ins = inEdges.get(node.id());
+            if (ins != null) {
+                count += ins.size();
+            }
         }
 
-        return switch (direction) {
-            case OUT -> {
-                EphemeralEdgeSet out = outEdges.get(en.id());
-                yield out == null ? 0 : out.size();
+        // 2. Count Universe baseline edge occurrences (respecting transaction tombstones)
+        if (node.id() >= 0) {
+            if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+                int[] universeOut = universe.outboundEdges(node.id());
+                if (universeOut != null) {
+                    for (int edgeId : universeOut) {
+                        if (!tombstonedEdgeIds.get(edgeId)) {
+                            count++;
+                        }
+                    }
+                }
             }
-            case IN -> {
-                EphemeralEdgeSet in = inEdges.get(en.id());
-                yield in == null ? 0 : in.size();
+            if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+                int[] universeIn = universe.inboundEdges(node.id());
+                if (universeIn != null) {
+                    for (int edgeId : universeIn) {
+                        if (!tombstonedEdgeIds.get(edgeId)) {
+                            count++;
+                        }
+                    }
+                }
             }
-            case BOTH -> {
-                EphemeralEdgeSet out = outEdges.get(en.id());
-                EphemeralEdgeSet in = inEdges.get(en.id());
-                yield (out == null ? 0 : out.size()) + (in == null ? 0 : in.size());
-            }
-        };
+        }
+
+        return count;
     }
 
 }
