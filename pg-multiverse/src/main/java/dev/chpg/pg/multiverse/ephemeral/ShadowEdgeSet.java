@@ -13,17 +13,32 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * An EdgeSet that acts as a composite view, seamlessly combining a baseline core engine set
+ * with transaction-local additions while filtering out local tombstones.
+ */
 public class ShadowEdgeSet implements EdgeSet {
     private final EphemeralGraph transactionContext;
     private final EdgeSet backingSet;       // The core engine baseline
     private final Set<Edge> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Constructs a ShadowEdgeSet with no local additions.
+     *
+     * @param context the ephemeral transaction context
+     * @param backingSet the backing base edge set
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Constructs a ShadowEdgeSet with local additions.
+     *
+     * @param context the ephemeral transaction context
+     * @param backingSet the backing base edge set
+     * @param localAdds the local edges added within the transaction
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet, Set<Edge> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;

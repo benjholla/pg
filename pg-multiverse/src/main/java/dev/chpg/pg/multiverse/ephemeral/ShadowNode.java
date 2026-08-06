@@ -7,12 +7,26 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A Node wrapper that routes mutations to a transaction delta log while reading untouched properties from a base Universe node.
+ */
 public class ShadowNode implements Node, UniverseView {
+    /**
+     * Returns the transaction context this shadow element is bound to.
+     *
+     * @return the transaction context
+     */
     public EphemeralGraph transaction() { return transactionContext; }
 
     private final EphemeralGraph transactionContext;
     private final UniverseNode backingNode;
 
+    /**
+     * Constructs a new ShadowNode.
+     *
+     * @param context the ephemeral transaction context
+     * @param backingNode the backing universe node
+     */
     public ShadowNode(EphemeralGraph context, UniverseNode backingNode) {
         this.transactionContext = context;
         this.backingNode = backingNode;

@@ -56,10 +56,20 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return new EphemeralGraph(this.universe, this.idGenerator);
     }
 
+    /**
+     * Gets the tombstoned node IDs.
+     *
+     * @return a BitSet of tombstoned node IDs
+     */
     public java.util.BitSet getTombstonedNodeIds() {
         return this.tombstonedNodeIds;
     }
 
+    /**
+     * Gets the tombstoned edge IDs.
+     *
+     * @return a BitSet of tombstoned edge IDs
+     */
     public java.util.BitSet getTombstonedEdgeIds() {
         return this.tombstonedEdgeIds;
     }
@@ -165,6 +175,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     /**
      * Constructs a new empty graph.
+     *
+     * @param universe the backing universe
      */
     public EphemeralGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
@@ -257,6 +269,8 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
      * Flushes uncommitted property mutations (tags and attributes)
      * directly into the provided Universe engine, filtering out any
      * elements that were deleted or tombstoned during the transaction.
+     *
+     * @param core the target Universe to flush to
      */
     public void flushPropertiesTo(Universe core) {
         // Intersection Filters
@@ -329,6 +343,11 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     Set<String> getRemovedEdgeAttributes(int id) { Set<String> s = this.removedEdgeAttributes.get(id); return s != null ? s : java.util.Collections.emptySet(); }
     Set<String> getOrComputeRemovedEdgeAttributes(int id) { return this.removedEdgeAttributes.computeIfAbsent(id, k -> new HashSet<>()); }
 
+    /**
+     * Returns the factory for creating ephemeral elements.
+     *
+     * @return the ephemeral factory
+     */
     public EphemeralFactory factory() {
         return this;
     }

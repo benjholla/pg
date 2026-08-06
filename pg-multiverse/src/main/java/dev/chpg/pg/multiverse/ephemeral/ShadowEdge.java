@@ -8,18 +8,37 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseEdge;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * An Edge wrapper that routes mutations to a transaction delta log while reading untouched properties from a base Universe edge.
+ */
 public class ShadowEdge implements Edge, UniverseView {
 
     private final EphemeralGraph transaction;
     private final UniverseEdge backingEdge; // Strictly UniverseEdge now
 
+    /**
+     * Constructs a new ShadowEdge.
+     *
+     * @param transaction the ephemeral transaction context
+     * @param backingEdge the backing universe edge
+     */
     public ShadowEdge(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingEdge = backingEdge;
     }
 
+    /**
+     * Returns the backing universe edge.
+     *
+     * @return the backing UniverseEdge
+     */
     public UniverseEdge backingEdge() { return backingEdge; }
 
+    /**
+     * Returns the transaction context this shadow element is bound to.
+     *
+     * @return the transaction context
+     */
     public EphemeralGraph transaction() {
         return transaction;
     }

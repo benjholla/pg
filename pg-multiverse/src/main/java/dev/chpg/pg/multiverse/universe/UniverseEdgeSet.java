@@ -22,6 +22,12 @@ public final class UniverseEdgeSet implements EdgeSet, UniverseView {
     private final Universe universe;
     private final BitSet activeBits;
 
+    /**
+     * Constructs a new UniverseEdgeSet.
+     *
+     * @param universe the universe
+     * @param activeBits the active edge bits
+     */
     public UniverseEdgeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");

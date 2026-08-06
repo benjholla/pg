@@ -37,6 +37,12 @@ public final class EphemeralNode implements Node, UniverseView {
      */
     private final Universe universe;
 
+    /**
+     * Constructs a new EphemeralNode.
+     *
+     * @param universe the backing universe
+     * @param id the node id
+     */
     public EphemeralNode(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.id = id;
