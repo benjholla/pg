@@ -410,7 +410,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 return Optional.ofNullable(localIns);
             }
             EphemeralEdgeSet combined = new EphemeralEdgeSet();
-            if (localIns != null) combined.addAll(localIns);
+            if (localIns != null) {
+                combined.addAll(localIns);
+            }
             for (int edgeId : baselineIn) {
                 if (!this.tombstonedEdgeIds.get(edgeId)) {
                     combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
@@ -437,7 +439,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                 return Optional.ofNullable(localOuts);
             }
             EphemeralEdgeSet combined = new EphemeralEdgeSet();
-            if (localOuts != null) combined.addAll(localOuts);
+            if (localOuts != null) {
+                combined.addAll(localOuts);
+            }
             for (int edgeId : baselineOut) {
                 if (!this.tombstonedEdgeIds.get(edgeId)) {
                     combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
@@ -670,7 +674,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public boolean removeNode(Node node) {
         if (node instanceof dev.chpg.pg.multiverse.universe.UniverseNode un) {
             if (un.universe() == this.universe && this.universe.hasNode(un.id())) {
-                if (this.tombstonedNodeIds.get(un.id())) return false;
+                if (this.tombstonedNodeIds.get(un.id())) {
+                    return false;
+                }
                 this.tombstonedNodeIds.set(un.id());
                 return true;
             }
@@ -678,7 +684,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
         if (node instanceof ShadowNode sn) {
             if (sn.universe() == this.universe && this.universe.hasNode(sn.id())) {
-                if (this.tombstonedNodeIds.get(sn.id())) return false;
+                if (this.tombstonedNodeIds.get(sn.id())) {
+                    return false;
+                }
                 this.tombstonedNodeIds.set(sn.id());
                 return true;
             }
@@ -729,7 +737,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public boolean removeEdge(Edge edge) {
         if (edge instanceof dev.chpg.pg.multiverse.universe.UniverseEdge ue) {
             if (ue.universe() == this.universe && this.universe.hasEdge(ue.id())) {
-                if (this.tombstonedEdgeIds.get(ue.id())) return false;
+                if (this.tombstonedEdgeIds.get(ue.id())) {
+                    return false;
+                }
                 this.tombstonedEdgeIds.set(ue.id());
                 return true;
             }
@@ -737,7 +747,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         }
         if (edge instanceof ShadowEdge se) {
             if (se.universe() == this.universe && this.universe.hasEdge(se.id())) {
-                if (this.tombstonedEdgeIds.get(se.id())) return false;
+                if (this.tombstonedEdgeIds.get(se.id())) {
+                    return false;
+                }
                 this.tombstonedEdgeIds.set(se.id());
                 return true;
             }
