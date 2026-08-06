@@ -33,7 +33,7 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
         return isNode ? transaction.getPendingNodeTags(id) : transaction.getPendingEdgeTags(id);
     }
     private Set<String> getOrComputePendingTags() {
-        return isNode ? transaction.getPendingNodeTags(id) : transaction.getPendingEdgeTags(id);
+        return isNode ? transaction.getOrComputePendingNodeTags(id) : transaction.getOrComputePendingEdgeTags(id);
     }
 
     private Set<String> getRemovedTags() {

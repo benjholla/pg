@@ -97,9 +97,9 @@ public class UniverseTest {
 
         UniverseGraph ug = universe.promote(eg);
 
-        // Assert ephemeral is empty
-        assertEquals(0, eg.nodes().size());
-        assertEquals(0, eg.edges().size());
+        // Assert ephemeral local additions are empty
+        assertEquals(0, eg.localNodes().size());
+        assertEquals(0, eg.localEdges().size());
 
         // Assert universe graph properties
         assertEquals(2, ug.nodes().size());

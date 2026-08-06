@@ -88,12 +88,12 @@ public class ShadowGraphTest {
     public void testSetup() {
         assertEquals(3, universeGraph.nodes().size());
         assertEquals(2, universeGraph.edges().size());
-        assertEquals(0, shadowGraph.nodes().size());
-        assertEquals(0, shadowGraph.edges().size());
+        assertEquals(3, shadowGraph.nodes().size());
+        assertEquals(2, shadowGraph.edges().size());
     }
 
     @Test
-    @Disabled("TODO: Investigate bug where Universe elements cannot be wrapped/added to EphemeralGraph")
+
     public void testShadowTags() {
         // Add universe node to shadow graph (this simulates a read/write in ephemeral context)
         Graph shadow = shadowGraph.union(uNodeA);
@@ -117,7 +117,7 @@ public class ShadowGraphTest {
     }
 
     @Test
-    @Disabled("TODO: Investigate bug where Universe elements cannot be wrapped/added to EphemeralGraph")
+
     public void testShadowAttributes() {
         Graph shadow = shadowGraph.union(uNodeA);
         Node fetchedNodeA = shadow.node(uNodeA.id()).get();
@@ -138,7 +138,7 @@ public class ShadowGraphTest {
 
 
     @Test
-    @Disabled("TODO: Investigate bug where Universe elements cannot be wrapped/added to EphemeralGraph")
+
     public void testHybridTopologies() {
         // Adding a new ephemeral node
         Node d = factory.createNode();
@@ -150,7 +150,7 @@ public class ShadowGraphTest {
 
         Graph hybridGraph = shadowGraph.union(d).union(cd);
 
-        assertEquals(1, hybridGraph.nodes().size()); // shadow only has 1 node added explicitly, or 2 if auto-vivified
+        assertEquals(4, hybridGraph.nodes().size()); // 3 baseline + 1 local addition
         // Wait, if cd is added, uNodeC is also added to the hybridGraph due to auto-vivify terminal nodes
         assertTrue(hybridGraph.nodes().contains(d));
         assertTrue(hybridGraph.nodes().contains(uNodeC));
@@ -165,7 +165,7 @@ public class ShadowGraphTest {
 
 
     @Test
-    @Disabled("TODO: Investigate bug where Universe elements cannot be wrapped/added to EphemeralGraph")
+
     public void testTombstoningAndUndeleting() {
         // Tombstone universe node A in shadow graph
         Graph withA = shadowGraph.union(uNodeA);
@@ -196,7 +196,7 @@ public class ShadowGraphTest {
 
 
     @Test
-    @Disabled("TODO: Investigate bug where Universe elements cannot be wrapped/added to EphemeralGraph")
+
     public void testPromotionValidation() {
         // Build a shadow graph with all the modifications
         Graph shadow = shadowGraph.union(uNodeA).union(uNodeB).union(uEdgeAB);
@@ -226,7 +226,8 @@ public class ShadowGraphTest {
         // B and AB should be tombstoned (removed)
         boolean bFound = false;
         for (Node n : newUniverseGraph.nodes()) {
-            if ("B".equals(((AttributeValue.StringValue) n.attributes().get("name")).value())) {
+            AttributeValue nameAttr = n.attributes().get("name");
+            if (nameAttr != null && "B".equals(((AttributeValue.StringValue) nameAttr).value())) {
                 bFound = true;
                 break;
             }
