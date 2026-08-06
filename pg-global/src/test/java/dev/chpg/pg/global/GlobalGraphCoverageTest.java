@@ -19,7 +19,6 @@ import dev.chpg.pg.api.TagSet;
 import dev.chpg.pg.api.AttributeMap;
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.api.EdgeSet;
-import dev.chpg.pg.api.AttributeValue;
 
 public class GlobalGraphCoverageTest {
 
