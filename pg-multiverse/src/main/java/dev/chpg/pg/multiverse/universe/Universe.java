@@ -364,13 +364,6 @@ public final class Universe {
      * @param ephemeralGraph The sandbox graph to promote and invalidate.
      * @return A read-optimized, BitSet-backed view of the promoted topology.
      */
-    /**
-     * Returns a read-optimized baseline view of the Universe topology.
-     */
-    public UniverseGraph asGraph() {
-        return new UniverseGraph(this, (java.util.BitSet) this.activeNodes.clone(), (java.util.BitSet) this.activeEdges.clone());
-    }
-
     public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
         Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
 
