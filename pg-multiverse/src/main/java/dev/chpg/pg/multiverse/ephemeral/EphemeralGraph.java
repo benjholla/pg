@@ -401,8 +401,25 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
      * @param node the node
      */
     protected Optional<EdgeSet> getInEdgesToNode(Node node){
-        if (!(node instanceof EphemeralNode en)) { return Optional.empty(); }
-        return Optional.ofNullable(inEdges.get(en.id()));
+        int targetId = node.id();
+        EphemeralEdgeSet localIns = inEdges.get(targetId);
+
+        if (targetId >= 0 && this.universe.hasNode(targetId) && !this.tombstonedNodeIds.get(targetId)) {
+            int[] baselineIn = this.universe.inboundEdges(targetId);
+            if (baselineIn == null || baselineIn.length == 0) {
+                return Optional.ofNullable(localIns);
+            }
+            EphemeralEdgeSet combined = new EphemeralEdgeSet();
+            if (localIns != null) combined.addAll(localIns);
+            for (int edgeId : baselineIn) {
+                if (!this.tombstonedEdgeIds.get(edgeId)) {
+                    combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
+                }
+            }
+            return combined.isEmpty() ? Optional.empty() : Optional.of(combined);
+        }
+
+        return Optional.ofNullable(localIns);
     }
 
     /**
@@ -411,38 +428,112 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
      * @param node the node
      */
     protected Optional<EdgeSet> getOutEdgesFromNode(Node node){
-        if (!(node instanceof EphemeralNode en)) { return Optional.empty(); }
-        return Optional.ofNullable(outEdges.get(en.id()));
+        int targetId = node.id();
+        EphemeralEdgeSet localOuts = outEdges.get(targetId);
+
+        if (targetId >= 0 && this.universe.hasNode(targetId) && !this.tombstonedNodeIds.get(targetId)) {
+            int[] baselineOut = this.universe.outboundEdges(targetId);
+            if (baselineOut == null || baselineOut.length == 0) {
+                return Optional.ofNullable(localOuts);
+            }
+            EphemeralEdgeSet combined = new EphemeralEdgeSet();
+            if (localOuts != null) combined.addAll(localOuts);
+            for (int edgeId : baselineOut) {
+                if (!this.tombstonedEdgeIds.get(edgeId)) {
+                    combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
+                }
+            }
+            return combined.isEmpty() ? Optional.empty() : Optional.of(combined);
+        }
+
+        return Optional.ofNullable(localOuts);
     }
 
     @Override
     public Optional<Node> node(int id) {
-        return Optional.ofNullable(nodes.get(id));
+        // 1. Check local ephemeral topology
+        if (id < 0) {
+            return Optional.ofNullable(nodes.get(id));
+        }
+
+        // 2. Check if the core node was deleted in this transaction
+        if (this.tombstonedNodeIds.get(id)) {
+            return Optional.empty();
+        }
+
+        // 3. Fallback to the core engine baseline
+        if (this.universe.hasNode(id)) {
+            return Optional.of(new dev.chpg.pg.multiverse.ephemeral.ShadowNode(this, new dev.chpg.pg.multiverse.universe.UniverseNode(this.universe, id)));
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public Optional<Edge> edge(int id) {
-        return Optional.ofNullable(edges.get(id));
+        // 1. Check local ephemeral topology
+        if (id < 0) {
+            return Optional.ofNullable(edges.get(id));
+        }
+
+        // 2. Check if the core edge was deleted in this transaction
+        if (this.tombstonedEdgeIds.get(id)) {
+            return Optional.empty();
+        }
+
+        // 3. Fallback to the core engine baseline
+        if (this.universe.hasEdge(id)) {
+            return Optional.of(new dev.chpg.pg.multiverse.ephemeral.ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, id)));
+        }
+
+        return Optional.empty();
     }
 
 
     @Override
     public boolean addNode(Node node) {
         Objects.requireNonNull(node, "node cannot be null");
-        // 1. Violent Fail boundary
+
+        // --- 1. Handle Universe Baseline Elements ---
+        if (node instanceof dev.chpg.pg.multiverse.universe.UniverseNode un) {
+            if (un.universe() != this.universe) {
+                throw new IllegalArgumentException("Cross-universe contamination: Node belongs to a different universe.");
+            }
+            // If it was deleted in this transaction, resurrect it
+            if (this.tombstonedNodeIds.get(un.id())) {
+                this.tombstonedNodeIds.clear(un.id());
+                return true;
+            }
+            // It's already in the baseline! No need to add it to the local delta map.
+            return false;
+        }
+
+        if (node instanceof ShadowNode sn) {
+            if (sn.universe() != this.universe) {
+                throw new IllegalArgumentException("Cross-universe contamination: ShadowNode belongs to a different universe.");
+            }
+            if (this.tombstonedNodeIds.get(sn.id())) {
+                this.tombstonedNodeIds.clear(sn.id());
+                return true;
+            }
+            // ShadowNodes are just views of the baseline. We don't ingest them.
+            return false;
+        }
+
+        // --- 2. Handle Local Ephemeral Elements ---
         if (!(node instanceof EphemeralNode en)) {
-            throw new IllegalArgumentException("Expected EphemeralNode in EphemeralGraph.");
+            throw new IllegalArgumentException("Expected EphemeralNode or UniverseNode in EphemeralGraph, got " + node.getClass().getSimpleName());
         }
         if (en.id() >= 0) {
             throw new IllegalArgumentException("Node ID domain must be negative.");
         }
 
-        // 2. Idempotent check (don't overwrite existing wiring)
+        // 3. Idempotent check (don't overwrite existing wiring)
         if (nodes.containsKey(en.id())) {
             return false;
         }
 
-        // 3. Synchronize the 4 Pillars
+        // 4. Synchronize the 4 Pillars
         nodes.put(en.id(), en);
         outEdges.put(en.id(), new EphemeralEdgeSet());
         inEdges.put(en.id(), new EphemeralEdgeSet());
@@ -452,6 +543,35 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public boolean addEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
+
+        // --- 1. Handle Universe Baseline Elements ---
+        if (edge instanceof dev.chpg.pg.multiverse.universe.UniverseEdge ue) {
+            if (ue.universe() != this.universe) {
+                throw new IllegalArgumentException("Cross-universe contamination: Edge belongs to a different universe.");
+            }
+            if (this.tombstonedEdgeIds.get(ue.id())) {
+                this.tombstonedEdgeIds.clear(ue.id());
+                return true;
+            }
+            return false;
+        }
+
+        if (edge instanceof ShadowEdge se) {
+            if (se.universe() != this.universe) {
+                throw new IllegalArgumentException("Cross-universe contamination: ShadowEdge belongs to a different universe.");
+            }
+            if (this.tombstonedEdgeIds.get(se.id())) {
+                this.tombstonedEdgeIds.clear(se.id());
+                return true;
+            }
+            return false;
+        }
+
+        // --- 2. Handle Local Ephemeral Elements ---
+        if (!(edge instanceof EphemeralEdge)) {
+            throw new IllegalArgumentException("Expected EphemeralEdge or UniverseEdge in EphemeralGraph, got " + edge.getClass().getSimpleName());
+        }
+
         // Auto-vivify terminal nodes
         boolean result = false;
         result |= addNode(edge.from());
@@ -473,33 +593,55 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return result;
     }
 
+    private boolean isNodePresent(int id) {
+        if (id >= 0) {
+            // Universe Node: Must exist in the core engine AND not be deleted in this transaction
+            return !this.tombstonedNodeIds.get(id) && this.universe.hasNode(id);
+        }
+        // Ephemeral Node: Must exist in the local sandbox
+        return nodes.containsKey(id);
+    }
+
     @Override
     public boolean linkEdge(Edge edge) {
         Objects.requireNonNull(edge, "edge cannot be null");
-        // 1. Violent Fail boundary
-        if (!(edge instanceof EphemeralEdge ee)) {
-            throw new IllegalArgumentException("Expected EphemeralEdge in EphemeralGraph.");
-        }
-        if (ee.id() >= 0) {
-            throw new IllegalArgumentException("Edge ID domain must be negative.");
-        }
 
-        // 2. Validate Topology Anchors
-        // The graph MUST violently fail if the nodes aren't registered,
-        // otherwise the adjacency maps will throw NullPointerExceptions.
-        if (!nodes.containsKey(ee.from().id()) || !nodes.containsKey(ee.to().id())) {
-            throw new IllegalArgumentException("Source or target node is not present in the graph.");
-        }
+        Edge validated = validateAndWrap(edge);
+        int targetId = validated.id();
 
-        // 3. Idempotent check
-        if (edges.putIfAbsent(ee.id(), ee) != null) {
-            return false; // Edge already existed
-        }
+        if (targetId >= 0) {
+            if (this.tombstonedEdgeIds.get(targetId)) {
+                this.tombstonedEdgeIds.clear(targetId);
+                if (edges.putIfAbsent(targetId, validated) == null) {
+                    outEdges.computeIfAbsent(validated.from().id(), k -> new EphemeralEdgeSet()).add(validated);
+                    inEdges.computeIfAbsent(validated.to().id(), k -> new EphemeralEdgeSet()).add(validated);
+                }
+                return true;
+            }
+            if (edges.putIfAbsent(targetId, validated) == null) {
+                outEdges.computeIfAbsent(validated.from().id(), k -> new EphemeralEdgeSet()).add(validated);
+                inEdges.computeIfAbsent(validated.to().id(), k -> new EphemeralEdgeSet()).add(validated);
+                return true;
+            }
+            return false;
+        } else {
+            // Validate Topology Anchors
+            // The graph MUST violently fail if the nodes aren't registered,
+            // otherwise the adjacency maps will throw NullPointerExceptions.
+            if (!isNodePresent(validated.from().id()) || !isNodePresent(validated.to().id())) {
+                throw new IllegalArgumentException("Source or target node is not present in the graph.");
+            }
 
-        // 4. Wire the adjacency maps
-        outEdges.get(ee.from().id()).add(ee);
-        inEdges.get(ee.to().id()).add(ee);
-        return true;
+            // Idempotent check
+            if (edges.putIfAbsent(targetId, validated) != null) {
+                return false; // Edge already existed
+            }
+
+            // Wire the adjacency maps
+            outEdges.computeIfAbsent(validated.from().id(), k -> new EphemeralEdgeSet()).add(validated);
+            inEdges.computeIfAbsent(validated.to().id(), k -> new EphemeralEdgeSet()).add(validated);
+            return true;
+        }
     }
 
     @Override
@@ -526,6 +668,23 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public boolean removeNode(Node node) {
+        if (node instanceof dev.chpg.pg.multiverse.universe.UniverseNode un) {
+            if (un.universe() == this.universe && this.universe.hasNode(un.id())) {
+                if (this.tombstonedNodeIds.get(un.id())) return false;
+                this.tombstonedNodeIds.set(un.id());
+                return true;
+            }
+            return false;
+        }
+        if (node instanceof ShadowNode sn) {
+            if (sn.universe() == this.universe && this.universe.hasNode(sn.id())) {
+                if (this.tombstonedNodeIds.get(sn.id())) return false;
+                this.tombstonedNodeIds.set(sn.id());
+                return true;
+            }
+            return false;
+        }
+
         // 1. Silent Ignore
         if (!(node instanceof EphemeralNode en)) {
             return false;
@@ -568,6 +727,23 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public boolean removeEdge(Edge edge) {
+        if (edge instanceof dev.chpg.pg.multiverse.universe.UniverseEdge ue) {
+            if (ue.universe() == this.universe && this.universe.hasEdge(ue.id())) {
+                if (this.tombstonedEdgeIds.get(ue.id())) return false;
+                this.tombstonedEdgeIds.set(ue.id());
+                return true;
+            }
+            return false;
+        }
+        if (edge instanceof ShadowEdge se) {
+            if (se.universe() == this.universe && this.universe.hasEdge(se.id())) {
+                if (this.tombstonedEdgeIds.get(se.id())) return false;
+                this.tombstonedEdgeIds.set(se.id());
+                return true;
+            }
+            return false;
+        }
+
         // 1. Silent Ignore
         if (!(edge instanceof EphemeralEdge ee) || !edges.containsKey(ee.id())) {
             return false;
@@ -658,7 +834,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public NodeSet nodes() {
-        return new EphemeralUnmodifiableLiveNodeSet(nodes, edges, inEdges, outEdges);
+        return new ShadowNodeSet(this, universe.asGraph().nodes(), new java.util.HashSet<>(nodes.values()));
     }
 
     /**
@@ -684,7 +860,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
     @Override
     public EdgeSet edges() {
-        return new EphemeralUnmodifiableLiveEdgeSet(nodes, edges, inEdges, outEdges);
+        return new ShadowEdgeSet(this, universe.asGraph().edges(), new java.util.HashSet<>(edges.values()));
     }
 
     @Override
@@ -863,10 +1039,38 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return result;
     }
 
+    private EphemeralGraph createCopy() {
+        // 1. Copy the local topological deltas
+        EphemeralGraph copy = new EphemeralGraph(
+            this.universe,
+            this.idGenerator,
+            new EphemeralNodeSet(this.localNodes()),
+            new EphemeralEdgeSet(this.localEdges())
+        );
+
+        // 2. Clone the Tombstones
+        copy.tombstonedNodeIds.or(this.tombstonedNodeIds);
+        copy.tombstonedEdgeIds.or(this.tombstonedEdgeIds);
+
+        // 3. Deep Copy Node Property Deltas
+        this.pendingNodeTags.forEach((id, tags) -> copy.pendingNodeTags.put(id, new java.util.HashSet<>(tags)));
+        this.removedNodeTags.forEach((id, tags) -> copy.removedNodeTags.put(id, new java.util.HashSet<>(tags)));
+        this.pendingNodeAttributes.forEach((id, attrs) -> copy.pendingNodeAttributes.put(id, new java.util.HashMap<>(attrs)));
+        this.removedNodeAttributes.forEach((id, attrs) -> copy.removedNodeAttributes.put(id, new java.util.HashSet<>(attrs)));
+
+        // 4. Deep Copy Edge Property Deltas
+        this.pendingEdgeTags.forEach((id, tags) -> copy.pendingEdgeTags.put(id, new java.util.HashSet<>(tags)));
+        this.removedEdgeTags.forEach((id, tags) -> copy.removedEdgeTags.put(id, new java.util.HashSet<>(tags)));
+        this.pendingEdgeAttributes.forEach((id, attrs) -> copy.pendingEdgeAttributes.put(id, new java.util.HashMap<>(attrs)));
+        this.removedEdgeAttributes.forEach((id, attrs) -> copy.removedEdgeAttributes.put(id, new java.util.HashSet<>(attrs)));
+
+        return copy;
+    }
+
     @Override
     public Graph union(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph union = createCopy();
         union.addNode(node);
         return union;
     }
@@ -874,7 +1078,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph union(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph union = createCopy();
         union.addEdge(edge);
         return union;
     }
@@ -898,7 +1102,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             return graph.union(this);
         }
 
-        Graph union = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph union = createCopy();
         union.addAllNodes(graph.nodes());
         union.addAllEdges(graph.edges());
         return union;
@@ -907,7 +1111,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph difference(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph difference = createCopy();
         difference.removeNode(node);
         return difference;
     }
@@ -915,7 +1119,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph difference = createCopy();
         difference.removeNode(edge.from());
         difference.removeNode(edge.to());
         return difference;
@@ -925,7 +1129,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public Graph difference(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph difference = createCopy();
         if(difference.nodes().isEmpty()) {
             return difference;
         }
@@ -939,7 +1143,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph difference = createCopy();
         difference.removeEdge(edge);
         return difference;
     }
@@ -948,7 +1152,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public Graph differenceEdges(Graph graph){
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        Graph difference = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph difference = createCopy();
         if(difference.edges().isEmpty()) {
             return difference;
         }
@@ -987,7 +1191,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             return graph.intersection(this);
         }
 
-        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator, this.nodes(), this.edges());
+        Graph intersection = createCopy();
         if(intersection.nodes().isEmpty()) {
             return intersection;
         }
@@ -1182,12 +1386,25 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return new EphemeralImmutableSingletonEdgeSet(edge);
     }
 
+    private boolean isNativeNode(Node node) {
+        if (node instanceof EphemeralNode en) {
+            return en.universe() == this.universe;
+        }
+        if (node instanceof dev.chpg.pg.multiverse.universe.UniverseNode un) {
+            return un.universe() == this.universe;
+        }
+        if (node instanceof ShadowNode sn) {
+            return sn.universe() == this.universe;
+        }
+        return false;
+    }
+
     @Override
     public EphemeralEdge createEdge(Node source, Node target) {
-        if (!(source instanceof EphemeralNode)) {
+        if (!isNativeNode(source)) {
             throw new IllegalArgumentException("Source node is not native to EphemeralGraph.");
         }
-        if (!(target instanceof EphemeralNode)) {
+        if (!isNativeNode(target)) {
             throw new IllegalArgumentException("Target node is not native to EphemeralGraph.");
         }
         return new EphemeralEdge(this.universe, idGenerator.createEdgeId(), source, target);

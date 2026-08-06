@@ -52,6 +52,7 @@ public class ShadowNodeSet implements NodeSet {
             other instanceof EphemeralImmutableNodeSet ||
             other instanceof EphemeralImmutableSingletonNodeSet ||
             other instanceof EphemeralUnmodifiableLiveNodeSet ||
+            other.getClass().getName().contains("UnmodifiableCollection") ||
             other.isEmpty()) {
             return new UniverseNodeSet(this.transactionContext.universe(), new java.util.BitSet());
         }
@@ -187,6 +188,12 @@ public class ShadowNodeSet implements NodeSet {
 
         if (node.id() >= 0 && transactionContext.getTombstonedNodeIds().get(node.id())) {
              return false;
+        }
+
+        // Unwrap the ShadowNode and query the Universe directly
+        // to bypass the UniverseNodeSet's strict object equality checks.
+        if (node instanceof ShadowNode sn) {
+             return transactionContext.universe().hasNode(sn.id());
         }
 
         return backingSet.contains(node);

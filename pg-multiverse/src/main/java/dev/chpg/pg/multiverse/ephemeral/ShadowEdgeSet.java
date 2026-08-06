@@ -189,6 +189,12 @@ public class ShadowEdgeSet implements EdgeSet {
              return false;
         }
 
+        // Unwrap the ShadowEdge and query the Universe directly
+        // to bypass the UniverseEdgeSet's strict object equality checks.
+        if (edge instanceof ShadowEdge se) {
+             return transactionContext.universe().hasEdge(se.id());
+        }
+
         return backingSet.contains(edge);
     }
 

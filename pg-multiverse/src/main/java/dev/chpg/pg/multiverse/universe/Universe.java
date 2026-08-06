@@ -224,6 +224,26 @@ public final class Universe {
     // =========================================================================
 
     /**
+     * Checks if a node ID is currently active in the structural topology.
+     *
+     * @param nodeId the node ID
+     * @return true if active, false if deleted or never existed
+     */
+    public boolean hasNode(int nodeId) {
+        return nodeId >= 0 && activeNodes.get(nodeId);
+    }
+
+    /**
+     * Checks if an edge ID is currently active in the structural topology.
+     *
+     * @param edgeId the edge ID
+     * @return true if active, false if deleted or never existed
+     */
+    public boolean hasEdge(int edgeId) {
+        return edgeId >= 0 && activeEdges.get(edgeId);
+    }
+
+    /**
      * Removes a node from the structural topology, cascading deletions to all connected edges,
      * masks it from the active topology, and clears properties and adjacency references to prevent memory leaks.
      *
@@ -344,6 +364,13 @@ public final class Universe {
      * @param ephemeralGraph The sandbox graph to promote and invalidate.
      * @return A read-optimized, BitSet-backed view of the promoted topology.
      */
+    /**
+     * Returns a read-optimized baseline view of the Universe topology.
+     */
+    public UniverseGraph asGraph() {
+        return new UniverseGraph(this, (java.util.BitSet) this.activeNodes.clone(), (java.util.BitSet) this.activeEdges.clone());
+    }
+
     public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
         Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
 
