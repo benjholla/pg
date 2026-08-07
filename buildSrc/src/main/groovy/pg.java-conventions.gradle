@@ -14,6 +14,10 @@ java {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xlint:all", "-Werror"]
+}
+
 repositories {
     mavenCentral()
 }
