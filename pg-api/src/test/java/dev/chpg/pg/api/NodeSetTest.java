@@ -29,7 +29,7 @@ public class NodeSetTest {
                 @Override public boolean isEmpty() { return set.isEmpty(); }
                 @Override public Iterator<String> iterator() { return set.iterator(); }
                 @Override public Object[] toArray() { return set.toArray(); }
-                @Override public <T> T[] toArray(T[] a) { return set.toArray(a); }
+                @Override @SuppressWarnings("unchecked") public <T> T[] toArray(T[] a) { return set.toArray(a); }
                 @Override public boolean containsAll(Collection<?> c) { return set.containsAll(c); }
                 @Override public boolean addAll(Collection<? extends String> c) { return set.addAll(c); }
                 @Override public boolean retainAll(Collection<?> c) { return set.retainAll(c); }
@@ -176,7 +176,7 @@ public class NodeSetTest {
             @Override public boolean isEmpty() { return false; }
             @Override public boolean contains(Object o) { return o == n1; }
             @Override public Object[] toArray() { return new Object[]{n1}; }
-            @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{n1}; }
+            @Override @SuppressWarnings("unchecked") public <T> T[] toArray(T[] a) { return (T[]) new Object[]{n1}; }
             @Override public boolean add(Node node) { return false; }
             @Override public boolean remove(Object o) { return false; }
             @Override public boolean containsAll(Collection<?> c) { return false; }
@@ -204,7 +204,7 @@ public class NodeSetTest {
             @Override public boolean isEmpty() { return true; }
             @Override public boolean contains(Object o) { return false; }
             @Override public Object[] toArray() { return new Object[]{}; }
-            @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{}; }
+            @Override @SuppressWarnings("unchecked") public <T> T[] toArray(T[] a) { return (T[]) new Object[]{}; }
             @Override public boolean add(Node node) { return false; }
             @Override public boolean remove(Object o) { return false; }
             @Override public boolean containsAll(Collection<?> c) { return false; }

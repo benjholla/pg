@@ -182,7 +182,9 @@ public class DeferredEdgeSetTest {
         }
     }
 
+    @SuppressWarnings("serial")
     private static class TagSetTestImpl extends java.util.HashSet<String> implements TagSet {}
+    @SuppressWarnings("serial")
     private static class AttributeMapTestImpl extends java.util.HashMap<String, AttributeValue> implements AttributeMap {
         @Override public AttributeValue put(String key, String value) { return put(key, AttributeValue.value(value)); }
         @Override public AttributeValue put(String key, int value) { return put(key, AttributeValue.value(value)); }
