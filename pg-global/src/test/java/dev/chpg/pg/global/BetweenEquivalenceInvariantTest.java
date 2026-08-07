@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.api.NodeSet;
 
 public class BetweenEquivalenceInvariantTest {
 
