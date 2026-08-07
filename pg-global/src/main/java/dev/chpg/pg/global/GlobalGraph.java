@@ -721,6 +721,12 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph intersection = new GlobalGraph();
+        if (this.nodes().contains(edge.from())) {
+            intersection.addNode(edge.from());
+        }
+        if (this.nodes().contains(edge.to())) {
+            intersection.addNode(edge.to());
+        }
         if (this.edges().contains(edge)) {
             intersection.addEdge(edge);
         }

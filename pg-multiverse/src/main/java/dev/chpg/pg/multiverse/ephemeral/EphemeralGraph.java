@@ -1187,6 +1187,12 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph intersection = new EphemeralGraph(this.universe, this.idGenerator);
+        if (this.nodes().contains(edge.from())) {
+            intersection.addNode(edge.from());
+        }
+        if (this.nodes().contains(edge.to())) {
+            intersection.addNode(edge.to());
+        }
         if (this.edges().contains(edge)) {
             intersection.addEdge(edge);
         }
