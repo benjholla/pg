@@ -116,7 +116,7 @@ public class EphemeralGraphMissingCoverageTest {
 
     @Test
     public void testCreateEdge() {
-        EphemeralEdge edge = (EphemeralEdge) graph.createEdge(a, b);
+        EphemeralEdge edge = graph.createEdge(a, b);
         assertEquals(a, edge.from());
         assertEquals(b, edge.to());
 

@@ -146,6 +146,7 @@ public class AttributeMapTest {
     }
 
     // A class that delegates compute/merge/replaceAll etc. to the default interface methods.
+    @SuppressWarnings("serial")
     private static class TestAttributeMap extends HashMap<String, AttributeValue> implements AttributeMap {
 
         @Override
@@ -204,6 +205,7 @@ public class AttributeMapTest {
         }
     }
 
+    @SuppressWarnings("serial")
     private static class FallbackTestAttributeMap extends TestAttributeMap {
         @Override
         public java.util.Set<java.util.Map.Entry<String, AttributeValue>> entrySet() {
