@@ -1,5 +1,6 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import dev.chpg.pg.api.Node.NodeDirection;
+
 
 public class EphemeralGraphMissingCoverageTest {
 
@@ -40,17 +41,17 @@ public class EphemeralGraphMissingCoverageTest {
         graph.addEdge(ab);
         graph.addEdge(bc);
 
-        assertEquals(0, graph.degree(a, NodeDirection.IN));
-        assertEquals(1, graph.degree(a, NodeDirection.OUT));
-        assertEquals(1, graph.degree(a, NodeDirection.BOTH));
+        assertEquals(0, graph.degree(a, Direction.IN));
+        assertEquals(1, graph.degree(a, Direction.OUT));
+        assertEquals(1, graph.degree(a, Direction.BOTH));
 
-        assertEquals(1, graph.degree(b, NodeDirection.IN));
-        assertEquals(1, graph.degree(b, NodeDirection.OUT));
-        assertEquals(2, graph.degree(b, NodeDirection.BOTH));
+        assertEquals(1, graph.degree(b, Direction.IN));
+        assertEquals(1, graph.degree(b, Direction.OUT));
+        assertEquals(2, graph.degree(b, Direction.BOTH));
 
-        assertEquals(1, graph.degree(c, NodeDirection.IN));
-        assertEquals(0, graph.degree(c, NodeDirection.OUT));
-        assertEquals(1, graph.degree(c, NodeDirection.BOTH));
+        assertEquals(1, graph.degree(c, Direction.IN));
+        assertEquals(0, graph.degree(c, Direction.OUT));
+        assertEquals(1, graph.degree(c, Direction.BOTH));
     }
 
     @Test

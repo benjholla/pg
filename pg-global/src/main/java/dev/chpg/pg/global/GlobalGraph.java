@@ -10,8 +10,9 @@ import java.util.Optional;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Node.NodeDirection;
+
 import dev.chpg.pg.api.NodeSet;
 
 /**
@@ -443,10 +444,10 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public EdgeSet edges(Node node, NodeDirection direction){
-        if(direction == NodeDirection.IN){
+    public EdgeSet edges(Node node, Direction direction){
+        if(direction == Direction.IN){
             return getInEdgesToNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
-        } else if(direction == NodeDirection.OUT){
+        } else if(direction == Direction.OUT){
             return getOutEdgesFromNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
         } else {
             GlobalEdgeSet edges = getInEdgesToNode(node).map(GlobalEdgeSet::new).orElseGet(GlobalEdgeSet::new);
@@ -972,7 +973,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     }
 
     @Override
-    public int degree(Node node, NodeDirection direction) {
+    public int degree(Node node, Direction direction) {
         if (!(node instanceof GlobalNode gn) || !nodes.containsKey(gn.id())) {
             return 0; // Silent Ignore
         }

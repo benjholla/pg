@@ -32,12 +32,4 @@ public interface Node extends GraphElement {
      * <li>{@link #BOTH}: Traverses all incident edges regardless of direction.</li>
      * </ul>
      */
-    enum NodeDirection {
-        /** Incoming edges */
-        IN,
-        /** Outgoing edges */
-        OUT,
-        /** Both incoming and outgoing edges */
-        BOTH;
-    }
 }

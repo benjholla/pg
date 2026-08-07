@@ -45,7 +45,7 @@ public interface Edge extends GraphElement {
     /*
      * ARCHITECTURE NOTE: Bidirectional Edge Support
      * Currently utilizing "query-time" bidirectionality (storing strictly directed
-     * edges but supporting undirected traversal via NodeDirection.BOTH).
+     * edges but supporting undirected traversal via Direction.BOTH).
      * * If structural undirected edges are added to the storage layer in the future,
      * the Edge interface must be expanded to handle ambiguous source/target semantics:
      * - boolean isDirected();

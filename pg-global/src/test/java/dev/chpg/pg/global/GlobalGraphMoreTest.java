@@ -10,8 +10,9 @@ import org.junit.jupiter.api.Test;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Node.NodeDirection;
+
 import dev.chpg.pg.api.NodeSet;
 
 public class GlobalGraphMoreTest {
@@ -50,7 +51,7 @@ public class GlobalGraphMoreTest {
         g.addEdge(e1);
         g.addEdge(e2);
 
-        EdgeSet both = g.edges(n2, NodeDirection.BOTH);
+        EdgeSet both = g.edges(n2, Direction.BOTH);
         assertEquals(2, both.size());
         assertTrue(both.contains(e1));
         assertTrue(both.contains(e2));
