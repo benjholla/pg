@@ -12,6 +12,11 @@ import java.util.Set;
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
     @Override
+    public void clear() {
+        AttributeMap.super.clear();
+    }
+
+    @Override
     public void replaceAll(java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> function) {
         AttributeMap.super.replaceAll(function);
     }

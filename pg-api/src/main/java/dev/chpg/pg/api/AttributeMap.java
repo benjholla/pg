@@ -319,6 +319,21 @@ public interface AttributeMap extends Map<String, AttributeValue> {
         return newValue;
     }
 
+    /**
+     * Removes all of the mappings from this map.
+     * The default implementation avoids relying on entrySet() iterators
+     * to safely support transactional or shadow map implementations.
+     */
+    @Override
+    default void clear() {
+        // Collect keys first to avoid ConcurrentModificationExceptions
+        // if the backend map doesn't support concurrent remove during iteration
+        java.util.List<String> keysToRemove = new java.util.ArrayList<>(this.keySet());
+        for (String key : keysToRemove) {
+            this.remove(key);
+        }
+    }
+
     @Override
     default void replaceAll(java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> function) {
         java.util.Objects.requireNonNull(function, "Function cannot be null");
