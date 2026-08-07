@@ -176,6 +176,7 @@ public class NodeSetTest {
             @Override public boolean isEmpty() { return false; }
             @Override public boolean contains(Object o) { return o == n1; }
             @Override public Object[] toArray() { return new Object[]{n1}; }
+            @SuppressWarnings("unchecked")
             @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{n1}; }
             @Override public boolean add(Node node) { return false; }
             @Override public boolean remove(Object o) { return false; }
@@ -204,6 +205,7 @@ public class NodeSetTest {
             @Override public boolean isEmpty() { return true; }
             @Override public boolean contains(Object o) { return false; }
             @Override public Object[] toArray() { return new Object[]{}; }
+            @SuppressWarnings("unchecked")
             @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{}; }
             @Override public boolean add(Node node) { return false; }
             @Override public boolean remove(Object o) { return false; }

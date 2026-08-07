@@ -19,7 +19,7 @@ import dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet;
  */
 public class DifferencePropertiesInvariantTest {
     private Universe universe;
-    private Graph gA, gB, gC;
+    private Graph gA, gB;
 
     @BeforeEach
     public void setUp() {

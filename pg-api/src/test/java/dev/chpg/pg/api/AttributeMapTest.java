@@ -148,6 +148,8 @@ public class AttributeMapTest {
     // A class that delegates compute/merge/replaceAll etc. to the default interface methods.
     private static class TestAttributeMap extends HashMap<String, AttributeValue> implements AttributeMap {
 
+        private static final long serialVersionUID = 1L;
+
         @Override
         public AttributeValue put(String key, String value) {
             return put(key, AttributeValue.value(value));
@@ -205,6 +207,8 @@ public class AttributeMapTest {
     }
 
     private static class FallbackTestAttributeMap extends TestAttributeMap {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public java.util.Set<java.util.Map.Entry<String, AttributeValue>> entrySet() {
             java.util.Set<java.util.Map.Entry<String, AttributeValue>> original = super.entrySet();

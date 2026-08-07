@@ -63,7 +63,6 @@ public class ShadowEdgeSet implements EdgeSet {
     }
 
     // Add this helper method right below unwrapForAlgebra
-    @SuppressWarnings("unchecked")
     private Set<Edge> extractLocalDelta(Collection<? extends Edge> other) {
         if (other instanceof ShadowEdgeSet shadow) {
             return shadow.localAdds;

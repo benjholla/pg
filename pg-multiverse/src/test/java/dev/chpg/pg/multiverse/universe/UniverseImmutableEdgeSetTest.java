@@ -7,15 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collections;
 import java.util.BitSet;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralNode;
-import dev.chpg.pg.multiverse.ephemeral.EphemeralEdge;
 
 public class UniverseImmutableEdgeSetTest {
     private static final Universe universe = new Universe();
@@ -25,7 +24,7 @@ public class UniverseImmutableEdgeSetTest {
         EphemeralGraph eg = new EphemeralGraph(universe);
         EphemeralNode n1 = (EphemeralNode) eg.factory().createNode();
         EphemeralNode n2 = (EphemeralNode) eg.factory().createNode();
-        EphemeralEdge ee1 = (EphemeralEdge) eg.factory().createEdge(n1, n2);
+        eg.factory().createEdge(n1, n2);
         universe.promote(eg);
 
         UniverseEdgeSet internalSet = new UniverseEdgeSet(universe, new BitSet());

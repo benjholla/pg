@@ -49,6 +49,7 @@ public class UniverseEdgeSetTest {
         assertTrue(edgeSet.isSizeKnown());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         assertTrue(edgeSet.contains(e1));
@@ -98,6 +99,7 @@ public class UniverseEdgeSetTest {
         assertTrue(ex2.getMessage().contains("Must be a UniverseEdge"));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         assertTrue(edgeSet.remove(e1));
@@ -153,6 +155,7 @@ public class UniverseEdgeSetTest {
         assertFalse(edgeSet.contains(e1));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testIds() {
         Set<Integer> ids = edgeSet.ids();

@@ -64,6 +64,7 @@ public class UniverseEdgeAttributeProxyTest {
         assertEquals(3, ((AttributeValue.ByteArrayValue) attributes.get("bytes")).value().length);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContainsKeyAndGetWrongType() {
         assertFalse(attributes.containsKey(123));
@@ -72,6 +73,7 @@ public class UniverseEdgeAttributeProxyTest {
         assertNull(attributes.get(null));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         attributes.put("k1", "v1");

@@ -20,7 +20,7 @@ public class ShadowGraphTest {
 
     // Universe elements
     private Node uNodeA, uNodeB, uNodeC;
-    private Edge uEdgeAB, uEdgeBC;
+    private Edge uEdgeAB;
 
     // Ephemeral setup
     private EphemeralFactory factory;

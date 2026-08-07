@@ -7,14 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collections;
 import java.util.BitSet;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
-import dev.chpg.pg.multiverse.ephemeral.EphemeralNode;
 
 public class UniverseImmutableNodeSetTest {
     private static final Universe universe = new Universe();
@@ -22,7 +21,7 @@ public class UniverseImmutableNodeSetTest {
     @Test
     public void testUnsupportedOperations() {
         EphemeralGraph eg = new EphemeralGraph(universe);
-        EphemeralNode en1 = (EphemeralNode) eg.factory().createNode();
+        eg.factory().createNode();
         universe.promote(eg);
 
         UniverseNodeSet internalSet = new UniverseNodeSet(universe, new BitSet());

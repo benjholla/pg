@@ -186,6 +186,7 @@ public class EdgeSetTest {
             @Override public boolean isEmpty() { return false; }
             @Override public boolean contains(Object o) { return o == e1; }
             @Override public Object[] toArray() { return new Object[]{e1}; }
+            @SuppressWarnings("unchecked")
             @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{e1}; }
             @Override public boolean add(Edge node) { return false; }
             @Override public boolean remove(Object o) { return false; }
@@ -214,6 +215,7 @@ public class EdgeSetTest {
             @Override public boolean isEmpty() { return true; }
             @Override public boolean contains(Object o) { return false; }
             @Override public Object[] toArray() { return new Object[]{}; }
+            @SuppressWarnings("unchecked")
             @Override public <T> T[] toArray(T[] a) { return (T[]) new Object[]{}; }
             @Override public boolean add(Edge node) { return false; }
             @Override public boolean remove(Object o) { return false; }

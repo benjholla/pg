@@ -64,7 +64,6 @@ public class ShadowNodeSet implements NodeSet {
     }
 
     // Add this helper method right below unwrapForAlgebra
-    @SuppressWarnings("unchecked")
     private Set<Node> extractLocalDelta(Collection<? extends Node> other) {
         if (other instanceof ShadowNodeSet shadow) {
             return shadow.localAdds;

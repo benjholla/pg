@@ -40,12 +40,14 @@ public class UniverseNodeTagProxyTest {
         assertEquals(1, tags.size());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContainsWrongType() {
         assertFalse(tags.contains(123));
         assertFalse(tags.contains(null));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         tags.add("Person");

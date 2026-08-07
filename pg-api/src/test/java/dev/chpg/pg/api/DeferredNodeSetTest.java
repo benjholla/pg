@@ -174,8 +174,12 @@ public class DeferredNodeSetTest {
         }
     }
 
-    private static class TagSetTestImpl extends java.util.HashSet<String> implements TagSet {}
+    private static class TagSetTestImpl extends java.util.HashSet<String> implements TagSet {
+        private static final long serialVersionUID = 1L;
+    }
+    
     private static class AttributeMapTestImpl extends java.util.HashMap<String, AttributeValue> implements AttributeMap {
+        private static final long serialVersionUID = 1L;
         @Override
         public AttributeValue put(String key, String value) { return put(key, AttributeValue.value(value)); }
         @Override

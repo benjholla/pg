@@ -49,6 +49,7 @@ public class UniverseNodeSetTest {
         assertTrue(nodeSet.isSizeKnown());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testContains() {
         assertTrue(nodeSet.contains(n1));
@@ -94,6 +95,7 @@ public class UniverseNodeSetTest {
         assertTrue(e2.getMessage().contains("Must be a UniverseNode"));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         assertTrue(nodeSet.remove(n1));
@@ -149,6 +151,7 @@ public class UniverseNodeSetTest {
         assertFalse(nodeSet.contains(n1));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testIds() {
         Set<Integer> ids = nodeSet.ids();
