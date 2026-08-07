@@ -161,7 +161,10 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public EphemeralGraph createGraph(Graph graph) {
         Objects.requireNonNull(graph, "graph cannot be null");
         validateLineage(graph);
-        return new EphemeralGraph(this.universe, this.idGenerator, graph.nodes(), graph.edges());
+        EphemeralGraph g = new EphemeralGraph(this.universe, this.idGenerator, graph.nodes(), graph.edges());
+        g.tombstonedNodeIds.or(this.tombstonedNodeIds);
+        g.tombstonedEdgeIds.or(this.tombstonedEdgeIds);
+        return g;
     }
 
     /**
@@ -679,6 +682,21 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                     return false;
                 }
                 this.tombstonedNodeIds.set(un.id());
+
+                // Cascade tombstones to baseline edges
+                int[] outs = this.universe.outboundEdges(un.id());
+                if (outs != null) {
+                    for (int edgeId : outs) {
+                        this.tombstonedEdgeIds.set(edgeId);
+                    }
+                }
+                int[] ins = this.universe.inboundEdges(un.id());
+                if (ins != null) {
+                    for (int edgeId : ins) {
+                        this.tombstonedEdgeIds.set(edgeId);
+                    }
+                }
+
                 return true;
             }
             return false;
@@ -689,6 +707,21 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                     return false;
                 }
                 this.tombstonedNodeIds.set(sn.id());
+
+                // Cascade tombstones to baseline edges
+                int[] outs = this.universe.outboundEdges(sn.id());
+                if (outs != null) {
+                    for (int edgeId : outs) {
+                        this.tombstonedEdgeIds.set(edgeId);
+                    }
+                }
+                int[] ins = this.universe.inboundEdges(sn.id());
+                if (ins != null) {
+                    for (int edgeId : ins) {
+                        this.tombstonedEdgeIds.set(edgeId);
+                    }
+                }
+
                 return true;
             }
             return false;
