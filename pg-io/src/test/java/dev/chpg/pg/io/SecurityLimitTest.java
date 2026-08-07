@@ -323,6 +323,7 @@ public class SecurityLimitTest {
                 @Override public MappedByteBuffer map(MapMode mode, long position, long size) throws IOException { return realChannel.map(mode, position, size); }
                 @Override public FileLock lock(long position, long size, boolean shared) throws IOException { return realChannel.lock(position, size, shared); }
                 @Override public FileLock tryLock(long position, long size, boolean shared) throws IOException { return realChannel.tryLock(position, size, shared); }
+                @SuppressWarnings("try")
                 @Override protected void implCloseChannel() throws IOException { realChannel.close(); }
             };
 

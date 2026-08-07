@@ -18,7 +18,7 @@ public class AttributeValueTest {
 
     @Test
     public void testWideningRejected() {
-        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((char) 'a'));
+        assertThrows(IllegalArgumentException.class, () -> AttributeValue.value('a'));
         assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((short) 1));
         assertThrows(IllegalArgumentException.class, () -> AttributeValue.value((byte) 1));
         assertThrows(IllegalArgumentException.class, () -> AttributeValue.value(1.0f));
