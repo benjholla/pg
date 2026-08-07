@@ -128,7 +128,6 @@ public class ShadowEdgeSet implements EdgeSet {
         Iterator<Edge> backingIter = new ShadowEdgeIterator(transactionContext, backingSet.iterator());
         return new Iterator<Edge>() {
             private Edge nextEdge = null;
-            private boolean backingDone = false;
             private final Iterator<Edge> localIter = localAdds.iterator();
 
             private void advance() {
@@ -142,7 +141,6 @@ public class ShadowEdgeSet implements EdgeSet {
                         return;
                     }
                 }
-                backingDone = true;
 
                 if (localIter.hasNext()) {
                     nextEdge = localIter.next();

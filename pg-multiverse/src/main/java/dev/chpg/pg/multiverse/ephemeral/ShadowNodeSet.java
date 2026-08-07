@@ -129,7 +129,6 @@ public class ShadowNodeSet implements NodeSet {
         Iterator<Node> backingIter = new ShadowNodeIterator(transactionContext, backingSet.iterator());
         return new Iterator<Node>() {
             private Node nextNode = null;
-            private boolean backingDone = false;
             private final Iterator<Node> localIter = localAdds.iterator();
 
             private void advance() {
@@ -143,7 +142,6 @@ public class ShadowNodeSet implements NodeSet {
                         return;
                     }
                 }
-                backingDone = true;
 
                 if (localIter.hasNext()) {
                     nextNode = localIter.next();

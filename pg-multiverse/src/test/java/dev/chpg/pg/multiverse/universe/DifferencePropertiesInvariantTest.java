@@ -72,7 +72,7 @@ public class DifferencePropertiesInvariantTest {
         }
 
         gB = empty.union(uA).union(uB).union(uAB);
-        gC = empty.union(uB).union(uC).union(uBC);
+        empty.union(uB).union(uC).union(uBC);
     }
 
     private void assertGraphsEqual(Graph expected, Graph actual) {

@@ -63,7 +63,7 @@ public class ShadowGraphTest {
         uNodeC = findNodeByName("C", universeGraph);
 
         uEdgeAB = findEdge(uNodeA, uNodeB, universeGraph);
-        uEdgeBC = findEdge(uNodeB, uNodeC, universeGraph);
+        findEdge(uNodeB, uNodeC, universeGraph);
 
         // Setup shadow graph
         shadowGraph = new EphemeralGraph(universe);
