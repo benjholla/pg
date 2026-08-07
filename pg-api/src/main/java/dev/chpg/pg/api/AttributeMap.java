@@ -347,7 +347,9 @@ public interface AttributeMap extends Map<String, AttributeValue> {
 
         // Apply fallback updates strictly AFTER the iterator has closed
         if (requiresFallback) {
-            putAll(fallbackUpdates);
+            for (Map.Entry<String, AttributeValue> fallbackEntry : fallbackUpdates.entrySet()) {
+                this.put(fallbackEntry.getKey(), fallbackEntry.getValue());
+            }
         }
     }
 }
