@@ -11,6 +11,29 @@ import java.util.Set;
 
 public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> implements AttributeMap {
 
+    @Override
+    public void replaceAll(java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> function) {
+        AttributeMap.super.replaceAll(function);
+    }
+
+    // Explicitly delegate all compute-like default methods to AttributeMap default implementation to bypass AbstractMap logic.
+    @Override
+    public AttributeValue compute(String key, java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return AttributeMap.super.compute(key, remappingFunction);
+    }
+    @Override
+    public AttributeValue computeIfAbsent(String key, java.util.function.Function<? super String, ? extends AttributeValue> mappingFunction) {
+        return AttributeMap.super.computeIfAbsent(key, mappingFunction);
+    }
+    @Override
+    public AttributeValue computeIfPresent(String key, java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return AttributeMap.super.computeIfPresent(key, remappingFunction);
+    }
+    @Override
+    public AttributeValue merge(String key, AttributeValue value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
+        return AttributeMap.super.merge(key, value, remappingFunction);
+    }
+
     private final EphemeralGraph transaction;
     private final AttributeMap backingAttributes;
     private final int id;
@@ -125,6 +148,6 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         // Apply Pending Writes
         composite.putAll(getPendingAttributes());
 
-        return composite.entrySet();
+        return java.util.Collections.unmodifiableMap(composite).entrySet();
     }
 }
