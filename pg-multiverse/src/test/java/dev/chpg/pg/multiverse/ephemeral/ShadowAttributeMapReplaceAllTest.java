@@ -4,7 +4,6 @@ import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.multiverse.universe.Universe;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import dev.chpg.pg.api.Node;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.api.AttributeMap;
 
