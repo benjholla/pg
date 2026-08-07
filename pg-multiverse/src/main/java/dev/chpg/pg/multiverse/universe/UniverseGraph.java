@@ -579,22 +579,32 @@ public final class UniverseGraph implements Graph, UniverseView {
     public EdgeSet edges(Node source, Node target) {
         UniverseNode uSource = validateLineage(source);
         UniverseNode uTarget = validateLineage(target);
-        BitSet result = new BitSet();
 
         if (!this.activeNodes.get(uSource.id()) || !this.activeNodes.get(uTarget.id())) {
-            return new UniverseEdgeSet(this.universe, result);
+            return EdgeSet.empty();
         }
 
         long expectedModCount = this.universe.modCount();
         int[] out = this.universe.outboundEdges(uSource.id());
-        if (out != null) {
-            for (int edgeId : out) {
-                if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
-                    result.set(edgeId);
-                }
+
+        if (out == null || out.length == 0) {
+            return EdgeSet.empty();
+        }
+
+        BitSet result = new BitSet();
+        for (int edgeId : out) {
+            if (this.activeEdges.get(edgeId) && this.universe.edgeTarget(edgeId) == uTarget.id()) {
+                result.set(edgeId);
             }
         }
         checkTopologyState(expectedModCount);
+
+        if (result.isEmpty()) {
+            return EdgeSet.empty();
+        } else if (result.cardinality() == 1) {
+            return new UniverseImmutableSingletonEdgeSet(new UniverseEdge(this.universe, result.nextSetBit(0)));
+        }
+
         return new UniverseEdgeSet(this.universe, result);
     }
 
