@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralFactory;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
@@ -280,14 +281,14 @@ public class UniverseGraphTest {
     @Test
     public void testDegree() {
         // Node b has 1 in (from a), 1 in (from c), 1 out (to c). Total IN = 2, OUT = 1, BOTH = 3.
-        assertEquals(2, graph.degree(b, dev.chpg.pg.api.Node.NodeDirection.IN));
-        assertEquals(1, graph.degree(b, dev.chpg.pg.api.Node.NodeDirection.OUT));
-        assertEquals(3, graph.degree(b, dev.chpg.pg.api.Node.NodeDirection.BOTH));
+        assertEquals(2, graph.degree(b, Direction.IN));
+        assertEquals(1, graph.degree(b, Direction.OUT));
+        assertEquals(3, graph.degree(b, Direction.BOTH));
 
         // Node f is isolated
-        assertEquals(0, graph.degree(f, dev.chpg.pg.api.Node.NodeDirection.IN));
-        assertEquals(0, graph.degree(f, dev.chpg.pg.api.Node.NodeDirection.OUT));
-        assertEquals(0, graph.degree(f, dev.chpg.pg.api.Node.NodeDirection.BOTH));
+        assertEquals(0, graph.degree(f, Direction.IN));
+        assertEquals(0, graph.degree(f, Direction.OUT));
+        assertEquals(0, graph.degree(f, Direction.BOTH));
     }
 
     @Test

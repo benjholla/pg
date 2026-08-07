@@ -3,7 +3,7 @@ package dev.chpg.pg.api;
 import java.util.Collection;
 import java.util.Optional;
 
-import dev.chpg.pg.api.Node.NodeDirection;
+
 
 /**
  * Represents a mathematical directed property graph.
@@ -201,7 +201,7 @@ public interface Graph {
      * @param direction the direction
      * @return the set of edges connected to the node in the specified direction
      */
-    public EdgeSet edges(Node node, NodeDirection direction);
+    public EdgeSet edges(Node node, Direction direction);
 
     /**
      * Selects the nodes of this graph that have no successors (out-degree == 0).
@@ -639,7 +639,7 @@ public interface Graph {
      * @param direction the direction
      * @return the number of edges
      */
-    public int degree(Node node, NodeDirection direction);
+    public int degree(Node node, Direction direction);
 
     /*
      * NOTE: Graph-Level Attributes Graph-level attributes are temporarily deferred

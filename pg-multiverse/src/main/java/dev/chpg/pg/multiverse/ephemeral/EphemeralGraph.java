@@ -13,8 +13,9 @@ import dev.chpg.pg.api.AttributeValue;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Node.NodeDirection;
+
 import dev.chpg.pg.api.NodeSet;
 import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseView;
@@ -876,10 +877,10 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     @Override
-    public EdgeSet edges(Node node, NodeDirection direction){
-        if(direction == NodeDirection.IN){
+    public EdgeSet edges(Node node, Direction direction){
+        if(direction == Direction.IN){
             return getInEdgesToNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
-        } else if(direction == NodeDirection.OUT){
+        } else if(direction == Direction.OUT){
             return getOutEdgesFromNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
         } else {
             EphemeralEdgeSet edges = getInEdgesToNode(node).map(EphemeralEdgeSet::new).orElseGet(EphemeralEdgeSet::new);
@@ -1456,20 +1457,20 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     }
 
     @Override
-    public int degree(Node node, NodeDirection direction) {
+    public int degree(Node node, Direction direction) {
         Objects.requireNonNull(node, "node cannot be null");
         Objects.requireNonNull(direction, "direction cannot be null");
 
         int count = 0;
 
         // 1. Count local ephemeral edge occurrences
-        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+        if (direction == Direction.OUT || direction == Direction.BOTH) {
             EphemeralEdgeSet outs = outEdges.get(node.id());
             if (outs != null) {
                 count += outs.size();
             }
         }
-        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+        if (direction == Direction.IN || direction == Direction.BOTH) {
             EphemeralEdgeSet ins = inEdges.get(node.id());
             if (ins != null) {
                 count += ins.size();
@@ -1478,7 +1479,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
         // 2. Count Universe baseline edge occurrences (respecting transaction tombstones)
         if (node.id() >= 0) {
-            if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+            if (direction == Direction.OUT || direction == Direction.BOTH) {
                 int[] universeOut = universe.outboundEdges(node.id());
                 if (universeOut != null) {
                     for (int edgeId : universeOut) {
@@ -1488,7 +1489,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
                     }
                 }
             }
-            if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+            if (direction == Direction.IN || direction == Direction.BOTH) {
                 int[] universeIn = universe.inboundEdges(node.id());
                 if (universeIn != null) {
                     for (int edgeId : universeIn) {

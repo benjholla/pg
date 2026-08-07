@@ -7,8 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Node.NodeDirection;
+
 
 public class GraphDegreeInvariantTest {
     private static final Universe universe = new Universe();
@@ -36,12 +37,12 @@ public class GraphDegreeInvariantTest {
     @Test
     public void testDegreeMatchesEdgeSetSize() {
         for (Node node : graph.nodes()) {
-            int inDegree = graph.degree(node, NodeDirection.IN);
-            int outDegree = graph.degree(node, NodeDirection.OUT);
-            int bothDegree = graph.degree(node, NodeDirection.BOTH);
+            int inDegree = graph.degree(node, Direction.IN);
+            int outDegree = graph.degree(node, Direction.OUT);
+            int bothDegree = graph.degree(node, Direction.BOTH);
 
-            assertEquals(graph.edges(node, NodeDirection.IN).size(), inDegree, "IN degree must equal IN edge set size");
-            assertEquals(graph.edges(node, NodeDirection.OUT).size(), outDegree, "OUT degree must equal OUT edge set size");
+            assertEquals(graph.edges(node, Direction.IN).size(), inDegree, "IN degree must equal IN edge set size");
+            assertEquals(graph.edges(node, Direction.OUT).size(), outDegree, "OUT degree must equal OUT edge set size");
 
             // BOTH degree must exactly equal IN + OUT degree.
             // Note: a self loop appears in both the IN set and OUT set. Since edges(node, BOTH) returns a Set,
@@ -57,9 +58,9 @@ public class GraphDegreeInvariantTest {
         int totalBothDegree = 0;
 
         for (Node node : graph.nodes()) {
-            totalInDegree += graph.degree(node, NodeDirection.IN);
-            totalOutDegree += graph.degree(node, NodeDirection.OUT);
-            totalBothDegree += graph.degree(node, NodeDirection.BOTH);
+            totalInDegree += graph.degree(node, Direction.IN);
+            totalOutDegree += graph.degree(node, Direction.OUT);
+            totalBothDegree += graph.degree(node, Direction.BOTH);
         }
 
         int totalEdges = graph.edges().size();
@@ -77,9 +78,9 @@ public class GraphDegreeInvariantTest {
         int totalBothDegree = 0;
 
         for (Node node : emptyGraph.nodes()) {
-            totalInDegree += emptyGraph.degree(node, NodeDirection.IN);
-            totalOutDegree += emptyGraph.degree(node, NodeDirection.OUT);
-            totalBothDegree += emptyGraph.degree(node, NodeDirection.BOTH);
+            totalInDegree += emptyGraph.degree(node, Direction.IN);
+            totalOutDegree += emptyGraph.degree(node, Direction.OUT);
+            totalBothDegree += emptyGraph.degree(node, Direction.BOTH);
         }
 
         assertEquals(0, totalInDegree);

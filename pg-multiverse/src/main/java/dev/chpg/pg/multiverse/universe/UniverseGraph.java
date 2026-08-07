@@ -3,8 +3,9 @@ package dev.chpg.pg.multiverse.universe;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.EdgeSet;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
-import dev.chpg.pg.api.Node.NodeDirection;
+
 import dev.chpg.pg.api.NodeSet;
 
 import java.util.BitSet;
@@ -466,7 +467,7 @@ public final class UniverseGraph implements Graph, UniverseView {
     // =========================================================================
 
     @Override
-    public EdgeSet edges(Node node, NodeDirection direction) {
+    public EdgeSet edges(Node node, Direction direction) {
         UniverseNode un = validateLineage(node);
         long expectedModCount = this.universe.modCount();
         BitSet result = new BitSet();
@@ -475,7 +476,7 @@ public final class UniverseGraph implements Graph, UniverseView {
             return new UniverseEdgeSet(this.universe, result); // Return empty set
         }
 
-        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+        if (direction == Direction.OUT || direction == Direction.BOTH) {
             int[] out = this.universe.outboundEdges(un.id());
             if (out != null) {
                 for (int edgeId : out) {
@@ -484,7 +485,7 @@ public final class UniverseGraph implements Graph, UniverseView {
             }
         }
 
-        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+        if (direction == Direction.IN || direction == Direction.BOTH) {
             int[] in = this.universe.inboundEdges(un.id());
             if (in != null) {
                 for (int edgeId : in) {
@@ -607,16 +608,16 @@ public final class UniverseGraph implements Graph, UniverseView {
     }
 
     @Override
-    public int degree(Node node, NodeDirection direction) {
+    public int degree(Node node, Direction direction) {
         UniverseNode un = validateLineage(node);
         if (!this.activeNodes.get(un.id())) { return 0; }
 
         long expectedModCount = this.universe.modCount();
         int count = 0;
-        if (direction == NodeDirection.OUT || direction == NodeDirection.BOTH) {
+        if (direction == Direction.OUT || direction == Direction.BOTH) {
             count += countActiveEdges(this.universe.outboundEdges(un.id()));
         }
-        if (direction == NodeDirection.IN || direction == NodeDirection.BOTH) {
+        if (direction == Direction.IN || direction == Direction.BOTH) {
             count += countActiveEdges(this.universe.inboundEdges(un.id()));
         }
         checkTopologyState(expectedModCount);

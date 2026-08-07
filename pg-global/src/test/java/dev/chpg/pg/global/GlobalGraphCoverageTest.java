@@ -13,6 +13,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.TagSet;
@@ -154,7 +155,7 @@ public class GlobalGraphCoverageTest {
                 };
             }
 
-            @Override public EdgeSet edges(Node node, Node.NodeDirection direction) { return null; }
+            @Override public EdgeSet edges(Node node, Direction direction) { return null; }
             @Override public NodeSet leaves() { return null; }
             @Override public NodeSet roots() { return null; }
             @Override public NodeSet isolated() { return null; }
@@ -198,7 +199,7 @@ public class GlobalGraphCoverageTest {
             @Override public Graph induce(EdgeSet edges) { return null; }
             @Override public boolean adjacent(Node source, Node target) { return false; }
             @Override public EdgeSet edges(Node source, Node target) { return null; }
-            @Override public int degree(Node node, Node.NodeDirection direction) { return 0; }
+            @Override public int degree(Node node, Direction direction) { return 0; }
         };
 
         Graph union = g1.union(unsizedGraph);
