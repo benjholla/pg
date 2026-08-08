@@ -3,6 +3,7 @@ package dev.chpg.pg.evaluation;
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.global.GlobalGraph;
+import dev.chpg.pg.algorithm.ControlDependenceAnalysis;
 import dev.chpg.pg.algorithm.FastDominanceAnalysis;
 import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
@@ -30,6 +31,7 @@ public class DominanceAnalysisBenchmark {
 
     private Graph graph;
     private Node root;
+    private Node exitNode;
 
     @Setup(Level.Trial)
     public void setup() {
@@ -65,6 +67,8 @@ public class DominanceAnalysisBenchmark {
             Node dst = nodes[rand.nextInt(numNodes)];
             g.addEdge(g.factory().createEdge(src, dst));
         }
+
+        exitNode = nodes[numNodes - 1];
     }
 
     @State(Scope.Thread)
@@ -86,6 +90,30 @@ public class DominanceAnalysisBenchmark {
     // Benchmark 2: Transactional mutation speed
     @Benchmark
     public void benchmarkMutation(AnalysisState state) {
+        state.analysis.injectEdges(); // Measures Graph overlay speed
+    }
+
+    @State(Scope.Thread)
+    public static class CDState {
+        public ControlDependenceAnalysis analysis;
+        public FastDominanceAnalysis postDomAnalysis;
+
+        @Setup(Level.Invocation)
+        public void setupCD(DominanceAnalysisBenchmark benchmark) {
+            postDomAnalysis = new FastDominanceAnalysis(benchmark.graph, benchmark.exitNode, true);
+            analysis = new ControlDependenceAnalysis(benchmark.graph, benchmark.root, benchmark.exitNode, postDomAnalysis);
+        }
+    }
+
+    // Benchmark 3: Pure control dependence speed
+    @Benchmark
+    public ControlDependenceAnalysis benchmarkCDAnalysis(CDState state) {
+        return new ControlDependenceAnalysis(graph, root, exitNode, state.postDomAnalysis);
+    }
+
+    // Benchmark 4: CD mutation speed
+    @Benchmark
+    public void benchmarkCDMutation(CDState state) {
         state.analysis.injectEdges(); // Measures Graph overlay speed
     }
 }

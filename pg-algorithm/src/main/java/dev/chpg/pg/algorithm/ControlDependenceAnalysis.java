@@ -32,11 +32,26 @@ public class ControlDependenceAnalysis {
      * @param exitNode The exit node of the graph (used as the root for Post-Dominance).
      */
     public ControlDependenceAnalysis(Graph graph, Node entryNode, Node exitNode) {
+        this(graph, entryNode, exitNode, new FastDominanceAnalysis(graph, exitNode, true));
+    }
+
+    /**
+     * Constructs a control dependence analysis using a pre-computed post-dominance analysis.
+     *
+     * @param graph The control flow graph to analyze.
+     * @param entryNode The entry node of the graph (used for reachability validation).
+     * @param exitNode The exit node of the graph (used as the root for Post-Dominance).
+     * @param postDomAnalysis A pre-computed post-dominance analysis.
+     */
+    public ControlDependenceAnalysis(Graph graph, Node entryNode, Node exitNode, FastDominanceAnalysis postDomAnalysis) {
         if (entryNode == null) {
             throw new IllegalArgumentException("Entry node cannot be null");
         }
         if (exitNode == null) {
             throw new IllegalArgumentException("Exit node cannot be null");
+        }
+        if (postDomAnalysis == null) {
+            throw new IllegalArgumentException("Post-dominance analysis cannot be null");
         }
 
         this.graph = graph;
@@ -47,8 +62,6 @@ public class ControlDependenceAnalysis {
             throw new IllegalArgumentException("Graph must contain a path from the given entry to the given exit node");
         }
 
-        // 1. Compute Post-Dominance by passing invertEdges = true and using the exit node
-        FastDominanceAnalysis postDomAnalysis = new FastDominanceAnalysis(graph, exitNode, true);
         Map<Node, Set<Node>> postDomFrontiers = postDomAnalysis.getDominanceFrontiers();
 
         // 2. Initialize the Control Dependence map for all nodes in the path
