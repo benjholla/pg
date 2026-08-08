@@ -49,6 +49,14 @@ import java.util.Optional;
  * 
  */
 public interface Graph {
+
+    /**
+     * Returns a factory for creating elements native to this graph.
+     *
+     * @return the factory
+     */
+    public Factory factory();
+
     /**
      * Returns the node denoted by the given id if one exists
      * 

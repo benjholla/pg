@@ -84,6 +84,7 @@ public class GlobalGraphCoverageTest {
         GlobalGraph g1 = new GlobalGraph();
 
         Graph unsizedGraph = new Graph() {
+            @Override public dev.chpg.pg.api.Factory factory() { return null; }
             @Override public Optional<Node> node(int id) { return Optional.empty(); }
             @Override public Optional<Edge> edge(int id) { return Optional.empty(); }
             @Override public boolean addNode(Node node) { return false; }

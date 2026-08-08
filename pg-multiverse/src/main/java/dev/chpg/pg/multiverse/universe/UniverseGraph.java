@@ -10,6 +10,7 @@ import dev.chpg.pg.api.NodeSet;
 
 import java.util.BitSet;
 import java.util.Collection;
+import dev.chpg.pg.api.Factory;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,11 @@ public final class UniverseGraph implements Graph, UniverseView {
      *
      * @param universe the Universe instance to wrap
      */
+    @Override
+    public Factory factory() {
+        throw new UnsupportedOperationException("UniverseGraph is a read-only projection and does not support creating new local elements. Use EphemeralGraph instead.");
+    }
+
     public UniverseGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeNodes = new BitSet();
