@@ -1166,8 +1166,19 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph difference = createCopy();
-        difference.removeNode(edge.from());
-        difference.removeNode(edge.to());
+
+        for (Edge e : new java.util.ArrayList<>(difference.edges())) {
+            if (e.equals(edge)) {
+                difference.removeEdge(e);
+            }
+        }
+
+        for (Node n : new java.util.ArrayList<>(difference.nodes())) {
+            if (n.equals(edge.from()) || n.equals(edge.to())) {
+                difference.removeNode(n);
+            }
+        }
+
         return difference;
     }
 
@@ -1190,7 +1201,13 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph difference = createCopy();
-        difference.removeEdge(edge);
+
+        for (Edge e : new java.util.ArrayList<>(difference.edges())) {
+            if (e.equals(edge)) {
+                difference.removeEdge(e);
+            }
+        }
+
         return difference;
     }
 
@@ -1209,26 +1226,42 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
     @Override
     public Graph intersection(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator);
-        if (this.nodes().contains(node)) {
-            intersection.addNode(node);
+        Graph intersection = createCopy();
+
+        for (Edge e : new java.util.ArrayList<>(intersection.edges())) {
+            intersection.removeEdge(e);
         }
+
+        for (Node n : new java.util.ArrayList<>(intersection.nodes())) {
+            if (!n.equals(node)) {
+                intersection.removeNode(n);
+            }
+        }
+
         return intersection;
     }
 
     @Override
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph intersection = new EphemeralGraph(this.universe, this.idGenerator);
-        if (this.nodes().contains(edge.from())) {
-            intersection.addNode(edge.from());
+
+        // 1. Start with an exact replica of the current transaction state
+        Graph intersection = createCopy();
+
+        // 2. Tombstone all edges that are NOT the target edge
+        for (Edge e : new java.util.ArrayList<>(intersection.edges())) {
+            if (!e.equals(edge)) {
+                intersection.removeEdge(e);
+            }
         }
-        if (this.nodes().contains(edge.to())) {
-            intersection.addNode(edge.to());
+
+        // 3. Tombstone all nodes that are NOT the terminal nodes of the edge
+        for (Node n : new java.util.ArrayList<>(intersection.nodes())) {
+            if (!n.equals(edge.from()) && !n.equals(edge.to())) {
+                intersection.removeNode(n);
+            }
         }
-        if (this.edges().contains(edge)) {
-            intersection.addEdge(edge);
-        }
+
         return intersection;
     }
 
