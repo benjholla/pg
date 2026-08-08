@@ -106,9 +106,21 @@ public class GraphMutationBenchmark {
      * and inject the new Control Dependence edges.
      */
     private void runDominanceAnalysis(Graph graph, Node entryNode) {
-        // TODO: Compute Dominator Tree
-        // TODO: Compute Dominance Frontiers
-        // TODO: Inject Control Dependence edges: graph.addEdge(...)
+        Node exitNode = null;
+        Graph forwardGraph = graph.forward(entryNode);
+        for (Node n : forwardGraph.nodes()) {
+            if (graph.edges(n, dev.chpg.pg.api.Direction.OUT).isEmpty()) {
+                exitNode = n;
+                break;
+            }
+        }
+
+        if (exitNode == null) {
+            exitNode = entryNode;
+        }
+
+        dev.chpg.pg.algorithm.ControlDependenceAnalysis cda = new dev.chpg.pg.algorithm.ControlDependenceAnalysis(graph, entryNode, exitNode);
+        cda.injectEdges();
     }
 
     @Benchmark
