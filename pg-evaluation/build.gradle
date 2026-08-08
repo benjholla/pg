@@ -7,6 +7,7 @@ dependencies {
     api project(':pg-api')
     api project(':pg-global')
     api project(':pg-multiverse')
+    api project(':pg-algorithm')
 
     testImplementation project(':pg-exporter')
     testImplementation project(':pg-io')

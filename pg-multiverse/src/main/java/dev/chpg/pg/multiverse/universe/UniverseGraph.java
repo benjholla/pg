@@ -19,9 +19,16 @@ import java.util.Optional;
  * Unlike an EphemeralGraph, this container holds absolutely zero domain objects in memory.
  * It manages two tightly-packed BitSets acting as masks over the centralized Universe engine.
  */
+import dev.chpg.pg.api.Factory;
+
 public final class UniverseGraph implements Graph, UniverseView {
 
     private final Universe universe;
+
+    @Override
+    public Factory factory() {
+        throw new UnsupportedOperationException("UniverseGraph is a read-only projection and does not support creating new local elements. Use EphemeralGraph instead.");
+    }
     private final BitSet activeNodes;
     private final BitSet activeEdges;
 
