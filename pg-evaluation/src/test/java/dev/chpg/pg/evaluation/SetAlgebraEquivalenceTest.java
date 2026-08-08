@@ -1,6 +1,5 @@
 package dev.chpg.pg.evaluation;
 
-import dev.chpg.pg.api.Direction;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
