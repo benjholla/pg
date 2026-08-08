@@ -55,7 +55,9 @@ public class FastDominanceAnalysis {
         Collections.reverse(rpo);
 
         int n = rpo.size();
-        if (n == 0) return;
+        if (n == 0) {
+            return;
+        }
 
         for (int i = 0; i < n; i++) {
             rpoIndex.put(rpo.get(i), i);
@@ -87,8 +89,12 @@ public class FastDominanceAnalysis {
                             int finger1 = pIndex;
                             int finger2 = newIdom;
                             while (finger1 != finger2) {
-                                while (finger1 > finger2) finger1 = idom[finger1];
-                                while (finger2 > finger1) finger2 = idom[finger2];
+                                while (finger1 > finger2) {
+                                    finger1 = idom[finger1];
+                                }
+                                while (finger2 > finger1) {
+                                    finger2 = idom[finger2];
+                                }
                             }
                             newIdom = finger1;
                         }
