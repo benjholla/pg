@@ -19,6 +19,9 @@ public final class UniverseEdge implements Edge, UniverseView {
     /**
      * Package-private constructor.
      * Only the Universe (or Universe Sets) should instantiate these transient wrappers.
+     *
+     * @param universe the Universe instance to wrap
+     * @param id       the strictly positive Universe edge ID
      */
    public UniverseEdge(Universe universe, int id) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");

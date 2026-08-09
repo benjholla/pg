@@ -212,11 +212,21 @@ public sealed interface AttributeValue permits
      */
     record ByteArrayValue(byte[] value) implements AttributeValue {
 
+        /**
+         * Constructs a new ByteArrayValue, defensively copying the provided array.
+         *
+         * @param value the byte array to wrap
+         */
         public ByteArrayValue {
             java.util.Objects.requireNonNull(value, "value");
             value = value.clone();
         }
 
+        /**
+         * Returns a defensive copy of the underlying byte array.
+         *
+         * @return a clone of the byte array
+         */
         @Override
         public byte[] value() {
             return value.clone();

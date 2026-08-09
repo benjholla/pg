@@ -26,16 +26,16 @@ public final class UniverseGraph implements Graph, UniverseView {
     private final BitSet activeNodes;
     private final BitSet activeEdges;
 
-    /**
-     * Constructs a new, empty viewport over the given Universe.
-     *
-     * @param universe the Universe instance to wrap
-     */
     @Override
     public Factory factory() {
         throw new UnsupportedOperationException("UniverseGraph is a read-only projection and does not support creating new local elements. Use EphemeralGraph instead.");
     }
 
+    /**
+     * Constructs a new, empty viewport over the given Universe.
+     *
+     * @param universe the Universe instance to wrap
+     */
     public UniverseGraph(Universe universe) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeNodes = new BitSet();

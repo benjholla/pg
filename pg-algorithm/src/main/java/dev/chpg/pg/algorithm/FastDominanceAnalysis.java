@@ -22,9 +22,21 @@ import java.util.Set;
  */
 public class FastDominanceAnalysis {
 
+    /**
+     * The tag applied to dominator tree edges.
+     */
     public static final String DOMINATOR_TREE_EDGE = "idom";
+    /**
+     * The tag applied to post-dominator tree edges.
+     */
     public static final String POST_DOMINATOR_TREE_EDGE = "ipdom";
+    /**
+     * The tag applied to dominance frontier edges.
+     */
     public static final String DOMINANCE_FRONTIER_EDGE = "dom-frontier";
+    /**
+     * The tag applied to post-dominance frontier edges.
+     */
     public static final String POST_DOMINANCE_FRONTIER_EDGE = "pdom-frontier";
 
     private final Graph graph;
@@ -180,20 +192,33 @@ public class FastDominanceAnalysis {
         }
     }
 
+    /**
+     * Returns an unmodifiable map representing the immediate dominators.
+     * @return the immediate dominators map
+     */
     public Map<Node, Node> getIdoms() {
         return Collections.unmodifiableMap(idomMap);
     }
 
+    /**
+     * Returns an unmodifiable map representing the dominator tree.
+     * @return the dominator tree map
+     */
     public Map<Node, Set<Node>> getDominatorTree() {
         return Collections.unmodifiableMap(domTree);
     }
 
+    /**
+     * Returns an unmodifiable map representing the dominance frontiers.
+     * @return the dominance frontiers map
+     */
     public Map<Node, Set<Node>> getDominanceFrontiers() {
         return Collections.unmodifiableMap(dfMap);
     }
 
     /**
      * Returns an O(V) topological traversal of the dominator tree.
+     * @return a list of nodes in topological order
      */
     public List<Node> topologicalTraversal() {
         if (topoTraversal == null) {
@@ -215,6 +240,10 @@ public class FastDominanceAnalysis {
         }
     }
 
+    /**
+     * Returns an O(V) reverse topological traversal of the dominator tree.
+     * @return an iterable of nodes in reverse topological order
+     */
     public Iterable<Node> reverseTopologicalTraversal() {
         return () -> {
             List<Node> reversed = new ArrayList<>(topologicalTraversal());

@@ -19,6 +19,9 @@ import java.util.Set;
  */
 public class ControlDependenceAnalysis {
 
+    /**
+     * The tag applied to control dependence edges.
+     */
     public static final String CONTROL_DEPENDENCE_EDGE = "control-dependence";
 
     private final Graph graph;
@@ -85,6 +88,7 @@ public class ControlDependenceAnalysis {
     /**
      * Returns an unmodifiable map representing the control dependencies.
      * The key is the controlling node (e.g., a branch), and the value is the set of nodes dependent on it.
+     * @return the control dependencies map
      */
     public Map<Node, Set<Node>> getControlDependencies() {
         return Collections.unmodifiableMap(controlDependencies);
