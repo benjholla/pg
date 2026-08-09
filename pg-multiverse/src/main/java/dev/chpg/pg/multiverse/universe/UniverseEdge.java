@@ -99,4 +99,9 @@ public final class UniverseEdge implements Edge, UniverseView {
     public AttributeMap attributes() {
         return new UniverseEdgeAttributeProxy(this.universe, this.id);
     }
+
+    @Override
+    public String toString() {
+        return "UniverseEdge [from=" + from() + ", to=" + to() + ", attributes=" + this.attributes().toString() + ", tags=" + this.tags().toString() + "]";
+    }
 }

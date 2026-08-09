@@ -91,4 +91,9 @@ public final class UniverseNode implements Node, UniverseView {
     public AttributeMap attributes() {
         return new UniverseNodeAttributeProxy(this.universe, this.id);
     }
+
+    @Override
+    public String toString() {
+        return "UniverseNode [ attributes=" + this.attributes().toString() + ", tags=" + this.tags().toString() + "]";
+    }
 }
