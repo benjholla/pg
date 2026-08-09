@@ -14,7 +14,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FastDominanceAnalysisTest {
@@ -174,8 +173,12 @@ public class FastDominanceAnalysisTest {
 
         for (Edge e : graph.edges()) {
             if (e.tags().contains(FastDominanceAnalysis.DOMINATOR_TREE_EDGE)) {
-                if (e.from().equals(a) && e.to().equals(b)) foundIdomB = true;
-                if (e.from().equals(a) && e.to().equals(c)) foundIdomC = true;
+                if (e.from().equals(a) && e.to().equals(b)) {
+                    foundIdomB = true;
+                }
+                if (e.from().equals(a) && e.to().equals(c)) {
+                    foundIdomC = true;
+                }
             }
         }
 
