@@ -52,7 +52,6 @@ public class ShadowNodeSet implements NodeSet {
             other instanceof EphemeralImmutableNodeSet ||
             other instanceof EphemeralImmutableSingletonNodeSet ||
             other instanceof EphemeralUnmodifiableLiveNodeSet ||
-            other.getClass().getName().contains("UnmodifiableCollection") ||
             other.isEmpty()) {
             return new UniverseNodeSet(this.transactionContext.universe(), new java.util.BitSet());
         }

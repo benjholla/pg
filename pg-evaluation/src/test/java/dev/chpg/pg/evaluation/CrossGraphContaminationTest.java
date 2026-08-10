@@ -198,17 +198,17 @@ public class CrossGraphContaminationTest {
         // This natively returns a ShadowNodeSet
         NodeSet shadowSet = graph.nodes();
 
-        // This natively returns an EphemeralNodeSet
-        Collection<Node> localSet = graph.localNodes();
+        // Convert the raw collection into a strict engine-native set first
+        dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet localSetWrapper = new dev.chpg.pg.multiverse.ephemeral.EphemeralNodeSet(graph.localNodes());
 
         // Algebra should succeed and correctly merge local elements
-        NodeSet unionResult = shadowSet.union(localSet);
+        NodeSet unionResult = shadowSet.union(localSetWrapper);
         assertTrue(unionResult.contains(localNode));
 
-        NodeSet intersectResult = shadowSet.intersect(localSet);
+        NodeSet intersectResult = shadowSet.intersect(localSetWrapper);
         assertTrue(intersectResult.contains(localNode));
 
-        NodeSet diffResult = shadowSet.difference(localSet);
+        NodeSet diffResult = shadowSet.difference(localSetWrapper);
         assertFalse(diffResult.contains(localNode));
     }
 }
