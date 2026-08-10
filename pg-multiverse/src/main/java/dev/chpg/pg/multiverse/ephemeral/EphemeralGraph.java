@@ -420,22 +420,35 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
         if (targetId >= 0 && this.universe.hasNode(targetId) && !this.tombstonedNodeIds.get(targetId)) {
             int[] baselineIn = this.universe.inboundEdges(targetId);
-            if (baselineIn == null || baselineIn.length == 0) {
-                return Optional.ofNullable(localIns);
-            }
-            EphemeralEdgeSet combined = new EphemeralEdgeSet();
-            if (localIns != null) {
-                combined.addAll(localIns);
-            }
-            for (int edgeId : baselineIn) {
-                if (!this.tombstonedEdgeIds.get(edgeId)) {
-                    combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
+            java.util.BitSet combinedBits = new java.util.BitSet();
+            if (baselineIn != null) {
+                for (int edgeId : baselineIn) {
+                    if (!this.tombstonedEdgeIds.get(edgeId)) {
+                        combinedBits.set(edgeId);
+                    }
                 }
             }
-            return combined.isEmpty() ? Optional.empty() : Optional.of(combined);
+            java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
+            if (localIns != null) {
+                for (Edge e : localIns) {
+                    combinedLocals.add(e);
+                }
+            }
+
+            if (combinedBits.isEmpty() && combinedLocals.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, combinedBits), combinedLocals));
         }
 
-        return Optional.ofNullable(localIns);
+        if (localIns == null || localIns.isEmpty()) {
+            return Optional.empty();
+        }
+        java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
+        for (Edge e : localIns) {
+            combinedLocals.add(e);
+        }
+        return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, new java.util.BitSet()), combinedLocals));
     }
 
     /**
@@ -449,22 +462,35 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
 
         if (targetId >= 0 && this.universe.hasNode(targetId) && !this.tombstonedNodeIds.get(targetId)) {
             int[] baselineOut = this.universe.outboundEdges(targetId);
-            if (baselineOut == null || baselineOut.length == 0) {
-                return Optional.ofNullable(localOuts);
-            }
-            EphemeralEdgeSet combined = new EphemeralEdgeSet();
-            if (localOuts != null) {
-                combined.addAll(localOuts);
-            }
-            for (int edgeId : baselineOut) {
-                if (!this.tombstonedEdgeIds.get(edgeId)) {
-                    combined.add(new ShadowEdge(this, new dev.chpg.pg.multiverse.universe.UniverseEdge(this.universe, edgeId)));
+            java.util.BitSet combinedBits = new java.util.BitSet();
+            if (baselineOut != null) {
+                for (int edgeId : baselineOut) {
+                    if (!this.tombstonedEdgeIds.get(edgeId)) {
+                        combinedBits.set(edgeId);
+                    }
                 }
             }
-            return combined.isEmpty() ? Optional.empty() : Optional.of(combined);
+            java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
+            if (localOuts != null) {
+                for (Edge e : localOuts) {
+                    combinedLocals.add(e);
+                }
+            }
+
+            if (combinedBits.isEmpty() && combinedLocals.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, combinedBits), combinedLocals));
         }
 
-        return Optional.ofNullable(localOuts);
+        if (localOuts == null || localOuts.isEmpty()) {
+            return Optional.empty();
+        }
+        java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
+        for (Edge e : localOuts) {
+            combinedLocals.add(e);
+        }
+        return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, new java.util.BitSet()), combinedLocals));
     }
 
     @Override
