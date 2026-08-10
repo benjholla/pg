@@ -42,6 +42,11 @@ public class ShadowAttributeMap extends AbstractMap<String, AttributeValue> impl
         return AttributeMap.super.merge(key, value, remappingFunction);
     }
 
+    @Override
+    public AttributeValue putIfAbsent(String key, AttributeValue value) {
+        return AttributeMap.super.putIfAbsent(key, value);
+    }
+
     private final EphemeralGraph transaction;
     private final AttributeMap backingAttributes;
     private final int id;
