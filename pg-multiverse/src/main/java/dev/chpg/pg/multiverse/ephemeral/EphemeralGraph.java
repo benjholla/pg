@@ -420,7 +420,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             }
             java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
             if (localIns != null) {
-                for (Edge e : localIns) combinedLocals.add(e);
+                for (Edge e : localIns) {
+                    combinedLocals.add(e);
+                }
             }
 
             if (combinedBits.isEmpty() && combinedLocals.isEmpty()) {
@@ -433,7 +435,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             return Optional.empty();
         }
         java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
-        for (Edge e : localIns) combinedLocals.add(e);
+        for (Edge e : localIns) {
+            combinedLocals.add(e);
+        }
         return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, new java.util.BitSet()), combinedLocals));
     }
 
@@ -458,7 +462,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             }
             java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
             if (localOuts != null) {
-                for (Edge e : localOuts) combinedLocals.add(e);
+                for (Edge e : localOuts) {
+                    combinedLocals.add(e);
+                }
             }
 
             if (combinedBits.isEmpty() && combinedLocals.isEmpty()) {
@@ -471,7 +477,9 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
             return Optional.empty();
         }
         java.util.Set<Edge> combinedLocals = new java.util.HashSet<>();
-        for (Edge e : localOuts) combinedLocals.add(e);
+        for (Edge e : localOuts) {
+            combinedLocals.add(e);
+        }
         return Optional.of(new ShadowEdgeSet(this, new dev.chpg.pg.multiverse.universe.UniverseEdgeSet(this.universe, new java.util.BitSet()), combinedLocals));
     }
 
