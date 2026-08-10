@@ -16,7 +16,6 @@ import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import dev.chpg.pg.multiverse.ephemeral.ShadowNodeSet;
 
-import java.util.Collection;
 
 public class CrossGraphContaminationTest {
 
