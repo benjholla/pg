@@ -22,6 +22,12 @@ public final class UniverseNodeSet implements NodeSet, UniverseView {
     private final Universe universe;
     private final BitSet activeBits;
 
+    /**
+     * Constructs a new UniverseNodeSet backed by a bit-mask.
+     *
+     * @param universe   the Universe instance to wrap
+     * @param activeBits the active nodes BitSet
+     */
     public UniverseNodeSet(Universe universe, BitSet activeBits) {
         this.universe = Objects.requireNonNull(universe, "Universe cannot be null");
         this.activeBits = Objects.requireNonNull(activeBits, "Active BitSet cannot be null");

@@ -7,12 +7,25 @@ import dev.chpg.pg.multiverse.universe.Universe;
 import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseView;
 
+/**
+ * A transactional view over a baseline universe node.
+ */
 public class ShadowNode implements Node, UniverseView {
+
+    /**
+     * Gets the associated transaction.
+     * @return the ephemeral graph
+     */
     public EphemeralGraph transaction() { return transactionContext; }
 
     private final EphemeralGraph transactionContext;
     private final UniverseNode backingNode;
 
+    /**
+     * Constructs a new ShadowNode.
+     * @param context the ephemeral context
+     * @param backingNode the backing universe node
+     */
     public ShadowNode(EphemeralGraph context, UniverseNode backingNode) {
         this.transactionContext = context;
         this.backingNode = backingNode;
