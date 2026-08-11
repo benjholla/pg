@@ -105,6 +105,7 @@ public class Example {
 For deeper insights into the design, performance characteristics, and query optimizations of `pg`, please see the architecture documentation:
 * [Performance Goals](docs/architecture/PerformanceGoals.md)
 * [Ephemeral Graph Memory & ID Management](docs/architecture/EphemeralGraph.md)
+* [GlobalGraph Dense IDs](docs/architecture/GlobalGraphDenseIDs.md)
 
 ## Installation
 
@@ -169,3 +170,7 @@ You can then open the generated HTML report in your browser:
 ```
 pg-evaluation\build\reports\benchmarks/index.html
 ```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details on how to get started, our code of conduct, and our development workflow.
