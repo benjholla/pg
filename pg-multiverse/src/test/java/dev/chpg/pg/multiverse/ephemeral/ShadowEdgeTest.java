@@ -1,15 +1,11 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
 import dev.chpg.pg.multiverse.universe.Universe;
-import dev.chpg.pg.api.Node;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import dev.chpg.pg.multiverse.universe.UniverseNode;
 import dev.chpg.pg.multiverse.universe.UniverseEdge;
-import dev.chpg.pg.api.Edge;
 
 public class ShadowEdgeTest {
     @Test
