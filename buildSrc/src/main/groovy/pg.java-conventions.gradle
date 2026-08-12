@@ -78,7 +78,3 @@ jacocoTestReport {
         xml.required = true
     }
 }
-
-tasks.withType(Javadoc).configureEach {
-    options.addBooleanOption('Xdoclint:all', true)
-}
