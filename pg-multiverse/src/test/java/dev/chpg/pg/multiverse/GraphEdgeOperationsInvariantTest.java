@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Iterator;
-
 public class GraphEdgeOperationsInvariantTest {
 
     @Test
@@ -160,9 +158,15 @@ public class GraphEdgeOperationsInvariantTest {
 
         Node uN1 = null, uN2 = null, uN3 = null;
         for (Node n : uniG.nodes()) {
-           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) uN1 = n;
-           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) uN2 = n;
-           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) uN3 = n;
+           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(1))) {
+               uN1 = n;
+           }
+           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(2))) {
+               uN2 = n;
+           }
+           if (n.attributes().get("id").equals(new AttributeValue.IntegerValue(3))) {
+               uN3 = n;
+           }
         }
         Edge uE = uniG.edges().iterator().next();
 
