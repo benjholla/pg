@@ -11,11 +11,11 @@ import java.util.Arrays;
  * is known beforehand via the magic header, preventing any need for dynamic resizing.
  *
  * It is backed by two contiguous primitive arrays for perfect L1 cache locality
- * during the edge-reading phase. Linear probing is used with `-1` as the empty marker.
+ * during the edge-reading phase. Linear probing is used with `Integer.MIN_VALUE` as the empty marker.
  */
 public class IntIntMap {
 
-    private static final int EMPTY = -1;
+    public static final int EMPTY = Integer.MIN_VALUE;
 
     private final int[] keys;
     private final int[] values;
@@ -50,7 +50,7 @@ public class IntIntMap {
         this.keys = new int[this.capacity];
         this.values = new int[this.capacity];
 
-        // Ensure 0 is a valid key (since Node IDs often start at 0) by using -1 as the empty marker
+        // Ensure 0 is a valid key (since Node IDs often start at 0) by using the empty marker
         Arrays.fill(this.keys, EMPTY);
     }
 
@@ -81,7 +81,7 @@ public class IntIntMap {
      * Retrieves a value for the given key.
      *
      * @param key the key whose associated value is to be returned
-     * @return the value, or EMPTY (-1) if not found.
+     * @return the value, or EMPTY marker if not found.
      */
     public int get(int key) {
         int index = hash(key) & mask;
