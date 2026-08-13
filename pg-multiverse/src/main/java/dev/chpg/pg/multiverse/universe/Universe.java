@@ -349,6 +349,15 @@ public final class Universe {
     // =========================================================================
 
     /**
+     * Creates a read-optimized UniverseGraph from this universe.
+     *
+     * @return A read-optimized, BitSet-backed view of the topology.
+     */
+    public UniverseGraph asGraph() {
+        return new UniverseGraph(this, (BitSet) this.activeNodes.clone(), (BitSet) this.activeEdges.clone());
+    }
+
+    /**
      * Promotes a write-optimized EphemeralGraph into a read-optimized UniverseGraph.
      * Deep-clones state, translates negative IDs to positive IDs, rewires topology,
      * and permanently invalidates the ephemeral sandbox.
@@ -356,10 +365,6 @@ public final class Universe {
      * @param ephemeralGraph The sandbox graph to promote and invalidate.
      * @return A read-optimized, BitSet-backed view of the promoted topology.
      */
-    public UniverseGraph asGraph() {
-        return new UniverseGraph(this, (BitSet) this.activeNodes.clone(), (BitSet) this.activeEdges.clone());
-    }
-
     public UniverseGraph promote(EphemeralGraph ephemeralGraph) {
         Objects.requireNonNull(ephemeralGraph, "EphemeralGraph cannot be null");
 

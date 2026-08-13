@@ -13,17 +13,29 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * A composite EdgeSet that merges the baseline Universe state with Ephemeral local additions.
+ */
 public class ShadowEdgeSet implements EdgeSet {
     private final EphemeralGraph transactionContext;
     private final EdgeSet backingSet;       // The core engine baseline
     private final Set<Edge> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Standard constructor for traversing universe topology.
+     * @param context the ephemeral transaction
+     * @param backingSet the baseline universe edge set
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Composite constructor for complex algebra and graph captures.
+     * @param context the ephemeral transaction
+     * @param backingSet the baseline universe edge set
+     * @param localAdds the uncommitted ephemeral additions
+     */
     public ShadowEdgeSet(EphemeralGraph context, EdgeSet backingSet, Set<Edge> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;

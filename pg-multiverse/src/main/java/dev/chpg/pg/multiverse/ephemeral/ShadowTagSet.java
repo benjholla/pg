@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.AbstractSet;
 
+/**
+ * A transactional view for tags on shadowed universe elements.
+ */
 public class ShadowTagSet extends AbstractSet<String> implements TagSet {
 
     private final EphemeralGraph transaction;
@@ -15,6 +18,11 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
     private final int id;
     private final boolean isNode;
 
+    /**
+     * Constructs a shadow tag set for a universe node.
+     * @param transaction the ephemeral transaction
+     * @param backingNode the backing universe node
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseNode backingNode) {
         this.transaction = transaction;
         this.backingTags = backingNode.tags();
@@ -22,6 +30,11 @@ public class ShadowTagSet extends AbstractSet<String> implements TagSet {
         this.isNode = true;
     }
 
+    /**
+     * Constructs a shadow tag set for a universe edge.
+     * @param transaction the ephemeral transaction
+     * @param backingEdge the backing universe edge
+     */
     public ShadowTagSet(EphemeralGraph transaction, UniverseEdge backingEdge) {
         this.transaction = transaction;
         this.backingTags = backingEdge.tags();

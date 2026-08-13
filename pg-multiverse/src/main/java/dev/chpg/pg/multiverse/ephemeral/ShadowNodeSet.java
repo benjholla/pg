@@ -13,17 +13,29 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * A composite NodeSet that merges the baseline Universe state with Ephemeral local additions.
+ */
 public class ShadowNodeSet implements NodeSet {
     private final EphemeralGraph transactionContext;
     private final NodeSet backingSet;       // The core engine baseline
     private final Set<Node> localAdds;      // The transaction additions (ceiling)
 
-    // Standard constructor for traversing universe topology
+    /**
+     * Standard constructor for traversing universe topology.
+     * @param context the ephemeral transaction
+     * @param backingSet the baseline universe node set
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet) {
         this(context, backingSet, Collections.emptySet());
     }
 
-    // Composite constructor for complex algebra and graph captures
+    /**
+     * Composite constructor for complex algebra and graph captures.
+     * @param context the ephemeral transaction
+     * @param backingSet the baseline universe node set
+     * @param localAdds the uncommitted ephemeral additions
+     */
     public ShadowNodeSet(EphemeralGraph context, NodeSet backingSet, Set<Node> localAdds) {
         this.transactionContext = context;
         this.backingSet = backingSet;
@@ -52,7 +64,6 @@ public class ShadowNodeSet implements NodeSet {
             other instanceof EphemeralImmutableNodeSet ||
             other instanceof EphemeralImmutableSingletonNodeSet ||
             other instanceof EphemeralUnmodifiableLiveNodeSet ||
-            other.getClass().getName().contains("UnmodifiableCollection") ||
             other.isEmpty()) {
             return new UniverseNodeSet(this.transactionContext.universe(), new java.util.BitSet());
         }
