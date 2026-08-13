@@ -949,7 +949,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     @Override
     public NodeSet singleton(Node node) {
-        return new GlobalImmutableSingletonNodeSet((GlobalNode) node);
+        return new dev.chpg.pg.api.GenericImmutableNodeSet(java.util.Collections.singleton(node));
     }
 
     @Override
@@ -959,7 +959,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     @Override
     public EdgeSet singleton(Edge edge) {
-        return new GlobalImmutableSingletonEdgeSet((GlobalEdge) edge);
+        return new dev.chpg.pg.api.GenericImmutableEdgeSet(java.util.Collections.singleton(edge));
     }
 
     @Override
@@ -997,13 +997,13 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         Optional<EdgeSet> out = getOutEdgesFromNode(hSource);
         if (out.isEmpty()) { return EMPTY_EDGES; }
 
-        EdgeSet result = new GlobalEdgeSet();
+        GlobalEdgeSet result = new GlobalEdgeSet();
         for (Edge e : out.get()) {
             if (e.to().equals(hTarget)) {
                 result.add(e);
             }
         }
-        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EMPTY_EDGES : result.asSealed();
     }
 
     @Override
