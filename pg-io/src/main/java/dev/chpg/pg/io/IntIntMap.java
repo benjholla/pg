@@ -15,6 +15,9 @@ import java.util.Arrays;
  */
 public class IntIntMap {
 
+    /**
+     * The marker used to indicate an empty slot.
+     */
     public static final int EMPTY = Integer.MIN_VALUE;
 
     private final int[] keys;
