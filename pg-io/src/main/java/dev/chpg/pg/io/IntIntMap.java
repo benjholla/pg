@@ -14,6 +14,7 @@ import java.util.Arrays;
  * during the edge-reading phase. Linear probing is used with `Integer.MIN_VALUE` as the empty marker.
  */
 public class IntIntMap {
+    /** Marker used to identify empty slots in the map. */
 
     /**
      * The marker used to indicate an empty slot.
