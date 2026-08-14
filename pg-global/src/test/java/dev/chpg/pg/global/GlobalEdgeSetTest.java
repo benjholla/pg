@@ -47,6 +47,21 @@ public class GlobalEdgeSetTest {
     }
 
     @Test
+    public void testUnsupportedOperations() {
+        GlobalEdgeSet set = new GlobalEdgeSet(e1);
+        set.asSealed();
+
+        assertThrows(UnsupportedOperationException.class, () -> set.add(e2));
+        assertThrows(UnsupportedOperationException.class, () -> set.remove(e1));
+        assertThrows(UnsupportedOperationException.class, () -> set.clear());
+        assertThrows(UnsupportedOperationException.class, () -> set.addAll(Arrays.asList(e2)));
+        assertThrows(UnsupportedOperationException.class, () -> set.removeAll(Arrays.asList(e1)));
+        assertThrows(UnsupportedOperationException.class, () -> set.retainAll(Arrays.asList(e1)));
+        assertThrows(UnsupportedOperationException.class, () -> set.removeIf(x -> true));
+        assertThrows(UnsupportedOperationException.class, () -> set.iterator().remove());
+    }
+
+    @Test
     public void testConstructors() {
         GlobalEdgeSet empty = new GlobalEdgeSet();
         assertTrue(empty.isEmpty());
@@ -89,12 +104,12 @@ public class GlobalEdgeSetTest {
         GlobalEdgeSet singletonSet = new GlobalEdgeSet(e1);
         EdgeSet singletonImmutable = singletonSet.toImmutable();
         assertEquals(1, singletonImmutable.size());
-        assertTrue(singletonImmutable instanceof GlobalImmutableSingletonEdgeSet);
+        assertTrue(singletonImmutable instanceof GlobalEdgeSet);
 
         GlobalEdgeSet multiSet = new GlobalEdgeSet(e1, e2);
         EdgeSet multiImmutable = multiSet.toImmutable();
         assertEquals(2, multiImmutable.size());
-        assertTrue(multiImmutable instanceof GlobalImmutableEdgeSet);
+        assertTrue(multiImmutable instanceof GlobalEdgeSet);
     }
 
     @Test

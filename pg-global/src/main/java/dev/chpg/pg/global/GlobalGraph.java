@@ -949,7 +949,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     @Override
     public NodeSet singleton(Node node) {
-        return new GlobalImmutableSingletonNodeSet((GlobalNode) node);
+        return new GlobalNodeSet(node).asSealed();
     }
 
     @Override
@@ -959,7 +959,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
 
     @Override
     public EdgeSet singleton(Edge edge) {
-        return new GlobalImmutableSingletonEdgeSet((GlobalEdge) edge);
+        return new GlobalEdgeSet(edge).asSealed();
     }
 
     @Override
@@ -1003,7 +1003,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
                 result.add(e);
             }
         }
-        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EMPTY_EDGES : ((GlobalEdgeSet) result).asSealed();
     }
 
     @Override
