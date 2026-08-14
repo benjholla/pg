@@ -168,7 +168,7 @@ To automatically generate a beautiful, interactive HTML visualizer report from t
 You can then open the generated HTML report in your browser:
 
 ```
-pg-evaluation\build\reports\benchmarks/index.html
+pg-evaluation/build/reports/benchmarks/index.html
 ```
 
 ## Contributing
