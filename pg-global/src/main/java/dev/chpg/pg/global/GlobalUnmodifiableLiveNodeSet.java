@@ -58,7 +58,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
         if (nodes.size() == 1) { return new GlobalImmutableSingletonNodeSet(nodes.values().iterator().next()); }
         GlobalNodeSet copy = new GlobalNodeSet();
         copy.addAll(nodes.values());
-        return new GlobalImmutableNodeSet(copy);
+        return copy.asSealed();
     }
 
     @Override
@@ -72,14 +72,14 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalNodeSet result = new GlobalNodeSet();
         if (other.isEmpty()) {
-            return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+            return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed();
         }
         for (GlobalNode node : nodes.values()) {
             if (other.contains(node)) {
                 result.add(node);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
                 result.add(node);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class GlobalUnmodifiableLiveNodeSet implements NodeSet {
                 result.add(n);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed();
     }
 
     @Override

@@ -1003,7 +1003,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
                 result.add(e);
             }
         }
-        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EMPTY_EDGES : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : ((GlobalEdgeSet) result).asSealed());
     }
 
     @Override

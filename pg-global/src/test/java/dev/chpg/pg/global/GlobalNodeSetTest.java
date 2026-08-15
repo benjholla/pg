@@ -66,7 +66,22 @@ public class GlobalNodeSetTest {
         GlobalNodeSet multiSet = new GlobalNodeSet(n1, n2);
         NodeSet multiImmutable = multiSet.toImmutable();
         assertEquals(2, multiImmutable.size());
-        assertTrue(multiImmutable instanceof GlobalImmutableNodeSet);
+        assertTrue(multiImmutable instanceof GlobalNodeSet);
+    }
+
+    @Test
+    public void testUnsupportedOperations() {
+        GlobalNodeSet set = new GlobalNodeSet(n1);
+        set.asSealed();
+
+        assertThrows(UnsupportedOperationException.class, () -> set.add(n2));
+        assertThrows(UnsupportedOperationException.class, () -> set.remove(n1));
+        assertThrows(UnsupportedOperationException.class, () -> set.clear());
+        assertThrows(UnsupportedOperationException.class, () -> set.addAll(Arrays.asList(n2)));
+        assertThrows(UnsupportedOperationException.class, () -> set.removeAll(Arrays.asList(n1)));
+        assertThrows(UnsupportedOperationException.class, () -> set.retainAll(Arrays.asList(n1)));
+        assertThrows(UnsupportedOperationException.class, () -> set.removeIf(x -> true));
+        assertThrows(UnsupportedOperationException.class, () -> set.iterator().remove());
     }
 
     @Test

@@ -25,6 +25,7 @@ import dev.chpg.pg.api.EdgeSet;
 public final class GlobalEdgeSet implements EdgeSet {
 
     private final HashSet<GlobalEdge> internalSet;
+    private boolean isImmutable = false;
 
     /**
      * Constructs a new, empty {@code GlobalEdgeSet}.
@@ -67,6 +68,11 @@ public final class GlobalEdgeSet implements EdgeSet {
         addAll(initialEdges);
     }
 
+    GlobalEdgeSet asSealed() {
+        this.isImmutable = true;
+        return this;
+    }
+
     private GlobalEdge validate(Edge edge) {
         Objects.requireNonNull(edge, "Edge cannot be null");
         if (!(edge instanceof GlobalEdge impl)) {
@@ -79,9 +85,9 @@ public final class GlobalEdgeSet implements EdgeSet {
 
     @Override
     public EdgeSet toImmutable() {
+        if (isImmutable) { return this; }
         if (internalSet.isEmpty()) { return EdgeSet.empty(); }
-        if (internalSet.size() == 1) { return new GlobalImmutableSingletonEdgeSet(internalSet.iterator().next()); }
-        return new GlobalImmutableEdgeSet(new GlobalEdgeSet(this));
+        return internalSet.size() == 1 ? new GlobalImmutableSingletonEdgeSet(internalSet.iterator().next()) : new GlobalEdgeSet(this).asSealed();
     }
 
     @Override
@@ -94,14 +100,14 @@ public final class GlobalEdgeSet implements EdgeSet {
     public EdgeSet intersect(Collection<? extends Edge> other) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+            return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
         }
         for (GlobalEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -112,7 +118,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -126,7 +132,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result));
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -150,6 +156,7 @@ public final class GlobalEdgeSet implements EdgeSet {
 
     @Override
     public boolean add(Edge edge) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         return internalSet.add(validate(edge));
     }
 
@@ -165,6 +172,7 @@ public final class GlobalEdgeSet implements EdgeSet {
 
     @Override
     public boolean remove(Object obj) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         if (!(obj instanceof Edge edge)) { return false; }
         try {
             return internalSet.remove(validate(edge));
@@ -188,12 +196,21 @@ public boolean isMaterialized() {
 
     @Override
     public void clear() {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         internalSet.clear();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Iterator<Edge> iterator() {
+        if (isImmutable) {
+            return new Iterator<Edge>() {
+                private final Iterator<GlobalEdge> it = internalSet.iterator();
+                @Override public boolean hasNext() { return it.hasNext(); }
+                @Override public Edge next() { return it.next(); }
+                @Override public void remove() { throw new UnsupportedOperationException("Collection is unmodifiable"); }
+            };
+        }
         return (Iterator<Edge>) (Iterator<?>) internalSet.iterator();
     }
 
@@ -220,6 +237,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean addAll(Collection<? extends Edge> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c, "Edge collection cannot be null");
         for (Edge e : c) {
             validate(e);
@@ -233,6 +251,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c);
         boolean modified = false;
         Iterator<GlobalEdge> it = internalSet.iterator();
@@ -247,12 +266,19 @@ public boolean isMaterialized() {
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c);
         boolean modified = false;
         for (Object obj : c) {
             modified |= this.remove(obj);
         }
         return modified;
+    }
+
+    @Override
+    public boolean removeIf(java.util.function.Predicate<? super Edge> filter) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
+        return internalSet.removeIf(filter);
     }
 
     @Override

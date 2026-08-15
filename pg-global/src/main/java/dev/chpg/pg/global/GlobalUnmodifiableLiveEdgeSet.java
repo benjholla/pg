@@ -58,7 +58,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
         if (edges.size() == 1) { return new GlobalImmutableSingletonEdgeSet(edges.values().iterator().next()); }
         GlobalEdgeSet copy = new GlobalEdgeSet();
         copy.addAll(edges.values());
-        return new GlobalImmutableEdgeSet(copy);
+        return copy.asSealed();
     }
 
     @Override
@@ -72,14 +72,14 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
         java.util.Objects.requireNonNull(other, "other cannot be null");
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (other.isEmpty()) {
-            return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
+            return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed();
         }
         for (GlobalEdge edge : edges.values()) {
             if (other.contains(edge)) {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
                 result.add(edge);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class GlobalUnmodifiableLiveEdgeSet implements EdgeSet {
                 result.add(e);
             }
         }
-        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : new GlobalImmutableEdgeSet(result);
+        return result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed();
     }
 
     @Override
