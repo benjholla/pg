@@ -87,7 +87,7 @@ public final class GlobalEdgeSet implements EdgeSet {
     public EdgeSet toImmutable() {
         if (isImmutable) { return this; }
         if (internalSet.isEmpty()) { return EdgeSet.empty(); }
-        return new GlobalEdgeSet(this).asSealed();
+        return internalSet.size() == 1 ? new GlobalImmutableSingletonEdgeSet(internalSet.iterator().next()) : new GlobalEdgeSet(this).asSealed();
     }
 
     @Override
@@ -100,14 +100,14 @@ public final class GlobalEdgeSet implements EdgeSet {
     public EdgeSet intersect(Collection<? extends Edge> other) {
         GlobalEdgeSet result = new GlobalEdgeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? EdgeSet.empty() : result.asSealed();
+            return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
         }
         for (GlobalEdge edge : internalSet) {
             if (other.contains(edge)) {
                 result.internalSet.add(edge);
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : result.asSealed();
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -118,7 +118,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 result.internalSet.add(edge);
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : result.asSealed();
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -132,7 +132,7 @@ public final class GlobalEdgeSet implements EdgeSet {
                 }
             }
         }
-        return result.isEmpty() ? EdgeSet.empty() : result.asSealed();
+        return result.isEmpty() ? EdgeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonEdgeSet((GlobalEdge) result.iterator().next()) : result.asSealed());
     }
 
     @Override

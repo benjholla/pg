@@ -93,7 +93,7 @@ public final class GlobalNodeSet implements NodeSet {
     public NodeSet toImmutable() {
         if (isImmutable) { return this; }
         if (internalSet.isEmpty()) { return NodeSet.empty(); }
-        return new GlobalNodeSet(this).asSealed();
+        return internalSet.size() == 1 ? new GlobalImmutableSingletonNodeSet(internalSet.iterator().next()) : new GlobalNodeSet(this).asSealed();
     }
 
     @Override
@@ -106,14 +106,14 @@ public final class GlobalNodeSet implements NodeSet {
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? NodeSet.empty() : result.asSealed();
+            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
         }
         for (GlobalNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : result.asSealed();
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -124,7 +124,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : result.asSealed();
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -138,7 +138,7 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : result.asSealed();
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override

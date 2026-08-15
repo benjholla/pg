@@ -104,7 +104,7 @@ public class GlobalEdgeSetTest {
         GlobalEdgeSet singletonSet = new GlobalEdgeSet(e1);
         EdgeSet singletonImmutable = singletonSet.toImmutable();
         assertEquals(1, singletonImmutable.size());
-        assertTrue(singletonImmutable instanceof GlobalEdgeSet);
+        assertTrue(singletonImmutable instanceof GlobalImmutableSingletonEdgeSet);
 
         GlobalEdgeSet multiSet = new GlobalEdgeSet(e1, e2);
         EdgeSet multiImmutable = multiSet.toImmutable();
