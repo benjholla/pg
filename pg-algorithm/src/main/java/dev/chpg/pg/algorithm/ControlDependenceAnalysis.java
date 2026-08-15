@@ -47,14 +47,15 @@ public class ControlDependenceAnalysis {
      * @param postDomAnalysis A pre-computed post-dominance analysis.
      */
     public ControlDependenceAnalysis(Graph graph, Node entryNode, Node exitNode, FastDominanceAnalysis postDomAnalysis) {
+        java.util.Objects.requireNonNull(graph, "graph cannot be null");
         if (entryNode == null) {
-            throw new IllegalArgumentException("Entry node cannot be null");
+            throw new NullPointerException("Entry node cannot be null");
         }
         if (exitNode == null) {
-            throw new IllegalArgumentException("Exit node cannot be null");
+            throw new NullPointerException("Exit node cannot be null");
         }
         if (postDomAnalysis == null) {
-            throw new IllegalArgumentException("Post-dominance analysis cannot be null");
+            throw new NullPointerException("Post-dominance analysis cannot be null");
         }
 
         this.graph = graph;

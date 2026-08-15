@@ -185,4 +185,28 @@ public class FastDominanceAnalysisTest {
         assertTrue(foundIdomB);
         assertTrue(foundIdomC); // A dominates C despite path through B
     }
+
+
+    @Test
+    public void testNullGraph() {
+        boolean thrown = false;
+        try {
+            new FastDominanceAnalysis(null, graph.factory().createNode(), false);
+        } catch (NullPointerException e) {
+            thrown = true;
+        }
+        assertTrue(thrown, "Expected NullPointerException when graph is null");
+    }
+
+    @Test
+    public void testNullRootNode() {
+        boolean thrown = false;
+        try {
+            new FastDominanceAnalysis(graph, null, false);
+        } catch (NullPointerException e) {
+            thrown = true;
+        }
+        assertTrue(thrown, "Expected NullPointerException when root is null");
+    }
+
 }
