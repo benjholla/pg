@@ -48,16 +48,9 @@ public class ControlDependenceAnalysis {
      */
     public ControlDependenceAnalysis(Graph graph, Node entryNode, Node exitNode, FastDominanceAnalysis postDomAnalysis) {
         java.util.Objects.requireNonNull(graph, "graph cannot be null");
-        java.util.Objects.requireNonNull(graph, "graph cannot be null");
-        if (entryNode == null) {
-            throw new NullPointerException("Entry node cannot be null");
-        }
-        if (exitNode == null) {
-            throw new NullPointerException("Exit node cannot be null");
-        }
-        if (postDomAnalysis == null) {
-            throw new NullPointerException("Post-dominance analysis cannot be null");
-        }
+        java.util.Objects.requireNonNull(entryNode, "Entry node cannot be null");
+        java.util.Objects.requireNonNull(exitNode, "Exit node cannot be null");
+        java.util.Objects.requireNonNull(postDomAnalysis, "Post-dominance analysis cannot be null");
 
         this.graph = graph;
 
