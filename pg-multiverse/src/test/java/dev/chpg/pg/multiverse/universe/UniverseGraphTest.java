@@ -385,6 +385,17 @@ public class UniverseGraphTest {
 
     @Test
     public void testBetweenStep() {
+        // Missing coverage test for Graph / NodeSet overloads
+        Graph emptyGraph = graph.difference(graph);
+        Graph fromGraph = emptyGraph.union(a);
+        Graph toGraph = emptyGraph.union(c);
+
+        Graph betweenStepGraphs = graph.betweenStep(fromGraph, toGraph);
+        assertEquals(1, betweenStepGraphs.nodes().size());
+
+        Graph betweenStepNodeSets = graph.betweenStep(fromGraph.nodes(), toGraph.nodes());
+        assertEquals(1, betweenStepNodeSets.nodes().size());
+
         Graph betweenAB = graph.betweenStep(a, b);
         assertEquals(2, betweenAB.nodes().size());
         assertTrue(betweenAB.nodes().contains(a));
@@ -466,6 +477,17 @@ public class UniverseGraphTest {
 
     @Test
     public void testBetween() {
+        // Missing coverage test for Graph / NodeSet overloads
+        Graph emptyGraph = graph.difference(graph);
+        Graph fromGraph = emptyGraph.union(a);
+        Graph toGraph = emptyGraph.union(e);
+
+        Graph betweenGraphs = graph.between(fromGraph, toGraph);
+        assertEquals(5, betweenGraphs.nodes().size());
+
+        Graph betweenNodeSets = graph.between(fromGraph.nodes(), toGraph.nodes());
+        assertEquals(5, betweenNodeSets.nodes().size());
+
         Graph betweenAE = graph.between(a, e);
         // Paths from a to e: a->b->c->d->e
         assertEquals(5, betweenAE.nodes().size());
