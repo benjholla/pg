@@ -153,6 +153,54 @@ public class GlobalGraphMissingCoverageTest {
         assertEquals(0, g4.nodes().size());
         dev.chpg.pg.api.Graph g5 = graph.betweenStep(sources, g2.nodes());
         assertEquals(0, g5.nodes().size());
+
+        // Test the early return when forward.nodes() is empty or reverse.nodes() is empty
+        dev.chpg.pg.api.NodeSet mockSet = new dev.chpg.pg.api.NodeSet() {
+            @Override public boolean isMaterialized() { return false; }
+            @Override public java.util.Set<Integer> ids() { return java.util.Collections.emptySet(); }
+            @Override public dev.chpg.pg.api.NodeSet toImmutable() { return this; }
+            @Override public java.util.Optional<dev.chpg.pg.api.Node> one() { return java.util.Optional.empty(); }
+            @Override public int[] toIdArray() { return new int[0]; }
+            @Override public boolean isSizeKnown() { return false; }
+            @Override public int size() { return 0; }
+            @Override public boolean isEmpty() { return false; }
+            @Override public boolean contains(Object o) { return false; }
+            @Override public java.util.Iterator<dev.chpg.pg.api.Node> iterator() { return java.util.Collections.emptyIterator(); }
+            @Override public Object[] toArray() { return new Object[0]; }
+            @Override public <T> T[] toArray(T[] a) { return a; }
+            @Override public boolean add(dev.chpg.pg.api.Node e) { return false; }
+            @Override public boolean remove(Object o) { return false; }
+            @Override public boolean containsAll(java.util.Collection<?> c) { return false; }
+            @Override public boolean addAll(java.util.Collection<? extends dev.chpg.pg.api.Node> c) { return false; }
+            @Override public boolean retainAll(java.util.Collection<?> c) { return false; }
+            @Override public boolean removeAll(java.util.Collection<?> c) { return false; }
+            @Override public void clear() {}
+            @Override public dev.chpg.pg.api.NodeSet intersect(java.util.Collection<? extends dev.chpg.pg.api.Node> other) { return null; }
+            @Override public dev.chpg.pg.api.NodeSet union(java.util.Collection<? extends dev.chpg.pg.api.Node> other) { return null; }
+            @Override public dev.chpg.pg.api.NodeSet difference(java.util.Collection<? extends dev.chpg.pg.api.Node> other) { return null; }
+        };
+
+        // If mockSet is passed to `between`, its isEmpty is false, so it proceeds.
+        // `forward(mockSet)` returns a graph with no nodes because `mockSet` has no elements.
+        assertEquals(0, graph.between(mockSet, targets).nodes().size());
+        assertEquals(0, graph.betweenStep(mockSet, targets).nodes().size());
+
+        // Similarly for reverse
+        assertEquals(0, graph.between(sources, mockSet).nodes().size());
+        assertEquals(0, graph.betweenStep(sources, mockSet).nodes().size());
+
+        // For `reverse.nodes().isEmpty()` when `forward` IS empty AND from.isEmpty() is FALSE
+        assertEquals(0, graph.betweenStep(mockSet, mockSet).nodes().size());
+        assertEquals(0, graph.between(mockSet, mockSet).nodes().size());
+
+        // For `reverse.nodes().isEmpty()` when `forward` IS NOT empty AND from.isEmpty() is FALSE
+        dev.chpg.pg.api.NodeSet realSources = graph.nodes().withAttribute("id", dev.chpg.pg.api.AttributeValue.value(a.id()));
+        assertEquals(0, graph.betweenStep(realSources, mockSet).nodes().size());
+        assertEquals(0, graph.between(realSources, mockSet).nodes().size());
+
+        // For `forward.nodes().isEmpty()` when `from` yields empty iterator but `from.isEmpty()` is FALSE
+        assertEquals(0, graph.betweenStep(mockSet, realSources).nodes().size());
+        assertEquals(0, graph.between(mockSet, realSources).nodes().size());
     }
 
     @Test
