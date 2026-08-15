@@ -31,6 +31,7 @@ import dev.chpg.pg.api.NodeSet;
 public final class GlobalNodeSet implements NodeSet {
 
     private final HashSet<GlobalNode> internalSet;
+    private boolean isImmutable = false;
 
     /**
      * Constructs a new, empty {@code GlobalNodeSet}.
@@ -73,6 +74,11 @@ public final class GlobalNodeSet implements NodeSet {
         addAll(initialNodes);
     }
 
+    GlobalNodeSet asSealed() {
+        this.isImmutable = true;
+        return this;
+    }
+
     private GlobalNode validate(Node node) {
         Objects.requireNonNull(node, "Node cannot be null");
         if (!(node instanceof GlobalNode impl)) {
@@ -85,9 +91,9 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public NodeSet toImmutable() {
+        if (isImmutable) { return this; }
         if (internalSet.isEmpty()) { return NodeSet.empty(); }
-        if (internalSet.size() == 1) { return new GlobalImmutableSingletonNodeSet(internalSet.iterator().next()); }
-        return new GlobalImmutableNodeSet(new GlobalNodeSet(this));
+        return internalSet.size() == 1 ? new GlobalImmutableSingletonNodeSet(internalSet.iterator().next()) : new GlobalNodeSet(this).asSealed();
     }
 
     @Override
@@ -100,14 +106,14 @@ public final class GlobalNodeSet implements NodeSet {
     public NodeSet intersect(Collection<? extends Node> other) {
         GlobalNodeSet result = new GlobalNodeSet();
         if (other == null || other.isEmpty()) {
-            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+            return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
         }
         for (GlobalNode node : internalSet) {
             if (other.contains(node)) {
                 result.internalSet.add(node);
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -118,7 +124,7 @@ public final class GlobalNodeSet implements NodeSet {
                 result.internalSet.add(node);
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -132,7 +138,7 @@ public final class GlobalNodeSet implements NodeSet {
                 }
             }
         }
-        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : new GlobalImmutableNodeSet(result));
+        return result.isEmpty() ? NodeSet.empty() : (result.size() == 1 ? new GlobalImmutableSingletonNodeSet((GlobalNode) result.iterator().next()) : result.asSealed());
     }
 
     @Override
@@ -156,6 +162,7 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public boolean add(Node node) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         return internalSet.add(validate(node));
     }
 
@@ -171,6 +178,7 @@ public final class GlobalNodeSet implements NodeSet {
 
     @Override
     public boolean remove(Object obj) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         if (!(obj instanceof Node node)) { return false; }
         try {
             return internalSet.remove(validate(node));
@@ -194,12 +202,21 @@ public boolean isMaterialized() {
 
     @Override
     public void clear() {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         internalSet.clear();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Iterator<Node> iterator() {
+        if (isImmutable) {
+            return new Iterator<Node>() {
+                private final Iterator<GlobalNode> it = internalSet.iterator();
+                @Override public boolean hasNext() { return it.hasNext(); }
+                @Override public Node next() { return it.next(); }
+                @Override public void remove() { throw new UnsupportedOperationException("Collection is unmodifiable"); }
+            };
+        }
         return (Iterator<Node>) (Iterator<?>) internalSet.iterator();
     }
 
@@ -226,6 +243,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean addAll(Collection<? extends Node> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c, "Node collection cannot be null");
         for (Node e : c) {
             validate(e);
@@ -239,6 +257,7 @@ public boolean isMaterialized() {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c);
         boolean modified = false;
         Iterator<GlobalNode> it = internalSet.iterator();
@@ -253,12 +272,19 @@ public boolean isMaterialized() {
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
         Objects.requireNonNull(c);
         boolean modified = false;
         for (Object obj : c) {
             modified |= this.remove(obj);
         }
         return modified;
+    }
+
+    @Override
+    public boolean removeIf(java.util.function.Predicate<? super Node> filter) {
+        if (isImmutable) { throw new UnsupportedOperationException("Collection is unmodifiable"); }
+        return internalSet.removeIf(filter);
     }
 
     @Override

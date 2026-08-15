@@ -175,12 +175,12 @@ public class DirectGraphBufferReader {
             int fileToId = buffer.getInt();
 
             int actualFromId = translationMap.get(fileFromId);
-            if (actualFromId == -1) {
+            if (actualFromId == IntIntMap.EMPTY) {
                 throw new CorruptedGraphBufferException("Edge ID " + fileEdgeId + " references missing source node ID: " + fileFromId);
             }
 
             int actualToId = translationMap.get(fileToId);
-            if (actualToId == -1) {
+            if (actualToId == IntIntMap.EMPTY) {
                 throw new CorruptedGraphBufferException("Edge ID " + fileEdgeId + " references missing target node ID: " + fileToId);
             }
 

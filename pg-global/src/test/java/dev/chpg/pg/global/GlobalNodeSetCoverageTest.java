@@ -86,7 +86,7 @@ public class GlobalNodeSetCoverageTest {
         GlobalNodeSet multiSet = new GlobalNodeSet(n1, n2);
         NodeSet multiImmutable = multiSet.toImmutable();
         assertEquals(2, multiImmutable.size());
-        assertTrue(multiImmutable instanceof GlobalImmutableNodeSet);
+        assertTrue(multiImmutable instanceof GlobalNodeSet);
     }
 
     @Test

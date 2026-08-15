@@ -99,7 +99,7 @@ public NodeSet materialize() {
         if (result.size() == 1) {
             return this;
         }
-        return new GlobalImmutableNodeSet(result);
+        return result.asSealed();
     }
 
     @Override

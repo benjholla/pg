@@ -15,7 +15,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs << '-Werror' << '-Xlint:all'
+    options.compilerArgs << '-Werror' << '-Xlint:all' << '-Xlint:-options'
 }
 
 repositories {
@@ -77,4 +77,9 @@ jacocoTestReport {
     reports {
         xml.required = true
     }
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.addStringOption('Xdoclint:all', '-quiet')
+    options.addBooleanOption('Xdoclint:-missing', true)
 }

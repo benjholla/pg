@@ -77,14 +77,14 @@ Strictly implement the exact method signatures, generics, and return types provi
 
 # CORE ARCHITECTURE & INTERFACE STABILITY
 The foundation of this project relies on key interfaces located in the following files:
-- pg-core\src\main\java\dev.chpg.pg\TagSet.java
-- pg-core\src\main\java\dev.chpg.pg\AttributeMap.java
-- pg-core\src\main\java\dev.chpg.pg\AttributeValue.java
-- pg-core\src\main\java\dev.chpg.pg\Node.java
-- pg-core\src\main\java\dev.chpg.pg\NodeSet.java
-- pg-core\src\main\java\dev.chpg.pg\Edge.java
-- pg-core\src\main\java\dev.chpg.pg\EdgeSet.java
-- pg-core\src\main\java\dev.chpg.pg\Graph.java
+- pg-api/src/main/java/dev/chpg/pg/api/TagSet.java
+- pg-api/src/main/java/dev/chpg/pg/api/AttributeMap.java
+- pg-api/src/main/java/dev/chpg/pg/api/AttributeValue.java
+- pg-api/src/main/java/dev/chpg/pg/api/Node.java
+- pg-api/src/main/java/dev/chpg/pg/api/NodeSet.java
+- pg-api/src/main/java/dev/chpg/pg/api/Edge.java
+- pg-api/src/main/java/dev/chpg/pg/api/EdgeSet.java
+- pg-api/src/main/java/dev/chpg/pg/api/Graph.java
 
 **CRITICAL RULE:** The public interfaces in these classes are considered STRICTLY STABLE. You must preserve them. Do not modify, refactor, or deprecate these public interfaces unless there is an exceptional architectural necessity. If you determine a change is absolutely required, you MUST explicitly raise it for discussion and provide a strong justification before proceeding with any modifications or justify why the test(s) are wrong.
 

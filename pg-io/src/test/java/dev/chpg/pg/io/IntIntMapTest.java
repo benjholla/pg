@@ -17,7 +17,7 @@ public class IntIntMapTest {
         assertEquals(100, map.get(1));
         assertEquals(200, map.get(2));
         assertEquals(0, map.get(0));
-        assertEquals(-1, map.get(3)); // Not found
+        assertEquals(Integer.MIN_VALUE, map.get(3)); // Not found
     }
 
     @Test
@@ -36,7 +36,7 @@ public class IntIntMapTest {
     public void testPutEmptyMarkerThrowsException() {
         IntIntMap map = new IntIntMap(10);
         assertThrows(IllegalArgumentException.class, () -> {
-            map.put(-1, 100); // -1 is the EMPTY marker
+            map.put(Integer.MIN_VALUE, 100); // Integer.MIN_VALUE is the EMPTY marker
         });
     }
 
@@ -55,7 +55,7 @@ public class IntIntMapTest {
         assertEquals(200, map.get(20));
         assertEquals(300, map.get(30));
 
-        // Search for a key that will likely collide and probe before returning -1
-        assertEquals(-1, map.get(40));
+        // Search for a key that will likely collide and probe before returning Integer.MIN_VALUE
+        assertEquals(Integer.MIN_VALUE, map.get(40));
     }
 }
