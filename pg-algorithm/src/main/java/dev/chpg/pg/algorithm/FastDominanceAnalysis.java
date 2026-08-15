@@ -55,6 +55,8 @@ public class FastDominanceAnalysis {
      * @param invertEdges True to compute post-dominance.
      */
     public FastDominanceAnalysis(Graph graph, Node root, boolean invertEdges) {
+        java.util.Objects.requireNonNull(graph, "graph cannot be null");
+        java.util.Objects.requireNonNull(root, "root cannot be null");
         this.graph = graph;
         this.invertEdges = invertEdges;
 

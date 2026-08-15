@@ -32,8 +32,8 @@ public class ControlDependenceAnalysisTest {
         graph.addNode(exit);
         graph.addEdge(graph.factory().createEdge(entry, exit));
 
-        assertThrows(IllegalArgumentException.class, () -> new ControlDependenceAnalysis(graph, null, exit));
-        assertThrows(IllegalArgumentException.class, () -> new ControlDependenceAnalysis(graph, entry, null));
+        assertThrows(NullPointerException.class, () -> new ControlDependenceAnalysis(graph, null, exit));
+        assertThrows(NullPointerException.class, () -> new ControlDependenceAnalysis(graph, entry, null));
     }
 
     @Test
@@ -120,5 +120,19 @@ public class ControlDependenceAnalysisTest {
             }
         }
         assertTrue(foundCDEdge, "Control dependence edge not injected correctly");
+    }
+
+    @Test
+    public void testNullGraph() {
+        Node entryNode = graph.factory().createNode();
+        Node eNode = graph.factory().createNode();
+        assertThrows(NullPointerException.class, () -> new ControlDependenceAnalysis(null, entryNode, eNode));
+    }
+
+    @Test
+    public void testNullPostDomAnalysis() {
+        Node entryNode = graph.factory().createNode();
+        Node eNode = graph.factory().createNode();
+        assertThrows(NullPointerException.class, () -> new ControlDependenceAnalysis(graph, entryNode, eNode, null));
     }
 }
