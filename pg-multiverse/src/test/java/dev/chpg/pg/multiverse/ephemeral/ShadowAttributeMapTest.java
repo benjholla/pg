@@ -51,6 +51,9 @@ public class ShadowAttributeMapTest {
             count++;
         }
         assertEquals(2, count);
+
+        // 1 missed instruction test: check missing key coverage on containsKey
+        assertFalse(sNode.attributes().containsKey("non_existent"));
     }
 
     @Test
