@@ -3,6 +3,7 @@ package dev.chpg.pg.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.HashMap;
 
@@ -42,6 +43,42 @@ public class AttributeMapTest {
         // Remove non-existent
         AttributeValue val4 = map.compute("nonexistent", (k, v) -> null);
         assertNull(val4);
+    }
+
+    @Test
+    public void testPutDefaults() {
+        map.put("k1", "v1");
+        assertEquals(AttributeValue.value("v1"), map.get("k1"));
+        map.put("k2", 1);
+        assertEquals(AttributeValue.value(1), map.get("k2"));
+        map.put("k3", 1L);
+        assertEquals(AttributeValue.value(1L), map.get("k3"));
+        map.put("k4", 1.0);
+        assertEquals(AttributeValue.value(1.0), map.get("k4"));
+        map.put("k5", true);
+        assertEquals(AttributeValue.value(true), map.get("k5"));
+        byte[] b = new byte[]{1};
+        map.put("k6", b);
+        assertArrayEquals(b, ((AttributeValue.ByteArrayValue)map.get("k6")).value());
+    }
+
+    @Test
+    public void testPutIfAbsentDefaults() {
+        map.putIfAbsent("k1", "v1");
+        assertEquals(AttributeValue.value("v1"), map.get("k1"));
+        map.putIfAbsent("k2", 1);
+        assertEquals(AttributeValue.value(1), map.get("k2"));
+        map.putIfAbsent("k3", 1L);
+        assertEquals(AttributeValue.value(1L), map.get("k3"));
+        map.putIfAbsent("k4", 1.0);
+        assertEquals(AttributeValue.value(1.0), map.get("k4"));
+        map.putIfAbsent("k5", true);
+        assertEquals(AttributeValue.value(true), map.get("k5"));
+        byte[] b = new byte[]{1};
+        map.putIfAbsent("k6", b);
+        assertArrayEquals(b, ((AttributeValue.ByteArrayValue)map.get("k6")).value());
+        map.putIfAbsent("k1", "v2");
+        assertEquals(AttributeValue.value("v1"), map.get("k1"));
     }
 
     @Test
@@ -110,6 +147,23 @@ public class AttributeMapTest {
     }
 
     @Test
+    public void testMergeDefaults() {
+        map.merge("k1", "v1", (a, b) -> b);
+        assertEquals(AttributeValue.value("v1"), map.get("k1"));
+        map.merge("k2", 1, (a, b) -> b);
+        assertEquals(AttributeValue.value(1), map.get("k2"));
+        map.merge("k3", 1L, (a, b) -> b);
+        assertEquals(AttributeValue.value(1L), map.get("k3"));
+        map.merge("k4", 1.0, (a, b) -> b);
+        assertEquals(AttributeValue.value(1.0), map.get("k4"));
+        map.merge("k5", true, (a, b) -> b);
+        assertEquals(AttributeValue.value(true), map.get("k5"));
+        byte[] b = new byte[]{1};
+        map.merge("k6", b, (x, y) -> y);
+        assertArrayEquals(b, ((AttributeValue.ByteArrayValue)map.get("k6")).value());
+    }
+
+    @Test
     public void testReplaceAll() {
         assertThrows(NullPointerException.class, () -> map.replaceAll(null));
 
@@ -145,6 +199,15 @@ public class AttributeMapTest {
         assertEquals(AttributeValue.value(40), wrapper.get("k2"));
     }
 
+    @Test
+    public void testClear() {
+        map.put("k1", "v1");
+        map.put("k2", "v2");
+        assertEquals(2, map.size());
+        map.clear();
+        assertEquals(0, map.size());
+    }
+
     // A class that delegates compute/merge/replaceAll etc. to the default interface methods.
     private static class TestAttributeMap extends HashMap<String, AttributeValue> implements AttributeMap {
 
@@ -152,33 +215,71 @@ public class AttributeMapTest {
 
         @Override
         public AttributeValue put(String key, String value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
 
         @Override
         public AttributeValue put(String key, int value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
 
         @Override
         public AttributeValue put(String key, long value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
 
         @Override
         public AttributeValue put(String key, double value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
 
         @Override
         public AttributeValue put(String key, boolean value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
 
         @Override
         public AttributeValue put(String key, byte[] value) {
-            return put(key, AttributeValue.value(value));
+            return AttributeMap.super.put(key, value);
         }
+
+        @Override
+        public AttributeValue putIfAbsent(String key, String value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+        @Override
+        public AttributeValue putIfAbsent(String key, int value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+        @Override
+        public AttributeValue putIfAbsent(String key, long value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+        @Override
+        public AttributeValue putIfAbsent(String key, double value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+        @Override
+        public AttributeValue putIfAbsent(String key, boolean value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+        @Override
+        public AttributeValue putIfAbsent(String key, byte[] value) {
+            return AttributeMap.super.putIfAbsent(key, value);
+        }
+
+        @Override
+        public AttributeValue merge(String key, String value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
+        @Override
+        public AttributeValue merge(String key, int value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
+        @Override
+        public AttributeValue merge(String key, long value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
+        @Override
+        public AttributeValue merge(String key, double value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
+        @Override
+        public AttributeValue merge(String key, boolean value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
+        @Override
+        public AttributeValue merge(String key, byte[] value, java.util.function.BiFunction<? super AttributeValue, ? super AttributeValue, ? extends AttributeValue> remappingFunction) { return AttributeMap.super.merge(key, value, remappingFunction); }
 
         @Override
         public AttributeValue compute(String key, java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> remappingFunction) {
@@ -203,6 +304,11 @@ public class AttributeMapTest {
         @Override
         public void replaceAll(java.util.function.BiFunction<? super String, ? super AttributeValue, ? extends AttributeValue> function) {
             AttributeMap.super.replaceAll(function);
+        }
+
+        @Override
+        public void clear() {
+            AttributeMap.super.clear();
         }
     }
 
