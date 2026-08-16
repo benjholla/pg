@@ -9,7 +9,7 @@ Here is the performance matrix for the pg-api implementations provided in pg-glo
  * **K** = Size of a filtered/resulting subset
  * **S** = Size of an incoming collection (for bulk operations)
 ### 1. Core Topology & Queries (Graph API)
-These operations leverage the zero-allocation, 4-pillar primitive integer routing architecture.
+These operations leverage the standard HashMap-backed index architecture.
 | API Method | GlobalGraph Runtime | GlobalGraph Memory | Ephemeral / Universe (Est.) |
 |---|---|---|---|
 | nodes(), edges() | O(1) | O(1) | O(1) |
