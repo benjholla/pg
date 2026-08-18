@@ -88,6 +88,41 @@ public class AttributeMapTest {
     }
 
     @Test
+    public void testMergeDefaultMethods() {
+        // String
+        assertEquals(AttributeValue.value("test"), map.merge("k_str", "test", (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value("test"), map.get("k_str"));
+        assertEquals(AttributeValue.value("other"), map.merge("k_str", "other", (oldV, newV) -> newV));
+
+        // int
+        assertEquals(AttributeValue.value(1), map.merge("k_int", 1, (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value(1), map.get("k_int"));
+        assertEquals(AttributeValue.value(2), map.merge("k_int", 2, (oldV, newV) -> newV));
+
+        // long
+        assertEquals(AttributeValue.value(1L), map.merge("k_long", 1L, (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value(1L), map.get("k_long"));
+        assertEquals(AttributeValue.value(2L), map.merge("k_long", 2L, (oldV, newV) -> newV));
+
+        // double
+        assertEquals(AttributeValue.value(1.5), map.merge("k_double", 1.5, (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value(1.5), map.get("k_double"));
+        assertEquals(AttributeValue.value(2.5), map.merge("k_double", 2.5, (oldV, newV) -> newV));
+
+        // boolean
+        assertEquals(AttributeValue.value(true), map.merge("k_bool", true, (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value(true), map.get("k_bool"));
+        assertEquals(AttributeValue.value(false), map.merge("k_bool", false, (oldV, newV) -> newV));
+
+        // byte[]
+        byte[] bytes1 = new byte[]{1};
+        byte[] bytes2 = new byte[]{2};
+        assertEquals(AttributeValue.value(bytes1), map.merge("k_bytes", bytes1, (oldV, newV) -> newV));
+        assertEquals(AttributeValue.value(bytes1), map.get("k_bytes"));
+        assertEquals(AttributeValue.value(bytes2), map.merge("k_bytes", bytes2, (oldV, newV) -> newV));
+    }
+
+    @Test
     public void testMerge() {
         assertThrows(NullPointerException.class, () -> map.merge(null, AttributeValue.value(1), (oldV, newV) -> newV));
         assertThrows(NullPointerException.class, () -> map.merge("key", (AttributeValue) null, (oldV, newV) -> newV));
@@ -143,6 +178,70 @@ public class AttributeMapTest {
 
         assertEquals(AttributeValue.value(20), wrapper.get("k1"));
         assertEquals(AttributeValue.value(40), wrapper.get("k2"));
+    }
+
+    @Test
+    public void testPutDefaultMethods() {
+        assertNull(map.put("k_str", "test"));
+        assertEquals(AttributeValue.value("test"), map.get("k_str"));
+        assertEquals(AttributeValue.value("test"), map.put("k_str", "other"));
+        assertEquals(AttributeValue.value("other"), map.get("k_str"));
+
+        assertNull(map.put("k_int", 1));
+        assertEquals(AttributeValue.value(1), map.get("k_int"));
+        assertEquals(AttributeValue.value(1), map.put("k_int", 2));
+        assertEquals(AttributeValue.value(2), map.get("k_int"));
+
+        assertNull(map.put("k_long", 1L));
+        assertEquals(AttributeValue.value(1L), map.get("k_long"));
+        assertEquals(AttributeValue.value(1L), map.put("k_long", 2L));
+        assertEquals(AttributeValue.value(2L), map.get("k_long"));
+
+        assertNull(map.put("k_double", 1.5));
+        assertEquals(AttributeValue.value(1.5), map.get("k_double"));
+        assertEquals(AttributeValue.value(1.5), map.put("k_double", 2.5));
+        assertEquals(AttributeValue.value(2.5), map.get("k_double"));
+
+        assertNull(map.put("k_bool", true));
+        assertEquals(AttributeValue.value(true), map.get("k_bool"));
+        assertEquals(AttributeValue.value(true), map.put("k_bool", false));
+        assertEquals(AttributeValue.value(false), map.get("k_bool"));
+
+        byte[] bytes1 = new byte[]{1};
+        byte[] bytes2 = new byte[]{2};
+        assertNull(map.put("k_bytes", bytes1));
+        assertEquals(AttributeValue.value(bytes1), map.get("k_bytes"));
+        assertEquals(AttributeValue.value(bytes1), map.put("k_bytes", bytes2));
+        assertEquals(AttributeValue.value(bytes2), map.get("k_bytes"));
+    }
+
+    @Test
+    public void testPutIfAbsentDefaultMethods() {
+        assertNull(map.putIfAbsent("k_str", "test"));
+        assertEquals(AttributeValue.value("test"), map.get("k_str"));
+        assertEquals(AttributeValue.value("test"), map.putIfAbsent("k_str", "other"));
+
+        assertNull(map.putIfAbsent("k_int", 1));
+        assertEquals(AttributeValue.value(1), map.get("k_int"));
+        assertEquals(AttributeValue.value(1), map.putIfAbsent("k_int", 2));
+
+        assertNull(map.putIfAbsent("k_long", 1L));
+        assertEquals(AttributeValue.value(1L), map.get("k_long"));
+        assertEquals(AttributeValue.value(1L), map.putIfAbsent("k_long", 2L));
+
+        assertNull(map.putIfAbsent("k_double", 1.5));
+        assertEquals(AttributeValue.value(1.5), map.get("k_double"));
+        assertEquals(AttributeValue.value(1.5), map.putIfAbsent("k_double", 2.5));
+
+        assertNull(map.putIfAbsent("k_bool", true));
+        assertEquals(AttributeValue.value(true), map.get("k_bool"));
+        assertEquals(AttributeValue.value(true), map.putIfAbsent("k_bool", false));
+
+        byte[] bytes1 = new byte[]{1};
+        byte[] bytes2 = new byte[]{2};
+        assertNull(map.putIfAbsent("k_bytes", bytes1));
+        assertEquals(AttributeValue.value(bytes1), map.get("k_bytes"));
+        assertEquals(AttributeValue.value(bytes1), map.putIfAbsent("k_bytes", bytes2));
     }
 
     // A class that delegates compute/merge/replaceAll etc. to the default interface methods.
