@@ -106,6 +106,7 @@ For deeper insights into the design, performance characteristics, and query opti
 * [Performance Goals](docs/architecture/PerformanceGoals.md)
 * [Ephemeral Graph Memory & ID Management](docs/architecture/EphemeralGraph.md)
 * [GlobalGraph Dense IDs](docs/architecture/GlobalGraphDenseIDs.md)
+* [Shadow Elements](docs/architecture/ShadowElements.md)
 
 ## Installation
 
