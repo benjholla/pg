@@ -73,8 +73,9 @@ public class EdgeSetBenchmark {
                 }
             }
         } else {
-            EphemeralGraph eg = new EphemeralGraph(new Universe());
-            EphemeralGraph oeg = new EphemeralGraph(new Universe());
+            Universe sharedUniverse = new Universe();
+            EphemeralGraph eg = new EphemeralGraph(sharedUniverse);
+            EphemeralGraph oeg = new EphemeralGraph(sharedUniverse);
             graph = eg;
             otherGraph = oeg;
 
