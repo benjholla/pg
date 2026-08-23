@@ -51,13 +51,18 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 ```java
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.global.GlobalFactory;
-import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralFactory;
 
 public class Example {
     public static void main(String[] args) {
-        GlobalFactory factory = new GlobalGraph().factory();
+        // The Universe acts as the central registry for graph state
+        Universe universe = new Universe();
+
+        // EphemeralGraphs act as mutable, transactional viewports
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
         // Create nodes
         Node alice = factory.createNode();
@@ -116,7 +121,7 @@ Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven c
 ```groovy
 dependencies {
     implementation 'dev.chpg:pg-api:1.0.0'
-    implementation 'dev.chpg:pg-global:1.0.0'
+    implementation 'dev.chpg:pg-multiverse:1.0.0'
 }
 ```
 
@@ -129,7 +134,7 @@ dependencies {
 </dependency>
 <dependency>
     <groupId>dev.chpg</groupId>
-    <artifactId>pg-global</artifactId>
+    <artifactId>pg-multiverse</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```

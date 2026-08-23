@@ -10,11 +10,15 @@ import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 
 public class ReadmeExampleTest {
-    private static final Universe universe = new Universe();
-    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
     @Test
     public void testReadmeExample() {
+        // The Universe acts as the central registry for graph state
+        Universe universe = new Universe();
+
+        // EphemeralGraphs act as mutable, transactional viewports
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
+
         // Create nodes
         Node alice = factory.createNode();
         alice.tags().add("Person");
