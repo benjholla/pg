@@ -82,6 +82,39 @@ public class AttributeMapTest {
     }
 
     @Test
+    public void testPutIfAbsentPrimitives() {
+        assertNull(attributeMap.putIfAbsent("str", "value"));
+        assertEquals(AttributeValue.value("value"), attributeMap.get("str"));
+        assertEquals(AttributeValue.value("value"), attributeMap.putIfAbsent("str", "value2"));
+        assertEquals(AttributeValue.value("value"), attributeMap.get("str"));
+
+        assertNull(attributeMap.putIfAbsent("int", 123));
+        assertEquals(AttributeValue.value(123), attributeMap.get("int"));
+        assertEquals(AttributeValue.value(123), attributeMap.putIfAbsent("int", 456));
+        assertEquals(AttributeValue.value(123), attributeMap.get("int"));
+
+        assertNull(attributeMap.putIfAbsent("long", 123L));
+        assertEquals(AttributeValue.value(123L), attributeMap.get("long"));
+        assertEquals(AttributeValue.value(123L), attributeMap.putIfAbsent("long", 456L));
+        assertEquals(AttributeValue.value(123L), attributeMap.get("long"));
+
+        assertNull(attributeMap.putIfAbsent("double", 1.23));
+        assertEquals(AttributeValue.value(1.23), attributeMap.get("double"));
+        assertEquals(AttributeValue.value(1.23), attributeMap.putIfAbsent("double", 4.56));
+        assertEquals(AttributeValue.value(1.23), attributeMap.get("double"));
+
+        assertNull(attributeMap.putIfAbsent("boolean", true));
+        assertEquals(AttributeValue.value(true), attributeMap.get("boolean"));
+        assertEquals(AttributeValue.value(true), attributeMap.putIfAbsent("boolean", false));
+        assertEquals(AttributeValue.value(true), attributeMap.get("boolean"));
+
+        assertNull(attributeMap.putIfAbsent("bytearray", new byte[]{1, 2, 3}));
+        assertEquals(AttributeValue.value(new byte[]{1, 2, 3}), attributeMap.get("bytearray"));
+        assertEquals(AttributeValue.value(new byte[]{1, 2, 3}), attributeMap.putIfAbsent("bytearray", new byte[]{4, 5, 6}));
+        assertEquals(AttributeValue.value(new byte[]{1, 2, 3}), attributeMap.get("bytearray"));
+    }
+
+    @Test
     public void testConstructorWithMap() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("key1", AttributeValue.value("value1"));
