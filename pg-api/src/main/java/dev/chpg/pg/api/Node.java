@@ -24,12 +24,4 @@ package dev.chpg.pg.api;
  */
 public interface Node extends GraphElement {
 
-    /**
-     * Specifies the traversal direction relative to a node.
-     * <ul>
-     * <li>{@link #IN}: Traverses incoming edges (edges where this node is the {@link Edge#to()} destination).</li>
-     * <li>{@link #OUT}: Traverses outgoing edges (edges where this node is the {@link Edge#from()} source).</li>
-     * <li>{@link #BOTH}: Traverses all incident edges regardless of direction.</li>
-     * </ul>
-     */
 }
