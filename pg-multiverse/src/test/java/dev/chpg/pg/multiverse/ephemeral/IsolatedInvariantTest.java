@@ -83,4 +83,20 @@ public class IsolatedInvariantTest {
         assertTrue(isolated.contains(n1));
         assertTrue(isolated.contains(n2));
     }
+
+    @Test
+    public void testIsolatedIsIntersectionOfRootsAndLeaves() {
+        NodeSet roots = graph.roots();
+        NodeSet leaves = graph.leaves();
+        NodeSet intersection = roots.intersect(leaves);
+        NodeSet isolated = graph.isolated();
+
+        assertEquals(isolated.size(), intersection.size(), "Isolated nodes must equal roots intersected with leaves");
+        for (Node n : isolated) {
+            assertTrue(intersection.contains(n), "Isolated node should be in the intersection of roots and leaves");
+        }
+        for (Node n : intersection) {
+            assertTrue(isolated.contains(n), "Intersection of roots and leaves should be isolated");
+        }
+    }
 }
