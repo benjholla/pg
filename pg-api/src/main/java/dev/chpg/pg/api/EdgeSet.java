@@ -26,12 +26,18 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> The fluent filtering API (e.g., {@code withAttribute}) returns a deferred, zero-allocation wrapper. Terminal operations on deferred sets evaluate the pipeline and take O(N) time.
  */
-public interface EdgeSet extends Set<Edge> {
+public interface EdgeSet extends ElementSet<Edge> {
 
     /**
      * An immutable, empty edge set singleton.
      */
     EdgeSet EMPTY = new ImmutableEmptyEdgeSet();
+
+    @Override
+    EdgeSet toImmutable();
+
+    @Override
+    Optional<Edge> one();
 
     /**
      * Returns an empty edge set.
@@ -43,25 +49,12 @@ public interface EdgeSet extends Set<Edge> {
     }
 
     /**
-     * Converts this edge set into an immutable snapshot.
-     *
-     * @return an immutable EdgeSet
-     */
-    EdgeSet toImmutable();
-
-    /**
-     * Returns any single edge from this set, if it is not empty.
-     *
-     * @return an Optional containing an edge, or empty if the set is empty
-     */
-    Optional<Edge> one();
-
-    /**
      * Filters this set to include only edges with the specified attribute key.
      *
      * @param attribute the attribute key to check for
      * @return a deferred EdgeSet containing matching edges
      */
+    @Override
     default EdgeSet withAttribute(String attribute) {
         return new DeferredEdgeSet(this, e -> e.attributes().containsKey(attribute));
     }
@@ -73,6 +66,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param values    the allowed attribute values
      * @return a deferred EdgeSet containing matching edges
      */
+    @Override
     default EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredEdgeSet(this, e -> {
             AttributeValue val = e.attributes().get(attribute);
@@ -90,6 +84,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param tags the tags to check for
      * @return a deferred EdgeSet containing matching edges
      */
+    @Override
     default EdgeSet withAnyTag(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -106,6 +101,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param tags the tags to check for
      * @return a deferred EdgeSet containing matching edges
      */
+    @Override
     default EdgeSet withAllTags(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -124,6 +120,7 @@ public interface EdgeSet extends Set<Edge> {
      *
      * @return a materialized, immutable EdgeSet
      */
+    @Override
     default EdgeSet materialize() {
         Set<Edge> materialized = new java.util.HashSet<>();
         for (Edge e : this) {
@@ -136,6 +133,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param other the collection to perform the set operation with
      * @return the intersected EdgeSet
      */
+    @Override
     EdgeSet intersect(Collection<? extends Edge> other);
 
     /**
@@ -143,6 +141,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param other the collection to perform the set operation with
      * @return the differenced EdgeSet
      */
+    @Override
     EdgeSet difference(Collection<? extends Edge> other);
 
     /**
@@ -150,6 +149,7 @@ public interface EdgeSet extends Set<Edge> {
      * @param other the collection to perform the set operation with
      * @return the unioned EdgeSet
      */
+    @Override
     EdgeSet union(Collection<? extends Edge> other);
 
     /**

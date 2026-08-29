@@ -26,12 +26,18 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> The fluent filtering API (e.g., {@code withAttribute}) returns a deferred, zero-allocation wrapper. Terminal operations on deferred sets evaluate the pipeline and take O(N) time.
  */
-public interface NodeSet extends Set<Node> {
+public interface NodeSet extends ElementSet<Node> {
 
     /**
      * An immutable, empty node set singleton.
      */
     NodeSet EMPTY = new ImmutableEmptyNodeSet();
+
+    @Override
+    NodeSet toImmutable();
+
+    @Override
+    Optional<Node> one();
 
     /**
      * Returns an empty node set.
@@ -43,25 +49,12 @@ public interface NodeSet extends Set<Node> {
     }
 
     /**
-     * Converts this node set into an immutable snapshot.
-     *
-     * @return an immutable NodeSet
-     */
-    NodeSet toImmutable();
-
-    /**
-     * Returns any single node from this set, if it is not empty.
-     *
-     * @return an Optional containing a node, or empty if the set is empty
-     */
-    Optional<Node> one();
-
-    /**
      * Filters this set to include only nodes with the specified attribute key.
      *
      * @param attribute the attribute key to check for
      * @return a deferred NodeSet containing matching nodes
      */
+    @Override
     default NodeSet withAttribute(String attribute) {
         return new DeferredNodeSet(this, n -> n.attributes().containsKey(attribute));
     }
@@ -73,6 +66,7 @@ public interface NodeSet extends Set<Node> {
      * @param values    the allowed attribute values
      * @return a deferred NodeSet containing matching nodes
      */
+    @Override
     default NodeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredNodeSet(this, n -> {
             AttributeValue val = n.attributes().get(attribute);
@@ -90,6 +84,7 @@ public interface NodeSet extends Set<Node> {
      * @param tags the tags to check for
      * @return a deferred NodeSet containing matching nodes
      */
+    @Override
     default NodeSet withAnyTag(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -106,6 +101,7 @@ public interface NodeSet extends Set<Node> {
      * @param tags the tags to check for
      * @return a deferred NodeSet containing matching nodes
      */
+    @Override
     default NodeSet withAllTags(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -124,6 +120,7 @@ public interface NodeSet extends Set<Node> {
      *
      * @return a materialized, immutable NodeSet
      */
+    @Override
     default NodeSet materialize() {
         Set<Node> materialized = new java.util.HashSet<>();
         for (Node n : this) {
@@ -136,6 +133,7 @@ public interface NodeSet extends Set<Node> {
      * @param other the collection to perform the set operation with
      * @return the intersected NodeSet
      */
+    @Override
     NodeSet intersect(Collection<? extends Node> other);
 
     /**
@@ -143,6 +141,7 @@ public interface NodeSet extends Set<Node> {
      * @param other the collection to perform the set operation with
      * @return the differenced NodeSet
      */
+    @Override
     NodeSet difference(Collection<? extends Node> other);
 
     /**
@@ -150,6 +149,7 @@ public interface NodeSet extends Set<Node> {
      * @param other the collection to perform the set operation with
      * @return the unioned NodeSet
      */
+    @Override
     NodeSet union(Collection<? extends Node> other);
 
     /**
