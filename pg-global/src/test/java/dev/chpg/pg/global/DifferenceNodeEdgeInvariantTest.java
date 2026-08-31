@@ -21,7 +21,10 @@ public class DifferenceNodeEdgeInvariantTest {
         Edge e12 = factory.createEdge(n1, n2);
         Edge e23 = factory.createEdge(n2, n3);
 
-        Graph g = factory.createGraph(n1, n2, n3);
+        Graph g = factory.createGraph();
+        g.addNode(n1);
+        g.addNode(n2);
+        g.addNode(n3);
         g.addEdge(e12);
         g.addEdge(e23);
 
