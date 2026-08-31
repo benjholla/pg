@@ -669,19 +669,8 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph difference(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph difference = new GlobalGraph(this.nodes(), this.edges());
-
-        for (Edge e : new java.util.ArrayList<>(difference.edges())) {
-            if (e.equals(edge)) {
-                difference.removeEdge(e);
-            }
-        }
-
-        for (Node n : new java.util.ArrayList<>(difference.nodes())) {
-            if (n.equals(edge.from()) || n.equals(edge.to())) {
-                difference.removeNode(n);
-            }
-        }
-
+        difference.removeNode(edge.from());
+        difference.removeNode(edge.to());
         return difference;
     }
 
@@ -703,13 +692,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     public Graph differenceEdges(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
         Graph difference = new GlobalGraph(this.nodes(), this.edges());
-
-        for (Edge e : new java.util.ArrayList<>(difference.edges())) {
-            if (e.equals(edge)) {
-                difference.removeEdge(e);
-            }
-        }
-
+        difference.removeEdge(edge);
         return difference;
     }
 
@@ -727,16 +710,9 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph intersection(Node node){
         Objects.requireNonNull(node, "node cannot be null");
-        Graph intersection = new GlobalGraph(this.nodes(), this.edges());
-
-        for (Edge e : new java.util.ArrayList<>(intersection.edges())) {
-            intersection.removeEdge(e);
-        }
-
-        for (Node n : new java.util.ArrayList<>(intersection.nodes())) {
-            if (!n.equals(node)) {
-                intersection.removeNode(n);
-            }
+        Graph intersection = new GlobalGraph();
+        if (this.nodes().contains(node)) {
+            intersection.addNode(node);
         }
         return intersection;
     }
@@ -744,20 +720,16 @@ public final class GlobalGraph implements Graph, GlobalFactory {
     @Override
     public Graph intersection(Edge edge){
         Objects.requireNonNull(edge, "edge cannot be null");
-        Graph intersection = new GlobalGraph(this.nodes(), this.edges());
-
-        for (Edge e : new java.util.ArrayList<>(intersection.edges())) {
-            if (!e.equals(edge)) {
-                intersection.removeEdge(e);
-            }
+        Graph intersection = new GlobalGraph();
+        if (this.nodes().contains(edge.from())) {
+            intersection.addNode(edge.from());
         }
-
-        for (Node n : new java.util.ArrayList<>(intersection.nodes())) {
-            if (!n.equals(edge.from()) && !n.equals(edge.to())) {
-                intersection.removeNode(n);
-            }
+        if (this.nodes().contains(edge.to())) {
+            intersection.addNode(edge.to());
         }
-
+        if (this.edges().contains(edge)) {
+            intersection.addEdge(edge);
+        }
         return intersection;
     }
 
