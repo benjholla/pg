@@ -61,6 +61,31 @@ public class RootsLeavesInvariantTest {
     }
 
     @Test
+    public void testIsolatedEquivalentToRootsIntersectLeaves() {
+        Node a = new GlobalNode();
+        Node b = new GlobalNode();
+        Node c = new GlobalNode();
+        Node isolated1 = new GlobalNode();
+        Node isolated2 = new GlobalNode();
+
+        GlobalGraph graph = new GlobalGraph();
+        graph.addNode(a);
+        graph.addNode(b);
+        graph.addNode(c);
+        graph.addNode(isolated1);
+        graph.addNode(isolated2);
+
+        graph.addEdge(new GlobalEdge(a, b));
+        graph.addEdge(new GlobalEdge(b, c));
+
+        NodeSet roots = graph.roots();
+        NodeSet leaves = graph.leaves();
+        NodeSet isolated = graph.isolated();
+
+        assertTrue(isolated.equals(roots.intersect(leaves)), "isolated nodes should be identical to roots intersected with leaves");
+    }
+
+    @Test
     public void testCyclicGraphHasNoRootsOrLeaves() {
         Node a = new GlobalNode(); Node b = new GlobalNode(); Node c = new GlobalNode();
         GlobalGraph graph = new GlobalGraph();
