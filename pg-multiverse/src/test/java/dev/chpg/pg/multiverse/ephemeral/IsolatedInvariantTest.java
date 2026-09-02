@@ -70,6 +70,17 @@ public class IsolatedInvariantTest {
     }
 
     @Test
+    public void testIsolatedEqualsRootsIntersectLeaves() {
+        NodeSet isolated = graph.isolated();
+        NodeSet expected = graph.roots().intersect(graph.leaves());
+
+        assertEquals(expected.size(), isolated.size(), "isolated() size should equal roots().intersect(leaves()) size");
+        for (Node n : expected) {
+            assertTrue(isolated.contains(n), "isolated() should contain all nodes in roots().intersect(leaves())");
+        }
+    }
+
+    @Test
     public void testIsolatedNodesDisjointNodes() {
         EphemeralGraph disjointGraph = new EphemeralGraph(universe);
         Node n1 = disjointGraph.factory().createNode();

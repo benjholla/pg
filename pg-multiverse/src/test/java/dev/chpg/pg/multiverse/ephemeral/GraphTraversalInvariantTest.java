@@ -51,6 +51,36 @@ public class GraphTraversalInvariantTest {
     }
 
     @Test
+    public void testTraversalOverloadEquivalence() {
+        Graph graphA = factory.createGraph(new EphemeralNodeSet(a));
+        Graph graphD = factory.createGraph(new EphemeralNodeSet(d));
+
+        // forward()
+        assertGraphsEqual(graph.forward(graphA.nodes()), graph.forward(a));
+        assertGraphsEqual(graph.forward(graphA.nodes()), graph.forward(graphA));
+
+        // reverse()
+        assertGraphsEqual(graph.reverse(graphD.nodes()), graph.reverse(d));
+        assertGraphsEqual(graph.reverse(graphD.nodes()), graph.reverse(graphD));
+
+        // between()
+        assertGraphsEqual(graph.between(graphA.nodes(), graphD.nodes()), graph.between(a, d));
+        assertGraphsEqual(graph.between(graphA.nodes(), graphD.nodes()), graph.between(graphA, graphD));
+
+        // forwardStep()
+        assertGraphsEqual(graph.forwardStep(graphA.nodes()), graph.forwardStep(a));
+        assertGraphsEqual(graph.forwardStep(graphA.nodes()), graph.forwardStep(graphA));
+
+        // reverseStep()
+        assertGraphsEqual(graph.reverseStep(graphD.nodes()), graph.reverseStep(d));
+        assertGraphsEqual(graph.reverseStep(graphD.nodes()), graph.reverseStep(graphD));
+
+        // betweenStep()
+        assertGraphsEqual(graph.betweenStep(graphA.nodes(), graphD.nodes()), graph.betweenStep(a, d));
+        assertGraphsEqual(graph.betweenStep(graphA.nodes(), graphD.nodes()), graph.betweenStep(graphA, graphD));
+    }
+
+    @Test
     public void testForwardUnionDistributiveProperty() {
         // forward(A U E) == forward(A) U forward(E)
         Graph unionNodes = factory.createGraph(new EphemeralNodeSet(a, e));
