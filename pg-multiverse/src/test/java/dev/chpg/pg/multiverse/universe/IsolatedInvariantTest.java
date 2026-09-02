@@ -84,6 +84,17 @@ public class IsolatedInvariantTest {
     }
 
     @Test
+    public void testIsolatedEqualsRootsIntersectLeaves() {
+        NodeSet isolated = graph.isolated();
+        NodeSet expected = graph.roots().intersect(graph.leaves());
+
+        assertEquals(expected.size(), isolated.size(), "isolated() size should equal roots().intersect(leaves()) size");
+        for (Node n : expected) {
+            assertTrue(isolated.contains(n), "isolated() should contain all nodes in roots().intersect(leaves())");
+        }
+    }
+
+    @Test
     public void testIsolatedNodesEmptyGraph() {
         Universe u2 = new Universe();
         UniverseGraph emptyGraph = u2.promote(new EphemeralGraph(u2));
