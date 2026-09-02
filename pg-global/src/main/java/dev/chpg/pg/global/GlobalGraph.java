@@ -480,22 +480,7 @@ public final class GlobalGraph implements Graph, GlobalFactory {
         return result;
     }
 
-    @Override
-    public NodeSet isolated() {
-        GlobalNodeSet result = new GlobalNodeSet();
-        for (GlobalNode n : this.nodes.values()) {
-            GlobalEdgeSet inbound = this.inEdges.get(n.id());
-            GlobalEdgeSet outbound = this.outEdges.get(n.id());
 
-            boolean noIn = (inbound == null || inbound.isEmpty());
-            boolean noOut = (outbound == null || outbound.isEmpty());
-
-            if (noIn && noOut) {
-                result.add(n);
-            }
-        }
-        return result;
-    }
 
     @Override
     public NodeSet predecessors(Node origin){
