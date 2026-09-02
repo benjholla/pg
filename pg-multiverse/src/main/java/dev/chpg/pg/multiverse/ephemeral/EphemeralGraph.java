@@ -982,22 +982,7 @@ public final class EphemeralGraph implements Graph, EphemeralFactory, UniverseVi
         return result;
     }
 
-    @Override
-    public NodeSet isolated() {
-        EphemeralNodeSet result = new EphemeralNodeSet();
-        for (Node n : this.nodes.values()) {
-            EphemeralEdgeSet inbound = this.inEdges.get(n.id());
-            EphemeralEdgeSet outbound = this.outEdges.get(n.id());
 
-            boolean noIn = (inbound == null || inbound.isEmpty());
-            boolean noOut = (outbound == null || outbound.isEmpty());
-
-            if (noIn && noOut) {
-                result.add(n);
-            }
-        }
-        return result;
-    }
 
     @Override
     public NodeSet predecessors(Node origin){

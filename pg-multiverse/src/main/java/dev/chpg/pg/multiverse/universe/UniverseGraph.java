@@ -540,22 +540,7 @@ public final class UniverseGraph implements Graph, UniverseView {
         return new UniverseNodeSet(this.universe, result);
     }
 
-    @Override
-    public NodeSet isolated() {
-        long expectedModCount = this.universe.modCount();
-        BitSet result = new BitSet();
-        // An isolated node has NO active inbound AND NO active outbound edges
-        for (int nodeId = this.activeNodes.nextSetBit(0); nodeId >= 0; nodeId = this.activeNodes.nextSetBit(nodeId + 1)) {
-            boolean hasIn = hasActiveEdge(this.universe.inboundEdges(nodeId));
-            boolean hasOut = hasActiveEdge(this.universe.outboundEdges(nodeId));
 
-            if (!hasIn && !hasOut) {
-                result.set(nodeId);
-            }
-        }
-        checkTopologyState(expectedModCount);
-        return new UniverseNodeSet(this.universe, result);
-    }
 
     @Override
     public boolean adjacent(Node source, Node target) {

@@ -230,7 +230,9 @@ public interface Graph {
      *
      * @return the set of nodes with no incident edges
      */
-    public NodeSet isolated();
+    public default NodeSet isolated() {
+        return roots().intersect(leaves());
+    }
 
     /**
      * Gets the predecessor nodes of the given node for this graph's edges
