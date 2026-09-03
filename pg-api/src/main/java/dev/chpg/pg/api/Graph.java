@@ -471,7 +471,9 @@ public interface Graph {
 
     /**
      * From this graph, selects the subgraph such that the given nodes in to are
-     * reachable from the nodes in from in a single step
+     * reachable from the nodes in from in a single step.
+     *
+     * Logically equivalent to graph.forwardStep(from).intersection(graph.reverseStep(to)) .
      * 
      * @param from the source element
      * @param to   the target element
@@ -481,7 +483,9 @@ public interface Graph {
 
     /**
      * From this graph, selects the subgraph such that the given nodes in to are
-     * reachable from the nodes in from in a single step
+     * reachable from the nodes in from in a single step.
+     *
+     * Logically equivalent to graph.forwardStep(from).intersection(graph.reverseStep(to)) .
      * 
      * @param from the source element
      * @param to   the target element
@@ -491,7 +495,9 @@ public interface Graph {
 
     /**
      * From this graph, selects the subgraph such that the given nodes in to are
-     * reachable from the nodes in from in a single step
+     * reachable from the nodes in from in a single step.
+     *
+     * Logically equivalent to graph.forwardStep(from).intersection(graph.reverseStep(to)) .
      * 
      * @param from the source element
      * @param to   the target element
