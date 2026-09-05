@@ -12,6 +12,52 @@ import dev.chpg.pg.multiverse.universe.Universe;
 public class BetweenStepEquivalenceInvariantTest {
 
     @Test
+    public void testBetweenStepEquivalence() {
+        Universe universe = new Universe();
+        EphemeralGraph graph = new EphemeralGraph(universe);
+
+        Node a = graph.factory().createNode();
+        Node b = graph.factory().createNode();
+        Node c = graph.factory().createNode();
+        Node d = graph.factory().createNode();
+        Node e = graph.factory().createNode();
+
+        graph.addNode(a);
+        graph.addNode(b);
+        graph.addNode(c);
+        graph.addNode(d);
+        graph.addNode(e);
+
+        Edge e1 = graph.factory().createEdge(a, b);
+        Edge e2 = graph.factory().createEdge(b, c);
+        Edge e3 = graph.factory().createEdge(c, d);
+        Edge e4 = graph.factory().createEdge(a, e);
+        Edge e5 = graph.factory().createEdge(e, d);
+
+        graph.addEdge(e1);
+        graph.addEdge(e2);
+        graph.addEdge(e3);
+        graph.addEdge(e4);
+        graph.addEdge(e5);
+
+        // a -> b -> c -> d
+        // a -> e -> d
+
+        Graph betweenStep = graph.betweenStep(a, b);
+        Graph equivalent = graph.forwardStep(a).intersection(graph.reverseStep(b));
+
+        assertEquals(equivalent.nodes().size(), betweenStep.nodes().size());
+        assertEquals(equivalent.edges().size(), betweenStep.edges().size());
+
+        for(Node n : equivalent.nodes()) {
+            assertTrue(betweenStep.nodes().contains(n));
+        }
+        for(Edge ed : equivalent.edges()) {
+            assertTrue(betweenStep.edges().contains(ed));
+        }
+    }
+
+    @Test
     public void testBetweenStepEquivalenceGraphAndSetAndNode() {
         Universe universe = new Universe();
         EphemeralGraph graph = new EphemeralGraph(universe);
