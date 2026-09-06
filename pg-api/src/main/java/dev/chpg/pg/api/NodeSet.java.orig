@@ -26,7 +26,7 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> The fluent filtering API (e.g., {@code withAttribute}) returns a deferred, zero-allocation wrapper. Terminal operations on deferred sets evaluate the pipeline and take O(N) time.
  */
-public interface NodeSet extends ElementSet<Node> {
+public interface NodeSet extends Set<Node> {
 
     /**
      * An immutable, empty node set singleton.
@@ -47,7 +47,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return an immutable NodeSet
      */
-    @Override
     NodeSet toImmutable();
 
     /**
@@ -55,7 +54,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return an Optional containing a node, or empty if the set is empty
      */
-    @Override
     Optional<Node> one();
 
     /**
@@ -64,7 +62,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param attribute the attribute key to check for
      * @return a deferred NodeSet containing matching nodes
      */
-    @Override
     default NodeSet withAttribute(String attribute) {
         return new DeferredNodeSet(this, n -> n.attributes().containsKey(attribute));
     }
@@ -76,7 +73,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param values    the allowed attribute values
      * @return a deferred NodeSet containing matching nodes
      */
-    @Override
     default NodeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredNodeSet(this, n -> {
             AttributeValue val = n.attributes().get(attribute);
@@ -94,7 +90,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param tags the tags to check for
      * @return a deferred NodeSet containing matching nodes
      */
-    @Override
     default NodeSet withAnyTag(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -111,7 +106,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param tags the tags to check for
      * @return a deferred NodeSet containing matching nodes
      */
-    @Override
     default NodeSet withAllTags(String... tags) {
         return new DeferredNodeSet(this, n -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -130,7 +124,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return a materialized, immutable NodeSet
      */
-    @Override
     default NodeSet materialize() {
         Set<Node> materialized = new java.util.HashSet<>();
         for (Node n : this) {
@@ -143,7 +136,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param other the collection to perform the set operation with
      * @return the intersected NodeSet
      */
-    @Override
     NodeSet intersect(Collection<? extends Node> other);
 
     /**
@@ -151,7 +143,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param other the collection to perform the set operation with
      * @return the differenced NodeSet
      */
-    @Override
     NodeSet difference(Collection<? extends Node> other);
 
     /**
@@ -159,7 +150,6 @@ public interface NodeSet extends ElementSet<Node> {
      * @param other the collection to perform the set operation with
      * @return the unioned NodeSet
      */
-    @Override
     NodeSet union(Collection<? extends Node> other);
 
     /**
@@ -169,7 +159,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return true if materialized, false otherwise
      */
-    @Override
     boolean isMaterialized();
 
     /**
@@ -178,7 +167,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return true if the size is known in O(1) time, false otherwise
      */
-    @Override
     default boolean isSizeKnown() {
         return true;
     }
@@ -188,7 +176,6 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return a set of primitive integer IDs
      */
-    @Override
     Set<Integer> ids();
 
     /**
@@ -196,6 +183,5 @@ public interface NodeSet extends ElementSet<Node> {
      *
      * @return an array of primitive integer IDs
      */
-    @Override
     int[] toIdArray();
 }

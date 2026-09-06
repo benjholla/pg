@@ -26,7 +26,7 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> The fluent filtering API (e.g., {@code withAttribute}) returns a deferred, zero-allocation wrapper. Terminal operations on deferred sets evaluate the pipeline and take O(N) time.
  */
-public interface EdgeSet extends ElementSet<Edge> {
+public interface EdgeSet extends Set<Edge> {
 
     /**
      * An immutable, empty edge set singleton.
@@ -47,7 +47,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return an immutable EdgeSet
      */
-    @Override
     EdgeSet toImmutable();
 
     /**
@@ -55,7 +54,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return an Optional containing an edge, or empty if the set is empty
      */
-    @Override
     Optional<Edge> one();
 
     /**
@@ -64,7 +62,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param attribute the attribute key to check for
      * @return a deferred EdgeSet containing matching edges
      */
-    @Override
     default EdgeSet withAttribute(String attribute) {
         return new DeferredEdgeSet(this, e -> e.attributes().containsKey(attribute));
     }
@@ -76,7 +73,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param values    the allowed attribute values
      * @return a deferred EdgeSet containing matching edges
      */
-    @Override
     default EdgeSet withAttribute(String attribute, AttributeValue... values) {
         return new DeferredEdgeSet(this, e -> {
             AttributeValue val = e.attributes().get(attribute);
@@ -94,7 +90,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param tags the tags to check for
      * @return a deferred EdgeSet containing matching edges
      */
-    @Override
     default EdgeSet withAnyTag(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -111,7 +106,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param tags the tags to check for
      * @return a deferred EdgeSet containing matching edges
      */
-    @Override
     default EdgeSet withAllTags(String... tags) {
         return new DeferredEdgeSet(this, e -> {
             if (tags == null || tags.length == 0) { return false; }
@@ -130,7 +124,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return a materialized, immutable EdgeSet
      */
-    @Override
     default EdgeSet materialize() {
         Set<Edge> materialized = new java.util.HashSet<>();
         for (Edge e : this) {
@@ -143,7 +136,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param other the collection to perform the set operation with
      * @return the intersected EdgeSet
      */
-    @Override
     EdgeSet intersect(Collection<? extends Edge> other);
 
     /**
@@ -151,7 +143,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param other the collection to perform the set operation with
      * @return the differenced EdgeSet
      */
-    @Override
     EdgeSet difference(Collection<? extends Edge> other);
 
     /**
@@ -159,7 +150,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      * @param other the collection to perform the set operation with
      * @return the unioned EdgeSet
      */
-    @Override
     EdgeSet union(Collection<? extends Edge> other);
 
     /**
@@ -169,7 +159,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return true if materialized, false otherwise
      */
-    @Override
     boolean isMaterialized();
 
     /**
@@ -178,7 +167,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return true if the size is known in O(1) time, false otherwise
      */
-    @Override
     default boolean isSizeKnown() {
         return true;
     }
@@ -188,7 +176,6 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return a set of primitive integer IDs
      */
-    @Override
     Set<Integer> ids();
 
     /**
@@ -196,6 +183,5 @@ public interface EdgeSet extends ElementSet<Edge> {
      *
      * @return an array of primitive integer IDs
      */
-    @Override
     int[] toIdArray();
 }
