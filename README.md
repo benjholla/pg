@@ -34,7 +34,7 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 `pg` fills a critical void between the heavy database drivers and the purely academic algorithmic libraries. It is a highly specialized, precision engine—an uncompromising, memory-efficient staging and analysis engine.
 
 *   **The Set-Theoretic Algebra:** This is `pg`'s biggest differentiator. In most graph libraries, extracting a subgraph requires writing a custom iterator, filtering elements, and manually assembling a new graph. By putting `difference()`, `union()`, `intersection()`, and `forwardStep()` directly on the interface—and mandating that they return *new, induced subgraphs* rather than mutating the root—`pg` provides a functional query algebra. You can carve out slices of a massive AST or data-flow graph mathematically, without permanently destroying the original data structure. (Note: The API for these fluent mathematical operations was heavily inspired by [EnSoft Atlas](https://www.ensoftcorp.com/products/atlas/) and its MIT-licensed open-source [sandbox implementation](https://github.com/EnSoftCorp/toolbox-commons/blob/master/com.ensoftcorp.open.commons%2Fsrc%2Fcom%2Fensoftcorp%2Fopen%2Fcommons%2Fsandbox%2FSandboxGraph.java), but reimagined from the ground up to blend with modern Java APIs and practices. It is also fundamentally backend-agnostic, meaning the same operations could easily delegate to databases like Neo4j or TinkerPop, and is completely decoupled from Eclipse and any specific program analysis ecosystem).
-*   **The Mechanical vs. Mathematical Boundary:** `pg` successfully decouples the mathematical contract from the mechanical storage. Downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, implementations like `GlobalGraph` are executing queries using highly defensive, zero-allocation primitive Integer maps.
+*   **The Mechanical vs. Mathematical Boundary:** `pg` successfully decouples the mathematical contract from the mechanical storage. Downstream consumers interact with a purely set-theoretic interface (`pg-api`), completely oblivious to the fact that under the hood, implementations like `Universe` and `EphemeralGraph` are executing queries using highly defensive, zero-allocation primitive Integer maps.
 *   **Strict Pipeline Defenses:** Because `pg` designed strict boundaries like `linkEdge` (which violently rejects missing anchors or foreign types) and avoids auto-vivification in the core pipeline, this engine is perfectly suited for complex polyglot environments. When transferring JSON schemas between a Java backend, a TypeScript visualizer, or a C++ desktop plotting engine, silent data corruption is fatal. The `pg` API guarantees that if a graph instantiates successfully, its topology is mathematically sound.
 
 ## Core Abstractions
@@ -42,7 +42,8 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 - `GraphElement`: The base interface for both nodes and edges. Elements have a unique primitive `int` ID, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.
 - `Node`: Represents a vertex in the graph.
 - `Edge`: Represents a directed connection between a `from` node and a `to` node.
-- `GlobalGraph`: The default, in-memory implementation of a graph. It supports creating new subgraphs through composable, set-theoretic operations.
+- `Universe`: The baseline global state of the graph, acting as the primary repository for nodes, edges, and their properties.
+- `EphemeralGraph`: A lightweight, transactional, high-scale dual-polarity engine for creating isolated, uncommitted working topologies layered over a `Universe`. It supports creating new subgraphs through composable, set-theoretic operations.
 
 ## Quick Start
 
@@ -51,13 +52,15 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 ```java
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.global.GlobalFactory;
-import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralFactory;
 
 public class Example {
     public static void main(String[] args) {
-        GlobalFactory factory = new GlobalGraph().factory();
+        Universe universe = new Universe();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
         // Create nodes
         Node alice = factory.createNode();
@@ -116,7 +119,7 @@ Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven c
 ```groovy
 dependencies {
     implementation 'dev.chpg:pg-api:1.0.0'
-    implementation 'dev.chpg:pg-global:1.0.0'
+    implementation 'dev.chpg:pg-multiverse:1.0.0'
 }
 ```
 
@@ -129,7 +132,7 @@ dependencies {
 </dependency>
 <dependency>
     <groupId>dev.chpg</groupId>
-    <artifactId>pg-global</artifactId>
+    <artifactId>pg-multiverse</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
