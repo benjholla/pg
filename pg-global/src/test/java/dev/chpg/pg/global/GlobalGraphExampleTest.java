@@ -8,9 +8,9 @@ import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
 import dev.chpg.pg.api.Node;
 
-public class ReadmeExampleTest {
+public class GlobalGraphExampleTest {
     @Test
-    public void testReadmeExample() {
+    public void testGlobalGraphExample() {
         GlobalFactory factory = new GlobalGraph().factory();
 
         // Create nodes

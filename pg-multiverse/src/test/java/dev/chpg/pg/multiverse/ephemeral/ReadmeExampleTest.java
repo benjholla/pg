@@ -1,20 +1,20 @@
 package dev.chpg.pg.multiverse.ephemeral;
 
-import dev.chpg.pg.multiverse.universe.Universe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
 import dev.chpg.pg.api.Graph;
-import dev.chpg.pg.api.Node;
+import dev.chpg.pg.multiverse.universe.Universe;
 
 public class ReadmeExampleTest {
-    private static final Universe universe = new Universe();
-    private static final EphemeralFactory factory = new EphemeralGraph(universe).factory();
-
     @Test
     public void testReadmeExample() {
+        Universe universe = new Universe();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
+
         // Create nodes
         Node alice = factory.createNode();
         alice.tags().add("Person");
