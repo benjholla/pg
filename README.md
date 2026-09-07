@@ -42,7 +42,8 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 - `GraphElement`: The base interface for both nodes and edges. Elements have a unique primitive `int` ID, a `TagSet` for boolean markers, and an `attributes` map for arbitrary key-value properties.
 - `Node`: Represents a vertex in the graph.
 - `Edge`: Represents a directed connection between a `from` node and a `to` node.
-- `GlobalGraph`: The default, in-memory implementation of a graph. It supports creating new subgraphs through composable, set-theoretic operations.
+- `Universe`: The baseline state containing all permanently committed elements.
+- `EphemeralGraph`: A lightweight, transactional sandbox spawned from a `Universe`. It supports creating new subgraphs and mutating elements in complete isolation using composable, set-theoretic operations.
 
 ## Quick Start
 
@@ -51,13 +52,15 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 ```java
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.global.GlobalFactory;
-import dev.chpg.pg.global.GlobalGraph;
 import dev.chpg.pg.api.Graph;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralFactory;
 
 public class Example {
     public static void main(String[] args) {
-        GlobalFactory factory = new GlobalGraph().factory();
+        Universe universe = new Universe();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
         // Create nodes
         Node alice = factory.createNode();
@@ -116,7 +119,7 @@ Add `pg` to your `build.gradle` or `pom.xml` dependencies using standard Maven c
 ```groovy
 dependencies {
     implementation 'dev.chpg:pg-api:1.0.0'
-    implementation 'dev.chpg:pg-global:1.0.0'
+    implementation 'dev.chpg:pg-multiverse:1.0.0'
 }
 ```
 
@@ -129,7 +132,7 @@ dependencies {
 </dependency>
 <dependency>
     <groupId>dev.chpg</groupId>
-    <artifactId>pg-global</artifactId>
+    <artifactId>pg-multiverse</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
