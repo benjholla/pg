@@ -33,7 +33,9 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     public ElementSet<T> withAttribute(String attribute, AttributeValue... values) {
         return createDeferredSet(this.source, this.combinedPredicate.and(e -> {
             AttributeValue val = e.attributes().get(attribute);
-            if (val == null || values == null || values.length == 0) return false;
+            if (val == null || values == null || values.length == 0) {
+                return false;
+            }
             return java.util.Arrays.asList(values).contains(val);
         }));
     }
@@ -41,8 +43,14 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     @Override
     public ElementSet<T> withAnyTag(String... tags) {
         return createDeferredSet(this.source, this.combinedPredicate.and(e -> {
-            if (tags == null || tags.length == 0) return false;
-            for (String tag : tags) { if (e.tags().contains(tag)) return true; }
+            if (tags == null || tags.length == 0) {
+                return false;
+            }
+            for (String tag : tags) {
+                if (e.tags().contains(tag)) {
+                    return true;
+                }
+            }
             return false;
         }));
     }
@@ -50,8 +58,14 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     @Override
     public ElementSet<T> withAllTags(String... tags) {
         return createDeferredSet(this.source, this.combinedPredicate.and(e -> {
-            if (tags == null || tags.length == 0) return false;
-            for (String tag : tags) { if (!e.tags().contains(tag)) return false; }
+            if (tags == null || tags.length == 0) {
+                return false;
+            }
+            for (String tag : tags) {
+                if (!e.tags().contains(tag)) {
+                    return false;
+                }
+            }
             return true;
         }));
     }
@@ -59,17 +73,24 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     @Override
     public ElementSet<T> materialize() {
         Set<T> materialized = new java.util.HashSet<>();
-        for (T e : this) { materialized.add(e); }
+        for (T e : this) {
+            materialized.add(e);
+        }
         return createMaterializedSet(materialized);
     }
 
     @Override
-    public ElementSet<T> toImmutable() { return materialize(); }
+    public ElementSet<T> toImmutable() {
+        return materialize();
+    }
 
     @Override
     public java.util.Optional<T> one() {
         Iterator<T> it = iterator();
-        return it.hasNext() ? java.util.Optional.of(it.next()) : java.util.Optional.empty();
+        if (it.hasNext()) {
+            return java.util.Optional.of(it.next());
+        }
+        return java.util.Optional.empty();
     }
 
     @Override
@@ -90,7 +111,9 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     @Override
     public Set<Integer> ids() {
         Set<Integer> ids = new java.util.HashSet<>((int) (size() / 0.75f) + 1);
-        for (T element : this) { ids.add(element.id()); }
+        for (T element : this) {
+            ids.add(element.id());
+        }
         return java.util.Collections.unmodifiableSet(ids);
     }
 
@@ -98,7 +121,9 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     public int[] toIdArray() {
         int[] result = new int[size()];
         int i = 0;
-        for (T element : this) { result[i++] = element.id(); }
+        for (T element : this) {
+            result[i++] = element.id();
+        }
         return result;
     }
 
@@ -108,7 +133,9 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
         try {
              T e = (T) o;
              return source.contains(e) && combinedPredicate.test(e);
-        } catch(ClassCastException ex) { return false; }
+        } catch(ClassCastException ex) {
+            return false;
+        }
     }
 
     @Override
@@ -119,17 +146,23 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
             private void advance() {
                 while (nextElement == null && sourceIterator.hasNext()) {
                     T candidate = sourceIterator.next();
-                    if (combinedPredicate.test(candidate)) { nextElement = candidate; }
+                    if (combinedPredicate.test(candidate)) {
+                        nextElement = candidate;
+                    }
                 }
             }
             @Override
             public boolean hasNext() {
-                if (nextElement == null) { advance(); }
+                if (nextElement == null) {
+                    advance();
+                }
                 return nextElement != null;
             }
             @Override
             public T next() {
-                if (!hasNext()) throw new NoSuchElementException();
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 T result = nextElement;
                 nextElement = null;
                 return result;
@@ -138,16 +171,28 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement> extends
     }
 
     @Override
-    public boolean isSizeKnown() { return false; }
+    public boolean isSizeKnown() {
+        return false;
+    }
+
     @Override
-    public boolean isMaterialized() { return false; }
+    public boolean isMaterialized() {
+        return false;
+    }
+
     @Override
-    public boolean isEmpty() { return !iterator().hasNext(); }
+    public boolean isEmpty() {
+        return !iterator().hasNext();
+    }
+
     @Override
     public int size() {
         int count = 0;
         Iterator<T> it = iterator();
-        while (it.hasNext()) { it.next(); count++; }
+        while (it.hasNext()) {
+            it.next();
+            count++;
+        }
         return count;
     }
 }
