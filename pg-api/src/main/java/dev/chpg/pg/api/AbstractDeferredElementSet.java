@@ -130,7 +130,7 @@ public abstract class AbstractDeferredElementSet<T extends GraphElement, S exten
     @Override
     public boolean contains(Object o) {
         if (!(o instanceof GraphElement)) { return false; }
-        if (!source.contains(o)) return false;
+        if (!source.contains(o)) { return false; }
         return combinedPredicate.test((T) o);
     }
 
