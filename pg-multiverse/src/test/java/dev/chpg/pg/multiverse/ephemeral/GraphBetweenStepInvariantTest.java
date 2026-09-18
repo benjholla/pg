@@ -42,11 +42,28 @@ public class GraphBetweenStepInvariantTest {
 
     @Test
     public void testBetweenStepIsIntersectionOfForwardStepAndReverseStep() {
-        Graph forwardStepA = graph.forwardStep(a);
-        Graph reverseStepB = graph.reverseStep(b);
-        Graph betweenStepAB = graph.betweenStep(a, b);
+        Node[] nodes = {a, b, c, d, e, f};
 
-        Graph intersection = forwardStepA.intersection(reverseStepB);
-        assertGraphsEqual(intersection, betweenStepAB);
+        for (Node u : nodes) {
+            for (Node v : nodes) {
+                Graph forwardStepU = graph.forwardStep(u);
+                Graph reverseStepV = graph.reverseStep(v);
+
+                // Node overload
+                Graph betweenStepUV = graph.betweenStep(u, v);
+                Graph intersection = forwardStepU.intersection(reverseStepV);
+                assertGraphsEqual(intersection, betweenStepUV);
+
+                // NodeSet overload
+                Graph betweenStepSets = graph.betweenStep(((EphemeralGraph) graph).singleton(u), ((EphemeralGraph) graph).singleton(v));
+                assertGraphsEqual(intersection, betweenStepSets);
+
+                // Graph overload
+                Graph fromGraph = graph.intersection(u); // creates a graph with just node u
+                Graph toGraph = graph.intersection(v);   // creates a graph with just node v
+                Graph betweenStepGraphs = graph.betweenStep(fromGraph, toGraph);
+                assertGraphsEqual(intersection, betweenStepGraphs);
+            }
+        }
     }
 }
