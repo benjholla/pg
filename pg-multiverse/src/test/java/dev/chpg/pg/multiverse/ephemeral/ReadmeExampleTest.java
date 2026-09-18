@@ -44,13 +44,16 @@ public class ReadmeExampleTest {
         // E.g., Find nodes and edges starting from Alice (forward transitive traversal)
         Graph aliceNetwork = graph.forward(alice);
         assertEquals(3, aliceNetwork.nodes().size()); // 3 (Alice, Bob, Charlie)
+        System.out.println("Nodes reachable from Alice: " + aliceNetwork.nodes().size());
 
         // Take a single step backwards from Charlie
         Graph reverseFromCharlie = graph.reverseStep(charlie);
         assertEquals(2, reverseFromCharlie.nodes().size()); // 2 (Bob, Charlie)
+        System.out.println("One step back from Charlie includes: " + reverseFromCharlie.nodes().size() + " nodes");
 
         // Combine (Union) subgraphs
         Graph combined = aliceNetwork.union(reverseFromCharlie);
         assertEquals(3, combined.nodes().size());
+        System.out.println("Combined nodes: " + combined.nodes().size());
     }
 }
