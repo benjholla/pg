@@ -403,7 +403,7 @@ public class UniverseGraphTest {
         assertEquals(1, betweenAB.edges().size());
         assertTrue(betweenAB.edges().contains(ab));
 
-        Graph betweenAC = graph.betweenStep(a, c); // 2 steps away, so betweenStep should be empty
+        Graph betweenAC = graph.betweenStep(a, c); // 2 steps away, so betweenStep should contain only the intermediate node b
         assertEquals(1, betweenAC.nodes().size());
         assertTrue(betweenAC.nodes().contains(b));
         assertEquals(0, betweenAC.edges().size());
