@@ -1,7 +1,6 @@
 package dev.chpg.pg.api;
 
 import java.util.AbstractSet;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
