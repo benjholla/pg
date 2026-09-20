@@ -51,13 +51,15 @@ To understand where `pg` fits, it is helpful to contrast it with the three exist
 ```java
 import dev.chpg.pg.api.Node;
 import dev.chpg.pg.api.Edge;
-import dev.chpg.pg.global.GlobalFactory;
-import dev.chpg.pg.global.GlobalGraph;
+import dev.chpg.pg.multiverse.universe.Universe;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralFactory;
+import dev.chpg.pg.multiverse.ephemeral.EphemeralGraph;
 import dev.chpg.pg.api.Graph;
 
 public class Example {
     public static void main(String[] args) {
-        GlobalFactory factory = new GlobalGraph().factory();
+        Universe universe = new Universe();
+        EphemeralFactory factory = new EphemeralGraph(universe).factory();
 
         // Create nodes
         Node alice = factory.createNode();
