@@ -1,7 +1,6 @@
 package dev.chpg.pg.api;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * An empty, immutable implementation of {@link NodeSet}.
