@@ -1,11 +1,8 @@
 package dev.chpg.pg.api;
 
-import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,9 +23,7 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> Requires O(N) memory allocation to materialize the underlying objects, but provides fast O(1) size checks and O(1) containment checks.
  */
-public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements EdgeSet {
-
-    private final Set<Edge> elements;
+public final class GenericImmutableEdgeSet extends AbstractGenericImmutableElementSet<Edge> implements EdgeSet {
 
     /**
      * Constructs a new generic immutable edge set from the provided elements.
@@ -36,7 +31,7 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
      * @param elements the collection of edges
      */
     public GenericImmutableEdgeSet(Collection<? extends Edge> elements) {
-        this.elements = Set.copyOf(elements);
+        super(elements);
     }
 
     @Override
@@ -47,30 +42,6 @@ public final class GenericImmutableEdgeSet extends AbstractSet<Edge> implements 
     @Override
     public EdgeSet toImmutable() {
         return this;
-    }
-    @Override
-public boolean isMaterialized() {
-        return true;
-    }
-
-    public int size() {
-        return elements.size();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return elements.contains(o);
-    }
-
-    @Override
-    public Iterator<Edge> iterator() {
-        return elements.iterator();
-    }
-
-    @Override
-    public Optional<Edge> one() {
-        if (elements.isEmpty()) { return Optional.empty(); }
-        return Optional.of(elements.iterator().next());
     }
 
     @Override
@@ -113,24 +84,5 @@ public boolean isMaterialized() {
         unioned.addAll(elements);
         unioned.addAll(other);
         return new GenericImmutableEdgeSet(Collections.unmodifiableSet(unioned));
-    }
-
-    @Override
-    public Set<Integer> ids() {
-        Set<Integer> ids = new HashSet<>((int) (elements.size() / 0.75f) + 1);
-        for (Edge edge : elements) {
-            ids.add(edge.id());
-        }
-        return Collections.unmodifiableSet(ids);
-    }
-
-    @Override
-    public int[] toIdArray() {
-        int[] result = new int[elements.size()];
-        int i = 0;
-        for (Edge edge : elements) {
-            result[i++] = edge.id();
-        }
-        return result;
     }
 }

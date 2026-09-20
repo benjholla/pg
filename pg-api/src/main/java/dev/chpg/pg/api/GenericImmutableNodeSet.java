@@ -1,11 +1,8 @@
 package dev.chpg.pg.api;
 
-import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,9 +23,7 @@ import java.util.Set;
  * <p>
  * <b>Performance characteristics:</b> Requires O(N) memory allocation to materialize the underlying objects, but provides fast O(1) size checks and O(1) containment checks.
  */
-public final class GenericImmutableNodeSet extends AbstractSet<Node> implements NodeSet {
-
-    private final Set<Node> elements;
+public final class GenericImmutableNodeSet extends AbstractGenericImmutableElementSet<Node> implements NodeSet {
 
     /**
      * Constructs a new generic immutable node set from the provided elements.
@@ -36,7 +31,7 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
      * @param elements the collection of nodes
      */
     public GenericImmutableNodeSet(Collection<? extends Node> elements) {
-        this.elements = Set.copyOf(elements);
+        super(elements);
     }
 
     @Override
@@ -47,30 +42,6 @@ public final class GenericImmutableNodeSet extends AbstractSet<Node> implements 
     @Override
     public NodeSet toImmutable() {
         return this;
-    }
-    @Override
-public boolean isMaterialized() {
-        return true;
-    }
-
-    public int size() {
-        return elements.size();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return elements.contains(o);
-    }
-
-    @Override
-    public Iterator<Node> iterator() {
-        return elements.iterator();
-    }
-
-    @Override
-    public Optional<Node> one() {
-        if (elements.isEmpty()) { return Optional.empty(); }
-        return Optional.of(elements.iterator().next());
     }
 
     @Override
@@ -113,24 +84,5 @@ public boolean isMaterialized() {
         unioned.addAll(elements);
         unioned.addAll(other);
         return new GenericImmutableNodeSet(Collections.unmodifiableSet(unioned));
-    }
-
-    @Override
-    public Set<Integer> ids() {
-        Set<Integer> ids = new HashSet<>((int) (elements.size() / 0.75f) + 1);
-        for (Node node : elements) {
-            ids.add(node.id());
-        }
-        return Collections.unmodifiableSet(ids);
-    }
-
-    @Override
-    public int[] toIdArray() {
-        int[] result = new int[elements.size()];
-        int i = 0;
-        for (Node node : elements) {
-            result[i++] = node.id();
-        }
-        return result;
     }
 }
