@@ -29,7 +29,6 @@ public class EphemeralEdgeTest {
         EphemeralEdge e3 = new EphemeralEdge(universe, -2, n1, n2);
         assertFalse(e.equals(e3));
 
-        System.out.println(e.toString());
         assertEquals(n1, e.from());
         assertEquals(n2, e.to());
     }

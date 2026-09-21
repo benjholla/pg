@@ -41,7 +41,6 @@ public class ShadowEdgeTest {
         assertTrue(sEdge.equals(sEdge2));
         assertTrue(sEdge.equals(createdEdge));
 
-        System.out.println(sEdge.toString());
         assertEquals(graph2, sEdge.transaction());
         assertEquals(createdEdge, sEdge.backingEdge());
     }
