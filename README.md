@@ -87,15 +87,15 @@ public class Example {
         // Perform set-theoretic operations
         // E.g., Find nodes and edges starting from Alice (forward transitive traversal)
         Graph aliceNetwork = graph.forward(alice);
-        System.out.println("Nodes reachable from Alice: " + aliceNetwork.nodes().size()); // 3 (Alice, Bob, Charlie)
+        assert aliceNetwork.nodes().size() == 3; // (Alice, Bob, Charlie)
 
         // Take a single step backwards from Charlie
         Graph reverseFromCharlie = graph.reverseStep(charlie);
-        System.out.println("One step back from Charlie includes: " + reverseFromCharlie.nodes().size() + " nodes"); // 2 (Bob, Charlie)
+        assert reverseFromCharlie.nodes().size() == 2; // (Bob, Charlie)
 
         // Combine (Union) subgraphs
         Graph combined = aliceNetwork.union(reverseFromCharlie);
-        System.out.println("Combined nodes: " + combined.nodes().size());
+        assert combined.nodes().size() == 3;
     }
 }
 ```

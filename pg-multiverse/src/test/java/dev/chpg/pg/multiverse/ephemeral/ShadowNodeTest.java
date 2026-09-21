@@ -34,7 +34,6 @@ public class ShadowNodeTest {
         ShadowNode sNode3 = new ShadowNode(graph, uNode2);
         assertFalse(sNode.equals(sNode3));
 
-        System.out.println(sNode.toString());
         assertEquals(graph, sNode.transaction());
     }
 }
